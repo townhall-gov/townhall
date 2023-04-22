@@ -3,11 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React, { FC } from 'react';
 import { MetamaskIcon, PolkadotJsIcon } from './CustomIcons';
-
-export enum EWallet {
-    POLKADOT_JS = 'polkadot-js',
-    METAMASK = 'metamask'
-}
+import { EWallet } from '~src/types/enums';
 
 interface IWalletIconProps {
     type: EWallet;

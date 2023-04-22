@@ -2,12 +2,21 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import firestore_db from '.';
+enum EWallet {
+    POLKADOT_JS = 'polkadot-js',
+    METAMASK = 'metamask'
+}
 
-const userCollection = firestore_db.collection('users');
-const houseCollection = firestore_db.collection('houses');
+enum EBlockchain {
+    POLKADOT = 'polkadot',
+}
+
+enum EStrategy {}
+enum ESentiment {}
 
 export {
-	houseCollection,
-	userCollection
+	EBlockchain,
+	ESentiment,
+	EStrategy,
+	EWallet
 };

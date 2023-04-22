@@ -4,7 +4,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { IWalletStore, TSelectedAddress } from './@types';
 import { HYDRATE } from 'next-redux-wrapper';
-import { EWallet } from '~src/ui-components/WalletIcon';
+import { EWallet } from '~src/types/enums';
 
 const initialState: IWalletStore = {
 	error: null,

@@ -3,8 +3,8 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import classNames from 'classnames';
 import React, { FC } from 'react';
-import WalletIcon, { EWallet } from '~src/ui-components/WalletIcon';
-
+import WalletIcon from '~src/ui-components/WalletIcon';
+import { EWallet } from '~src/types/enums';
 interface IWalletBtnProps {
     type: EWallet;
     onClick: (type: EWallet) => void;

@@ -7,7 +7,7 @@ import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TNextApiHandler } from '~src/api/types';
 import { userCollection } from '~src/services/firebase/utils';
 import { IUser } from '~src/types/schema';
-import { EWallet } from '~src/ui-components/WalletIcon';
+import { EWallet } from '~src/types/enums';
 
 export interface IConnectBody {
     address: string;

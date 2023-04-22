@@ -6,7 +6,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
 import React, { FC, useEffect } from 'react';
 import getAccounts, { getMetamaskAccounts } from './utils';
-import { EWallet } from '~src/ui-components/WalletIcon';
+import { EWallet } from '~src/types/enums';
 import AddressDropdown from '~src/ui-components/AddressDropdown';
 import { useDispatch } from 'react-redux';
 import { walletActions } from '~src/redux/wallet';

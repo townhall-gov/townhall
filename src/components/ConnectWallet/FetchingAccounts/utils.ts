@@ -7,7 +7,7 @@ import { InjectedWindow, Injected, InjectedAccount } from '@polkadot/extension-i
 import { stringToHex } from '@polkadot/util';
 import Web3 from 'web3';
 import { APPNAME } from '~src/global/appName';
-import { EWallet } from '~src/ui-components/WalletIcon';
+import { EWallet } from '~src/types/enums';
 import getErrorMessage from '~src/utils/getErrorMessage';
 const UNKNOWN_ERROR_WHILE_FETCHING_ACCOUNTS = 'Something went wrong while fetching accounts. Please try again later or Refetch.';
 
