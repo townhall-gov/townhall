@@ -33,7 +33,7 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
 						montserrat.variable, montserrat.className, 'bg-app_background min-h-[100vh] min-w-[100vw]'
 					)}
 				>
-					<AppLayout Component={Component} {...pageProps} />
+					<AppLayout Component={Component} pageProps={pageProps} />
 				</main>
 			</ConfigProvider>
 		</PersistGate>

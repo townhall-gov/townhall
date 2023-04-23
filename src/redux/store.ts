@@ -8,24 +8,29 @@ import { modalStore } from './modal';
 import { walletStore } from './wallet';
 import { createWrapper } from 'next-redux-wrapper';
 import { profileStore } from './profile';
-import { persistReducer, persistStore } from 'redux-persist';
+import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE, persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-const rootReducer = combineReducers({
-	[authStore.name]: authStore.reducer,
-	[modalStore.name]: modalStore.reducer,
-	[profileStore.name]: profileStore.reducer,
-	[walletStore.name]: walletStore.reducer
-});
-
-const makeConfiguredStore = () => configureStore({
-	devTools: true,
-	reducer: rootReducer
-});
 export const makeStore = () => {
 	const isServer = typeof window === 'undefined';
+	const rootReducer = combineReducers({
+		[authStore.name]: authStore.reducer,
+		[modalStore.name]: modalStore.reducer,
+		[profileStore.name]: profileStore.reducer,
+		[walletStore.name]: walletStore.reducer
+	});
+
 	if (isServer) {
-		return makeConfiguredStore();
+		const store = configureStore({
+			devTools: true,
+			middleware: (getDefaultMiddleware) =>
+				getDefaultMiddleware({
+					immutableCheck: false,
+					serializableCheck: false
+				}),
+			reducer: rootReducer
+		});
+		return store;
 	} else {
 	// we need it only on client side
 		const persistConfig = {
@@ -36,6 +41,13 @@ export const makeStore = () => {
 		const persistedReducer = persistReducer(persistConfig, rootReducer);
 		const store: any = configureStore({
 			devTools: process.env.NODE_ENV !== 'production',
+			middleware: (getDefaultMiddleware) =>
+				getDefaultMiddleware({
+					immutableCheck: false,
+					serializableCheck: {
+						ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
+					}
+				}),
 			reducer: persistedReducer
 		});
 		store.__persistor = persistStore(store); // Nasty hack
@@ -52,4 +64,4 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   Action
 >;
 
-export const wrapper = createWrapper<TAppStore>(makeStore, { debug: true });
+export const wrapper = createWrapper<TAppStore>(makeStore);
