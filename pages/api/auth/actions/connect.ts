@@ -31,6 +31,7 @@ const handler: TNextApiHandler<IUser, IConnectBody> = async (req, res) => {
 		address: address,
 		bio: null,
 		img_url: null,
+		joined_houses: [],
 		username: null,
 		wallet: wallet
 	};

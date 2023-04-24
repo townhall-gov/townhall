@@ -8,9 +8,13 @@ import type { CustomIconComponentProps } from '@ant-design/icons/lib/components/
 
 import ConnectWalletSVG  from '~assets/icons/connect-wallet.svg';
 import ThreeDotsSVG  from '~assets/icons/3-dots.svg';
+import HomeSVG  from '~assets/icons/home.svg';
 import TownhallLogoWithNameSVG  from '~assets/logo/townhall-with-name.svg';
 import MetamaskSVG  from '~assets/wallet/metamask-icon.svg';
 import PolkadotJsSVG  from '~assets/wallet/polkadotjs-icon.svg';
+
+import PolkadotSVG from '~assets/blockchain/polkadot.svg';
+import KusamaSVG from '~assets/blockchain/kusama.svg';
 
 export const ConnectWalletIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={ConnectWalletSVG} {...props} />
@@ -18,6 +22,10 @@ export const ConnectWalletIcon = (props: Partial<CustomIconComponentProps>) => (
 
 export const ThreeDotsIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={ThreeDotsSVG} {...props} />
+);
+
+export const HomeIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={HomeSVG} {...props} />
 );
 
 export const TownhallLogoWithNameIcon = (props: Partial<CustomIconComponentProps>) => (
@@ -30,4 +38,12 @@ export const MetamaskIcon = (props: Partial<CustomIconComponentProps>) => (
 
 export const PolkadotJsIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={PolkadotJsSVG} {...props} />
+);
+
+export const PolkadotIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={PolkadotSVG} {...props} />
+);
+
+export const KusamaIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={KusamaSVG} {...props} />
 );

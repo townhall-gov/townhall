@@ -3,12 +3,27 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { EBlockchain, EWallet, ESentiment, EStrategy } from '~src/types/enums';
+
 interface IUser {
 	address: string;
 	wallet: EWallet;
 	username: string | null;
 	bio: string | null;
 	img_url: string | null;
+	joined_houses: IJoinedHouse[];
+}
+
+interface IJoinedHouse {
+	house_id: string;
+	joined_rooms: IJoinedRoom[];
+}
+
+interface IJoinedRoom {
+	house_id: string;
+	room_id: string;
+	joined_at: Date;
+	leaved_at: Date | null;
+	is_joined: boolean;
 }
 
 interface IHouse {
@@ -17,15 +32,17 @@ interface IHouse {
 	description: string;
 	logo?: string;
 	blockchain: EBlockchain;
+	total_members: number;
 }
 
 interface IRoom {
-	id: number;
-	house_id: number;
+	id: string;
+	house_id: string;
 	title: string;
 	description: string;
-	logo: string;
+	logo?: string;
 	contract_address: string;
+	total_members: number;
 }
 
 interface IProposal {
@@ -73,5 +90,7 @@ export {
 	IProposal,
 	ISentiment,
 	ITag,
-	IVote
+	IVote,
+	IJoinedHouse,
+	IJoinedRoom
 };

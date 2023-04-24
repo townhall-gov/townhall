@@ -10,13 +10,17 @@ import { createWrapper } from 'next-redux-wrapper';
 import { profileStore } from './profile';
 import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE, persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import { housesStore } from './houses';
+import { roomsStore } from './rooms';
 
 export const makeStore = () => {
 	const isServer = typeof window === 'undefined';
 	const rootReducer = combineReducers({
 		[authStore.name]: authStore.reducer,
+		[housesStore.name]: housesStore.reducer,
 		[modalStore.name]: modalStore.reducer,
 		[profileStore.name]: profileStore.reducer,
+		[roomsStore.name]: roomsStore.reducer,
 		[walletStore.name]: walletStore.reducer
 	});
 

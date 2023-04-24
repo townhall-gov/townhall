@@ -3,9 +3,12 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { GetServerSideProps } from 'next';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { IHouse } from '~src/types/schema';
 import { getHouses } from './api/houses';
+import Houses from '~src/components/Houses';
+import { useDispatch } from 'react-redux';
+import { housesActions } from '~src/redux/houses';
 
 interface IHomeServerProps {
 	houses: IHouse[] | null;
@@ -24,11 +27,21 @@ export const getServerSideProps: GetServerSideProps<IHomeServerProps> = async ()
 };
 
 interface IHomeClientProps extends IHomeServerProps {}
-const Home: FC<IHomeClientProps> = () => {
+const Home: FC<IHomeClientProps> = (props) => {
+	const { error, houses } = props;
+	const dispatch = useDispatch();
+	useEffect(() => {
+		if (error) {
+			dispatch(housesActions.setError(error));
+		} else if (houses) {
+			dispatch(housesActions.setHouses(houses));
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [error, houses]);
 	return (
-		<h1>
-			hello
-		</h1>
+		<div>
+			<Houses />
+		</div>
 	);
 };
 

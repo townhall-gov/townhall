@@ -17,8 +17,11 @@ module.exports = {
 			colors: {
 				app_background: 'var(--app_background)',
 				blue_primary: 'var(--blue_primary)',
+				green_primary: 'var(--green_primary)',
 				grey_primary: 'var(--grey_primary)',
-				grey_secondary: 'var(--grey_secondary)'
+				grey_secondary: 'var(--grey_secondary)',
+				grey_tertiary: 'var(--grey_tertiary)',
+				red_primary: 'var(--red_primary)'
 			},
 			fontFamily: {
 				poppins: ['var(--font-montserrat)']

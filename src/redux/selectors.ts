@@ -8,6 +8,8 @@ import { IModalStore } from './modal/@types';
 import { IAuthStore } from './auth/@types';
 import { IWalletStore } from './wallet/@types';
 import { IProfileStore } from './profile/@types';
+import { IHousesStore } from './houses/@types';
+import { IRoomsStore } from './rooms/@types';
 
 const useModalSelector = () => {
 	return useSelector<TAppState, IModalStore>((state) => state.modal);
@@ -25,9 +27,19 @@ const useProfileSelector = () => {
 	return useSelector<TAppState, IProfileStore>((state) => state.profile);
 };
 
+const useHousesSelector = () => {
+	return useSelector<TAppState, IHousesStore>((state) => state.houses);
+};
+
+const useRoomsSelector = () => {
+	return useSelector<TAppState, IRoomsStore>((state) => state.rooms);
+};
+
 export {
 	useAuthSelector,
 	useModalSelector,
 	useWalletSelector,
-	useProfileSelector
+	useProfileSelector,
+	useHousesSelector,
+	useRoomsSelector
 };

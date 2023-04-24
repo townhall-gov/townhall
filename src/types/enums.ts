@@ -9,6 +9,7 @@ enum EWallet {
 
 enum EBlockchain {
     POLKADOT = 'polkadot',
+    KUSAMA = 'kusama',
 }
 
 enum EStrategy {}

@@ -28,7 +28,8 @@ export const getHouses: TGetHousesFn = async () => {
 								description: data.description || '',
 								id: data.id,
 								logo: data.logo,
-								title: data.title || ''
+								title: data.title || '',
+								total_members: Number(data.total_members || 0)
 							};
 							houses.push(house);
 						}

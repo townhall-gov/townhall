@@ -1,0 +1,62 @@
+// Copyright 2019-2025 @polka-labs/townhall authors & contributors
+// This software may be modified and distributed under the terms
+// of the Apache-2.0 license. See the LICENSE file for details.
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { HYDRATE } from 'next-redux-wrapper';
+import { IRoomsStore } from './@types';
+import { IRoom } from '~src/types/schema';
+
+const initialState: IRoomsStore = {
+	error: null,
+	joinOrRemoveRoom: null,
+	rooms: []
+};
+
+interface IUpdateRoomPayloadType {
+	roomId: string;
+	room: IRoom;
+}
+
+export const roomsStore = createSlice({
+	extraReducers: (builder) => {
+		builder.addCase(HYDRATE, (state, action) => {
+			console.log('hydrate rooms', (action as PayloadAction<any>).payload);
+			return {
+				...state,
+				...(action as PayloadAction<any>).payload.rooms
+			};
+		});
+	},
+	initialState,
+	name: 'rooms',
+	reducers: {
+		setError: (state, action: PayloadAction<string | null>) => {
+			state.error = action.payload;
+		},
+		setJoinOrRemoveRoom: (state, action: PayloadAction<string | null>) => {
+			state.joinOrRemoveRoom = action.payload;
+		},
+		setRooms: (state, action: PayloadAction<IRoom[]>) => {
+			state.rooms = action.payload;
+		},
+		updateRoom: (state, action: PayloadAction<IUpdateRoomPayloadType>) => {
+			const { room: updatedRoom, roomId } = action.payload;
+			state.rooms = [...state.rooms.map((room) => {
+				if (room.id === roomId) {
+					return {
+						...updatedRoom
+					};
+				}
+				return {
+					...room
+				};
+			})];
+		}
+	}
+});
+
+export default roomsStore.reducer;
+const roomsActions = roomsStore.actions;
+export {
+	roomsActions
+};

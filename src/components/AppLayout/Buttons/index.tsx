@@ -10,7 +10,7 @@ import ProfileBtn from './Profile';
 const Buttons = () => {
 	const { user } = useProfileSelector();
 	return (
-		<div className='flex items-center gap-x-2 py-[22px]'>
+		<div className='flex items-center gap-x-2'>
 			{
 				(user && user.address)
 					? <ProfileBtn user={user} />

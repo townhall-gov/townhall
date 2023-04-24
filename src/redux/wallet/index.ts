@@ -23,7 +23,7 @@ export const walletStore = createSlice({
 			console.log('hydrate wallet', (action as PayloadAction<any>).payload);
 			return {
 				...state,
-				...(action as PayloadAction<any>).payload.modal
+				...(action as PayloadAction<any>).payload.wallet
 			};
 		});
 	},

@@ -13,7 +13,7 @@ export const authStore = createSlice({
 			console.log('hydrate auth', (action as PayloadAction<any>).payload);
 			return {
 				...state,
-				...(action as PayloadAction<any>).payload.modal
+				...(action as PayloadAction<any>).payload.auth
 			};
 		});
 	},

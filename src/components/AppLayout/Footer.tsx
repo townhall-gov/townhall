@@ -14,7 +14,7 @@ interface IFooterProps {
 
 const Footer: FC<IFooterProps> = () => {
 	return (
-		<AntdFooter className='bg-black grid grid-cols-3 gap-x-5 lg:py-[44.5px] lg:px-[183px]'>
+		<AntdFooter className='bg-black rounded-t-2xl grid grid-cols-3 gap-x-5 lg:py-[44.5px] lg:px-[183px]'>
 			<article className='col-span-1 flex flex-col gap-y-[14px]'>
 				<h6 className='m-0 p-0 text-base font-normal leading-[20px] text-grey_primary'>Get the latest Polkroom updates</h6>
 				<div className='flex items-center relative border border-solid border-grey_primary rounded-2xl max-w-[292px] px-2'>

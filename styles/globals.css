@@ -7,6 +7,9 @@
     --blue_primary: #66A5FF;
     --grey_primary: #94A2AF;
     --grey_secondary: #3d4349;
+    --grey_tertiary: #5E6F80;
+    --red_primary: #FF3C5F;
+    --green_primary: #2ED47A;
     --font_default: 'Montserrat', sans-serif;
 }
 
@@ -81,4 +84,44 @@ div.ant-card-bordered {
 }
 div.ant-card-body {
     padding: 0 !important;
+}
+
+.room-hover:hover:not(.room-disabled) button {
+    border-color: white !important;
+}
+
+.room-hover:hover:not(.room-disabled) button.join {
+    background-color: white !important;
+    color: #0E2D59 !important;
+}
+
+.room-joined:not(.room-disabled) button {
+    border-color: var(--green_primary) !important;
+}
+
+.room-joined:not(.room-disabled) button.join {
+    background-color: var(--green_primary) !important;
+    color: white !important;
+}
+
+.room-hover-joined:hover:not(.room-disabled) button {
+    border-color: var(--red_primary) !important;
+}
+
+.room-hover-joined:hover:not(.room-disabled) button.join {
+    background-color: var(--red_primary) !important;
+    color: white !important;
+}
+
+.room-disabled, .room-disabled button:first-child {
+    cursor: not-allowed !important;
+}
+.room-disabled .ant-spin-nested-loading {
+    cursor: not-allowed !important;
+}
+.room-disabled .ant-spin {
+    background-color: rgba(0, 0, 0, 0.1) !important;
+}
+.room-disabled button {
+    border-color: var(--grey_primary) !important;
 }

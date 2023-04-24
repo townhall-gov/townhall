@@ -4,7 +4,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 import { IProfileStore } from './@types';
-import { IUser } from '~src/types/schema';
+import { IJoinedRoom, IUser } from '~src/types/schema';
 
 const initialState: IProfileStore = {
 	user: null
@@ -16,13 +16,66 @@ export const profileStore = createSlice({
 			console.log('hydrate profile', (action as PayloadAction<any>).payload);
 			return {
 				...state,
-				...(action as PayloadAction<any>).payload.modal
+				...(action as PayloadAction<any>).payload.profile
 			};
 		});
 	},
 	initialState,
 	name: 'profile',
 	reducers: {
+		addJoinedRoom: (state, action: PayloadAction<{
+			houseId: string;
+			joinedRoom: IJoinedRoom;
+		}>) => {
+			if (state.user) {
+				const { houseId, joinedRoom } = action.payload;
+				if (state.user.joined_houses && Array.isArray(state.user.joined_houses)) {
+					state.user.joined_houses = [...state.user.joined_houses.map((joinedHouse) => {
+						if (joinedHouse.house_id === houseId) {
+							return {
+								...joinedHouse,
+								joined_rooms: [...joinedHouse.joined_rooms, joinedRoom]
+							};
+						}
+						return {
+							...joinedHouse
+						};
+					})];
+				} else {
+					state.user.joined_houses = [
+						{
+							house_id: houseId,
+							joined_rooms: [joinedRoom]
+						}
+					];
+				}
+			}
+		},
+		removeJoinedRoom: (state, action: PayloadAction<{
+			houseId: string;
+			roomId: string;
+		}>) => {
+			if (state.user) {
+				const { houseId, roomId } = action.payload;
+				if (state.user.joined_houses && Array.isArray(state.user.joined_houses)) {
+					state.user.joined_houses = [...state.user.joined_houses.map((joinedHouse) => {
+						if (joinedHouse.house_id === houseId) {
+							joinedHouse.joined_rooms = [...(joinedHouse?.joined_rooms || []).filter((room) => room.room_id !== roomId)];
+						}
+						return {
+							...joinedHouse
+						};
+					})];
+				} else {
+					state.user.joined_houses = [
+						{
+							house_id: houseId,
+							joined_rooms: []
+						}
+					];
+				}
+			}
+		},
 		setUser: (state, action: PayloadAction<IUser | null>) => {
 			state.user = action.payload;
 		}
