@@ -17,7 +17,31 @@ const useRoomCreationStageComplete = (stage: ERoomCreationStage) => {
 	return false;
 };
 
+const useRoomCreation_House = () => {
+	const rooms = useRoomsSelector();
+	return rooms.roomCreation?.select_house;
+};
+
+const useRoomCreation_ProjectDetails = () => {
+	const rooms = useRoomsSelector();
+	return rooms.roomCreation?.project_details;
+};
+
+const useRoomCreation_CreatorDetails = () => {
+	const rooms = useRoomsSelector();
+	return rooms.roomCreation?.creator_details;
+};
+
+const useRoomCreation_ProjectSocials = () => {
+	const rooms = useRoomsSelector();
+	return rooms.roomCreation?.project_socials;
+};
+
 export {
 	useRoomCreationCurrentStage,
-	useRoomCreationStageComplete
+	useRoomCreationStageComplete,
+	useRoomCreation_House,
+	useRoomCreation_ProjectDetails,
+	useRoomCreation_CreatorDetails,
+	useRoomCreation_ProjectSocials
 };

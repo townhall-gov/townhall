@@ -73,6 +73,29 @@ export const roomsStore = createSlice({
 				};
 			}
 		},
+		setRoomCreation_ProjectName: (state, action: PayloadAction<string>) => {
+			const name = action.payload;
+			if (state.roomCreation) {
+				if (state.roomCreation.project_details) {
+					state.roomCreation.project_details.name = name;
+				} else {
+					state.roomCreation.project_details = {
+						name: name
+					};
+				}
+			} else {
+				state.roomCreation = {
+					creator_details: null,
+					currentStage: ERoomCreationStage.PROJECT_DETAILS,
+					getting_started: null,
+					project_details: {
+						name: name
+					},
+					project_socials: null,
+					select_house: null
+				};
+			}
+		},
 		setRooms: (state, action: PayloadAction<IRoom[]>) => {
 			state.rooms = action.payload;
 		},
