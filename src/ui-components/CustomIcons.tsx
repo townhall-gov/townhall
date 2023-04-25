@@ -9,6 +9,11 @@ import type { CustomIconComponentProps } from '@ant-design/icons/lib/components/
 import ConnectWalletSVG  from '~assets/icons/connect-wallet.svg';
 import ThreeDotsSVG  from '~assets/icons/3-dots.svg';
 import HomeSVG  from '~assets/icons/home.svg';
+import ContactPageSVG  from '~assets/icons/contact-page.svg';
+import DevicesSVG  from '~assets/icons/devices.svg';
+import EarthSVG  from '~assets/icons/earth.svg';
+import HolidayVillageSVG  from '~assets/icons/holiday-village.svg';
+import RocketLaunchSVG  from '~assets/icons/rocket-launch.svg';
 import TownhallLogoWithNameSVG  from '~assets/logo/townhall-with-name.svg';
 import MetamaskSVG  from '~assets/wallet/metamask-icon.svg';
 import PolkadotJsSVG  from '~assets/wallet/polkadotjs-icon.svg';
@@ -26,6 +31,26 @@ export const ThreeDotsIcon = (props: Partial<CustomIconComponentProps>) => (
 
 export const HomeIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={HomeSVG} {...props} />
+);
+
+export const ContactPageIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={ContactPageSVG} {...props} />
+);
+
+export const DevicesIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={DevicesSVG} {...props} />
+);
+
+export const EarthIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={EarthSVG} {...props} />
+);
+
+export const HolidayVillageIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={HolidayVillageSVG} {...props} />
+);
+
+export const RocketLaunchIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={RocketLaunchSVG} {...props} />
 );
 
 export const TownhallLogoWithNameIcon = (props: Partial<CustomIconComponentProps>) => (

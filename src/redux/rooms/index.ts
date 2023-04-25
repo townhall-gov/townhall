@@ -3,12 +3,20 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
-import { IRoomsStore } from './@types';
+import { ERoomCreationStage, IRoomsStore } from './@types';
 import { IRoom } from '~src/types/schema';
 
 const initialState: IRoomsStore = {
 	error: null,
 	joinOrRemoveRoom: null,
+	roomCreation: {
+		creator_details: null,
+		currentStage: ERoomCreationStage.GETTING_STARTED,
+		getting_started: null,
+		project_details: null,
+		project_socials: null,
+		select_house: null
+	},
 	rooms: []
 };
 
@@ -35,6 +43,20 @@ export const roomsStore = createSlice({
 		},
 		setJoinOrRemoveRoom: (state, action: PayloadAction<string | null>) => {
 			state.joinOrRemoveRoom = action.payload;
+		},
+		setRoomCreationStage: (state, action: PayloadAction<ERoomCreationStage>) => {
+			if (state.roomCreation) {
+				state.roomCreation.currentStage = action.payload;
+			} else {
+				state.roomCreation = {
+					creator_details: null,
+					currentStage: action.payload,
+					getting_started: null,
+					project_details: null,
+					project_socials: null,
+					select_house: null
+				};
+			}
 		},
 		setRooms: (state, action: PayloadAction<IRoom[]>) => {
 			state.rooms = action.payload;
