@@ -12,6 +12,7 @@ import messages from '~src/auth/utils/messages';
 import { joinedHouseCollection, joinedRoomCollection } from '~src/services/firebase/utils';
 import { IJoinedHouse, IJoinedRoom } from '~src/types/schema';
 import apiErrorWithStatusCode from '~src/utils/apiErrorWithStatusCode';
+import convertFirestoreTimestampToDate from '~src/utils/convertFirestoreTimestampToDate';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
 
 interface IGetJoinedRoomsFnParams {
@@ -48,8 +49,8 @@ export const getJoinedRooms: TGetJoinedRoomsFn = async (params) => {
 											const joinedRoom: IJoinedRoom = {
 												house_id: data.house_id,
 												is_joined: data.is_joined,
-												joined_at: data.joined_at,
-												leaved_at: data.leaved_at,
+												joined_at: convertFirestoreTimestampToDate(data.joined_at),
+												leaved_at: convertFirestoreTimestampToDate(data.leaved_at),
 												room_id: data.room_id
 											};
 											joinedHouse.joined_rooms.push(joinedRoom);

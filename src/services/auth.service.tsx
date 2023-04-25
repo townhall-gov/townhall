@@ -13,7 +13,7 @@ import { IUser } from '~src/types/schema';
  */
 export const storeLocalStorageToken = (token: string) => {
 	if(typeof window !== 'undefined'){
-		localStorage.setItem('Authorization', token);
+		localStorage.setItem('TownhallAuthorization', token);
 	}
 };
 
@@ -23,7 +23,7 @@ export const storeLocalStorageToken = (token: string) => {
  */
 export const getLocalStorageToken = (): string | null => {
 	if(typeof window !== 'undefined'){
-		return localStorage.getItem('Authorization') || null;
+		return localStorage.getItem('TownhallAuthorization') || null;
 	}
 
 	return null;
@@ -35,7 +35,7 @@ export const getLocalStorageToken = (): string | null => {
  */
 export const deleteLocalStorageToken = (): void => {
 	if(typeof window !== 'undefined'){
-		return localStorage.removeItem('Authorization');
+		return localStorage.removeItem('TownhallAuthorization');
 	}
 };
 

@@ -2,7 +2,6 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { IJoinedRoomsQuery } from 'pages/api/auth/data/joined-rooms';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { profileActions } from '~src/redux/profile';
@@ -19,9 +18,7 @@ const JoinedRoom = () => {
 
 	useEffect(() => {
 		if (user && user.address) {
-			api.get<IJoinedHouse[], IJoinedRoomsQuery>('auth/data/joined-rooms', {
-				address: user.address
-			}).then((res) => {
+			api.get<IJoinedHouse[], {}>('auth/data/joined-rooms', {}).then((res) => {
 				if (res && res.data && Array.isArray(res.data)) {
 					dispatch(profileActions.addJoinedRooms(res.data));
 				}

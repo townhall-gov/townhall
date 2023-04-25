@@ -42,7 +42,6 @@ const Room: FC<IRoomProps> = (props) => {
 				dispatch(roomsActions.setJoinOrRemoveRoom(id));
 				if (isRoomJoined) {
 					const { data, error } = await api.post<ILeaveRoomResponse, ILeaveRoomBody>('auth/actions/leaveRoom', {
-						address: user.address,
 						houseId: house_id,
 						roomId: id
 					});
@@ -62,7 +61,6 @@ const Room: FC<IRoomProps> = (props) => {
 					}
 				} else {
 					const { data, error } = await api.post<IJoinRoomResponse, IJoinRoomBody>('auth/actions/joinRoom', {
-						address: user.address,
 						houseId: house_id,
 						roomId: id
 					});
