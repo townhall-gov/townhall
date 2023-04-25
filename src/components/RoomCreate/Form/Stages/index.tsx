@@ -9,6 +9,7 @@ import GettingStarted from './GettingStarted';
 import SelectHouse from './SelectHouse';
 import ProjectDetails from './ProjectDetails';
 import CreatorDetails from './CreatorDetails';
+import ProjectSocials from './ProjectSocials';
 
 const Stages = () => {
 	const stage = useRoomCreationCurrentStage();
@@ -22,7 +23,7 @@ const Stages = () => {
 	case ERoomCreationStage.CREATOR_DETAILS:
 		return <CreatorDetails />;
 	case ERoomCreationStage.PROJECT_SOCIALS:
-		return <ProjectDetails />;
+		return <ProjectSocials />;
 	default:
 		return <></>;
 	}

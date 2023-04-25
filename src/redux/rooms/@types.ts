@@ -39,11 +39,11 @@ export interface ICreatorDetails {
 }
 
 export interface IProjectSocial {
-    type: EProjectSocial;
+    type: ESocial;
     url: string;
 }
 
-export enum EProjectSocial{
+export enum ESocial{
     GITHUB = 'github',
     DISCORD = 'discord',
     TWITTER = 'twitter',

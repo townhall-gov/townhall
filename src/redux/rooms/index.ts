@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
-import { ERoomCreationStage, IRoomsStore } from './@types';
+import { ESocial, ERoomCreationStage, ICreatorDetails, IProjectDetails, IProjectSocial, IRoomsStore } from './@types';
 import { IHouse, IRoom } from '~src/types/schema';
 
 const initialState: IRoomsStore = {
@@ -58,6 +58,21 @@ export const roomsStore = createSlice({
 				};
 			}
 		},
+		setRoomCreation_CreatorDetails: (state, action: PayloadAction<ICreatorDetails | null>) => {
+			const creator_details = action.payload;
+			if (state.roomCreation) {
+				state.roomCreation.creator_details = creator_details;
+			} else {
+				state.roomCreation = {
+					creator_details: creator_details,
+					currentStage: ERoomCreationStage.CREATOR_DETAILS,
+					getting_started: null,
+					project_details: null,
+					project_socials: null,
+					select_house: null
+				};
+			}
+		},
 		setRoomCreation_House: (state, action: PayloadAction<IHouse | undefined>) => {
 			const house = action.payload || null;
 			if (state.roomCreation) {
@@ -73,27 +88,51 @@ export const roomsStore = createSlice({
 				};
 			}
 		},
-		setRoomCreation_ProjectName: (state, action: PayloadAction<string>) => {
-			const name = action.payload;
+		setRoomCreation_ProjectDetails: (state, action: PayloadAction<IProjectDetails | null>) => {
+			const project_details = action.payload;
 			if (state.roomCreation) {
-				if (state.roomCreation.project_details) {
-					state.roomCreation.project_details.name = name;
-				} else {
-					state.roomCreation.project_details = {
-						name: name
-					};
-				}
+				state.roomCreation.project_details = project_details;
 			} else {
 				state.roomCreation = {
 					creator_details: null,
 					currentStage: ERoomCreationStage.PROJECT_DETAILS,
 					getting_started: null,
-					project_details: {
-						name: name
-					},
+					project_details: project_details,
 					project_socials: null,
 					select_house: null
 				};
+			}
+		},
+		setRoomCreation_ProjectSocials: (state, action: PayloadAction<IProjectSocial>) => {
+			const projectSocial = action.payload;
+			if (projectSocial && projectSocial.type && Object.values(ESocial).includes(projectSocial.type)) {
+				if (state.roomCreation) {
+					let project_socials = state.roomCreation.project_socials;
+					if (project_socials && Array.isArray(project_socials)) {
+						const index = project_socials.findIndex((social) => social.type === projectSocial.type);
+						if (index >= 0) {
+							if (projectSocial.url === '') {
+								project_socials.splice(index, 1);
+							} else {
+								project_socials[index] = projectSocial;
+							}
+						} else {
+							project_socials.push(projectSocial);
+						}
+					} else {
+						project_socials = [projectSocial];
+					}
+					state.roomCreation.project_socials = project_socials;
+				} else {
+					state.roomCreation = {
+						creator_details: null,
+						currentStage: ERoomCreationStage.PROJECT_SOCIALS,
+						getting_started: null,
+						project_details: null,
+						project_socials: [projectSocial],
+						select_house: null
+					};
+				}
 			}
 		},
 		setRooms: (state, action: PayloadAction<IRoom[]>) => {

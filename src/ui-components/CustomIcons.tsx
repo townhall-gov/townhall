@@ -21,6 +21,32 @@ import PolkadotJsSVG  from '~assets/wallet/polkadotjs-icon.svg';
 import PolkadotSVG from '~assets/blockchain/polkadot.svg';
 import KusamaSVG from '~assets/blockchain/kusama.svg';
 
+import DiscordSVG from '~assets/socials/discord.svg';
+import GithubSVG from '~assets/socials/github.svg';
+import RedditSVG from '~assets/socials/reddit.svg';
+import TelegramSVG from '~assets/socials/telegram.svg';
+import TwitterSVG from '~assets/socials/twitter.svg';
+
+export const DiscordIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={DiscordSVG} {...props} />
+);
+
+export const GithubIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={GithubSVG} {...props} />
+);
+
+export const RedditIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={RedditSVG} {...props} />
+);
+
+export const TelegramIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={TelegramSVG} {...props} />
+);
+
+export const TwitterIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={TwitterSVG} {...props} />
+);
+
 export const ConnectWalletIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={ConnectWalletSVG} {...props} />
 );
