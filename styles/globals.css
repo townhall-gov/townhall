@@ -73,6 +73,9 @@ ul.ant-dropdown-menu {
     background: var(--app_background) !important;
     border: 1px solid var(--grey_secondary);
 }
+.ant-dropdown-menu-border-blue_primary ul.ant-dropdown-menu {
+    border: 1px solid var(--blue_primary);
+}
 ul.ant-dropdown-menu .ant-dropdown-menu-item-active #addressText {
     color: var(--app_background) !important;
 }
@@ -87,6 +90,7 @@ div.ant-card-body {
     padding: 0 !important;
 }
 
+/* Room Hover states Start */
 .room-hover:hover:not(.room-disabled) button {
     border-color: white !important;
 }
@@ -126,3 +130,4 @@ div.ant-card-body {
 .room-disabled button {
     border-color: var(--grey_primary) !important;
 }
+/* Room Hover states End */

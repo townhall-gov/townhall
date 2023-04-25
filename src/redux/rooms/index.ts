@@ -4,7 +4,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 import { ERoomCreationStage, IRoomsStore } from './@types';
-import { IRoom } from '~src/types/schema';
+import { IHouse, IRoom } from '~src/types/schema';
 
 const initialState: IRoomsStore = {
 	error: null,
@@ -55,6 +55,21 @@ export const roomsStore = createSlice({
 					project_details: null,
 					project_socials: null,
 					select_house: null
+				};
+			}
+		},
+		setRoomCreation_House: (state, action: PayloadAction<IHouse | undefined>) => {
+			const house = action.payload || null;
+			if (state.roomCreation) {
+				state.roomCreation.select_house = house;
+			} else {
+				state.roomCreation = {
+					creator_details: null,
+					currentStage: ERoomCreationStage.SELECT_HOUSE,
+					getting_started: null,
+					project_details: null,
+					project_socials: null,
+					select_house: house
 				};
 			}
 		},
