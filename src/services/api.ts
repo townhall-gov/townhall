@@ -6,6 +6,7 @@
 import { TApiResponse, TParams } from '~src/api/types';
 import getErrorMessage from '~src/utils/getErrorMessage';
 import messages from '~src/utils/messages';
+import { getLocalStorageToken } from './auth.service';
 
 const paramsKeyConvert = (str = '') => str.replace(/[A-Z]/g, ([s]) => `_${s.toLowerCase()}`);
 
@@ -27,7 +28,14 @@ class Api {
 		for (const key of Object.keys(params)) {
 			url.searchParams.set(paramsKeyConvert(key), params[key]);
 		}
-
+		const token = getLocalStorageToken();
+		options = {
+			...options,
+			headers: {
+				...options?.headers,
+				Authorization: (token ? `Bearer ${token}` : '')
+			}
+		};
 		return new Promise<TApiResponse<T>>((resolve) =>
 			fetch(url, options)
 				.then((resp) => {

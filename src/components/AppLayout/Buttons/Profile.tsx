@@ -6,6 +6,7 @@ import { Card, Dropdown } from 'antd';
 import React, { FC } from 'react';
 import { useDispatch } from 'react-redux';
 import { profileActions } from '~src/redux/profile';
+import { deleteLocalStorageToken } from '~src/services/auth.service';
 import { IUser } from '~src/types/schema';
 import Address from '~src/ui-components/Address';
 
@@ -26,6 +27,7 @@ const ProfileBtn: FC<IProfileBtnProps> = (props) => {
 						<button
 							onClick={() => {
 								dispatch(profileActions.setUser(null));
+								deleteLocalStorageToken();
 							}}
 							className='outline-none border-none text-blue_primary w-full bg-transparent hover:bg-grey_secondary cursor-pointer rounded-md py-1 px-3 text-base font-medium'
 						>

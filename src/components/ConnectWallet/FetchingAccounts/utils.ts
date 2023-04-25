@@ -112,7 +112,7 @@ export const signByMetaMask = async (text: string, address: string) => {
 	});
 };
 
-export const signMessage = async (text: string, address: string) => {
+export const signMessage = async (text: string, address: string): Promise<string> => {
 	if (!address) {
 		throw new Error('Sign address is missing.');
 	}

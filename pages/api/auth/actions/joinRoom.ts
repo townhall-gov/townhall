@@ -5,11 +5,14 @@
 import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TNextApiHandler } from '~src/api/types';
+import authServiceInstance from '~src/auth';
+import getTokenFromReq from '~src/auth/utils/getTokenFromReq';
+import messages from '~src/auth/utils/messages';
 import { joinedHouseCollection, joinedRoomCollection, roomCollection } from '~src/services/firebase/utils';
 import { IRoom, IJoinedRoom } from '~src/types/schema';
+import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
 
 export interface IJoinRoomBody {
-    address: string;
     houseId: string;
     roomId: string;
 }
@@ -19,15 +22,11 @@ export interface IJoinRoomResponse {
 	joinedRoom: IJoinedRoom;
 }
 
-const handler: TNextApiHandler<IJoinRoomResponse, IJoinRoomBody> = async (req, res) => {
+const handler: TNextApiHandler<IJoinRoomResponse, IJoinRoomBody, {}> = async (req, res) => {
 	if (req.method !== 'POST') {
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
 	}
-	const { address, houseId, roomId } = req.body;
-
-	if (!address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid address.' });
-	}
+	const { houseId, roomId } = req.body;
 
 	if (!houseId || typeof houseId !== 'string') {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid houseId.' });
@@ -35,6 +34,22 @@ const handler: TNextApiHandler<IJoinRoomResponse, IJoinRoomBody> = async (req, r
 
 	if (!roomId || typeof roomId !== 'string') {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid roomId.' });
+	}
+
+	let address: string | null = null;
+	try {
+		const token = getTokenFromReq(req);
+		if(!token) return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid token' });
+
+		const user = await authServiceInstance.GetUser(token);
+		if(!user) return res.status(StatusCodes.FORBIDDEN).json({ error: messages.UNAUTHORISED });
+		address = user.address;
+	} catch (error) {
+		return res.status(getErrorStatus(error)).json({ error: getErrorMessage(error) });
+	}
+
+	if (!address) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid address.' });
 	}
 
 	const roomRef = roomCollection(houseId).doc(roomId);

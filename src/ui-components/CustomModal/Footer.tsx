@@ -2,13 +2,19 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+import { Skeleton } from 'antd';
+import dynamic from 'next/dynamic';
 import { FC } from 'react';
-import { SelectedWalletModalFooter } from '~src/components/ConnectWallet/FetchingAccounts';
 import { EFooterType } from '~src/redux/modal/@types';
 
 interface IModalFooterProps {
     type?: EFooterType;
 }
+
+const SelectedWalletModalFooter = dynamic(() => import('~src/components/ConnectWallet/FetchingAccounts/Footer'), {
+	loading: () => <Skeleton.Avatar active size='large' shape='circle' /> ,
+	ssr: false
+});
 
 const ModalFooter: FC<IModalFooterProps> = (props) => {
 	switch(props.type) {

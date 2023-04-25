@@ -5,58 +5,39 @@
 import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TNextApiHandler } from '~src/api/types';
-import { userCollection } from '~src/services/firebase/utils';
-import { IUser } from '~src/types/schema';
 import { EWallet } from '~src/types/enums';
+import { IToken } from '~src/auth/types';
+import authServiceInstance from '~src/auth';
+import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
 
 export interface IConnectBody {
     address: string;
     wallet: EWallet;
+	signature: string;
 }
 
-const handler: TNextApiHandler<IUser, IConnectBody> = async (req, res) => {
+const handler: TNextApiHandler<IToken, IConnectBody, {}> = async (req, res) => {
 	if (req.method !== 'POST') {
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
 	}
-	const { address, wallet } = req.body;
+	const { address, wallet, signature } = req.body;
 
 	if (!address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid address' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid address.' });
+	}
+	if (!signature) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid signature.' });
 	}
 	if (!wallet || !Object.values(EWallet).includes(wallet)) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid wallet' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid wallet.' });
 	}
 
-	const user: IUser = {
-		address: address,
-		bio: null,
-		img_url: null,
-		joined_houses: [],
-		username: null,
-		wallet: wallet
-	};
-
-	const userDocRef = userCollection.doc(address);
-	const userDocSnapshot = await userDocRef.get();
-
-	if (userDocSnapshot && userDocSnapshot.exists) {
-		const data = userDocSnapshot.data();
-		if (data) {
-			if (data.bio && typeof data.bio === 'string') {
-				user.bio = data.bio;
-			}
-			if (data.img_url && typeof data.img_url === 'string') {
-				user.img_url = data.img_url;
-			}
-			if (data.username && typeof data.username === 'string') {
-				user.username = data.username;
-			}
-		}
-	} else {
-		await userDocRef.set(user, { merge: true });
+	try {
+		const { token } = await authServiceInstance.Connect(address, wallet, signature);
+		res.status(StatusCodes.OK).json({ token });
+	} catch (error) {
+		res.status(getErrorStatus(error)).json({ error: getErrorMessage(error) });
 	}
-
-	res.status(StatusCodes.OK).json(user);
 };
 
 export default withErrorHandling(handler);

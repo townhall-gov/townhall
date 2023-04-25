@@ -6,10 +6,13 @@ import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
+import authServiceInstance from '~src/auth';
+import getTokenFromReq from '~src/auth/utils/getTokenFromReq';
+import messages from '~src/auth/utils/messages';
 import { joinedHouseCollection, joinedRoomCollection } from '~src/services/firebase/utils';
 import { IJoinedHouse, IJoinedRoom } from '~src/types/schema';
 import apiErrorWithStatusCode from '~src/utils/apiErrorWithStatusCode';
-import getErrorMessage from '~src/utils/getErrorMessage';
+import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
 
 interface IGetJoinedRoomsFnParams {
     address: string;
@@ -82,14 +85,27 @@ export const getJoinedRooms: TGetJoinedRoomsFn = async (params) => {
 };
 
 export interface IJoinedRoomsBody {}
-export interface IJoinedRoomsQuery {
-    address: string;
-}
+export interface IJoinedRoomsQuery {}
 const handler: TNextApiHandler<IJoinedHouse[], IJoinedRoomsBody, IJoinedRoomsQuery> = async (req, res) => {
 	if (req.method !== 'GET') {
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, GET required.' });
 	}
-	const { address } = req.query;
+
+	let address: string | null = null;
+	try {
+		const token = getTokenFromReq(req);
+		if(!token) return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid token' });
+
+		const user = await authServiceInstance.GetUser(token);
+		if(!user) return res.status(StatusCodes.FORBIDDEN).json({ error: messages.UNAUTHORISED });
+		address = user.address;
+	} catch (error) {
+		return res.status(getErrorStatus(error)).json({ error: getErrorMessage(error) });
+	}
+
+	if (!address) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid address.' });
+	}
 	const {
 		data: joinedHouses,
 		error,
