@@ -12,6 +12,7 @@ import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE, persistReducer, pers
 import storage from 'redux-persist/lib/storage';
 import { housesStore } from './houses';
 import { roomsStore } from './rooms';
+import { notificationStore } from './notification';
 
 export const makeStore = () => {
 	const isServer = typeof window === 'undefined';
@@ -19,6 +20,7 @@ export const makeStore = () => {
 		[authStore.name]: authStore.reducer,
 		[housesStore.name]: housesStore.reducer,
 		[modalStore.name]: modalStore.reducer,
+		[notificationStore.name]: notificationStore.reducer,
 		[profileStore.name]: profileStore.reducer,
 		[roomsStore.name]: roomsStore.reducer,
 		[walletStore.name]: walletStore.reducer

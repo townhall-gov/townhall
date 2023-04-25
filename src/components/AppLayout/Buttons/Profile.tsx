@@ -5,6 +5,8 @@
 import { Card, Dropdown } from 'antd';
 import React, { FC } from 'react';
 import { useDispatch } from 'react-redux';
+import { notificationActions } from '~src/redux/notification';
+import { ENotificationStatus } from '~src/redux/notification/@types';
 import { profileActions } from '~src/redux/profile';
 import { deleteLocalStorageToken } from '~src/services/auth.service';
 import { IUser } from '~src/types/schema';
@@ -28,6 +30,11 @@ const ProfileBtn: FC<IProfileBtnProps> = (props) => {
 							onClick={() => {
 								dispatch(profileActions.setUser(null));
 								deleteLocalStorageToken();
+								dispatch(notificationActions.send({
+									message: 'Logged out successfully.',
+									status: ENotificationStatus.SUCCESS,
+									title: 'Success'
+								}));
 							}}
 							className='outline-none border-none text-blue_primary w-full bg-transparent hover:bg-grey_secondary cursor-pointer rounded-md py-1 px-3 text-base font-medium'
 						>

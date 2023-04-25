@@ -17,6 +17,8 @@ import { signMessage } from './utils';
 import { IToken } from '~src/auth/types';
 import { getUserFromToken } from '~src/services/auth.service';
 import { FC } from 'react';
+import { notificationActions } from '~src/redux/notification';
+import { ENotificationStatus } from '~src/redux/notification/@types';
 interface ISelectedWalletModalFooterProps {}
 
 const SelectedWalletModalFooter: FC<ISelectedWalletModalFooterProps> = () => {
@@ -56,6 +58,11 @@ const SelectedWalletModalFooter: FC<ISelectedWalletModalFooterProps> = () => {
 								} else if (!data) {
 									dispatch(walletActions.setError('Something went wrong.'));
 								} else {
+									dispatch(notificationActions.send({
+										message: 'Wallet connection successfully.',
+										status: ENotificationStatus.SUCCESS,
+										title: 'Success'
+									}));
 									const user = getUserFromToken(data.token);
 									dispatch(profileActions.setUser(user));
 									dispatch(modalActions.setModal({

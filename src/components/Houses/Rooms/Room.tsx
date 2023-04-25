@@ -11,6 +11,8 @@ import { FC, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { modalActions } from '~src/redux/modal';
 import { EContentType, EFooterType, ETitleType } from '~src/redux/modal/@types';
+import { notificationActions } from '~src/redux/notification';
+import { ENotificationStatus } from '~src/redux/notification/@types';
 import { profileActions } from '~src/redux/profile';
 import { useProfileIsRoomJoined } from '~src/redux/profile/selectors';
 import { roomsActions } from '~src/redux/rooms';
@@ -50,6 +52,11 @@ const Room: FC<IRoomProps> = (props) => {
 					} else if (!data) {
 						dispatch(roomsActions.setError('Something went wrong, unable to leave the room.'));
 					} else {
+						dispatch(notificationActions.send({
+							message: 'You have left the room successfully.',
+							status: ENotificationStatus.SUCCESS,
+							title: 'Success'
+						}));
 						dispatch(profileActions.removeJoinedRoom({
 							houseId: house_id,
 							roomId: id
@@ -69,6 +76,11 @@ const Room: FC<IRoomProps> = (props) => {
 					} else if (!data) {
 						dispatch(roomsActions.setError('Something went wrong, unable to join the room.'));
 					} else {
+						dispatch(notificationActions.send({
+							message: 'You have joined the room successfully.',
+							status: ENotificationStatus.SUCCESS,
+							title: 'Success'
+						}));
 						dispatch(profileActions.addJoinedRoom({
 							houseId: house_id,
 							joinedRoom: data.joinedRoom
