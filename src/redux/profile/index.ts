@@ -4,7 +4,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 import { IProfileStore } from './@types';
-import { IJoinedRoom, IUser } from '~src/types/schema';
+import { IJoinedHouse, IJoinedRoom, IUser } from '~src/types/schema';
 
 const initialState: IProfileStore = {
 	user: null
@@ -29,7 +29,7 @@ export const profileStore = createSlice({
 		}>) => {
 			if (state.user) {
 				const { houseId, joinedRoom } = action.payload;
-				if (state.user.joined_houses && Array.isArray(state.user.joined_houses)) {
+				if (state.user.joined_houses && Array.isArray(state.user.joined_houses) && state.user.joined_houses.length > 0) {
 					state.user.joined_houses = [...state.user.joined_houses.map((joinedHouse) => {
 						if (joinedHouse.house_id === houseId) {
 							return {
@@ -51,6 +51,11 @@ export const profileStore = createSlice({
 				}
 			}
 		},
+		addJoinedRooms: (state, action: PayloadAction<IJoinedHouse[]>) => {
+			if (state.user) {
+				state.user.joined_houses = action.payload;
+			}
+		},
 		removeJoinedRoom: (state, action: PayloadAction<{
 			houseId: string;
 			roomId: string;
@@ -58,21 +63,23 @@ export const profileStore = createSlice({
 			if (state.user) {
 				const { houseId, roomId } = action.payload;
 				if (state.user.joined_houses && Array.isArray(state.user.joined_houses)) {
-					state.user.joined_houses = [...state.user.joined_houses.map((joinedHouse) => {
+					const joined_houses = state.user.joined_houses.map((joinedHouse) => {
 						if (joinedHouse.house_id === houseId) {
-							joinedHouse.joined_rooms = [...(joinedHouse?.joined_rooms || []).filter((room) => room.room_id !== roomId)];
+							const joined_houses = ((joinedHouse?.joined_rooms && Array.isArray(joinedHouse.joined_rooms))? joinedHouse.joined_rooms: []);
+							joinedHouse.joined_rooms = [...joined_houses.filter((room) => room.room_id !== roomId)];
 						}
 						return {
 							...joinedHouse
 						};
+					}) || [];
+					state.user.joined_houses = [...joined_houses.filter((joinedHouse) => {
+						if (joinedHouse && joinedHouse.joined_rooms.length === 0) {
+							return false;
+						}
+						return true;
 					})];
 				} else {
-					state.user.joined_houses = [
-						{
-							house_id: houseId,
-							joined_rooms: []
-						}
-					];
+					state.user.joined_houses = [];
 				}
 			}
 		},

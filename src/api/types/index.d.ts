@@ -4,11 +4,14 @@
 
 import { NextApiRequest, NextApiResponse } from 'next';
 
-interface TNextApiRequest<B> extends NextApiRequest {
+interface TNextApiRequest<B, Q> extends NextApiRequest {
 	body: B;
+	query: Q & Partial<{
+        [key: string]: string | string[];
+    }>;
 }
 
-type TNextApiHandler<T, B> = (req: TNextApiRequest<B>, res: NextApiResponse<T | { error?: string }>) => Promise<any>;
+type TNextApiHandler<T, B, Q> = (req: TNextApiRequest<B, Q>, res: NextApiResponse<T | { error?: string }>) => Promise<any>;
 
 type TParams = {
 	[key: string]: any;

@@ -73,6 +73,22 @@ class Api {
 		);
 		return result;
 	}
+
+	async get<T, Q>(path: string, params: TParams & Q, options?: RequestInit) {
+		const result = await this.fetch<T>(
+			path,
+			params,
+			{
+				credentials: 'same-origin',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				method: 'GET',
+				...options
+			}
+		);
+		return result;
+	}
 }
 
 const api =  (() => {

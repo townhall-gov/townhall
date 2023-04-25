@@ -3,6 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { FC } from 'react';
+import JoinedRoomsModalContent from '~src/components/AppLayout/JoinedRooms/Modal';
 import ConnectWallet from '~src/components/ConnectWallet';
 import FetchingAccounts from '~src/components/ConnectWallet/FetchingAccounts';
 import { EContentType } from '~src/redux/modal/@types';
@@ -17,6 +18,8 @@ const ModalContent: FC<IModalContentProps> = (props) => {
 		return <ConnectWallet />;
 	case EContentType.FETCHING_WALLET_ACCOUNTS:
 		return <FetchingAccounts />;
+	case EContentType.MULTIPLE_JOINED_ROOMS:
+		return <JoinedRoomsModalContent />;
 	default:
 		return <></>;
 	}

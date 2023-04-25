@@ -58,14 +58,15 @@ export const getRooms: TGetRoomsFn = async (params) => {
 	}
 };
 
-export interface IRoomsBody {
+export interface IRoomsBody {}
+export interface IRoomsQuery {
     houseId: string;
 }
-const handler: TNextApiHandler<IRoom[], IRoomsBody> = async (req, res) => {
+const handler: TNextApiHandler<IRoom[], IRoomsBody, IRoomsQuery> = async (req, res) => {
 	if (req.method !== 'GET') {
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, GET required.' });
 	}
-	const { houseId } = req.body;
+	const { houseId } = req.query;
 	const {
 		data: rooms,
 		error,
@@ -80,4 +81,4 @@ const handler: TNextApiHandler<IRoom[], IRoomsBody> = async (req, res) => {
 	}
 };
 
-export default withErrorHandling(handler);
+export default withErrorHandling(handler as any);

@@ -2,17 +2,16 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { useSelector } from 'react-redux';
-import { TAppState } from '../store';
-import { IProfileStore } from './@types';
+import { IJoinedRoom } from '~src/types/schema';
+import { useProfileSelector } from '../selectors';
 
 const useIsLoggedIn = () => {
-	const { user } = useSelector<TAppState, IProfileStore>((state) => state.profile);
+	const { user } = useProfileSelector();
 	return !!(user && user.address);
 };
 
 const useProfileIsRoomJoined = (houseId: string, roomId: string) => {
-	const { user } = useSelector<TAppState, IProfileStore>((state) => state.profile);
+	const { user } = useProfileSelector();
 	if (user && user.joined_houses && Array.isArray(user.joined_houses)) {
 		const house = user.joined_houses.find((house) => house.house_id === houseId);
 		if (house && Array.isArray(house.joined_rooms)) {
@@ -22,7 +21,25 @@ const useProfileIsRoomJoined = (houseId: string, roomId: string) => {
 	return false;
 };
 
+const useProfileJoinedRooms = () => {
+	const joinedRooms: IJoinedRoom[] = [];
+	const { user } = useProfileSelector();
+	if (user && user.joined_houses && Array.isArray(user.joined_houses)) {
+		user.joined_houses.forEach((joinedHouse) => {
+			if (joinedHouse && joinedHouse.joined_rooms && Array.isArray(joinedHouse.joined_rooms)) {
+				joinedHouse.joined_rooms.forEach((joinedRoom) => {
+					if (joinedRoom) {
+						joinedRooms.push(joinedRoom);
+					}
+				});
+			}
+		});
+	}
+	return joinedRooms;
+};
+
 export {
 	useIsLoggedIn,
-	useProfileIsRoomJoined
+	useProfileIsRoomJoined,
+	useProfileJoinedRooms
 };

@@ -13,6 +13,7 @@ export enum ETitleType {
     NONE = 'none',
     CONNECT_WALLET = 'connect-wallet',
     FETCHING_WALLET_ACCOUNTS = 'fetching-wallet-accounts',
+    MULTIPLE_JOINED_ROOMS = 'multiple-joined-rooms',
 }
 
 export enum EFooterType {
@@ -23,4 +24,5 @@ export enum EContentType {
     NONE = 'none',
     CONNECT_WALLET = 'connect-wallet',
     FETCHING_WALLET_ACCOUNTS = 'fetching-wallet-accounts',
+    MULTIPLE_JOINED_ROOMS = 'multiple-joined-rooms',
 }

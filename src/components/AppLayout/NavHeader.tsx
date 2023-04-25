@@ -6,6 +6,7 @@ import { Layout } from 'antd';
 import React from 'react';
 import TownhallLogoWithNamePNG from '~assets/logo/townhall-with-name.svg';
 import Buttons from './Buttons';
+import JoinedRoom from './JoinedRooms';
 const { Header } = Layout;
 
 const NavHeader = () => {
@@ -22,11 +23,7 @@ const NavHeader = () => {
 				<div className='flex items-center justify-center max-h-[35.97px]'>
 					<TownhallLogoWithNamePNG />
 				</div>
-				<div>
-					<p className='m-0 p-0 font-normal text-xl leading-6 text-grey_primary'>
-						Joined Rooms will be shown here.
-					</p>
-				</div>
+				<JoinedRoom />
 			</section>
 		</Header>
 	);

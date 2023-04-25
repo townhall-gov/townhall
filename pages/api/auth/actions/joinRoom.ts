@@ -5,7 +5,7 @@
 import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TNextApiHandler } from '~src/api/types';
-import { joinedRoomCollection, roomCollection } from '~src/services/firebase/utils';
+import { joinedHouseCollection, joinedRoomCollection, roomCollection } from '~src/services/firebase/utils';
 import { IRoom, IJoinedRoom } from '~src/types/schema';
 
 export interface IJoinRoomBody {
@@ -68,6 +68,10 @@ const handler: TNextApiHandler<IJoinRoomResponse, IJoinRoomBody> = async (req, r
 				}
 			}
 		}
+	} else {
+		const joinedHouseRef = joinedHouseCollection(address).doc(houseId);
+		// adding joined house id
+		joinedHouseRef.set({ house_id: houseId }, { merge: true }).then(() => {});
 	}
 
 	await joinedRoomRef.set(joinedRoom, { merge: true });

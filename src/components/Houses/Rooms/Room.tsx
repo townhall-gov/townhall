@@ -34,7 +34,6 @@ const Room: FC<IRoomProps> = (props) => {
 	const joinBtnRef = useRef<HTMLButtonElement>(null!);
 
 	const onClick = async () => {
-		console.log('click');
 		if (isDisabled) {
 			return;
 		}

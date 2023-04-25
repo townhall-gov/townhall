@@ -50,7 +50,8 @@ export const getHouses: TGetHousesFn = async () => {
 };
 
 export interface IHousesBody {}
-const handler: TNextApiHandler<IHouse[], IHousesBody> = async (req, res) => {
+export interface IHousesQuery {}
+const handler: TNextApiHandler<IHouse[], IHousesBody, IHousesQuery> = async (req, res) => {
 	if (req.method !== 'GET') {
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, GET required.' });
 	}
