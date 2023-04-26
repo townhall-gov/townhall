@@ -10,6 +10,7 @@ import { ICreatorDetails } from '~src/redux/rooms/@types';
 import { roomCollection } from '~src/services/firebase/utils';
 import { IRoom } from '~src/types/schema';
 import apiErrorWithStatusCode from '~src/utils/apiErrorWithStatusCode';
+import convertFirestoreTimestampToDate from '~src/utils/convertFirestoreTimestampToDate';
 import getErrorMessage from '~src/utils/getErrorMessage';
 
 interface IGetRoomsFnParams {
@@ -34,13 +35,14 @@ export const getRooms: TGetRoomsFn = async (params) => {
 						if (data.id && data.house_id) {
 							const dataCreatorDetails = data.creator_details;
 							const creator_details: ICreatorDetails = {
-								address: dataCreatorDetails.address || '',
-								email: dataCreatorDetails.email || '',
-								name: dataCreatorDetails.name || '',
-								phone: dataCreatorDetails.phone || ''
+								address: dataCreatorDetails?.address || '',
+								email: dataCreatorDetails?.email || '',
+								name: dataCreatorDetails?.name || '',
+								phone: dataCreatorDetails?.phone || ''
 							};
 							const room: IRoom = {
 								contract_address: data.contract_address,
+								created_at: convertFirestoreTimestampToDate(data.created_at),
 								creator_details: creator_details,
 								description: data.description || '',
 								house_id: data.house_id,

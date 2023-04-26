@@ -10,8 +10,13 @@ import { ERoomCreationStage } from '~src/redux/rooms/@types';
 import roomCreationValidation from '~src/redux/rooms/validation';
 import { notificationActions } from '~src/redux/notification';
 import { ENotificationStatus } from '~src/redux/notification/@types';
+import api from '~src/services/api';
+import getErrorMessage from '~src/utils/getErrorMessage';
+import { ICreateRoomBody, ICreateRoomResponse } from 'pages/api/auth/actions/createRoom';
+import { useRouter } from 'next/router';
 
 const StageChangeBtn = () => {
+	const router = useRouter();
 	const roomCreationCurrentStage = useRoomCreationCurrentStage();
 	const roomCreation = useRoomCreation();
 	const nextCreationStage = getNextCreationStage(roomCreationCurrentStage);
@@ -39,7 +44,50 @@ const StageChangeBtn = () => {
 					});
 					if (!isError) {
 						(async () => {
-
+							const { creator_details, room_details, room_socials, select_house } = roomCreation;
+							try {
+								const { data, error } = await api.post<ICreateRoomResponse, ICreateRoomBody>('auth/actions/createRoom', {
+									room: {
+										contract_address: '',
+										creator_details: creator_details!,
+										description: '',
+										house_id: select_house?.id || '',
+										id: room_details?.name || '',
+										socials: room_socials || [],
+										title: ''
+									}
+								});
+								if (error) {
+									dispatch(roomsActions.setError(getErrorMessage(error)));
+									dispatch(notificationActions.send({
+										message: getErrorMessage(error),
+										status: ENotificationStatus.ERROR,
+										title: 'Failed'
+									}));
+								} else if (!data) {
+									const error = 'Something went wrong, unable to leave the room.';
+									dispatch(roomsActions.setError(error));
+									dispatch(notificationActions.send({
+										message: error,
+										status: ENotificationStatus.ERROR,
+										title: 'Failed'
+									}));
+								} else {
+									dispatch(notificationActions.send({
+										message: 'Room created successfully.',
+										status: ENotificationStatus.SUCCESS,
+										title: 'Success'
+									}));
+									const room = data.createdRoom;
+									router.push(`/${room.house_id}/rooms`);
+								}
+							} catch (error) {
+								dispatch(notificationActions.send({
+									message: getErrorMessage(error),
+									status: ENotificationStatus.ERROR,
+									title: 'Failed'
+								}));
+							}
 						})();
 					}
 				}

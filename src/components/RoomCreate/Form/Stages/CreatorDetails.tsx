@@ -29,7 +29,7 @@ const CreatorDetails = () => {
 					placeholder='Your Name'
 				/>
 				<Input
-					value={creatorDetails?.name || ''}
+					value={creatorDetails?.email || ''}
 					onChange={(v) => {
 						dispatch(roomsActions.setRoomCreation_CreatorDetails({
 							email: v,
@@ -41,7 +41,7 @@ const CreatorDetails = () => {
 					placeholder='Your E-mail id'
 				/>
 				<Input
-					value={creatorDetails?.name || ''}
+					value={creatorDetails?.phone || ''}
 					onChange={(v) => {
 						dispatch(roomsActions.setRoomCreation_CreatorDetails({
 							email: creatorDetails?.email || '',

@@ -46,6 +46,7 @@ interface IRoom {
 	total_members: number;
 	socials: IProjectSocial[];
 	creator_details: ICreatorDetails;
+	created_at: Date;
 }
 
 interface IProposal {
