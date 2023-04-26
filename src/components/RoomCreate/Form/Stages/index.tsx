@@ -7,9 +7,9 @@ import { ERoomCreationStage } from '~src/redux/rooms/@types';
 import { useRoomCreationCurrentStage } from '~src/redux/rooms/selectors';
 import GettingStarted from './GettingStarted';
 import SelectHouse from './SelectHouse';
-import ProjectDetails from './ProjectDetails';
+import RoomDetails from './RoomDetails';
 import CreatorDetails from './CreatorDetails';
-import ProjectSocials from './ProjectSocials';
+import RoomSocials from './RoomSocials';
 
 const Stages = () => {
 	const stage = useRoomCreationCurrentStage();
@@ -18,12 +18,12 @@ const Stages = () => {
 		return <GettingStarted />;
 	case ERoomCreationStage.SELECT_HOUSE:
 		return <SelectHouse />;
-	case ERoomCreationStage.PROJECT_DETAILS:
-		return <ProjectDetails />;
+	case ERoomCreationStage.ROOM_DETAILS:
+		return <RoomDetails />;
 	case ERoomCreationStage.CREATOR_DETAILS:
 		return <CreatorDetails />;
-	case ERoomCreationStage.PROJECT_SOCIALS:
-		return <ProjectSocials />;
+	case ERoomCreationStage.ROOM_SOCIALS:
+		return <RoomSocials />;
 	default:
 		return <></>;
 	}

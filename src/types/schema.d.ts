@@ -2,6 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+import { ICreatorDetails, IProjectSocial } from '~src/redux/rooms/@types';
 import { EBlockchain, EWallet, ESentiment, EStrategy } from '~src/types/enums';
 
 interface IUser {
@@ -43,6 +44,8 @@ interface IRoom {
 	logo?: string;
 	contract_address: string;
 	total_members: number;
+	socials: IProjectSocial[];
+	creator_details: ICreatorDetails;
 }
 
 interface IProposal {

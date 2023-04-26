@@ -12,6 +12,9 @@ import HouseField from './HouseField';
 import { IHouse } from '~src/types/schema';
 import { useDispatch } from 'react-redux';
 import { roomsActions } from '~src/redux/rooms';
+import api from '~src/services/api';
+import { housesActions } from '~src/redux/houses';
+import getErrorMessage from '~src/utils/getErrorMessage';
 
 interface IHouseDropdownProps {
     className?: string;
@@ -23,6 +26,26 @@ const HouseDropdown: FC<IHouseDropdownProps> = (props) => {
 	const { houses } = useHousesSelector();
 	const [selectedHouse, setSelectedHouse] = useState<IHouse>();
 	const dispatch = useDispatch();
+
+	useEffect(() => {
+		if (houses && Array.isArray(houses) && houses.length === 0) {
+			(async () => {
+				try {
+					const { data, error } = await api.get<IHouse[], {}>('houses', {});
+					if (error) {
+						dispatch(housesActions.setError(getErrorMessage(error)));
+					} else if (!data) {
+						dispatch(housesActions.setError('Something went wrong.'));
+					} else {
+						dispatch(housesActions.setHouses(data));
+					}
+				} catch (error) {
+					dispatch(housesActions.setError(getErrorMessage(error)));
+				}
+			})();
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [houses]);
 
 	useEffect(() => {
 		setHouseItems(houses.map((house) => {

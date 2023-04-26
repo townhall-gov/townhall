@@ -15,20 +15,20 @@ export interface IRoomCreation {
     currentStage: ERoomCreationStage;
     getting_started: 'getting_started' | null;
     select_house: IHouse | null;
-    project_details: IProjectDetails | null;
-    creator_details: ICreatorDetails | null;
-    project_socials: IProjectSocial[] | null;
+    room_details: IRoomDetails | null;
+    creator_details: Omit<ICreatorDetails, 'address'> | null;
+    room_socials: IRoomSocial[] | null;
 }
 
 export enum ERoomCreationStage {
     GETTING_STARTED = 'getting_started',
     SELECT_HOUSE = 'select_house',
-    PROJECT_DETAILS = 'project_details',
+    ROOM_DETAILS = 'room_details',
     CREATOR_DETAILS = 'creator_details',
-    PROJECT_SOCIALS = 'project_socials',
+    ROOM_SOCIALS = 'room_socials',
 }
 
-export interface IProjectDetails {
+export interface IRoomDetails {
     name: string;
 }
 
@@ -36,9 +36,10 @@ export interface ICreatorDetails {
     name: string;
     email: string;
     phone: string;
+    address: string;
 }
 
-export interface IProjectSocial {
+export interface IRoomSocial {
     type: ESocial;
     url: string;
 }

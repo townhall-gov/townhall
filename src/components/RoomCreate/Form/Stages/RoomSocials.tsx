@@ -4,14 +4,14 @@
 
 import React, { FC, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useRoomCreation_ProjectSocials } from '~src/redux/rooms/selectors';
+import { useRoomCreation_RoomSocials } from '~src/redux/rooms/selectors';
 import Input from './Input';
 import { roomsActions } from '~src/redux/rooms';
 import { ESocial } from '~src/redux/rooms/@types';
 import SocialIcon from '~src/ui-components/SocialIcon';
 
-const ProjectSocials = () => {
-	const projectSocials = useRoomCreation_ProjectSocials();
+const RoomSocials = () => {
+	const projectSocials = useRoomCreation_RoomSocials();
 	const [socials, setSocials] = useState({
 		discord: '',
 		github: '',
@@ -85,7 +85,7 @@ const SocialInput: FC<ISocialInputProps> = (props) => {
 				value={value}
 				onChange={(v) => {
 					onChange(v);
-					dispatch(roomsActions.setRoomCreation_ProjectSocials({
+					dispatch(roomsActions.setRoomCreation_RoomSocials({
 						type: type,
 						url: v
 					}));
@@ -98,4 +98,4 @@ const SocialInput: FC<ISocialInputProps> = (props) => {
 	);
 };
 
-export default ProjectSocials;
+export default RoomSocials;

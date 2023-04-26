@@ -18,8 +18,8 @@ export const timeline = [
 	},
 	{
 		icon: <DevicesIcon />,
-		stage: ERoomCreationStage.PROJECT_DETAILS,
-		title: 'Project Details'
+		stage: ERoomCreationStage.ROOM_DETAILS,
+		title: 'Room Details'
 	},
 	{
 		icon: <ContactPageIcon />,
@@ -28,8 +28,8 @@ export const timeline = [
 	},
 	{
 		icon: <EarthIcon />,
-		stage: ERoomCreationStage.PROJECT_SOCIALS,
-		title: 'Project Socials'
+		stage: ERoomCreationStage.ROOM_SOCIALS,
+		title: 'Room Socials'
 	}
 ];
 

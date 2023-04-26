@@ -14,11 +14,11 @@ interface ILineProps {
 
 const Line: FC<ILineProps> = (props) => {
 	const { stage } = props;
-	const isComplete = useRoomCreationStageComplete(stage);
+	const error = useRoomCreationStageComplete(stage);
 	return (
 		<div className={classNames('flex-1 rounded-md h-[3px]', {
-			'bg-[rgba(102,165,255,0.32)]': !isComplete,
-			'bg-blue_primary': isComplete
+			'bg-[rgba(102,165,255,0.32)]': error,
+			'bg-blue_primary': !error
 		})}>
 		</div>
 	);

@@ -6,6 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
+import { ICreatorDetails } from '~src/redux/rooms/@types';
 import { roomCollection } from '~src/services/firebase/utils';
 import { IRoom } from '~src/types/schema';
 import apiErrorWithStatusCode from '~src/utils/apiErrorWithStatusCode';
@@ -31,12 +32,21 @@ export const getRooms: TGetRoomsFn = async (params) => {
 					if (data) {
 						// Sanitization
 						if (data.id && data.house_id) {
+							const dataCreatorDetails = data.creator_details;
+							const creator_details: ICreatorDetails = {
+								address: dataCreatorDetails.address || '',
+								email: dataCreatorDetails.email || '',
+								name: dataCreatorDetails.name || '',
+								phone: dataCreatorDetails.phone || ''
+							};
 							const room: IRoom = {
 								contract_address: data.contract_address,
+								creator_details: creator_details,
 								description: data.description || '',
 								house_id: data.house_id,
 								id: data.id,
 								logo: data.logo,
+								socials: data.socials || [],
 								title: data.title || '',
 								total_members: Number(data.total_members || 0)
 							};

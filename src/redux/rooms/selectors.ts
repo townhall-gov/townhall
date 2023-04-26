@@ -4,6 +4,7 @@
 
 import { useRoomsSelector } from '~src/redux/selectors';
 import { ERoomCreationStage } from './@types';
+import roomCreationValidation from './validation';
 
 const useRoomCreationCurrentStage = () => {
 	const rooms = useRoomsSelector();
@@ -11,10 +12,13 @@ const useRoomCreationCurrentStage = () => {
 };
 
 const useRoomCreationStageComplete = (stage: ERoomCreationStage) => {
-	if (ERoomCreationStage.CREATOR_DETAILS === stage) {
-		return true;
-	}
-	return false;
+	const roomCreation = useRoomCreation();
+	return roomCreationValidation?.[stage]?.(roomCreation);
+};
+
+const useRoomCreation = () => {
+	const rooms = useRoomsSelector();
+	return rooms.roomCreation;
 };
 
 const useRoomCreation_House = () => {
@@ -22,9 +26,9 @@ const useRoomCreation_House = () => {
 	return rooms.roomCreation?.select_house;
 };
 
-const useRoomCreation_ProjectDetails = () => {
+const useRoomCreation_RoomDetails = () => {
 	const rooms = useRoomsSelector();
-	return rooms.roomCreation?.project_details;
+	return rooms.roomCreation?.room_details;
 };
 
 const useRoomCreation_CreatorDetails = () => {
@@ -32,16 +36,17 @@ const useRoomCreation_CreatorDetails = () => {
 	return rooms.roomCreation?.creator_details;
 };
 
-const useRoomCreation_ProjectSocials = () => {
+const useRoomCreation_RoomSocials = () => {
 	const rooms = useRoomsSelector();
-	return rooms.roomCreation?.project_socials;
+	return rooms.roomCreation?.room_socials;
 };
 
 export {
 	useRoomCreationCurrentStage,
 	useRoomCreationStageComplete,
 	useRoomCreation_House,
-	useRoomCreation_ProjectDetails,
+	useRoomCreation_RoomDetails,
 	useRoomCreation_CreatorDetails,
-	useRoomCreation_ProjectSocials
+	useRoomCreation_RoomSocials,
+	useRoomCreation
 };
