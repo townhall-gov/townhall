@@ -15,6 +15,9 @@ import EarthSVG  from '~assets/icons/earth.svg';
 import HolidayVillageSVG  from '~assets/icons/holiday-village.svg';
 import ZoomInAreaSVG  from '~assets/icons/zoom-in-area.svg';
 import RocketLaunchSVG  from '~assets/icons/rocket-launch.svg';
+import DiamondSVG  from '~assets/icons/diamond.svg';
+import PlusSignSquareSVG  from '~assets/icons/plus-sign-square.svg';
+import SettingsSVG  from '~assets/icons/settings.svg';
 import TownhallLogoWithNameSVG  from '~assets/logo/townhall-with-name.svg';
 import MetamaskSVG  from '~assets/wallet/metamask-icon.svg';
 import PolkadotJsSVG  from '~assets/wallet/polkadotjs-icon.svg';
@@ -82,6 +85,18 @@ export const ZoomInAreaIcon = (props: Partial<CustomIconComponentProps>) => (
 
 export const RocketLaunchIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={RocketLaunchSVG} {...props} />
+);
+
+export const DiamondIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={DiamondSVG} {...props} />
+);
+
+export const PlusSignSquareIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={PlusSignSquareSVG} {...props} />
+);
+
+export const SettingsIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={SettingsSVG} {...props} />
 );
 
 export const TownhallLogoWithNameIcon = (props: Partial<CustomIconComponentProps>) => (

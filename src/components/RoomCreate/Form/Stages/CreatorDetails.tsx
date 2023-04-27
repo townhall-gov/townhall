@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React from 'react';
-import Input from './Input';
+import Input from '../../../../ui-components/Input';
 import { useRoomCreation_CreatorDetails } from '~src/redux/rooms/selectors';
 import { useDispatch } from 'react-redux';
 import { roomsActions } from '~src/redux/rooms';

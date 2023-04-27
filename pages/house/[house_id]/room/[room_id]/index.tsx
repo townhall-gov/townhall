@@ -4,6 +4,7 @@
 
 import { GetServerSideProps } from 'next';
 import React from 'react';
+import Room from '~src/components/Room';
 
 export const getServerSideProps: GetServerSideProps<any> = async () => {
 	return {
@@ -11,10 +12,12 @@ export const getServerSideProps: GetServerSideProps<any> = async () => {
 	};
 };
 
-const Room = () => {
+const SingleRoom = () => {
 	return (
-		<div>Room hi</div>
+		<div>
+			<Room />
+		</div>
 	);
 };
 
-export default Room;
+export default SingleRoom;

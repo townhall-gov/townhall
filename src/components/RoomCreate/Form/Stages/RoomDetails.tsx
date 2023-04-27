@@ -6,7 +6,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { roomsActions } from '~src/redux/rooms';
 import { useRoomCreation_RoomDetails } from '~src/redux/rooms/selectors';
-import Input from './Input';
+import Input from '../../../../ui-components/Input';
 
 const RoomDetails = () => {
 	const roomDetails = useRoomCreation_RoomDetails();

@@ -2,14 +2,11 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React from 'react';
-import Room from '~src/components/Room';
 
-const ProposalCreate = () => {
+const CreateProposal = () => {
 	return (
-		<div>
-			<Room />
-		</div>
+		<section>CreateProposal</section>
 	);
 };
 
-export default ProposalCreate;
+export default CreateProposal;

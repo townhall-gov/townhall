@@ -55,8 +55,9 @@ interface IProposal {
 	title: string;
 	description: string;
 	strategy: EStrategy;
-	start: Date;
-	end: Date;
+	start_date: Date;
+	end_date: Date;
+	preparation_period: Date;
 }
 
 interface IComment {

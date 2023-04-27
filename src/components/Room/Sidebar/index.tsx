@@ -2,14 +2,14 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React from 'react';
-import Room from '~src/components/Room';
+import Timeline from './Timeline';
 
-const ProposalCreate = () => {
+const RoomSidebar = () => {
 	return (
-		<div>
-			<Room />
-		</div>
+		<aside className='w-[210px] flex flex-col gap-y-5'>
+			<Timeline />
+		</aside>
 	);
 };
 
-export default ProposalCreate;
+export default RoomSidebar;

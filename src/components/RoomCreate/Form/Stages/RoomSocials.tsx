@@ -5,7 +5,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useRoomCreation_RoomSocials } from '~src/redux/rooms/selectors';
-import Input from './Input';
+import Input from '../../../../ui-components/Input';
 import { roomsActions } from '~src/redux/rooms';
 import { ESocial } from '~src/redux/rooms/@types';
 import SocialIcon from '~src/ui-components/SocialIcon';
