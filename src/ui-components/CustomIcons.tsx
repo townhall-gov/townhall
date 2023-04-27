@@ -13,6 +13,7 @@ import ContactPageSVG  from '~assets/icons/contact-page.svg';
 import DevicesSVG  from '~assets/icons/devices.svg';
 import EarthSVG  from '~assets/icons/earth.svg';
 import HolidayVillageSVG  from '~assets/icons/holiday-village.svg';
+import ZoomInAreaSVG  from '~assets/icons/zoom-in-area.svg';
 import RocketLaunchSVG  from '~assets/icons/rocket-launch.svg';
 import TownhallLogoWithNameSVG  from '~assets/logo/townhall-with-name.svg';
 import MetamaskSVG  from '~assets/wallet/metamask-icon.svg';
@@ -73,6 +74,10 @@ export const EarthIcon = (props: Partial<CustomIconComponentProps>) => (
 
 export const HolidayVillageIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={HolidayVillageSVG} {...props} />
+);
+
+export const ZoomInAreaIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={ZoomInAreaSVG} {...props} />
 );
 
 export const RocketLaunchIcon = (props: Partial<CustomIconComponentProps>) => (

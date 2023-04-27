@@ -5,6 +5,7 @@
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
 import classNames from 'classnames';
+import Link from 'next/link';
 import { IJoinRoomBody, IJoinRoomResponse } from 'pages/api/auth/actions/joinRoom';
 import { ILeaveRoomBody, ILeaveRoomResponse } from 'pages/api/auth/actions/leaveRoom';
 import { FC, useRef } from 'react';
@@ -107,7 +108,8 @@ const Room: FC<IRoomProps> = (props) => {
 	};
 
 	return (
-		<article
+		<Link
+			href={`/house/${house_id}/room/${id}`}
 			onMouseEnter={() => {
 				if (joinBtnRef.current) {
 					if (isRoomJoined && joinBtnRef.current.textContent?.includes('Joined')) {
@@ -151,7 +153,7 @@ const Room: FC<IRoomProps> = (props) => {
 					{ isRoomJoined ? 'Joined' : 'Join' }
 				</button>
 			</Spin>
-		</article>
+		</Link>
 	);
 };
 

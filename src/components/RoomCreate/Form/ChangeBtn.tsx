@@ -21,77 +21,81 @@ const StageChangeBtn = () => {
 	const roomCreation = useRoomCreation();
 	const nextCreationStage = getNextCreationStage(roomCreationCurrentStage);
 	const dispatch = useDispatch();
-	return (
-		<button
-			onClick={() => {
-				if (nextCreationStage) {
-					dispatch(roomsActions.setRoomCreationStage(nextCreationStage.stage));
-				} else {
-					let isError = false;
-					Object.values(ERoomCreationStage).some((stage) => {
-						const error = roomCreationValidation?.[stage]?.(roomCreation);
+
+	const onStageChange = () => {
+		if (nextCreationStage) {
+			dispatch(roomsActions.setRoomCreationStage(nextCreationStage.stage));
+		} else {
+			let isError = false;
+			Object.values(ERoomCreationStage).some((stage) => {
+				const error = roomCreationValidation?.[stage]?.(roomCreation);
+				if (error) {
+					isError = true;
+					dispatch(notificationActions.send({
+						message: error,
+						status: ENotificationStatus.ERROR,
+						title: 'Validation Error'
+					}));
+					dispatch(roomsActions.setRoomCreationStage(stage));
+					return true;
+				}
+				return false;
+			});
+			if (!isError) {
+				(async () => {
+					const { creator_details, room_details, room_socials, select_house } = roomCreation;
+					try {
+						const { data, error } = await api.post<ICreateRoomResponse, ICreateRoomBody>('auth/actions/createRoom', {
+							room: {
+								contract_address: '',
+								creator_details: creator_details!,
+								description: '',
+								house_id: select_house?.id || '',
+								id: room_details?.name || '',
+								socials: room_socials || [],
+								title: ''
+							}
+						});
 						if (error) {
-							isError = true;
+							dispatch(roomsActions.setError(getErrorMessage(error)));
+							dispatch(notificationActions.send({
+								message: getErrorMessage(error),
+								status: ENotificationStatus.ERROR,
+								title: 'Failed'
+							}));
+						} else if (!data) {
+							const error = 'Something went wrong, unable to leave the room.';
+							dispatch(roomsActions.setError(error));
 							dispatch(notificationActions.send({
 								message: error,
 								status: ENotificationStatus.ERROR,
-								title: 'Validation Error'
+								title: 'Failed'
 							}));
-							dispatch(roomsActions.setRoomCreationStage(stage));
-							return true;
+						} else {
+							dispatch(notificationActions.send({
+								message: 'Room created successfully.',
+								status: ENotificationStatus.SUCCESS,
+								title: 'Success'
+							}));
+							const room = data.createdRoom;
+							// GO to newly created room page
+							router.push(`/house/${room.house_id}/room/${room.id}`);
 						}
-						return false;
-					});
-					if (!isError) {
-						(async () => {
-							const { creator_details, room_details, room_socials, select_house } = roomCreation;
-							try {
-								const { data, error } = await api.post<ICreateRoomResponse, ICreateRoomBody>('auth/actions/createRoom', {
-									room: {
-										contract_address: '',
-										creator_details: creator_details!,
-										description: '',
-										house_id: select_house?.id || '',
-										id: room_details?.name || '',
-										socials: room_socials || [],
-										title: ''
-									}
-								});
-								if (error) {
-									dispatch(roomsActions.setError(getErrorMessage(error)));
-									dispatch(notificationActions.send({
-										message: getErrorMessage(error),
-										status: ENotificationStatus.ERROR,
-										title: 'Failed'
-									}));
-								} else if (!data) {
-									const error = 'Something went wrong, unable to leave the room.';
-									dispatch(roomsActions.setError(error));
-									dispatch(notificationActions.send({
-										message: error,
-										status: ENotificationStatus.ERROR,
-										title: 'Failed'
-									}));
-								} else {
-									dispatch(notificationActions.send({
-										message: 'Room created successfully.',
-										status: ENotificationStatus.SUCCESS,
-										title: 'Success'
-									}));
-									const room = data.createdRoom;
-									router.push(`/${room.house_id}/rooms`);
-								}
-							} catch (error) {
-								dispatch(notificationActions.send({
-									message: getErrorMessage(error),
-									status: ENotificationStatus.ERROR,
-									title: 'Failed'
-								}));
-							}
-						})();
+					} catch (error) {
+						dispatch(notificationActions.send({
+							message: getErrorMessage(error),
+							status: ENotificationStatus.ERROR,
+							title: 'Failed'
+						}));
 					}
-				}
-			}}
+				})();
+			}
+		}
+	};
+
+	return (
+		<button
+			onClick={onStageChange}
 			className='max-w-[200px] bg-blue_primary text-white py-[11px] px-[22px] rounded-2xl border border-solid border-blue_primary flex items-center justify-center cursor-pointer text-base leading-[19px] tracking-[0.01em]'
 		>
 			{nextCreationStage?.title || 'Submit'}
