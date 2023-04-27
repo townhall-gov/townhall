@@ -12,7 +12,8 @@ const Description = () => {
 	const dispatch = useDispatch();
 	const timeout = useRef<NodeJS.Timeout>();
 	return (
-		<div className='flex items-center'>
+		<div className='flex flex-col'>
+			<h3 className='text-white font-medium text-xl'>Description</h3>
 			<TextEditor
 				initialValue={''}
 				value={proposalDescription?.description}

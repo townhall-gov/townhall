@@ -4,12 +4,14 @@
 import React from 'react';
 import Title from './Title';
 import Description from './Description';
+import Tags from './Tags';
 
 const CreateProposal = () => {
 	return (
-		<section className='flex flex-col gap-y-5'>
+		<section className='flex flex-col gap-y-8'>
 			<Title />
 			<Description />
+			<Tags />
 		</section>
 	);
 };

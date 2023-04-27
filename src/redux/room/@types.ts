@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { IRoom, ITag } from '~src/types/schema';
+import { IRoom } from '~src/types/schema';
 
 export interface IRoomStore {
     room: IRoom | null;
@@ -13,7 +13,7 @@ export interface IRoomStore {
 export type IProposalCreation = {
     title: string;
     description: string;
-    tags: ITag[];
+    tags: string[];
     discussion?: string;
     start_date: Date | null;
     end_date: Date | null;
