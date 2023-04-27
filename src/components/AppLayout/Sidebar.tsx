@@ -23,8 +23,7 @@ const Sidebar = () => {
 				<Link href='/houses' className='border-none outline-none bg-transparent flex flex-col gap-y-1 items-center justify-center cursor-pointer py-4 px-5 hover:bg-white'>
 					<HolidayVillageIcon className='text-app_background stroke-transparent text-2xl' />
 					<span className='text-app_background font-semibold text-xs leading-none flex flex-col items-center justify-center'>
-						<span>Create</span>
-						<span>Room</span>
+						Houses
 					</span>
 				</Link>
 			</article>

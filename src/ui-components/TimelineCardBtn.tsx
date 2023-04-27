@@ -29,7 +29,7 @@ const TimelineCardBtn: FC<ITimelineCardBtnProps> = (props) => {
 				<span className='col-span-2 flex items-center justify-center text-xl leading-none'>
 					{icon}
 				</span>
-				<h4 className='col-span-8 m-0 p-0'>
+				<h4 className='col-span-8 m-0 p-0 text-left'>
 					{title}
 				</h4>
 			</button>
