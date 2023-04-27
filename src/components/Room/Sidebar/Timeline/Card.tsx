@@ -28,15 +28,8 @@ const TimelineCard: FC<ITimelineCardProps> = (props) => {
 			title={title}
 			isActiveStage={roomCurrentStage === stage}
 			onClick={() => {
-				const { pathname, query } = router;
-				let newPath = pathname;
-				Object.entries(query).forEach(([key, value]) => {
-					if (newPath.includes(`[${key}]`)) {
-						newPath = newPath.replace(`[${key}]`, value as string);
-					}
-				});
-				console.log(newPath);
-				router.push(newPath + getTimelineUrl(stage));
+				const { query } = router;
+				router.push(`/house/${query['house_id']}/room/${query['room_id']}` + getTimelineUrl(stage));
 				dispatch(roomActions.setCurrentStage(stage));
 			}}
 		/>

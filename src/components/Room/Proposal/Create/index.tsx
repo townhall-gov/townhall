@@ -3,11 +3,13 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React from 'react';
 import Title from './Title';
+import Description from './Description';
 
 const CreateProposal = () => {
 	return (
 		<section className='flex flex-col gap-y-5'>
 			<Title />
+			<Description />
 		</section>
 	);
 };
