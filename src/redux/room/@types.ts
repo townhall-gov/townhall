@@ -15,9 +15,9 @@ export type IProposalCreation = {
     description: string;
     tags: string[];
     discussion?: string;
-    start_date: Date | null;
-    end_date: Date | null;
-    preparation_period: Date | null;
+    start_date: string | null;
+    end_date: string | null;
+    preparation_period: string | null;
     is_vote_results_hide_before_voting_ends: boolean;
 }
 

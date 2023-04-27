@@ -19,12 +19,13 @@ const Tags: FC<ITagsProps> = (props) => {
 	const dispatch = useDispatch();
 
 	const updateTags = (tag: string, isDelete?: boolean) => {
-		let newTags = tags;
+		let newTags = (tags && Array.isArray(tags))? [...tags]: [];
 		if (isDelete) {
 			newTags = newTags.filter((item) => item !== tag);
 		} else if (tags.includes(tag)) {
 			return;
 		}
+		newTags.push(tag);
 		dispatch(roomActions.setProposalCreation_Field({
 			key: 'tags',
 			value: newTags

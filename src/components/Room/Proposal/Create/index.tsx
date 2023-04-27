@@ -5,6 +5,7 @@ import React from 'react';
 import Title from './Title';
 import Description from './Description';
 import Tags from './Tags';
+import Dates from './Dates';
 
 const CreateProposal = () => {
 	return (
@@ -12,6 +13,7 @@ const CreateProposal = () => {
 			<Title />
 			<Description />
 			<Tags />
+			<Dates />
 		</section>
 	);
 };

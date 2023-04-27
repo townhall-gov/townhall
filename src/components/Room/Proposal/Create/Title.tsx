@@ -14,7 +14,7 @@ const Title = () => {
 		<div className='flex flex-col'>
 			<h3 className='text-white font-medium text-xl'>Title</h3>
 			<Input
-				className='text-white'
+				className='text-white pt-4 pb-4'
 				onChange={(v) => {
 					dispatch(roomActions.setProposalCreation_Field({
 						key: 'title',

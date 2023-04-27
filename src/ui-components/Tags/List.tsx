@@ -23,7 +23,7 @@ const List: FC<IListProps> = (props) => {
 							key={tag}
 							onClose={() => deleteTag(tag)}
 							closeIcon={<CloseOutlined className='text-white' />}
-							className='text-white border border-solid border-blue_primary py-[1px] m-0'
+							className='text-white border border-solid border-blue_primary py-[1px] m-0 lowercase'
 						>
 							{tag}
 						</Tag>
