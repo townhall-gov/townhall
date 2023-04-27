@@ -9,6 +9,12 @@ const useRoomCurrentStage = () => {
 	return room.currentStage;
 };
 
+const useProposalCreation = () => {
+	const room = useRoomSelector();
+	return room.proposalCreation;
+};
+
 export {
+	useProposalCreation,
 	useRoomCurrentStage
 };

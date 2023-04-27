@@ -11,7 +11,7 @@ import RoomSettings from './Settings';
 const RoomWrapper = () => {
 	const currentStage = useRoomCurrentStage();
 	return (
-		<div>
+		<div className='flex-1'>
 			{
 				(() => {
 					switch(currentStage){
