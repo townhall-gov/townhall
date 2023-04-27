@@ -6,6 +6,7 @@ import Title from './Title';
 import Description from './Description';
 import Tags from './Tags';
 import Dates from './Dates';
+import HideResult from './HideResult';
 
 const CreateProposal = () => {
 	return (
@@ -14,6 +15,7 @@ const CreateProposal = () => {
 			<Description />
 			<Tags />
 			<Dates />
+			<HideResult />
 		</section>
 	);
 };
