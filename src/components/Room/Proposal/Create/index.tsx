@@ -7,6 +7,7 @@ import Description from './Description';
 import Tags from './Tags';
 import Dates from './Dates';
 import HideResult from './HideResult';
+import PreviewBtn from './PreviewBtn';
 
 const CreateProposal = () => {
 	return (
@@ -16,6 +17,7 @@ const CreateProposal = () => {
 			<Tags />
 			<Dates />
 			<HideResult />
+			<PreviewBtn />
 		</section>
 	);
 };

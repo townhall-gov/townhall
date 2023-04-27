@@ -8,7 +8,7 @@ import RoomWrapper from './RoomWrapper';
 
 const Room = () => {
 	return (
-		<section className='flex gap-x-5'>
+		<section className='flex gap-x-7'>
 			<RoomSidebar />
 			<RoomWrapper />
 		</section>
