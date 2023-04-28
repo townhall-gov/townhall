@@ -6,7 +6,9 @@ import React from 'react';
 const PreviewBtn = () => {
 	return (
 		<div className='mb-10'>
-			<button className='outline-none border border-solid border-[#66A5FF] flex items-center justify-center bg-blue_primary rounded-2xl text-white py-[11px] px-[22px] max-w-[188px] w-full text-base leading-[19px] font-normal tracking-[0.01em]'>
+			<button
+				className='outline-none border border-solid border-[#66A5FF] flex items-center justify-center bg-blue_primary rounded-2xl text-white py-[11px] px-[22px] max-w-[188px] w-full text-base leading-[19px] font-normal tracking-[0.01em] cursor-pointer'
+			>
                 Preview
 			</button>
 		</div>

@@ -35,7 +35,7 @@ const Add: FC<IAddProps> = (props) => {
 						onClick={() => {
 							setInputVisible(true);
 						}}
-						className='bg-transparent text-white border border-solid border-blue_primary flex items-center justify-center cursor-pointer py-[1px] m-0'
+						className='bg-blue_primary text-white border border-solid border-blue_primary flex items-center justify-center cursor-pointer py-[1px] m-0'
 					>
 						<PlusOutlined />
 						<span>Add Tag</span>
