@@ -2,10 +2,26 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React from 'react';
+import { useRoomSelector } from '~src/redux/selectors';
+import ProposalCard from './ProposalCard';
 
 const Proposals = () => {
+	const { proposals } = useRoomSelector();
 	return (
-		<div>Proposals</div>
+		<section className='flex flex-col gap-y-8 h-full'>
+			<div className='flex flex-col gap-y-7'>
+				{
+					proposals && Array.isArray(proposals)?
+						proposals.map((proposal) => {
+							return <ProposalCard key={proposal.id} proposal={proposal} />;
+						})
+						: <p>
+							No proposals yet.
+						</p>
+				}
+
+			</div>
+		</section>
 	);
 };
 

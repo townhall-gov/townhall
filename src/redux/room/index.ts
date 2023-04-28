@@ -104,6 +104,12 @@ export const roomStore = createSlice({
 				}
 			}
 		},
+		setProposals: (state, action: PayloadAction<IProposal[]>) => {
+			const proposals = action.payload;
+			if (proposals && Array.isArray(proposals)) {
+				state.proposals = proposals;
+			}
+		},
 		setRoom: (state, action: PayloadAction<IRoom |null>) => {
 			state.room = action.payload;
 		}

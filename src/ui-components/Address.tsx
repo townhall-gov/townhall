@@ -21,6 +21,7 @@ interface IAddressProps {
     identiconSize?: number;
     addressMaxLength?: number;
 	addressClassName?: string;
+	betweenIdenticonAndAddress?: JSX.Element;
 }
 
 const shortenAddress = (address: string, maxLength: number) => {
@@ -35,7 +36,7 @@ const shortenAddress = (address: string, maxLength: number) => {
 };
 
 const Address: FC<IAddressProps> = (props) => {
-	const { address, addressMaxLength, className, disableIdenticon, ethIdenticonSize, identiconSize, addressClassName } = props;
+	const { address, addressMaxLength, className, disableIdenticon, ethIdenticonSize, identiconSize, addressClassName, betweenIdenticonAndAddress } = props;
 	return (
 		<div className={classNames('flex items-center gap-x-2', className)}>
 			{
@@ -55,6 +56,7 @@ const Address: FC<IAddressProps> = (props) => {
 						/>
 					: null
 			}
+			{betweenIdenticonAndAddress}
 			<p id="addressText" className={classNames('m-0 p-0 text-white', addressClassName)}>
 				{shortenAddress(address, addressMaxLength || 15)}
 			</p>
