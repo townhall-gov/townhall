@@ -7,10 +7,11 @@ import React, { FC, useState } from 'react';
 
 interface IAddProps {
     addTag: (tag: string) => void;
+	isDisabled?: boolean;
 }
 
 const Add: FC<IAddProps> = (props) => {
-	const { addTag } = props;
+	const { addTag, isDisabled } = props;
 	const [inputVisible, setInputVisible] = useState(false);
 	const [tag, setTag] = useState('');
 	return (
@@ -18,6 +19,7 @@ const Add: FC<IAddProps> = (props) => {
 			{
 				inputVisible?
 					<Input
+						disabled={isDisabled}
 						onChange={(e) => {
 							setTag(e.target.value);
 						}}
@@ -33,7 +35,9 @@ const Add: FC<IAddProps> = (props) => {
 					/>
 					: <Tag
 						onClick={() => {
-							setInputVisible(true);
+							if (!isDisabled) {
+								setInputVisible(true);
+							}
 						}}
 						className='bg-blue_primary text-white border border-solid border-blue_primary flex items-center justify-center cursor-pointer py-[1px] m-0'
 					>

@@ -12,7 +12,9 @@ enum EBlockchain {
     KUSAMA = 'kusama',
 }
 
-enum EStrategy {}
+enum EStrategy {
+    SINGLE = 'single'
+}
 enum ESentiment {}
 
 export {

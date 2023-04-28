@@ -4,12 +4,16 @@
 
 import dayjs from 'dayjs';
 import { DatePicker } from 'antd';
-import React from 'react';
+import React, { FC } from 'react';
 import { useProposalCreation } from '~src/redux/room/selectors';
 import { useDispatch } from 'react-redux';
 import { roomActions } from '~src/redux/room';
+interface IPreparationPeriodProps {
+	isDisabled?: boolean;
+}
 
-const PreparationPeriod = () => {
+const PreparationPeriod: FC<IPreparationPeriodProps> = (props) => {
+	const { isDisabled } = props;
 	const proposalCreation = useProposalCreation();
 	const dispatch = useDispatch();
 
@@ -75,10 +79,11 @@ const PreparationPeriod = () => {
 							value: value?.toISOString() || null
 						}));
 					}}
-					disabled={!(proposalCreation.start_date && proposalCreation.end_date)}
+					disabled={!(proposalCreation.start_date && proposalCreation.end_date) || isDisabled}
 					disabledDate={disabledDate}
 					disabledTime={disabledTime}
-					className='bg-transparent py-2 border border-solid border-blue_primary text-white'
+					// Preparation Period class is for error validation highlighting
+					className='bg-transparent py-2 border border-solid border-blue_primary text-white preparation_period'
 					placeholder='Preparation Period'
 					showTime
 				/>

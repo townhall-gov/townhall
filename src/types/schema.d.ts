@@ -51,13 +51,21 @@ interface IRoom {
 
 interface IProposal {
 	id: number;
-	room_id: number;
+	house_id: string;
+	room_id: string;
 	title: string;
 	description: string;
+    tags: string[];
+	discussion?: string;
 	strategy: EStrategy;
-	start_date: Date;
-	end_date: Date;
-	preparation_period: Date;
+	proposer_address: string;
+	created_at: Date;
+	updated_at: Date;
+	start_date: number;
+	end_date: number;
+	preparation_period: number;
+	is_vote_results_hide_before_voting_ends: boolean;
+	timestamp: number;
 }
 
 interface IComment {

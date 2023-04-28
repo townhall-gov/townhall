@@ -149,6 +149,15 @@ div.ant-card-body {
 .tox-tinymce {
     border: 1px solid var(--blue_primary) !important;
 }
+.proposal_error {
+    border-color: var(--red_primary) !important;
+}
+.tox-tinymce .proposal_error {
+    border-color: var(--red_primary) !important;
+}
+.tox-statusbar__path-item, .tox-statusbar__path-divider {
+    display: none !important;
+}
 
 /* Date Picker css */
 .ant-picker-panel-container {
@@ -293,3 +302,31 @@ li.ant-picker-time-panel-cell-disabled .ant-picker-time-panel-cell-inner {
     background: var(--blue_primary) !important;
 }
 /* Checkbox css */
+
+/* NOTIFICATION CSS */
+.ant-notification-notice {
+    background-color: var(--app_background) !important;
+    border: 1px solid var(--blue_primary) !important;
+    color: white !important;
+}
+.ant-notification-notice .ant-notification-notice-message {
+    color: white !important;
+}
+.ant-notification-notice .ant-notification-close-x {
+    color: white !important;
+}
+.ant-notification-notice .ant-notification-notice-icon {
+    background-color: white !important;
+    border: 0.1px solid var(--app_background) !important;
+    border-radius: 999999999px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+.ant-notification-notice .ant-notification-notice-icon-error {
+    color: var(--red_primary) !important;
+}
+.ant-notification-notice .ant-notification-notice-icon-success {
+    color: var(--green_primary) !important;
+}
+/* NOTIFICATION CSS */

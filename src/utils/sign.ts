@@ -45,7 +45,7 @@ export const signMessage = async (text: string, address: string): Promise<string
 	return result?.signature;
 };
 
-export const signApiData = async (data: Object, address: string) => {
+export const signApiData = async <T>(data: T, address: string) => {
 	const dataToSign = {
 		...data,
 		timestamp: parseInt(String(Date.now() / 1000))

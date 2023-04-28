@@ -5,7 +5,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 import { ERoomStage, IProposalCreation, IRoomStore } from './@types';
-import { IRoom } from '~src/types/schema';
+import { IProposal, IRoom } from '~src/types/schema';
 
 const initialState: IRoomStore = {
 	currentStage: ERoomStage.PROPOSALS,
@@ -21,6 +21,7 @@ const initialState: IRoomStore = {
 		tags: [],
 		title: ''
 	},
+	proposals: [],
 	room: null
 };
 
@@ -45,6 +46,18 @@ export const roomStore = createSlice({
 	initialState,
 	name: 'room',
 	reducers: {
+		resetProposalCreation: (state) => {
+			state.proposalCreation = {
+				description: '',
+				discussion: '',
+				end_date: null,
+				is_vote_results_hide_before_voting_ends: false,
+				preparation_period: null,
+				start_date: null,
+				tags: [],
+				title: ''
+			};
+		},
 		setCurrentStage: (state, action: PayloadAction<ERoomStage>) => {
 			state.currentStage = action.payload;
 		},
@@ -54,8 +67,19 @@ export const roomStore = createSlice({
 		setLoading: (state, action: PayloadAction<boolean>) => {
 			state.loading = action.payload;
 		},
+		setProposal: (state, action: PayloadAction<IProposal>) => {
+			const proposal = action.payload;
+			if (proposal) {
+				if (state.proposals && Array.isArray(state.proposals)) {
+					state.proposals = [...state.proposals, proposal];
+				} else {
+					state.proposals = [proposal];
+				}
+			}
+		},
 		setProposalCreation_Field: (state, action: PayloadAction<IProposalCreationFieldPayload>) => {
 			const obj = action.payload;
+			state.loading = false;
 			if (obj) {
 				const { key, value } = obj;
 				switch (key) {

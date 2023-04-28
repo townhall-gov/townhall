@@ -13,10 +13,11 @@ interface ITextEditorProps {
     value?: string;
     onChange: (value: string) => void;
     localStorageKey?: string;
+	isDisabled?: boolean;
 }
 
 const TextEditor: FC<ITextEditorProps> = (props) => {
-	const { className, height, onChange, localStorageKey, value } = props;
+	const { className, height, onChange, localStorageKey, value, isDisabled } = props;
 	const initialValue = useRef(props.initialValue || (localStorageKey? (localStorage.getItem(localStorageKey) || ''): ''));
 	useEffect(() => {
 		if (value !== initialValue.current) {
@@ -27,6 +28,7 @@ const TextEditor: FC<ITextEditorProps> = (props) => {
 	return (
 		<div className={classNames('flex-1 w-full', className)}>
 			<Editor
+				disabled={isDisabled}
 				initialValue={initialValue.current}
 				onEditorChange={(v) => {
 					onChange(v);
@@ -36,6 +38,7 @@ const TextEditor: FC<ITextEditorProps> = (props) => {
 				}}
 				apiKey={process.env.NEXT_PUBLIC_TINY_MCE_API_KEY}
 				init={{
+					branding: false,
 					content_css: 'dark',
 					content_style: 'body { font-family: Montserrat, sans-serif; font-size: 14px; letter-spacing: 1px; line-height: 1.5; }',
 					height: height || 300,
@@ -49,7 +52,8 @@ const TextEditor: FC<ITextEditorProps> = (props) => {
 					toolbar: 'undo redo | ' +
 						'bold italic backcolor | alignleft aligncenter ' +
 						'alignright alignjustify | bullist numlist outdent indent | ' +
-						'removeformat | table help '
+						'removeformat | table help ',
+					xss_sanitization: true
 				}}
 			/>
 		</div>

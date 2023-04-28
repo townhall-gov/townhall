@@ -7,9 +7,15 @@ import Description from './Description';
 import Tags from './Tags';
 import Dates from './Dates';
 import HideResult from './HideResult';
-import PreviewBtn from './PreviewBtn';
 import { useProfileIsRoomJoined } from '~src/redux/profile/selectors';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
+import { Skeleton } from 'antd';
+
+const PreviewBtn = dynamic(() => import('./PreviewBtn'), {
+	loading: () => <Skeleton.Avatar active size='large' shape='circle' /> ,
+	ssr: false
+});
 
 const CreateProposal = () => {
 	const { query } = useRouter();

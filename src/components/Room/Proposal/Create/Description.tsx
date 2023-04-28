@@ -5,17 +5,22 @@ import React, { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { roomActions } from '~src/redux/room';
 import { useProposalCreation } from '~src/redux/room/selectors';
+import { useRoomSelector } from '~src/redux/selectors';
 import TextEditor from '~src/ui-components/TextEditor';
 
 const Description = () => {
 	const proposalDescription = useProposalCreation();
 	const dispatch = useDispatch();
 	const timeout = useRef<NodeJS.Timeout>();
+	const { loading } = useRoomSelector();
 	return (
 		<div className='flex flex-col'>
 			<h3 className='text-white font-medium text-xl'>Description</h3>
 			<TextEditor
+				// Description class is for error validation highlighting
+				className='description'
 				initialValue={''}
+				isDisabled={loading}
 				value={proposalDescription?.description}
 				localStorageKey='new_proposal_description'
 				onChange={(v) => {

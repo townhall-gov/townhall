@@ -3,27 +3,37 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { CloseOutlined } from '@ant-design/icons';
 import { Tag } from 'antd';
+import classNames from 'classnames';
 import React, { FC } from 'react';
 
 interface IListProps {
     tags: string[];
     deleteTag: (tag: string) => void;
     canDelete?: boolean;
+	isDisabled?: boolean;
 }
 
 const List: FC<IListProps> = (props) => {
-	const { tags, deleteTag, canDelete } = props;
+	const { tags, deleteTag, canDelete, isDisabled } = props;
 	return (
 		<>
 			{
 				tags.map((tag) => {
 					return (
 						<Tag
-							closable={canDelete}
+							closable={canDelete && !isDisabled}
 							key={tag}
-							onClose={() => deleteTag(tag)}
-							closeIcon={<CloseOutlined className='text-white' />}
-							className='text-white border border-solid border-blue_primary py-[1px] m-0 lowercase'
+							aria-disabled={isDisabled}
+							onClose={() => {
+								if (!isDisabled) {
+									deleteTag(tag);
+								}
+							}}
+							closeIcon={<CloseOutlined className={classNames('text-white', {
+								'cursor-not-allowed': isDisabled,
+								'cursor-pointer': !isDisabled
+							})} />}
+							className={classNames('text-white border border-solid border-blue_primary py-[1px] m-0 lowercase', `tags-${tag}`)}
 						>
 							{tag}
 						</Tag>

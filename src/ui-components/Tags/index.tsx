@@ -15,20 +15,23 @@ interface ITagsProps {
     tags: string[];
     addTag: (tag: string) => void;
     deleteTag: (tag: string) => void;
+	isDisabled?: boolean;
 }
 
 const Tags: FC<ITagsProps> = (props) => {
-	const { className, addTag, tags, deleteTag, canDelete, canAdd } = props;
+	const { className, addTag, tags, deleteTag, canDelete, canAdd, isDisabled } = props;
 	return (
 		<div className={classNames('flex items-center flex-wrap gap-3', className)}>
 			{
 				canAdd?
 					<Add
+						isDisabled={isDisabled}
 						addTag={addTag}
 					/>
 					: null
 			}
 			<List
+				isDisabled={isDisabled}
 				tags={tags}
 				canDelete={canDelete}
 				deleteTag={deleteTag}

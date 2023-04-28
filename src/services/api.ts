@@ -65,6 +65,7 @@ class Api {
 		);
 	}
 
+	/** T means response type, B means body type */
 	async post<T, B>(path: string, body?: B, options?: RequestInit) {
 		const result = await this.fetch<T>(
 			path,

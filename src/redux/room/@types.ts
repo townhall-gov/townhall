@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { IRoom } from '~src/types/schema';
+import { IProposal, IRoom } from '~src/types/schema';
 
 export interface IRoomStore {
     loading: boolean;
@@ -10,6 +10,7 @@ export interface IRoomStore {
     room: IRoom | null;
     proposalCreation: IProposalCreation;
     currentStage: ERoomStage;
+    proposals: IProposal[];
 }
 
 export type IProposalCreation = {

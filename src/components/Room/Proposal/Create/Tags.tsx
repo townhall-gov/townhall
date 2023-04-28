@@ -6,6 +6,7 @@ import React, { FC } from 'react';
 import { useDispatch } from 'react-redux';
 import { roomActions } from '~src/redux/room';
 import { useProposalCreation } from '~src/redux/room/selectors';
+import { useRoomSelector } from '~src/redux/selectors';
 import CustomTags from '~src/ui-components/Tags';
 
 interface ITagsProps {
@@ -17,6 +18,7 @@ const Tags: FC<ITagsProps> = (props) => {
 	const proposalCreation = useProposalCreation();
 	const tags = proposalCreation?.tags || [] as string[];
 	const dispatch = useDispatch();
+	const { loading } = useRoomSelector();
 
 	const updateTags = (tag: string, isDelete?: boolean) => {
 		let newTags = (tags && Array.isArray(tags))? [...tags]: [];
@@ -46,6 +48,7 @@ const Tags: FC<ITagsProps> = (props) => {
 				}}
 				canDelete
 				canAdd={tags?.length < 5}
+				isDisabled={loading}
 			/>
 		</div>
 	);
