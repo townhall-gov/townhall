@@ -5,6 +5,8 @@
 import { IRoom } from '~src/types/schema';
 
 export interface IRoomStore {
+    loading: boolean;
+    error: string;
     room: IRoom | null;
     proposalCreation: IProposalCreation;
     currentStage: ERoomStage;

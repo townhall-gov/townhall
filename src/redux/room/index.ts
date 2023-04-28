@@ -9,6 +9,8 @@ import { IRoom } from '~src/types/schema';
 
 const initialState: IRoomStore = {
 	currentStage: ERoomStage.PROPOSALS,
+	error: '',
+	loading: false,
 	proposalCreation: {
 		description: '',
 		discussion: '',
@@ -45,6 +47,12 @@ export const roomStore = createSlice({
 	reducers: {
 		setCurrentStage: (state, action: PayloadAction<ERoomStage>) => {
 			state.currentStage = action.payload;
+		},
+		setError: (state, action: PayloadAction<string>) => {
+			state.error = action.payload;
+		},
+		setLoading: (state, action: PayloadAction<boolean>) => {
+			state.loading = action.payload;
 		},
 		setProposalCreation_Field: (state, action: PayloadAction<IProposalCreationFieldPayload>) => {
 			const obj = action.payload;
