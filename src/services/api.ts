@@ -82,6 +82,7 @@ class Api {
 		return result;
 	}
 
+	/** T means response type, Q means query type */
 	async get<T, Q>(path: string, params: TParams & Q, options?: RequestInit) {
 		const result = await this.fetch<T>(
 			path,

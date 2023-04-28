@@ -91,6 +91,9 @@ div.ant-card-body {
 }
 
 /* Room Hover states Start */
+.room-hover:hover:not(.room-disabled) a {
+    border-color: white !important;
+}
 .room-hover:hover:not(.room-disabled) button {
     border-color: white !important;
 }
@@ -98,6 +101,10 @@ div.ant-card-body {
 .room-hover:hover:not(.room-disabled) button.join {
     background-color: white !important;
     color: #0E2D59 !important;
+}
+
+.room-joined:not(.room-disabled) a {
+    border-color: var(--green_primary) !important;
 }
 
 .room-joined:not(.room-disabled) button {
@@ -109,6 +116,10 @@ div.ant-card-body {
     color: white !important;
 }
 
+.room-hover-joined:hover:not(.room-disabled) a {
+    border-color: var(--red_primary) !important;
+}
+
 .room-hover-joined:hover:not(.room-disabled) button {
     border-color: var(--red_primary) !important;
 }
@@ -118,7 +129,7 @@ div.ant-card-body {
     color: white !important;
 }
 
-.room-disabled, .room-disabled button:first-child {
+.room-disabled, .room-disabled a {
     cursor: not-allowed !important;
 }
 .room-disabled .ant-spin-nested-loading {
@@ -126,6 +137,9 @@ div.ant-card-body {
 }
 .room-disabled .ant-spin {
     background-color: rgba(0, 0, 0, 0.1) !important;
+}
+.room-disabled a {
+    border-color: var(--grey_primary) !important;
 }
 .room-disabled button {
     border-color: var(--grey_primary) !important;

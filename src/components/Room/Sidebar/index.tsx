@@ -3,10 +3,12 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React from 'react';
 import Timeline from './Timeline';
+import RoomCard from './RoomCard';
 
 const RoomSidebar = () => {
 	return (
 		<div className='w-[210px] flex flex-col gap-y-5'>
+			<RoomCard />
 			<Timeline />
 		</div>
 	);

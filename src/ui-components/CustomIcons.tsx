@@ -12,6 +12,7 @@ import HomeSVG  from '~assets/icons/home.svg';
 import ContactPageSVG  from '~assets/icons/contact-page.svg';
 import DevicesSVG  from '~assets/icons/devices.svg';
 import EarthSVG  from '~assets/icons/earth.svg';
+import CropFreeSVG  from '~assets/icons/crop-free.svg';
 import HolidayVillageSVG  from '~assets/icons/holiday-village.svg';
 import ZoomInAreaSVG  from '~assets/icons/zoom-in-area.svg';
 import RocketLaunchSVG  from '~assets/icons/rocket-launch.svg';
@@ -73,6 +74,10 @@ export const DevicesIcon = (props: Partial<CustomIconComponentProps>) => (
 
 export const EarthIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={EarthSVG} {...props} />
+);
+
+export const CropFreeIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={CropFreeSVG} {...props} />
 );
 
 export const HolidayVillageIcon = (props: Partial<CustomIconComponentProps>) => (

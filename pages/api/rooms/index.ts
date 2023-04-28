@@ -14,18 +14,18 @@ import convertFirestoreTimestampToDate from '~src/utils/convertFirestoreTimestam
 import getErrorMessage from '~src/utils/getErrorMessage';
 
 interface IGetRoomsFnParams {
-    houseId: string;
+    house_id: string;
 }
 
 export type TGetRoomsFn = (params: IGetRoomsFnParams) => Promise<TApiResponse<IRoom[]>>;
 export const getRooms: TGetRoomsFn = async (params) => {
 	try {
-		const { houseId } = params;
-		if (!houseId) {
+		const { house_id } = params;
+		if (!house_id) {
 			throw apiErrorWithStatusCode('Invalid houseId.', StatusCodes.BAD_REQUEST);
 		}
 		const rooms: IRoom[] = [];
-		const roomsSnapshot = await roomCollection(houseId).get();
+		const roomsSnapshot = await roomCollection(house_id).get();
 		if (roomsSnapshot.size > 0) {
 			roomsSnapshot.docs.forEach((doc) => {
 				if (doc && doc.exists) {
@@ -72,18 +72,18 @@ export const getRooms: TGetRoomsFn = async (params) => {
 
 export interface IRoomsBody {}
 export interface IRoomsQuery {
-    houseId: string;
+    house_id: string;
 }
 const handler: TNextApiHandler<IRoom[], IRoomsBody, IRoomsQuery> = async (req, res) => {
 	if (req.method !== 'GET') {
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, GET required.' });
 	}
-	const { houseId } = req.query;
+	const { house_id } = req.query;
 	const {
 		data: rooms,
 		error,
 		status
-	} = await getRooms({ houseId });
+	} = await getRooms({ house_id });
 
 	if (rooms && !error && (status === 200)) {
 		res.status(StatusCodes.OK).json(rooms);

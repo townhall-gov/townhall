@@ -8,16 +8,28 @@ import Tags from './Tags';
 import Dates from './Dates';
 import HideResult from './HideResult';
 import PreviewBtn from './PreviewBtn';
+import { useProfileIsRoomJoined } from '~src/redux/profile/selectors';
+import { useRouter } from 'next/router';
 
 const CreateProposal = () => {
+	const { query } = useRouter();
+	const isRoomJoined = useProfileIsRoomJoined(String(query.house_id || ''), String(query.room_id || ''));
 	return (
-		<section className='flex flex-col gap-y-8'>
-			<Title />
-			<Description />
-			<Tags />
-			<Dates />
-			<HideResult />
-			<PreviewBtn />
+		<section className='flex flex-col gap-y-8 h-full'>
+			{
+				isRoomJoined?
+					<>
+						<Title />
+						<Description />
+						<Tags />
+						<Dates />
+						<HideResult />
+						<PreviewBtn />
+					</>
+					: <p className='text-2xl font-semibold text-green_primary flex items-center justify-center h-full m-0'>
+						You need to join the room to create a proposal.
+					</p>
+			}
 		</section>
 	);
 };

@@ -20,7 +20,7 @@ const Rooms: FC<IRoomsProps> = () => {
 						<>
 							<Room
 								key={index}
-								{...room}
+								room={room}
 							/>
 						</>
 					);

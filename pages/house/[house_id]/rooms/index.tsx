@@ -17,7 +17,7 @@ interface IHouseServerProps {
 
 export const getServerSideProps: GetServerSideProps<IHouseServerProps> = async ({ query }) => {
 	const { data: rooms, error } = await getRooms({
-		houseId: (query?.house_id? String(query?.house_id): '')
+		house_id: (query?.house_id? String(query?.house_id): '')
 	});
 	const props: IHouseServerProps = {
 		error: error? error: null,
