@@ -13,12 +13,12 @@ import { modalActions } from '~src/redux/modal';
 import { EContentType, EFooterType, ETitleType } from '~src/redux/modal/@types';
 import classNames from 'classnames';
 import { IConnectWalletStartBody, IConnectWalletStartResponse } from 'pages/api/auth/actions/connectStart';
-import { signMessage } from './utils';
 import { IToken } from '~src/auth/types';
 import { getUserFromToken } from '~src/services/auth.service';
 import { FC } from 'react';
 import { notificationActions } from '~src/redux/notification';
 import { ENotificationStatus } from '~src/redux/notification/@types';
+import { signMessage } from '~src/utils/sign';
 interface ISelectedWalletModalFooterProps {}
 
 const SelectedWalletModalFooter: FC<ISelectedWalletModalFooterProps> = () => {

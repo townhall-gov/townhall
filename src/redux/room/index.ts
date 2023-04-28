@@ -5,7 +5,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 import { ERoomStage, IProposalCreation, IRoomStore } from './@types';
-import { IRoom, ITag } from '~src/types/schema';
+import { IRoom } from '~src/types/schema';
 
 const initialState: IRoomStore = {
 	currentStage: ERoomStage.PROPOSALS,
@@ -57,12 +57,12 @@ export const roomStore = createSlice({
 					state.proposalCreation[key] = value as string;
 					break;
 				case 'tags':
-					state.proposalCreation[key] = value as ITag[];
+					state.proposalCreation[key] = value as string[];
 					break;
 				case 'start_date':
 				case 'end_date':
 				case 'preparation_period':
-					state.proposalCreation[key] = value as Date | null;
+					state.proposalCreation[key] = value as string | null;
 					break;
 				case 'is_vote_results_hide_before_voting_ends':
 					state.proposalCreation[key] = value as boolean;
