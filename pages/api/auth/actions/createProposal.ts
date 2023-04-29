@@ -12,7 +12,7 @@ import { proposalCollection } from '~src/services/firebase/utils';
 import { IProposal } from '~src/types/schema';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
 
-export type TProposalPayload = Omit<IProposal, 'proposer_address' | 'created_at' | 'updated_at' | 'id' | 'timestamp'>;
+export type TProposalPayload = Omit<IProposal, 'proposer_address' | 'created_at' | 'updated_at' | 'id' | 'timestamp' | 'reactions' | 'comments'>;
 
 export interface ICreateProposalBody {
     proposal: TProposalPayload & {
@@ -89,9 +89,11 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 
 	const newProposal: IProposal = {
 		...proposal,
+		comments: [],
 		created_at: new Date(),
 		id: newID,
 		proposer_address: proposer_address,
+		reactions: [],
 		updated_at: new Date()
 	};
 

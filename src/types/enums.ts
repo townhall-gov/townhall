@@ -15,11 +15,18 @@ enum EBlockchain {
 enum EStrategy {
     SINGLE = 'single'
 }
+
+enum EReaction {
+    LIKE = '👍🏻',
+    DISLIKE = '👎🏻',
+}
+
 enum ESentiment {}
 
 export {
 	EBlockchain,
 	ESentiment,
 	EStrategy,
-	EWallet
+	EWallet,
+	EReaction
 };

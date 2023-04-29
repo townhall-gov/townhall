@@ -2,6 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+import { EReaction } from '~src/types/enums';
 import { IProposal, IRoom } from '~src/types/schema';
 
 export interface IRoomStore {
@@ -10,7 +11,15 @@ export interface IRoomStore {
     room: IRoom | null;
     proposalCreation: IProposalCreation;
     currentStage: ERoomStage;
-    proposals: IProposal[];
+    proposals: IListingProposal[];
+}
+
+export interface IListingProposal extends Omit<IProposal, 'discussion' | 'description' | 'updated_at' | 'end_date' | 'start_date' | 'preparation_period' | 'comments' | 'reactions' | 'is_vote_results_hide_before_voting_ends' | 'strategy' | 'timestamp'> {
+    comments_count: number;
+    reactions_count: {
+        [EReaction.LIKE]: number;
+        [EReaction.DISLIKE]: number;
+    };
 }
 
 export type IProposalCreation = {

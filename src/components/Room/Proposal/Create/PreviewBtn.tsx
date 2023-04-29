@@ -9,6 +9,7 @@ import { useDispatch } from 'react-redux';
 import { notificationActions } from '~src/redux/notification';
 import { ENotificationStatus } from '~src/redux/notification/@types';
 import { roomActions } from '~src/redux/room';
+import { IListingProposal } from '~src/redux/room/@types';
 import { useProposalCreation } from '~src/redux/room/selectors';
 import proposalCreationValidation, { removeErrorFieldHighlight } from '~src/redux/room/validation';
 import { useRoomSelector } from '~src/redux/selectors';
@@ -69,60 +70,70 @@ const PreviewBtn = () => {
 					return;
 				}
 			}
-			try {
-				const { description, end_date, is_vote_results_hide_before_voting_ends, preparation_period, start_date, tags, title, discussion } = proposalCreation;
-				const { query } = router;
-				if (start_date && end_date && preparation_period && query.house_id && query.room_id) {
-					const proposal: TProposalPayload = {
-						description,
-						discussion: discussion,
-						end_date: (new Date(end_date)).getTime(),
-						house_id: String(query.house_id),
-						is_vote_results_hide_before_voting_ends: is_vote_results_hide_before_voting_ends,
-						preparation_period: (new Date(preparation_period)).getTime(),
-						room_id: String(query.room_id),
-						start_date: (new Date(start_date)).getTime(),
-						strategy: EStrategy.SINGLE,
-						tags: tags,
-						title: title
+			const { description, end_date, is_vote_results_hide_before_voting_ends, preparation_period, start_date, tags, title, discussion } = proposalCreation;
+			const { query } = router;
+			if (start_date && end_date && preparation_period && query.house_id && query.room_id) {
+				const proposal: TProposalPayload = {
+					description,
+					discussion: discussion,
+					end_date: (new Date(end_date)).getTime(),
+					house_id: String(query.house_id),
+					is_vote_results_hide_before_voting_ends: is_vote_results_hide_before_voting_ends,
+					preparation_period: (new Date(preparation_period)).getTime(),
+					room_id: String(query.room_id),
+					start_date: (new Date(start_date)).getTime(),
+					strategy: EStrategy.SINGLE,
+					tags: tags,
+					title: title
+				};
+				const { address, data: proposalData, signature } = await signApiData<TProposalPayload>(proposal, user.address);
+				const { data, error } = await api.post<ICreateProposalResponse, ICreateProposalBody>('auth/actions/createProposal', {
+					proposal: proposalData,
+					proposer_address: address,
+					signature: signature
+				});
+				if (error) {
+					dispatch(roomActions.setError(getErrorMessage(error)));
+					dispatch(notificationActions.send({
+						message: getErrorMessage(error),
+						status: ENotificationStatus.ERROR,
+						title: 'Failed!'
+					}));
+				} else if (!data || !data.createdProposal) {
+					const error = 'Something went wrong, unable to create a proposal.';
+					dispatch(roomActions.setError(error));
+					dispatch(notificationActions.send({
+						message: error,
+						status: ENotificationStatus.ERROR,
+						title: 'Failed!'
+					}));
+				} else {
+					const { createdProposal } = data;
+					const proposal: IListingProposal = {
+						comments_count: 0,
+						created_at: createdProposal.created_at,
+						house_id: createdProposal.house_id,
+						id: createdProposal.id,
+						proposer_address: createdProposal.proposer_address,
+						reactions_count: {
+							'👍🏻': 0,
+							'👎🏻': 0
+						},
+						room_id: createdProposal.room_id,
+						tags: createdProposal.tags,
+						title: createdProposal.title
 					};
-					const { address, data: proposalData, signature } = await signApiData<TProposalPayload>(proposal, user.address);
-					const { data, error } = await api.post<ICreateProposalResponse, ICreateProposalBody>('auth/actions/createProposal', {
-						proposal: proposalData,
-						proposer_address: address,
-						signature: signature
-					});
-					if (error) {
-						dispatch(roomActions.setError(getErrorMessage(error)));
-						dispatch(notificationActions.send({
-							message: getErrorMessage(error),
-							status: ENotificationStatus.ERROR,
-							title: 'Failed!'
-						}));
-					} else if (!data || !data.createdProposal) {
-						const error = 'Something went wrong, unable to create a proposal.';
-						dispatch(roomActions.setError(error));
-						dispatch(notificationActions.send({
-							message: error,
-							status: ENotificationStatus.ERROR,
-							title: 'Failed!'
-						}));
-					} else {
-						dispatch(roomActions.setProposal(data.createdProposal));
-						dispatch(notificationActions.send({
-							message: 'Proposal created successfully.',
-							status: ENotificationStatus.SUCCESS,
-							title: 'Success!'
-						}));
-						localStorage.removeItem('new_proposal_description');
-						dispatch(roomActions.resetProposalCreation());
-						router.push(`/house/${query.house_id}/room/${query.room_id}/proposal/${data.createdProposal.id}`);
-					}
+					dispatch(roomActions.setProposal(proposal));
+					dispatch(notificationActions.send({
+						message: 'Proposal created successfully.',
+						status: ENotificationStatus.SUCCESS,
+						title: 'Success!'
+					}));
+					localStorage.removeItem('new_proposal_description');
+					dispatch(roomActions.resetProposalCreation());
+					router.push(`/house/${query.house_id}/room/${query.room_id}/proposal/${data.createdProposal.id}`);
 				}
-			} catch (error) {
-				dispatch(roomActions.setError(getErrorMessage(error)));
 			}
-			dispatch(roomActions.setLoading(false));
 		} catch (error) {
 			dispatch(roomActions.setLoading(false));
 			dispatch(roomActions.setError(getErrorMessage(error)));

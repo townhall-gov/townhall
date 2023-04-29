@@ -7,10 +7,10 @@ import React, { FC, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import Room from '~src/components/Room';
 import { roomActions } from '~src/redux/room';
-import { IProposal } from '~src/types/schema';
+import { IListingProposal } from '~src/redux/room/@types';
 
 interface IProposalsServerProps {
-	proposals: IProposal[] | null;
+	proposals: IListingProposal[] | null;
 	error: string | null;
 }
 

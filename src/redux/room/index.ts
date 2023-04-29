@@ -5,7 +5,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 import { ERoomStage, IProposalCreation, IRoomStore } from './@types';
-import { IProposal, IRoom } from '~src/types/schema';
+import { IRoom } from '~src/types/schema';
+import { IListingProposal } from './@types';
 
 const initialState: IRoomStore = {
 	currentStage: ERoomStage.PROPOSALS,
@@ -67,7 +68,7 @@ export const roomStore = createSlice({
 		setLoading: (state, action: PayloadAction<boolean>) => {
 			state.loading = action.payload;
 		},
-		setProposal: (state, action: PayloadAction<IProposal>) => {
+		setProposal: (state, action: PayloadAction<IListingProposal>) => {
 			const proposal = action.payload;
 			if (proposal) {
 				if (state.proposals && Array.isArray(state.proposals)) {
@@ -104,7 +105,7 @@ export const roomStore = createSlice({
 				}
 			}
 		},
-		setProposals: (state, action: PayloadAction<IProposal[]>) => {
+		setProposals: (state, action: PayloadAction<IListingProposal[]>) => {
 			const proposals = action.payload;
 			if (proposals && Array.isArray(proposals)) {
 				state.proposals = proposals;

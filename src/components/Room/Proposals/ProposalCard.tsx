@@ -5,20 +5,21 @@
 import { ClockCircleOutlined, LikeOutlined, DislikeOutlined, CommentOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import React, { FC } from 'react';
-import { IProposal } from '~src/types/schema';
 import Address from '~src/ui-components/Address';
 import getRelativeCreatedAt from '~src/utils/getRelativeCreatedAt';
 import Divider from './Divider';
 import Tags from './Tags';
+import { IListingProposal } from '~src/redux/room/@types';
+import { EReaction } from '~src/types/enums';
 
 interface IProposalCardProps {
-    proposal: IProposal;
+    proposal: IListingProposal;
 }
 
 const ProposalCard: FC<IProposalCardProps> = (props) => {
 	const { proposal } = props;
 	if (!proposal) return null;
-	const { room_id, house_id, id, proposer_address, title, tags } = proposal;
+	const { created_at, room_id, house_id, id, proposer_address, title, tags, comments_count, reactions_count } = proposal;
 	return (
 		<Link
 			href={`/house/${house_id}/room/${room_id}/proposal/${id}`}
@@ -44,28 +45,28 @@ const ProposalCard: FC<IProposalCardProps> = (props) => {
 					<p className='flex items-center gap-x-[6px] m-0 p-0'>
 						<ClockCircleOutlined />
 						<span>
-							{getRelativeCreatedAt(proposal.created_at)}
+							{getRelativeCreatedAt(created_at)}
 						</span>
 					</p>
 					<Divider />
 					<p className='flex items-center gap-x-[6px] m-0 p-0'>
 						<LikeOutlined />
 						<span>
-                            23k
+							{reactions_count[EReaction.LIKE]}
 						</span>
 					</p>
 					<Divider />
 					<p className='flex items-center gap-x-[6px] m-0 p-0'>
 						<DislikeOutlined />
 						<span>
-                            2k
+							{reactions_count[EReaction.DISLIKE]}
 						</span>
 					</p>
 					<Divider />
 					<p className='flex items-center gap-x-[6px] m-0 p-0'>
 						<CommentOutlined />
 						<span>
-                            2k
+							{comments_count}
 						</span>
 					</p>
 				</article>

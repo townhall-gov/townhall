@@ -13,12 +13,14 @@ const Description: FC<IDescriptionProps> = (props) => {
 	const { value } = props;
 	const [showMore, setShowMore] = useState(false);
 	const divRef = useRef<HTMLDivElement>(null);
-	const [showMoreBtnVisible, setShowMoreBtnVisible] = useState(false);
+	const [showMoreBtnVisible, setShowMoreBtnVisible] = useState(true);
 	useEffect(() => {
-		if (divRef.current) {
-			setShowMoreBtnVisible(divRef.current.scrollHeight > 200);
+		if (divRef.current && divRef.current.scrollHeight <= 200) {
+			setShowMoreBtnVisible(false);
+		} else {
+			setShowMoreBtnVisible(true);
 		}
-	}, []);
+	}, [value]);
 	return (
 		<article
 			className='flex flex-col gap-y-7'
@@ -27,7 +29,7 @@ const Description: FC<IDescriptionProps> = (props) => {
 				ref={divRef}
 				id='html-description'
 				className={
-					classNames('font-normal text-white leading-[23px] text-sm tracking-[0.01em]',
+					classNames('font-normal text-white leading-[23px] text-sm tracking-[0.01em] overflow-hidden',
 						{
 							'max-h-[200px]': !showMore,
 							'max-h-none': showMore

@@ -7,7 +7,7 @@ import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
 import { proposalCollection } from '~src/services/firebase/utils';
-import { IProposal } from '~src/types/schema';
+import { IProposal, IReaction } from '~src/types/schema';
 import apiErrorWithStatusCode from '~src/utils/apiErrorWithStatusCode';
 import convertFirestoreTimestampToDate from '~src/utils/convertFirestoreTimestampToDate';
 import getErrorMessage from '~src/utils/getErrorMessage';
@@ -32,7 +32,8 @@ export const getProposal: TGetProposalFn = async (params) => {
 		if (!proposal_id && !(proposal_id == 0)) {
 			throw apiErrorWithStatusCode('Invalid proposalId.', StatusCodes.BAD_REQUEST);
 		}
-		const proposalDocSnapshot = await proposalCollection(house_id, room_id).doc(String(proposal_id)).get();
+		const proposalDocRef = proposalCollection(house_id, room_id).doc(String(proposal_id));
+		const proposalDocSnapshot = await proposalDocRef.get();
 		const data = proposalDocSnapshot?.data() as IProposal;
 		if (!proposalDocSnapshot || !proposalDocSnapshot.exists || !data) {
 			throw apiErrorWithStatusCode(`Proposal with id ${proposal_id} is not found in a room with id ${room_id} and a house with id ${house_id}.`, StatusCodes.NOT_FOUND);
@@ -40,7 +41,18 @@ export const getProposal: TGetProposalFn = async (params) => {
 
 		// Sanitization
 		if ((data.id || data.id == 0) && data.house_id && data.room_id && data.proposer_address) {
+			const reactions: IReaction[] = [];
+			const reactionsQuerySnapshot = await proposalDocRef.collection('reactions').get();
+			reactionsQuerySnapshot.docs.forEach((doc) => {
+				if (doc && doc.exists) {
+					const data  = doc.data() as IReaction;
+					if (data && data.user_address && data.id && data.type) {
+						reactions.push(data);
+					}
+				}
+			});
 			const proposal: IProposal = {
+				comments: [],
 				created_at: convertFirestoreTimestampToDate(data.created_at),
 				description: data.description || '',
 				discussion: data.discussion || '',
@@ -50,6 +62,7 @@ export const getProposal: TGetProposalFn = async (params) => {
 				is_vote_results_hide_before_voting_ends: data.is_vote_results_hide_before_voting_ends || false,
 				preparation_period: data.preparation_period,
 				proposer_address: data.proposer_address,
+				reactions: reactions,
 				room_id: data.room_id,
 				start_date: data.start_date || 0,
 				strategy: data.strategy,

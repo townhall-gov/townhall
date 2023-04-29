@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { ICreatorDetails, IProjectSocial } from '~src/redux/rooms/@types';
-import { EBlockchain, EWallet, ESentiment, EStrategy } from '~src/types/enums';
+import { EBlockchain, EWallet, ESentiment, EStrategy, EReaction } from '~src/types/enums';
 
 interface IUser {
 	address: string;
@@ -66,6 +66,14 @@ interface IProposal {
 	preparation_period: number;
 	is_vote_results_hide_before_voting_ends: boolean;
 	timestamp: number;
+	reactions: IReaction[];
+	comments: IComment[];
+}
+
+interface IReaction {
+	id: string;
+	user_address: string;
+	type: EReaction;
 }
 
 interface IComment {
@@ -105,5 +113,6 @@ export {
 	ITag,
 	IVote,
 	IJoinedHouse,
-	IJoinedRoom
+	IJoinedRoom,
+	IReaction
 };

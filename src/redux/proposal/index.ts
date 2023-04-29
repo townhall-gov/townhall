@@ -5,7 +5,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 import { IProposalStore } from './@types';
-import { IProposal } from '~src/types/schema';
+import { IProposal, IReaction } from '~src/types/schema';
 
 const initialState: IProposalStore = {
 	error: null,
@@ -29,8 +29,29 @@ export const proposalStore = createSlice({
 		setError: (state, action: PayloadAction<string | null>) => {
 			state.error = action.payload;
 		},
+		setLoading: (state, action: PayloadAction<boolean>) => {
+			state.loading = action.payload;
+		},
 		setProposal: (state, action: PayloadAction<IProposal>) => {
 			state.proposal = action.payload;
+		},
+		setReaction: (state, action: PayloadAction<{
+			reaction: IReaction;
+			isDeleted: boolean;
+		}>) => {
+			const { reaction, isDeleted } = action.payload;
+			if (state?.proposal?.reactions && Array.isArray(state.proposal.reactions)) {
+				const index = state.proposal.reactions.findIndex((r) => r.id === reaction.id);
+				if (index > -1) {
+					if (isDeleted) {
+						state.proposal.reactions.splice(index, 1);
+					} else {
+						state.proposal.reactions[index] = reaction;
+					}
+				} else {
+					state.proposal.reactions.push(reaction);
+				}
+			}
 		}
 	}
 });
