@@ -330,3 +330,13 @@ li.ant-picker-time-panel-cell-disabled .ant-picker-time-panel-cell-inner {
     color: var(--green_primary) !important;
 }
 /* NOTIFICATION CSS */
+
+
+/* TINYMCE content render */
+#html-description ul, ol {
+    padding-left: 15px;
+}
+#html-description td {
+    padding: 3px 6px;
+}
+/* TINYMCE content render */

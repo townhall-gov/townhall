@@ -77,7 +77,6 @@ const handler: TNextApiHandler<IRoom, IRoomBody, IRoomQuery> = async (req, res) 
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, GET required.' });
 	}
 	const { house_id, room_id } = req.query;
-	console.log(req.query);
 	const {
 		data: room,
 		error,

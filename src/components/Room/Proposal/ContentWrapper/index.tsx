@@ -3,22 +3,21 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import classNames from 'classnames';
 import React, { FC } from 'react';
+import Comments from './Comments';
+import Content from './Content';
 
-interface IDividerProps {
+interface IContentWrapperProps {
     className?: string;
 }
 
-const Divider: FC<IDividerProps> = (props) => {
+const ContentWrapper: FC<IContentWrapperProps> = (props) => {
 	const { className } = props;
 	return (
-		<span
-			className={
-				classNames('w-1 flex items-center justify-center', className)
-			}
-		>
-            |
-		</span>
+		<div className={classNames('flex flex-col gap-y-12', className)}>
+			<Content />
+			<Comments />
+		</div>
 	);
 };
 
-export default Divider;
+export default ContentWrapper;

@@ -4,21 +4,15 @@
 import classNames from 'classnames';
 import React, { FC } from 'react';
 
-interface IDividerProps {
+interface ISidebarProps {
     className?: string;
 }
 
-const Divider: FC<IDividerProps> = (props) => {
+const Sidebar: FC<ISidebarProps> = (props) => {
 	const { className } = props;
 	return (
-		<span
-			className={
-				classNames('w-1 flex items-center justify-center', className)
-			}
-		>
-            |
-		</span>
+		<div className={classNames(className)}>Sidebar</div>
 	);
 };
 
-export default Divider;
+export default Sidebar;

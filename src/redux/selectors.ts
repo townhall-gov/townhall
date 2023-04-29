@@ -11,6 +11,7 @@ import { IProfileStore } from './profile/@types';
 import { IHousesStore } from './houses/@types';
 import { IRoomsStore } from './rooms/@types';
 import { IRoomStore } from './room/@types';
+import { IProposalStore } from './proposal/@types';
 
 const useModalSelector = () => {
 	return useSelector<TAppState, IModalStore>((state) => state.modal);
@@ -40,6 +41,10 @@ const useRoomsSelector = () => {
 	return useSelector<TAppState, IRoomsStore>((state) => state.rooms);
 };
 
+const useProposalSelector = () => {
+	return useSelector<TAppState, IProposalStore>((state) => state.proposal);
+};
+
 export {
 	useAuthSelector,
 	useModalSelector,
@@ -47,5 +52,6 @@ export {
 	useProfileSelector,
 	useHousesSelector,
 	useRoomSelector,
-	useRoomsSelector
+	useRoomsSelector,
+	useProposalSelector
 };
