@@ -12,14 +12,14 @@ const { Header } = Layout;
 const NavHeader = () => {
 	return (
 		<Header className='h-min p-0 m-0 flex flex-col bg-transparent'>
-			<section className='px-[50px] py-4 border-0 border-b-[1.5px] border-solid border-blue_primary flex items-center justify-between text-grey_primary m-0'>
+			<section className='px-[50px] pt-[20px] pb-[22.5px] border-0 border-b-[1.5px] border-solid border-blue_primary flex items-center justify-between text-grey_primary m-0'>
 				<div className='flex items-center gap-x-2'>
-					<SearchOutlined className='text-white text-sm' />
+					<SearchOutlined className='text-white text-2xl' />
 					<input placeholder='Search for anything' className='text-grey_primary placeholder:text-grey_primary m-0 p-0 flex items-center justify-center border-none outline-none max-h-[30px] bg-transparent text-xl font-normal leading-[24px]' />
 				</div>
 				<Buttons />
 			</section>
-			<section className='px-[50px] py-4 border-0 border-b-[1.5px] border-solid border-blue_primary flex items-center justify-between text-grey_primary m-0'>
+			<section className='px-[50px] h-[100px] py-4 border-0 border-b-[1.5px] border-solid border-blue_primary flex items-center justify-between text-grey_primary m-0'>
 				<div className='flex items-center justify-center max-h-[35.97px]'>
 					<TownhallLogoWithNamePNG />
 				</div>

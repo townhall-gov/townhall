@@ -78,9 +78,22 @@ interface IReaction {
 
 interface IComment {
 	id: string;
+	is_deleted: boolean;
+	created_at: Date;
+	updated_at: Date;
+	deleted_at: Date | null;
 	proposal_id: number;
-	body: string;
+	content: string;
 	user_address: string;
+	history: IHistoryComment[];
+	reactions: IReaction[];
+	sentiment: ESentiment | null;
+}
+
+interface IHistoryComment {
+	created_at: Date;
+	sentiment: ESentiment | null;
+	content: string;
 }
 
 interface IVote {
@@ -108,6 +121,7 @@ export {
 	IUser,
 	IRoom,
 	IComment,
+	IHistoryComment,
 	IProposal,
 	ISentiment,
 	ITag,

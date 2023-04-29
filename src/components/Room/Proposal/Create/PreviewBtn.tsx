@@ -129,7 +129,6 @@ const PreviewBtn = () => {
 						status: ENotificationStatus.SUCCESS,
 						title: 'Success!'
 					}));
-					localStorage.removeItem('new_proposal_description');
 					dispatch(roomActions.resetProposalCreation());
 					router.push(`/house/${query.house_id}/room/${query.room_id}/proposal/${data.createdProposal.id}`);
 				}

@@ -22,7 +22,7 @@ const Description = () => {
 				initialValue={''}
 				isDisabled={loading}
 				value={proposalDescription?.description}
-				localStorageKey='new_proposal_description'
+				localStorageKey='proposalCreation'
 				onChange={(v) => {
 					clearTimeout(timeout.current);
 					timeout.current = setTimeout(() => {

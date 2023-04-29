@@ -21,12 +21,25 @@ enum EReaction {
     DISLIKE = '👎🏻',
 }
 
-enum ESentiment {}
+enum ESentiment {
+    COMPLETELY_AGAINST = 'completely_against',
+    SLIGHTLY_AGAINST = 'slightly_against',
+    NEUTRAL = 'neutral',
+    SLIGHTLY_FOR = 'slightly_for',
+    COMPLETELY_FOR = 'completely_for',
+}
+
+enum EAction {
+    ADD = 'add',
+    DELETE = 'delete',
+    EDIT = 'edit'
+}
 
 export {
 	EBlockchain,
 	ESentiment,
 	EStrategy,
 	EWallet,
-	EReaction
+	EReaction,
+	EAction
 };

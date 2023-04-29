@@ -4,14 +4,26 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
-import { IProposalStore } from './@types';
-import { IProposal, IReaction } from '~src/types/schema';
+import { ICommentCreation, IProposalStore } from './@types';
+import { IComment, IProposal, IReaction } from '~src/types/schema';
+import { EAction } from '~src/types/enums';
 
 const initialState: IProposalStore = {
+	commentCreation: {
+		content: '',
+		sentiment: null
+	},
 	error: null,
 	loading: false,
 	proposal: null
 };
+
+type ICommentCreationFieldPayload = {
+    [K in keyof ICommentCreation]: {
+      key: K;
+      value: ICommentCreation[K];
+    }
+}[keyof ICommentCreation];
 
 export const proposalStore = createSlice({
 	extraReducers: (builder) => {
@@ -26,6 +38,26 @@ export const proposalStore = createSlice({
 	initialState,
 	name: 'proposal',
 	reducers: {
+		resetCommentCreation: (state) => {
+			localStorage.removeItem('commentCreation');
+			state.commentCreation = {
+				content: '',
+				sentiment: null
+			};
+		},
+		setCommentCreation_Field: (state, action: PayloadAction<ICommentCreationFieldPayload>) => {
+			const obj = action.payload;
+			if (obj) {
+				const { key, value } = obj;
+				switch(key) {
+				case 'content':
+					state.commentCreation.content = value;
+					break;
+				case 'sentiment':
+					state.commentCreation.sentiment = value;
+				}
+			}
+		},
 		setError: (state, action: PayloadAction<string | null>) => {
 			state.error = action.payload;
 		},
@@ -50,6 +82,26 @@ export const proposalStore = createSlice({
 					}
 				} else {
 					state.proposal.reactions.push(reaction);
+				}
+			}
+		},
+		updateComments: (state, action: PayloadAction<{
+			comment: IComment;
+			action_type: EAction;
+		}>) => {
+			const { comment, action_type } = action.payload;
+			if (state?.proposal?.comments && Array.isArray(state.proposal.comments)) {
+				const index = state.proposal.comments.findIndex((r) => r.id === comment.id);
+				if (index > -1) {
+					if (action_type === EAction.DELETE) {
+						state.proposal.reactions.splice(index, 1);
+					} else if (action_type === EAction.EDIT) {
+						state.proposal.comments[index] = comment;
+					}
+				} else {
+					if (action_type === EAction.ADD) {
+						state.proposal.comments.push(comment);
+					}
 				}
 			}
 		}

@@ -24,10 +24,9 @@ interface IReactionProps {
 const Reaction: FC<IReactionProps> = (props) => {
 	const { type } = props;
 	const dispatch = useDispatch();
-	const { loading } = useProposalSelector();
+	const { loading, proposal } = useProposalSelector();
 	const { user } = useProfileSelector();
 	const userReaction = useUserReaction(user?.address || '');
-	const { proposal } = useProposalSelector();
 	const reactions = useReactions(type);
 
 	const onReaction = async (type: EReaction) => {
@@ -48,8 +47,8 @@ const Reaction: FC<IReactionProps> = (props) => {
 		}
 
 		try {
-			dispatch(proposalActions.setLoading(true));
 			if (proposal) {
+				dispatch(proposalActions.setLoading(true));
 				const { data, error } = await api.post<IReactionResponse, IReactionBody>('auth/actions/reaction', {
 					house_id: proposal.house_id,
 					proposal_id: proposal.id,

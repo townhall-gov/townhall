@@ -32,7 +32,13 @@ const useReactions = (type: EReaction) => {
 	return reactions;
 };
 
+const useCommentCreation = () => {
+	const proposal = useProposalSelector();
+	return proposal.commentCreation;
+};
+
 export {
+	useCommentCreation,
 	useUserReaction,
 	useReactions
 };

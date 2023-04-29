@@ -18,7 +18,7 @@ const JoinedRoomList: FC<IJoinedRoomListProps> = (props) => {
 			{
 				joinedRooms.slice(0, totalShowing).map((joinedRoom, index) => {
 					return (
-						<article title={joinedRoom.room_id} key={index} className='flex items-center justify-center text-4xl'>
+						<article title={joinedRoom.room_id} key={index} className='flex items-center justify-center text-[45px]'>
 							<KusamaIcon />
 						</article>
 					);

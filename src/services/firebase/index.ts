@@ -23,4 +23,7 @@ try {
 }
 
 const firestore_db = firebaseAdmin.firestore();
+export {
+	firebaseAdmin
+};
 export default firestore_db;
