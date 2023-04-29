@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import classNames from 'classnames';
 import React, { FC } from 'react';
-import Comments from './Comments';
+import CommentsWrapper from './CommentsWrapper';
 import Content from './Content';
 
 interface IContentWrapperProps {
@@ -15,7 +15,7 @@ const ContentWrapper: FC<IContentWrapperProps> = (props) => {
 	return (
 		<div className={classNames('flex flex-col gap-y-12', className)}>
 			<Content />
-			<Comments />
+			<CommentsWrapper />
 		</div>
 	);
 };

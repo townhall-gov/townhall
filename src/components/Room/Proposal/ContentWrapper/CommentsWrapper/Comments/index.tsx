@@ -5,7 +5,7 @@ import React from 'react';
 
 const Comments = () => {
 	return (
-		<div>Comments</div>
+		<section className='text-white mt-5'>Comments</section>
 	);
 };
 

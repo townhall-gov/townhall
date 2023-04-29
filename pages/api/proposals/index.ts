@@ -30,7 +30,7 @@ export const getProposals: TGetProposalsFn = async (params) => {
 			throw apiErrorWithStatusCode('Invalid roomId.', StatusCodes.BAD_REQUEST);
 		}
 		const proposals: IListingProposal[] = [];
-		const proposalsSnapshot = await proposalCollection(house_id, room_id).get();
+		const proposalsSnapshot = await proposalCollection(house_id, room_id).orderBy('created_at', 'desc').get();
 		if (proposalsSnapshot.size > 0) {
 			const proposalsPromise = proposalsSnapshot.docs.map(async (doc) => {
 				if (doc && doc.exists) {
