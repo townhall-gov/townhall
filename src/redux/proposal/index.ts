@@ -5,7 +5,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 import { ICommentCreation, IProposalStore } from './@types';
-import { IComment, IProposal, IReaction } from '~src/types/schema';
+import { IComment, IHistoryComment, IProposal, IReaction } from '~src/types/schema';
 import { EAction, ESentiment } from '~src/types/enums';
 
 const initialState: IProposalStore = {
@@ -13,6 +13,7 @@ const initialState: IProposalStore = {
 		content: '',
 		sentiment: ESentiment.NEUTRAL
 	},
+	commentEditHistory: [],
 	editableComment: null,
 	error: null,
 	isAllCommentsVisible: false,
@@ -63,6 +64,9 @@ export const proposalStore = createSlice({
 					state.commentCreation.sentiment = value;
 				}
 			}
+		},
+		setCommentEditHistory: (state, action: PayloadAction<IHistoryComment[]>) => {
+			state.commentEditHistory = action.payload;
 		},
 		setEditableComment: (state, action: PayloadAction<IComment | null>) => {
 			state.editableComment = action.payload;

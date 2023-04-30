@@ -5,6 +5,7 @@
 import { Skeleton } from 'antd';
 import dynamic from 'next/dynamic';
 import { FC } from 'react';
+import EditHistoryModalFooter from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/Comments/Comment/Header/EditHistory/ModalFooter';
 import SentimentModalFooter from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/CreateComment/Sentiment/Footer';
 import { EFooterType } from '~src/redux/modal/@types';
 
@@ -23,6 +24,8 @@ const ModalFooter: FC<IModalFooterProps> = (props) => {
 		return <SelectedWalletModalFooter />;
 	case EFooterType.COMMENT_SENTIMENT:
 		return <SentimentModalFooter />;
+	case EFooterType.COMMENT_EDIT_HISTORY:
+		return <EditHistoryModalFooter />;
 	default:
 		return <></>;
 	}

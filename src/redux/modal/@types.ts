@@ -14,12 +14,14 @@ export enum ETitleType {
     CONNECT_WALLET = 'connect-wallet',
     FETCHING_WALLET_ACCOUNTS = 'fetching-wallet-accounts',
     MULTIPLE_JOINED_ROOMS = 'multiple-joined-rooms',
+    COMMENT_EDIT_HISTORY = 'comment-edit-history',
 }
 
 export enum EFooterType {
     NONE = 'none',
     FETCHING_WALLET_ACCOUNTS = 'fetching-wallet-accounts',
     COMMENT_SENTIMENT = 'sentiment',
+    COMMENT_EDIT_HISTORY = 'comment-edit-history',
 }
 export enum EContentType {
     NONE = 'none',
@@ -27,4 +29,5 @@ export enum EContentType {
     FETCHING_WALLET_ACCOUNTS = 'fetching-wallet-accounts',
     MULTIPLE_JOINED_ROOMS = 'multiple-joined-rooms',
     COMMENT_SENTIMENT = 'sentiment',
+    COMMENT_EDIT_HISTORY = 'comment-edit-history',
 }

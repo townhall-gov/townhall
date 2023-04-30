@@ -6,6 +6,7 @@ import { FC } from 'react';
 import JoinedRoomsModalContent from '~src/components/AppLayout/JoinedRooms/Modal';
 import ConnectWallet from '~src/components/ConnectWallet';
 import FetchingAccounts from '~src/components/ConnectWallet/FetchingAccounts';
+import EditHistoryModalContent from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/Comments/Comment/Header/EditHistory/ModalContent';
 import SentimentModalContent from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/CreateComment/Sentiment/Content';
 import { EContentType } from '~src/redux/modal/@types';
 
@@ -23,6 +24,8 @@ const ModalContent: FC<IModalContentProps> = (props) => {
 		return <JoinedRoomsModalContent />;
 	case EContentType.COMMENT_SENTIMENT:
 		return <SentimentModalContent />;
+	case EContentType.COMMENT_EDIT_HISTORY:
+		return <EditHistoryModalContent />;
 	default:
 		return <></>;
 	}

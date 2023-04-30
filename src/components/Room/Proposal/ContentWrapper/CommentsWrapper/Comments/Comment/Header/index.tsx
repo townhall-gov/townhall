@@ -8,6 +8,7 @@ import React, { FC } from 'react';
 import { IHistoryComment } from '~src/types/schema';
 import Address from '~src/ui-components/Address';
 import getRelativeCreatedAt from '~src/utils/getRelativeCreatedAt';
+import EditHistory from './EditHistory';
 
 interface ICommentHeaderProps {
     user_address: string;
@@ -17,7 +18,7 @@ interface ICommentHeaderProps {
 }
 
 const CommentHeader: FC<ICommentHeaderProps> = (props) => {
-	const { created_at, updated_at, user_address } = props;
+	const { created_at, updated_at, user_address, history } = props;
 	return (
 		<article className='flex items-center gap-x-2'>
 			<div className='flex items-center gap-x-2 m-0 text-base text-white font-medium leading-[20px] tracking-[0.01em]'>
@@ -52,12 +53,16 @@ const CommentHeader: FC<ICommentHeaderProps> = (props) => {
 						<span className='flex items-center gap-x-[6px] m-0 p-0 text-xs font-normal leading-[15px] text-grey_light'>(edited)</span>
 					</Tooltip>
 			}
-			<span className='text-lg leading-none text-grey_light flex items-center'>
-                &#183;
-			</span>
-			<button className='text-xs leading-[15px] text-grey_light bg-transparent flex items-center justify-center border-none outline-none cursor-pointer underline underline-offset-[3px]'>
-                Edit History
-			</button>
+			{
+				history && history.length > 0?
+					<>
+						<span className='text-lg leading-none text-grey_light flex items-center'>
+							&#183;
+						</span>
+						<EditHistory history={history || []} />
+					</>
+					: null
+			}
 		</article>
 	);
 };

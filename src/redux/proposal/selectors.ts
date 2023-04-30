@@ -56,9 +56,15 @@ const useSelectedComments = (select: number) => {
 	}
 };
 
+const useCommentEditHistory = () => {
+	const { commentEditHistory } = useProposalSelector();
+	return [...commentEditHistory];
+};
+
 export {
 	useCommentCreation,
 	useUserReaction,
 	useReactions,
-	useSelectedComments
+	useSelectedComments,
+	useCommentEditHistory
 };

@@ -6,6 +6,7 @@ import { FC } from 'react';
 import { JoinedRoomsModalTitle } from '~src/components/AppLayout/JoinedRooms/Modal';
 import { ConnectWalletModalTitle } from '~src/components/ConnectWallet';
 import { SelectedWalletModalTitle } from '~src/components/ConnectWallet/FetchingAccounts';
+import EditHistoryModalTitle from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/Comments/Comment/Header/EditHistory/ModalTitle';
 import { ETitleType } from '~src/redux/modal/@types';
 import { useWalletSelector } from '~src/redux/selectors';
 
@@ -21,6 +22,8 @@ const ModalTitle: FC<IModalTitleProps> = (props) => {
 		return <ConnectWalletModalTitle />;
 	case ETitleType.MULTIPLE_JOINED_ROOMS:
 		return <JoinedRoomsModalTitle />;
+	case ETitleType.COMMENT_EDIT_HISTORY:
+		return <EditHistoryModalTitle />;
 	default:
 		return <></>;
 	}
