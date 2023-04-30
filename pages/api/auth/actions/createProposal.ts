@@ -87,20 +87,22 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: `Proposal with id ${newID} already exists in a Room with id ${room_id} and a House with id ${house_id}.` });
 	}
 
-	const newProposal: IProposal = {
+	const newProposal: Omit<IProposal, 'comments' | 'reactions'> = {
 		...proposal,
-		comments: [],
 		created_at: new Date(),
 		id: newID,
 		proposer_address: proposer_address,
-		reactions: [],
 		updated_at: new Date()
 	};
 
 	await proposalDocRef.set(newProposal, { merge: true });
 
 	res.status(StatusCodes.OK).json({
-		createdProposal: newProposal
+		createdProposal: {
+			...newProposal,
+			comments: [],
+			reactions: []
+		}
 	});
 };
 

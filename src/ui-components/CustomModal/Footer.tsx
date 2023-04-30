@@ -5,6 +5,7 @@
 import { Skeleton } from 'antd';
 import dynamic from 'next/dynamic';
 import { FC } from 'react';
+import SentimentModalFooter from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/CreateComment/Sentiment/Footer';
 import { EFooterType } from '~src/redux/modal/@types';
 
 interface IModalFooterProps {
@@ -20,6 +21,8 @@ const ModalFooter: FC<IModalFooterProps> = (props) => {
 	switch(props.type) {
 	case EFooterType.FETCHING_WALLET_ACCOUNTS:
 		return <SelectedWalletModalFooter />;
+	case EFooterType.COMMENT_SENTIMENT:
+		return <SentimentModalFooter />;
 	default:
 		return <></>;
 	}

@@ -5,6 +5,8 @@
 :root {
     --app_background: #22252D;
     --blue_primary: #66A5FF;
+    --purple_primary: #7E2FDD;
+    --grey_light: #A0A6AE;
     --grey_primary: #94A2AF;
     --grey_secondary: #3d4349;
     --grey_tertiary: #5E6F80;
@@ -49,6 +51,7 @@
     box-sizing: border-box;
     padding: 0;
     margin: 0;
+    scroll-behavior: smooth;
 }
 
 body {
@@ -65,10 +68,18 @@ a {
     color: inherit;
     text-decoration: none;
 }
+
+p {
+    margin: 0 !important;
+}
+
+/* MODAL CSS */
 .ant-modal-content {
     background-color: var(--app_background) !important;
     color: white !important;
 }
+/* MODAL CSS */
+
 ul.ant-dropdown-menu {
     background: var(--app_background) !important;
     border: 1px solid var(--grey_secondary);
@@ -333,10 +344,10 @@ li.ant-picker-time-panel-cell-disabled .ant-picker-time-panel-cell-inner {
 
 
 /* TINYMCE content render */
-#html-description ul, ol {
+.html-content ul, ol {
     padding-left: 15px;
 }
-#html-description td {
+.html-content td {
     padding: 3px 6px;
 }
 /* TINYMCE content render */

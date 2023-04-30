@@ -6,6 +6,7 @@ import { FC } from 'react';
 import JoinedRoomsModalContent from '~src/components/AppLayout/JoinedRooms/Modal';
 import ConnectWallet from '~src/components/ConnectWallet';
 import FetchingAccounts from '~src/components/ConnectWallet/FetchingAccounts';
+import SentimentModalContent from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/CreateComment/Sentiment/Content';
 import { EContentType } from '~src/redux/modal/@types';
 
 interface IModalContentProps {
@@ -20,6 +21,8 @@ const ModalContent: FC<IModalContentProps> = (props) => {
 		return <FetchingAccounts />;
 	case EContentType.MULTIPLE_JOINED_ROOMS:
 		return <JoinedRoomsModalContent />;
+	case EContentType.COMMENT_SENTIMENT:
+		return <SentimentModalContent />;
 	default:
 		return <></>;
 	}

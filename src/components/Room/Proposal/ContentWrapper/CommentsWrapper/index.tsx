@@ -20,7 +20,7 @@ const CommentsWrapper = () => {
 			<CreateComment />
 			{
 				comments && Array.isArray(comments) && comments.length > 0?
-					<Comments />
+					<Comments comments={comments} />
 					: null
 			}
 		</div>

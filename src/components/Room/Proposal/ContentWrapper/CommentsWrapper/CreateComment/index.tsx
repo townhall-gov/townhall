@@ -1,11 +1,11 @@
 // Copyright 2019-2025 @polka-labs/townhall authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
+
 import React, { useRef } from 'react';
 import { useProfileSelector, useProposalSelector } from '~src/redux/selectors';
 import Address from '~src/ui-components/Address';
 import TextEditor from '~src/ui-components/TextEditor';
-import CommentedUserImage from './CommentedUserImage';
 import { useDispatch } from 'react-redux';
 import { proposalActions } from '~src/redux/proposal';
 import { useCommentCreation } from '~src/redux/proposal/selectors';
@@ -15,6 +15,10 @@ import getErrorMessage from '~src/utils/getErrorMessage';
 import api from '~src/services/api';
 import { ICommentBody, ICommentResponse } from 'pages/api/auth/actions/comment';
 import { EAction } from '~src/types/enums';
+import CommentedUserImage from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/Comments/Comment/CommentedUserImage';
+import { modalActions } from '~src/redux/modal';
+import { EContentType, EFooterType, ETitleType } from '~src/redux/modal/@types';
+import classNames from 'classnames';
 
 const CreateComment = () => {
 	const commentCreation = useCommentCreation();
@@ -26,6 +30,15 @@ const CreateComment = () => {
 	if (!user || !user.address) {
 		return null;
 	}
+
+	const onSentiment = async () => {
+		dispatch(modalActions.setModal({
+			contentType: EContentType.COMMENT_SENTIMENT,
+			footerType: EFooterType.COMMENT_SENTIMENT,
+			open: true,
+			titleType: ETitleType.NONE
+		}));
+	};
 
 	const onComment = async () => {
 		if (loading) return;
@@ -40,7 +53,7 @@ const CreateComment = () => {
 		try {
 			if (proposal) {
 				dispatch(proposalActions.setLoading(true));
-				const { data, error } = await api.post<ICommentResponse, ICommentBody>('auth/action/comment', {
+				const { data, error } = await api.post<ICommentResponse, ICommentBody>('auth/actions/comment', {
 					action_type: EAction.ADD,
 					comment: {
 						// TODO: we are sending redundant data, will improve this later
@@ -101,12 +114,12 @@ const CreateComment = () => {
 		}
 	};
 	return (
-		<section className='flex gap-x-[10px]'>
+		<section className='flex gap-x-[10px] p-2 min-h-[321px]'>
 			<div className='w-10'>
 				<CommentedUserImage />
 			</div>
 			<div className='flex-1 flex flex-col gap-y-[13px]'>
-				<p className='flex items-center gap-x-2 m-0 text-base text-white font-medium leading-[20px] tracking-[0.01em]'>
+				<div className='flex items-center gap-x-2 m-0 text-base text-white font-medium leading-[20px] tracking-[0.01em]'>
 					<span>By</span>
 					{
 						user.username?
@@ -119,7 +132,7 @@ const CreateComment = () => {
 								/>
 							)
 					}
-				</p>
+				</div>
 				<TextEditor
 					initialValue={''}
 					isDisabled={loading}
@@ -137,10 +150,24 @@ const CreateComment = () => {
 						}, 1000);
 					} }
 				/>
-				<div className='flex items-center justify-end'>
+				<div className='flex items-center justify-end gap-x-3'>
 					<button
+						disabled={loading}
+						onClick={onSentiment}
+						className={classNames('border border-solid border-blue_primary text-blue_primary py-1 px-6 rounded-md text-base font-medium bg-transparent flex items-center justify-center', {
+							'cursor-not-allowed': loading,
+							'cursor-pointer': !loading
+						})}
+					>
+						Sentiment
+					</button>
+					<button
+						disabled={loading}
 						onClick={onComment}
-						className='border border-solid border-blue_primary text-blue_primary py-1 px-6 rounded-md text-base font-medium bg-transparent flex items-center justify-center cursor-pointer'
+						className={classNames('border border-solid border-blue_primary text-blue_primary py-1 px-6 rounded-md text-base font-medium bg-transparent flex items-center justify-center', {
+							'cursor-not-allowed': loading,
+							'cursor-pointer': !loading
+						})}
 					>
 						Comment
 					</button>

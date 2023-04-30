@@ -14,5 +14,5 @@ export interface IProposalStore {
 
 export type ICommentCreation = {
     content: string;
-    sentiment: ESentiment | null;
+    sentiment: ESentiment;
 };

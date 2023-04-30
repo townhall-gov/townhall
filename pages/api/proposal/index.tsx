@@ -7,7 +7,8 @@ import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
 import { proposalCollection } from '~src/services/firebase/utils';
-import { IProposal, IReaction } from '~src/types/schema';
+import { ESentiment } from '~src/types/enums';
+import { IComment, IProposal, IReaction } from '~src/types/schema';
 import apiErrorWithStatusCode from '~src/utils/apiErrorWithStatusCode';
 import convertFirestoreTimestampToDate from '~src/utils/convertFirestoreTimestampToDate';
 import getErrorMessage from '~src/utils/getErrorMessage';
@@ -51,8 +52,31 @@ export const getProposal: TGetProposalFn = async (params) => {
 					}
 				}
 			});
+			const comments: IComment[] = [];
+			const commentsQuerySnapshot = await proposalDocRef.collection('comments').orderBy('created_at', 'desc').get();
+			commentsQuerySnapshot.docs.forEach((doc) => {
+				if (doc && doc.exists) {
+					const data  = doc.data() as IComment;
+					if (data && data.user_address && data.id && !data.is_deleted) {
+						const comment: IComment = {
+							content: data.content,
+							created_at: convertFirestoreTimestampToDate(data.created_at),
+							deleted_at: convertFirestoreTimestampToDate(data.deleted_at),
+							history: data.history || [],
+							id: data.id,
+							is_deleted: data.is_deleted || false,
+							proposal_id: data.proposal_id || proposal_id,
+							reactions: data.reactions || [],
+							sentiment: data.sentiment || ESentiment.NEUTRAL,
+							updated_at: convertFirestoreTimestampToDate(data.updated_at),
+							user_address: data.user_address
+						};
+						comments.push(comment);
+					}
+				}
+			});
 			const proposal: IProposal = {
-				comments: [],
+				comments: comments,
 				created_at: convertFirestoreTimestampToDate(data.created_at),
 				description: data.description || '',
 				discussion: data.discussion || '',

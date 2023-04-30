@@ -32,6 +32,66 @@ import RedditSVG from '~assets/socials/reddit.svg';
 import TelegramSVG from '~assets/socials/telegram.svg';
 import TwitterSVG from '~assets/socials/twitter.svg';
 
+// Sentiment Import Start
+import AgainstSVG from '~assets/sentiment/against.svg';
+import SlightlyAgainstSVG from '~assets/sentiment/slightly-against.svg';
+import NeutralSVG from '~assets/sentiment/neutral.svg';
+import SlightlyForSVG from '~assets/sentiment/slightly-for.svg';
+import ForSVG from '~assets/sentiment/for.svg';
+// Sentiment Import End
+
+// Comment Related Icons Import Start
+import ReplySVG from '~assets/icons/reply.svg';
+import DeleteSVG from '~assets/icons/delete.svg';
+import EditSVG from '~assets/icons/edit.svg';
+import FlagSVG from '~assets/icons/flag.svg';
+import LinkSVG from '~assets/icons/link.svg';
+import ShareSVG from '~assets/icons/share.svg';
+// Comment Related Icons Import End
+
+// Sentiment Icons Start
+export const AgainstIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={AgainstSVG} {...props} />
+);
+
+export const SlightlyAgainstIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={SlightlyAgainstSVG} {...props} />
+);
+
+export const NeutralIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={NeutralSVG} {...props} />
+);
+
+export const SlightlyForIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={SlightlyForSVG} {...props} />
+);
+
+export const ForIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={ForSVG} {...props} />
+);
+// Sentiment Icons End
+
+// Comment Related Icons Start
+export const ReplyIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={ReplySVG} {...props} />
+);
+export const ShareIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={ShareSVG} {...props} />
+);
+export const DeleteIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={DeleteSVG} {...props} />
+);
+export const EditIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={EditSVG} {...props} />
+);
+export const FlagIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={FlagSVG} {...props} />
+);
+export const LinkIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={LinkSVG} {...props} />
+);
+// Comment Related Icons End
+
 export const DiscordIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={DiscordSVG} {...props} />
 );

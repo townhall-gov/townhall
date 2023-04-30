@@ -104,7 +104,11 @@ const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req,
 		newComment.proposal_id = proposal_id;
 		newComment.user_address = user_address;
 		newComment.history = [];
-		await commentDocRef.set(newComment, { merge: true });
+		const comment = {
+			...newComment
+		};
+		delete (comment as any).reactions;
+		await commentDocRef.set(comment, { merge: true });
 	} else if (action_type === EAction.DELETE) {
 		const commentDocRef = commentsColRef.doc(String(comment.id));
 		const commentDoc = await commentDocRef.get();

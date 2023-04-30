@@ -6,12 +6,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 import { ICommentCreation, IProposalStore } from './@types';
 import { IComment, IProposal, IReaction } from '~src/types/schema';
-import { EAction } from '~src/types/enums';
+import { EAction, ESentiment } from '~src/types/enums';
 
 const initialState: IProposalStore = {
 	commentCreation: {
 		content: '',
-		sentiment: null
+		sentiment: ESentiment.NEUTRAL
 	},
 	error: null,
 	loading: false,
@@ -42,7 +42,7 @@ export const proposalStore = createSlice({
 			localStorage.removeItem('commentCreation');
 			state.commentCreation = {
 				content: '',
-				sentiment: null
+				sentiment: ESentiment.NEUTRAL
 			};
 		},
 		setCommentCreation_Field: (state, action: PayloadAction<ICommentCreationFieldPayload>) => {
@@ -100,7 +100,13 @@ export const proposalStore = createSlice({
 					}
 				} else {
 					if (action_type === EAction.ADD) {
-						state.proposal.comments.push(comment);
+						let url = window.location.href;
+						const matches = window.location.href.match(/proposal\/\w+#.*/);
+						if (matches && matches.length > 0) {
+							url = window.location.href?.replace(/#.*/, '');
+						}
+						window.history.replaceState(null, null!, url + '#' + comment.id);
+						state.proposal.comments.unshift(comment);
 					}
 				}
 			}

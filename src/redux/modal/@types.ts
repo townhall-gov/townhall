@@ -19,10 +19,12 @@ export enum ETitleType {
 export enum EFooterType {
     NONE = 'none',
     FETCHING_WALLET_ACCOUNTS = 'fetching-wallet-accounts',
+    COMMENT_SENTIMENT = 'sentiment',
 }
 export enum EContentType {
     NONE = 'none',
     CONNECT_WALLET = 'connect-wallet',
     FETCHING_WALLET_ACCOUNTS = 'fetching-wallet-accounts',
     MULTIPLE_JOINED_ROOMS = 'multiple-joined-rooms',
+    COMMENT_SENTIMENT = 'sentiment',
 }

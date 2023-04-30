@@ -18,9 +18,11 @@ module.exports = {
 				app_background: 'var(--app_background)',
 				blue_primary: 'var(--blue_primary)',
 				green_primary: 'var(--green_primary)',
+				grey_light: 'var(--grey_light)',
 				grey_primary: 'var(--grey_primary)',
 				grey_secondary: 'var(--grey_secondary)',
 				grey_tertiary: 'var(--grey_tertiary)',
+				purple_primary: 'var(--purple_primary)',
 				red_primary: 'var(--red_primary)'
 			},
 			fontFamily: {
