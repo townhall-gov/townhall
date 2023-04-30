@@ -3,11 +3,11 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import React, { FC } from 'react';
-import SentimentIcon from '~src/ui-components/SentimentIcon';
 import CommentReactions from './Reactions';
 import CommentReply from './Reply';
 import CommentOtherActionsDropdown from './Other';
 import { IComment } from '~src/types/schema';
+import Sentiment from './Sentiment';
 
 interface ICommentFooterProps {
 	comment: IComment;
@@ -16,22 +16,13 @@ interface ICommentFooterProps {
 const CommentFooter: FC<ICommentFooterProps> = (props) => {
 	const { comment } = props;
 	if (!comment) return null;
-	const { sentiment, id } = comment;
+	const { sentiment } = comment;
 	return (
 		<footer className='flex items-center gap-x-3'>
-			{
-				sentiment?
-					<SentimentIcon
-						type={sentiment}
-						className='text-purple_primary text-[22px]'
-					/>
-					: null
-			}
+			<Sentiment sentiment={sentiment} />
 			<CommentReactions />
 			<CommentReply />
-			<CommentOtherActionsDropdown
-				comment_id={id}
-			/>
+			<CommentOtherActionsDropdown comment={comment} />
 		</footer>
 	);
 };

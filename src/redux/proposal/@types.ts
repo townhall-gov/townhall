@@ -10,6 +10,7 @@ export interface IProposalStore {
     error: string | null;
     proposal: IProposal | null;
     commentCreation: ICommentCreation;
+    isAllCommentsVisible: boolean;
 }
 
 export type ICommentCreation = {

@@ -14,6 +14,7 @@ const initialState: IProposalStore = {
 		sentiment: ESentiment.NEUTRAL
 	},
 	error: null,
+	isAllCommentsVisible: false,
 	loading: false,
 	proposal: null
 };
@@ -61,6 +62,9 @@ export const proposalStore = createSlice({
 		setError: (state, action: PayloadAction<string | null>) => {
 			state.error = action.payload;
 		},
+		setIsAllCommentsVisible: (state, action: PayloadAction<boolean>) => {
+			state.isAllCommentsVisible = action.payload;
+		},
 		setLoading: (state, action: PayloadAction<boolean>) => {
 			state.loading = action.payload;
 		},
@@ -94,7 +98,7 @@ export const proposalStore = createSlice({
 				const index = state.proposal.comments.findIndex((r) => r.id === comment.id);
 				if (index > -1) {
 					if (action_type === EAction.DELETE) {
-						state.proposal.reactions.splice(index, 1);
+						state.proposal.comments.splice(index, 1);
 					} else if (action_type === EAction.EDIT) {
 						state.proposal.comments[index] = comment;
 					}

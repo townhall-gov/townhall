@@ -37,8 +37,28 @@ const useCommentCreation = () => {
 	return proposal.commentCreation;
 };
 
+const useSelectedComments = (select: number) => {
+	const { proposal, isAllCommentsVisible } = useProposalSelector();
+	if (!proposal || !proposal.comments || !Array.isArray(proposal.comments)) return {
+		comments: [],
+		total: 0
+	};
+	if (isAllCommentsVisible) {
+		return {
+			comments: proposal.comments,
+			total: proposal.comments.length
+		};
+	} else {
+		return {
+			comments: proposal.comments.slice(0, select),
+			total: proposal.comments.length
+		};
+	}
+};
+
 export {
 	useCommentCreation,
 	useUserReaction,
-	useReactions
+	useReactions,
+	useSelectedComments
 };
