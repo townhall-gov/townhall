@@ -5,7 +5,6 @@
 import React, { useRef } from 'react';
 import { useProfileSelector, useProposalSelector } from '~src/redux/selectors';
 import Address from '~src/ui-components/Address';
-import TextEditor from '~src/ui-components/TextEditor';
 import { useDispatch } from 'react-redux';
 import { proposalActions } from '~src/redux/proposal';
 import { useCommentCreation } from '~src/redux/proposal/selectors';
@@ -18,7 +17,7 @@ import { EAction } from '~src/types/enums';
 import CommentedUserImage from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/Comments/Comment/CommentedUserImage';
 import { modalActions } from '~src/redux/modal';
 import { EContentType, EFooterType, ETitleType } from '~src/redux/modal/@types';
-import classNames from 'classnames';
+import CommentEditor from '../CommentEditor';
 
 const CreateComment = () => {
 	const commentCreation = useCommentCreation();
@@ -133,12 +132,12 @@ const CreateComment = () => {
 							)
 					}
 				</div>
-				<TextEditor
-					initialValue={''}
-					isDisabled={loading}
-					height={225}
-					value={commentCreation?.content}
+				<CommentEditor
 					localStorageKey='commentCreation'
+					onSentiment={onSentiment}
+					onComment={onComment}
+					onCancel={() => {}}
+					disabled={loading}
 					onChange={(v) => {
 						clearTimeout(timeout.current);
 						timeout.current = setTimeout(() => {
@@ -148,30 +147,10 @@ const CreateComment = () => {
 							}));
 							clearTimeout(timeout.current);
 						}, 1000);
-					} }
+					}}
+					initialValue=''
+					value={commentCreation?.content}
 				/>
-				<div className='flex items-center justify-end gap-x-3'>
-					<button
-						disabled={loading}
-						onClick={onSentiment}
-						className={classNames('border border-solid border-blue_primary text-blue_primary py-1 px-6 rounded-md text-base font-medium bg-transparent flex items-center justify-center', {
-							'cursor-not-allowed': loading,
-							'cursor-pointer': !loading
-						})}
-					>
-						Sentiment
-					</button>
-					<button
-						disabled={loading}
-						onClick={onComment}
-						className={classNames('border border-solid border-blue_primary text-blue_primary py-1 px-6 rounded-md text-base font-medium bg-transparent flex items-center justify-center', {
-							'cursor-not-allowed': loading,
-							'cursor-pointer': !loading
-						})}
-					>
-						Comment
-					</button>
-				</div>
 			</div>
 		</section>
 	);

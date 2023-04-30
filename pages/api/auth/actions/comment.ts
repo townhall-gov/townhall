@@ -15,6 +15,7 @@ import { firebaseAdmin } from '~src/services/firebase';
 import { proposalCollection } from '~src/services/firebase/utils';
 import { EAction, ESentiment } from '~src/types/enums';
 import { IComment, IHistoryComment } from '~src/types/schema';
+import convertFirestoreTimestampToDate from '~src/utils/convertFirestoreTimestampToDate';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
 
 export interface ICommentBody {
@@ -140,6 +141,13 @@ const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req,
 			};
 			// Populate history array
 			newComment.history = (data.history && Array.isArray(data.history)) ? [...data.history, historyComment] : [historyComment];
+			newComment.history = newComment.history.map((historyItem) => {
+				return {
+					content: historyItem.content,
+					created_at: convertFirestoreTimestampToDate(historyItem.created_at),
+					sentiment: historyItem.sentiment || ESentiment.NEUTRAL
+				};
+			});
 			// Update comment date
 			newComment.updated_at = now;
 			await commentDocRef.update({

@@ -53,16 +53,23 @@ export const getProposal: TGetProposalFn = async (params) => {
 				}
 			});
 			const comments: IComment[] = [];
-			const commentsQuerySnapshot = await proposalDocRef.collection('comments').orderBy('created_at', 'desc').get();
+			const commentsQuerySnapshot = await proposalDocRef.collection('comments').orderBy('updated_at', 'desc').get();
 			commentsQuerySnapshot.docs.forEach((doc) => {
 				if (doc && doc.exists) {
 					const data  = doc.data() as IComment;
 					if (data && data.user_address && data.id && !data.is_deleted) {
+						const history = data.history || [];
 						const comment: IComment = {
 							content: data.content,
 							created_at: convertFirestoreTimestampToDate(data.created_at),
 							deleted_at: convertFirestoreTimestampToDate(data.deleted_at),
-							history: data.history || [],
+							history: history.map((historyItem) => {
+								return {
+									content: historyItem.content,
+									created_at: convertFirestoreTimestampToDate(historyItem.created_at),
+									sentiment: historyItem.sentiment || ESentiment.NEUTRAL
+								};
+							}),
 							id: data.id,
 							is_deleted: data.is_deleted || false,
 							proposal_id: data.proposal_id || proposal_id,

@@ -13,6 +13,7 @@ const initialState: IProposalStore = {
 		content: '',
 		sentiment: ESentiment.NEUTRAL
 	},
+	editableComment: null,
 	error: null,
 	isAllCommentsVisible: false,
 	loading: false,
@@ -46,6 +47,10 @@ export const proposalStore = createSlice({
 				sentiment: ESentiment.NEUTRAL
 			};
 		},
+		resetEditableComment: (state) => {
+			localStorage.removeItem('commentEdit');
+			state.editableComment = null;
+		},
 		setCommentCreation_Field: (state, action: PayloadAction<ICommentCreationFieldPayload>) => {
 			const obj = action.payload;
 			if (obj) {
@@ -58,6 +63,9 @@ export const proposalStore = createSlice({
 					state.commentCreation.sentiment = value;
 				}
 			}
+		},
+		setEditableComment: (state, action: PayloadAction<IComment | null>) => {
+			state.editableComment = action.payload;
 		},
 		setError: (state, action: PayloadAction<string | null>) => {
 			state.error = action.payload;
@@ -100,7 +108,14 @@ export const proposalStore = createSlice({
 					if (action_type === EAction.DELETE) {
 						state.proposal.comments.splice(index, 1);
 					} else if (action_type === EAction.EDIT) {
-						state.proposal.comments[index] = comment;
+						let url = window.location.href;
+						const matches = window.location.href.match(/proposal\/\w+#.*/);
+						if (matches && matches.length > 0) {
+							url = window.location.href?.replace(/#.*/, '');
+						}
+						window.history.replaceState(null, null!, url + '#' + comment.id);
+						state.proposal.comments.splice(index, 1);
+						state.proposal.comments.unshift(comment);
 					}
 				} else {
 					if (action_type === EAction.ADD) {

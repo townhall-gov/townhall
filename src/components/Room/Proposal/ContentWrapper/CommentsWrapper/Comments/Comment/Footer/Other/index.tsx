@@ -100,6 +100,10 @@ const CommentOtherActionsDropdown: FC<ICommentOtherActionsDropdownProps> = (prop
 		case 'delete': {
 			onDelete();
 		}
+			break;
+		case 'edit': {
+			dispatch(proposalActions.setEditableComment(comment));
+		}
 		}
 	};
 

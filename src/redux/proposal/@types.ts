@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { ESentiment } from '~src/types/enums';
-import { IProposal } from '~src/types/schema';
+import { IComment, IProposal } from '~src/types/schema';
 
 export interface IProposalStore {
     loading: boolean;
@@ -11,6 +11,7 @@ export interface IProposalStore {
     proposal: IProposal | null;
     commentCreation: ICommentCreation;
     isAllCommentsVisible: boolean;
+    editableComment: IComment | null;
 }
 
 export type ICommentCreation = {
