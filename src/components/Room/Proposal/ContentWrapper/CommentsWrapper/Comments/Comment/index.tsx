@@ -15,10 +15,11 @@ import { proposalActions } from '~src/redux/proposal';
 
 interface ICommentProps {
 	comment: IComment;
+	isAllCommentsVisible: boolean;
 }
 
 const Comment: FC<ICommentProps> = (props) => {
-	const { comment } = props;
+	const { comment, isAllCommentsVisible } = props;
 	const { asPath } = useRouter();
 	const dispatch = useDispatch();
 
@@ -26,7 +27,9 @@ const Comment: FC<ICommentProps> = (props) => {
 		if (typeof window == 'undefined') return;
 		if (window.location.hash) {
 			const hash = window.location.hash.replace('#', '');
-			dispatch(proposalActions.setIsAllCommentsVisible(true));
+			if (!isAllCommentsVisible) {
+				dispatch(proposalActions.setIsAllCommentsVisible(true));
+			}
 			const commentWrapperElm = document.getElementById(hash);
 			const commentContentElm = document.getElementById(`${hash}-content`);
 			if (commentWrapperElm && commentContentElm && hash === `${comment.id}`) {

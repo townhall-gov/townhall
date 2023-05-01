@@ -24,7 +24,10 @@ const CommentsWrapper = () => {
 			<CreateComment />
 			{
 				comments && Array.isArray(comments) && comments.length > 0?
-					<Comments comments={comments} />
+					<Comments
+						isAllCommentsVisible={isAllCommentsVisible}
+						comments={comments}
+					/>
 					: null
 			}
 			{

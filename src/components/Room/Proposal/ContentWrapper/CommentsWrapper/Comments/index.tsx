@@ -7,10 +7,11 @@ import Comment from './Comment';
 
 interface ICommentsProps {
 	comments: IComment[];
+	isAllCommentsVisible: boolean;
 }
 
 const Comments: FC<ICommentsProps> = (props) => {
-	const { comments } = props;
+	const { comments, isAllCommentsVisible } = props;
 	return (
 		<section className='text-white mt-5 flex flex-col gap-y-6'>
 			{
@@ -19,6 +20,7 @@ const Comments: FC<ICommentsProps> = (props) => {
 						<Comment
 							key={`${comment.id} + ${index}`}
 							comment={comment}
+							isAllCommentsVisible={isAllCommentsVisible}
 						/>
 					);
 				})
