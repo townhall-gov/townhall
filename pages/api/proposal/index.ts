@@ -33,15 +33,18 @@ export const getProposal: TGetProposalFn = async (params) => {
 		if (!proposal_id && !(proposal_id == 0)) {
 			throw apiErrorWithStatusCode('Invalid proposalId.', StatusCodes.BAD_REQUEST);
 		}
+		// Get proposal
 		const proposalDocRef = proposalCollection(house_id, room_id).doc(String(proposal_id));
 		const proposalDocSnapshot = await proposalDocRef.get();
 		const data = proposalDocSnapshot?.data() as IProposal;
+		// Check if proposal exists
 		if (!proposalDocSnapshot || !proposalDocSnapshot.exists || !data) {
 			throw apiErrorWithStatusCode(`Proposal with id ${proposal_id} is not found in a room with id ${room_id} and a house with id ${house_id}.`, StatusCodes.NOT_FOUND);
 		}
 
 		// Sanitization
 		if ((data.id || data.id == 0) && data.house_id && data.room_id && data.proposer_address) {
+			// Get proposal reactions
 			const reactions: IReaction[] = [];
 			const reactionsQuerySnapshot = await proposalDocRef.collection('reactions').get();
 			reactionsQuerySnapshot.docs.forEach((doc) => {
@@ -52,36 +55,60 @@ export const getProposal: TGetProposalFn = async (params) => {
 					}
 				}
 			});
+			// Get comments
 			const comments: IComment[] = [];
 			const commentsQuerySnapshot = await proposalDocRef.collection('comments').orderBy('updated_at', 'desc').get();
-			commentsQuerySnapshot.docs.forEach((doc) => {
+			const commentsPromise = commentsQuerySnapshot.docs.map(async (doc) => {
 				if (doc && doc.exists) {
 					const data  = doc.data() as IComment;
+					// only take comment which is not deleted
 					if (data && data.user_address && data.id && !data.is_deleted) {
-						const history = data.history || [];
+						// need to create history array manually because we need to transform the created_at date
+						const history = (data.history || []).map((historyItem) => {
+							return {
+								content: historyItem.content,
+								created_at: convertFirestoreTimestampToDate(historyItem.created_at),
+								sentiment: historyItem.sentiment || ESentiment.NEUTRAL
+							};
+						});
+						// Get comment reactions
+						const reactions: IReaction[] = [];
+						const reactionsQuerySnapshot = await doc.ref.collection('reactions').get();
+						reactionsQuerySnapshot.docs.forEach((doc) => {
+							if (doc && doc.exists) {
+								const data  = doc.data() as IReaction;
+								if (data && data.user_address && data.id && data.type) {
+									reactions.push(data);
+								}
+							}
+						});
+						// Construct comment
 						const comment: IComment = {
 							content: data.content,
 							created_at: convertFirestoreTimestampToDate(data.created_at),
 							deleted_at: convertFirestoreTimestampToDate(data.deleted_at),
-							history: history.map((historyItem) => {
-								return {
-									content: historyItem.content,
-									created_at: convertFirestoreTimestampToDate(historyItem.created_at),
-									sentiment: historyItem.sentiment || ESentiment.NEUTRAL
-								};
-							}),
+							history: history,
 							id: data.id,
 							is_deleted: data.is_deleted || false,
 							proposal_id: data.proposal_id || proposal_id,
-							reactions: data.reactions || [],
+							reactions: reactions,
 							sentiment: data.sentiment || ESentiment.NEUTRAL,
 							updated_at: convertFirestoreTimestampToDate(data.updated_at),
 							user_address: data.user_address
 						};
-						comments.push(comment);
+						return comment;
 					}
 				}
 			});
+			// Wait for all comments to be resolved
+			const commentsPromiseSettledResult = await Promise.allSettled(commentsPromise);
+			commentsPromiseSettledResult.forEach((result) => {
+				// Only push comment if it is resolved and has value
+				if (result && result.status === 'fulfilled' && result.value) {
+					comments.push(result.value);
+				}
+			});
+			// Construct proposal
 			const proposal: IProposal = {
 				comments: comments,
 				created_at: convertFirestoreTimestampToDate(data.created_at),

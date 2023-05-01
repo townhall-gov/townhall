@@ -68,6 +68,35 @@ export const proposalStore = createSlice({
 		setCommentEditHistory: (state, action: PayloadAction<IHistoryComment[]>) => {
 			state.commentEditHistory = action.payload;
 		},
+		setCommentReaction: (state, action: PayloadAction<{
+			reaction: IReaction;
+			isDeleted: boolean;
+			comment_id: string;
+		}>) => {
+			const { reaction, isDeleted, comment_id } = action.payload;
+			if (state?.proposal?.comments && Array.isArray(state.proposal.comments)) {
+				const comment = state.proposal.comments.find((c) => c.id === comment_id);
+				if (comment && comment.reactions && Array.isArray(comment.reactions)) {
+					state.proposal.comments = state.proposal.comments.map((comment) => {
+						if (comment.id === comment_id) {
+							const index = comment.reactions.findIndex((r) => r.id === reaction.id);
+							if (index > -1) {
+								if (isDeleted) {
+									comment.reactions.splice(index, 1);
+								} else {
+									comment.reactions[index] = reaction;
+								}
+							} else {
+								comment.reactions.push(reaction);
+							}
+						}
+						return {
+							...comment
+						};
+					});
+				}
+			}
+		},
 		setEditableComment: (state, action: PayloadAction<IComment | null>) => {
 			state.editableComment = action.payload;
 		},

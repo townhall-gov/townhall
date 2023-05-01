@@ -32,6 +32,30 @@ const useReactions = (type: EReaction) => {
 	return reactions;
 };
 
+const useCommentUserReaction = (reactions: IReaction[], address: string) => {
+	let userReaction: IReaction | undefined;
+	if (reactions && Array.isArray(reactions)) {
+		userReaction = reactions.find((reaction) => {
+			if (reaction.user_address === address) {
+				return reaction;
+			}
+		});
+	}
+	return userReaction?.type;
+};
+
+const useCommentReactions = (reactions: IReaction[], type: EReaction) => {
+	const newReactions: IReaction[] = [];
+	if (reactions && Array.isArray(reactions)) {
+		reactions.forEach((reaction) => {
+			if (reaction.type === type) {
+				newReactions.push(reaction);
+			}
+		});
+	}
+	return newReactions;
+};
+
 const useCommentCreation = () => {
 	const proposal = useProposalSelector();
 	return proposal.commentCreation;
@@ -66,5 +90,7 @@ export {
 	useUserReaction,
 	useReactions,
 	useSelectedComments,
-	useCommentEditHistory
+	useCommentEditHistory,
+	useCommentUserReaction,
+	useCommentReactions
 };
