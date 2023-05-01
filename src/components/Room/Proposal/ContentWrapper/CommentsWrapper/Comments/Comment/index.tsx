@@ -10,6 +10,8 @@ import CommentContent from './Content';
 import CommentFooter from './Footer';
 import RepliesWrapper from './RepliesWrapper';
 import { useRouter } from 'next/router';
+import { useDispatch } from 'react-redux';
+import { proposalActions } from '~src/redux/proposal';
 
 interface ICommentProps {
 	comment: IComment;
@@ -18,11 +20,13 @@ interface ICommentProps {
 const Comment: FC<ICommentProps> = (props) => {
 	const { comment } = props;
 	const { asPath } = useRouter();
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (typeof window == 'undefined') return;
 		if (window.location.hash) {
 			const hash = window.location.hash.replace('#', '');
+			dispatch(proposalActions.setIsAllCommentsVisible(true));
 			const commentWrapperElm = document.getElementById(hash);
 			const commentContentElm = document.getElementById(`${hash}-content`);
 			if (commentWrapperElm && commentContentElm && hash === `${comment.id}`) {
@@ -43,6 +47,7 @@ const Comment: FC<ICommentProps> = (props) => {
 				};
 			}
 		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [asPath, comment.id]);
 
 	if (!comment) return null;

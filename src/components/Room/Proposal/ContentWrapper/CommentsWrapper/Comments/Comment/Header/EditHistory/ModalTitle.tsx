@@ -5,7 +5,7 @@ import React from 'react';
 
 const EditHistoryModalTitle = () => {
 	return (
-		<>Edit History</>
+		<>Comment edit history</>
 	);
 };
 
