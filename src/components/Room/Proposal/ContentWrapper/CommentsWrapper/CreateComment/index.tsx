@@ -133,6 +133,7 @@ const CreateComment = () => {
 					}
 				</div>
 				<CommentEditor
+					imageNamePrefix={`house_${proposal?.house_id}_room_${proposal?.room_id}_proposal_${proposal?.id}_comment`}
 					localStorageKey='commentCreation'
 					onSentiment={onSentiment}
 					onComment={onComment}

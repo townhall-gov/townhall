@@ -110,6 +110,7 @@ const CommentContent: FC<ICommentContentProps> = (props) => {
 						{ReactHTMLParser(comment.content)}
 					</div>
 					:<CommentEditor
+						imageNamePrefix={`house_${proposal?.house_id}_room_${proposal?.room_id}_proposal_${proposal?.id}_comment_${comment?.id}`}
 						localStorageKey='commentEditor'
 						disabled={loading}
 						onChange={(v) => {

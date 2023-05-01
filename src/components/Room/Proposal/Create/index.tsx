@@ -26,7 +26,7 @@ const CreateProposal = () => {
 				isRoomJoined?
 					<>
 						<Title />
-						<Description />
+						<Description imageNamePrefix={`house_${query.house_id}_room_${query?.room_id}_proposal`} />
 						<Tags />
 						<Dates />
 						<HideResult />

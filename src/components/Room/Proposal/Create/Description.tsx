@@ -1,14 +1,19 @@
 // Copyright 2019-2025 @polka-labs/townhall authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
-import React, { useRef } from 'react';
+import React, { FC, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { roomActions } from '~src/redux/room';
 import { useProposalCreation } from '~src/redux/room/selectors';
 import { useRoomSelector } from '~src/redux/selectors';
 import TextEditor from '~src/ui-components/TextEditor';
 
-const Description = () => {
+interface IDescriptionProps {
+	imageNamePrefix: string;
+}
+
+const Description: FC<IDescriptionProps> = (props) => {
+	const { imageNamePrefix } = props;
 	const proposalDescription = useProposalCreation();
 	const dispatch = useDispatch();
 	const timeout = useRef<NodeJS.Timeout>();
@@ -19,6 +24,7 @@ const Description = () => {
 			<TextEditor
 				// Description class is for error validation highlighting
 				className='description'
+				imageNamePrefix={imageNamePrefix}
 				initialValue={''}
 				isDisabled={loading}
 				value={proposalDescription?.description}

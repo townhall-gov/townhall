@@ -14,13 +14,15 @@ interface ICommentEditorProps {
     onChange: (v: string) => void;
     localStorageKey: string;
     onCancel: () => void;
+	imageNamePrefix: string;
 }
 
 const CommentEditor: FC<ICommentEditorProps> = (props) => {
-	const { disabled, onComment, onSentiment, onChange, value, initialValue, localStorageKey, onCancel } = props;
+	const { disabled, onComment, onSentiment, onChange, value, initialValue, localStorageKey, onCancel, imageNamePrefix } = props;
 	return (
 		<div className=' flex flex-col gap-y-[13px]'>
 			<TextEditor
+				imageNamePrefix={imageNamePrefix}
 				initialValue={initialValue}
 				isDisabled={disabled}
 				height={225}

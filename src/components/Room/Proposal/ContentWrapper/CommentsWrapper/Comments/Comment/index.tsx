@@ -10,26 +10,19 @@ import CommentContent from './Content';
 import CommentFooter from './Footer';
 import RepliesWrapper from './RepliesWrapper';
 import { useRouter } from 'next/router';
-import { useDispatch } from 'react-redux';
-import { proposalActions } from '~src/redux/proposal';
 
 interface ICommentProps {
 	comment: IComment;
-	isAllCommentsVisible: boolean;
 }
 
 const Comment: FC<ICommentProps> = (props) => {
-	const { comment, isAllCommentsVisible } = props;
+	const { comment } = props;
 	const { asPath } = useRouter();
-	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (typeof window == 'undefined') return;
 		if (window.location.hash) {
 			const hash = window.location.hash.replace('#', '');
-			if (!isAllCommentsVisible) {
-				dispatch(proposalActions.setIsAllCommentsVisible(true));
-			}
 			const commentWrapperElm = document.getElementById(hash);
 			const commentContentElm = document.getElementById(`${hash}-content`);
 			if (commentWrapperElm && commentContentElm && hash === `${comment.id}`) {
