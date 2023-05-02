@@ -7,6 +7,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import styled from 'styled-components';
 import classNames from 'classnames';
 import { Spin } from 'antd';
+import { IMG_BB_API_KEY } from '~src/global/imgAPIKey';
 
 interface ITextEditorProps {
     className?: string;
@@ -18,8 +19,6 @@ interface ITextEditorProps {
 	isDisabled?: boolean;
 	imageNamePrefix: string;
 }
-
-const IMG_BB_API_KEY = '8ce9959fc4824951a0236e753775328d';
 
 const TextEditor: FC<ITextEditorProps> = (props) => {
 	const { className, height, onChange, localStorageKey, value, isDisabled, imageNamePrefix } = props;

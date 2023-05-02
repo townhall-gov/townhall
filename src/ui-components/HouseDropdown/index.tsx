@@ -61,7 +61,7 @@ const HouseDropdown: FC<IHouseDropdownProps> = (props) => {
 	return (
 		<Dropdown
 			trigger={['click']}
-			className={classNames('cursor-pointer p-4 border border-solid border-blue_primary rounded-2xl', className)}
+			className={classNames('cursor-pointer px-[18.5px] py-[21.5px] border border-solid border-blue_primary rounded-2xl', className)}
 			overlayClassName='ant-dropdown-menu-border-blue_primary'
 			menu={{
 				items: houseItems,

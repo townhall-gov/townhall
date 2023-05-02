@@ -25,6 +25,13 @@ interface IUpdateRoomPayloadType {
 	room: IRoom;
 }
 
+type IRoomDetailsFieldPayload = {
+    [K in keyof IRoomDetails]: {
+      key: K;
+      value: IRoomDetails[K];
+    }
+}[keyof IRoomDetails];
+
 export const roomsStore = createSlice({
 	extraReducers: (builder) => {
 		builder.addCase(HYDRATE, (state, action) => {
@@ -88,19 +95,36 @@ export const roomsStore = createSlice({
 				};
 			}
 		},
-		setRoomCreation_RoomDetails: (state, action: PayloadAction<IRoomDetails | null>) => {
-			const room_details = action.payload;
-			if (state.roomCreation) {
-				state.roomCreation.room_details = room_details;
-			} else {
-				state.roomCreation = {
-					creator_details: null,
-					currentStage: ERoomCreationStage.ROOM_DETAILS,
-					getting_started: null,
-					room_details: room_details,
-					room_socials: null,
-					select_house: null
-				};
+		setRoomCreation_RoomDetails_Field: (state, action: PayloadAction<IRoomDetailsFieldPayload>) => {
+			const obj = action.payload;
+			if (obj) {
+				const { key, value } = obj;
+				if (state.roomCreation) {
+					state.roomCreation.room_details = {
+						description: '',
+						logo: '',
+						name: '',
+						title: '',
+						...state.roomCreation.room_details,
+						[key]: value
+					};
+				} else {
+					state.roomCreation = {
+						creator_details: null,
+						currentStage: ERoomCreationStage.ROOM_DETAILS,
+						getting_started: null,
+						room_details: {
+							description: '',
+							logo: '',
+							name: '',
+							title: '',
+							// eslint-disable-next-line sort-keys
+							[key]: value
+						},
+						room_socials: null,
+						select_house: null
+					};
+				}
 			}
 		},
 		setRoomCreation_RoomSocials: (state, action: PayloadAction<IRoomSocial>) => {

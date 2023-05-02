@@ -30,8 +30,20 @@ const roomCreationValidation = {
 	},
 	[ERoomCreationStage.ROOM_DETAILS]: (roomCreation: IRoomCreation) => {
 		let error = '';
-		if (roomCreation && !roomCreation.room_details?.name) {
-			error =  'Room name is required.';
+		if (roomCreation) {
+			if (roomCreation.room_details) {
+				if (!roomCreation.room_details?.name) {
+					error =  'Room name is required.';
+				} else if (!roomCreation.room_details?.title) {
+					error =  'Room title is required.';
+				} else if (!roomCreation.room_details?.description) {
+					error =  'Room description is required.';
+				} else if (!roomCreation.room_details?.logo) {
+					error =  'Room logo is required.';
+				}
+			} else {
+				error =  'Room details is required.';
+			}
 		}
 		return error;
 	},

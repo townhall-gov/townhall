@@ -14,6 +14,7 @@ import api from '~src/services/api';
 import getErrorMessage from '~src/utils/getErrorMessage';
 import { ICreateRoomBody, ICreateRoomResponse } from 'pages/api/auth/actions/createRoom';
 import { useRouter } from 'next/router';
+import { roomActions } from '~src/redux/room';
 
 const StageChangeBtn = () => {
 	const router = useRouter();
@@ -49,11 +50,12 @@ const StageChangeBtn = () => {
 							room: {
 								contract_address: '',
 								creator_details: creator_details!,
-								description: '',
+								description: room_details?.description || '',
 								house_id: select_house?.id || '',
 								id: room_details?.name || '',
+								logo: room_details?.logo || '',
 								socials: room_socials || [],
-								title: ''
+								title: room_details?.title || ''
 							}
 						});
 						if (error) {
@@ -79,7 +81,8 @@ const StageChangeBtn = () => {
 							}));
 							const room = data.createdRoom;
 							// GO to newly created room page
-							router.push(`/house/${room.house_id}/room/${room.id}`);
+							dispatch(roomActions.setRoom(room));
+							router.push(`/house/${room.house_id}/room/${room.id}/proposals`);
 						}
 					} catch (error) {
 						dispatch(notificationActions.send({

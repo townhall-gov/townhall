@@ -30,6 +30,9 @@ export enum ERoomCreationStage {
 
 export interface IRoomDetails {
     name: string;
+    title: string;
+    description: string;
+    logo: string;
 }
 
 export interface ICreatorDetails {

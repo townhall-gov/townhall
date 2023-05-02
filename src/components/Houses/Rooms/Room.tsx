@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { LoadingOutlined } from '@ant-design/icons';
-import { Spin } from 'antd';
+import { Image, Spin } from 'antd';
 import classNames from 'classnames';
 import Link from 'next/link';
 import { IJoinRoomBody, IJoinRoomResponse } from 'pages/api/auth/actions/joinRoom';
@@ -34,7 +34,7 @@ interface IRoomProps {
 
 const Room: FC<IRoomProps> = (props) => {
 	const { room } = props;
-	const { title, id, house_id, total_members } = room;
+	const { title, id, house_id, total_members, logo } = room;
 	const dispatch = useDispatch();
 	const { user } = useProfileSelector();
 	const isRoomJoined = useProfileIsRoomJoined(house_id, id);
@@ -147,10 +147,15 @@ const Room: FC<IRoomProps> = (props) => {
 					}}
 					className='border border-solid border-blue_primary rounded-lg outline-none flex flex-col gap-y-2 items-center bg-transparent p-5 px-7 cursor-pointer w-full min-w-[188px] min-h-[186px]'
 				>
-					<BlockchainIcon className='text-[45px]' type={EBlockchain.KUSAMA} />
+					{
+						logo?
+							<Image preview={false} width={45} height={45} className='rounded-full' src={logo} alt='room logo' />
+							: <BlockchainIcon className='text-[45px]' type={EBlockchain.KUSAMA} />
+					}
+
 					<h3 className='text-white m-0 p-0 text-2xl leading-[29px] tracking-[0.01em] font-semibold'>{title}</h3>
 					<p className='m-0 text-sm font-normal leading-[17px] text-grey_tertiary'>{total_members} Members</p>
-					<CropFreeIcon className='text-[#94A2AF] text-lg mt--[11px]' />
+					<CropFreeIcon className='text-grey_primary text-lg mt-[3px]' />
 				</Link>
 				<Spin
 					className='text-white'

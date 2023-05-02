@@ -6,6 +6,7 @@ import Link from 'next/link';
 import React, { FC } from 'react';
 import { IHouse } from '~src/types/schema';
 import BlockchainIcon from '~src/ui-components/BlockchainIcon';
+import { CropFreeIcon } from '~src/ui-components/CustomIcons';
 
 interface IHouseProps extends IHouse {}
 
@@ -13,12 +14,13 @@ const House: FC<IHouseProps> = (props) => {
 	const { blockchain, title, id, total_members } = props;
 
 	return (
-		<Link href={`/house/${id}/rooms`} className='border border-solid border-blue_primary rounded-lg outline-none flex flex-col gap-y-2 items-center bg-transparent p-5 px-7 cursor-pointer'>
-			<BlockchainIcon className='text-4xl' type={blockchain} />
-			<h3 className='text-white m-0 p-0 text-xl leading-none tracking-[0.01em] font-normal'>{title}</h3>
-			<p className='m-0 text-xs font-normal leading-[17px] text-grey_tertiary'>
+		<Link href={`/house/${id}/rooms`} className='border border-solid border-blue_primary rounded-lg outline-none flex flex-col gap-y-2 items-center bg-transparent p-5 px-7 cursor-pointer min-w-[188px] min-h-[186px]'>
+			<BlockchainIcon className='text-[45px]' type={blockchain} />
+			<h3 className='text-white m-0 p-0 text-2xl leading-[29px] tracking-[0.01em] font-semibold'>{title}</h3>
+			<p className='m-0 text-sm font-normal leading-[17px] text-grey_tertiary'>
 				{total_members} Members
 			</p>
+			<CropFreeIcon className='text-[#94A2AF] text-lg mt-[3px]' />
 		</Link>
 	);
 };

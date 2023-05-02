@@ -61,7 +61,7 @@ const handler: TNextApiHandler<ICreateRoomResponse, ICreateRoomBody, {}> = async
 	if (roomRefDoc && roomRefDoc.exists) {
 		const data = roomRefDoc.data() as IRoom;
 		if (data && data.house_id === house_id) {
-			return res.status(StatusCodes.NOT_FOUND).json({ error: `Room with id ${room} is already exists in a house with id ${house_id}.` });
+			return res.status(StatusCodes.NOT_FOUND).json({ error: `Room with id ${id} is already exists in a house with id ${house_id}.` });
 		}
 	}
 

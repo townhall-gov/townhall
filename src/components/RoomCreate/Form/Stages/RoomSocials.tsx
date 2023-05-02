@@ -78,7 +78,7 @@ const SocialInput: FC<ISocialInputProps> = (props) => {
 	const dispatch = useDispatch();
 	return (
 		<div className='flex'>
-			<div className='flex items-center justify-center text-white text-2xl border border-r-0 border-solid rounded-2xl rounded-r-none border-blue_primary h-full px-[18.5px] py-[21.5px]'>
+			<div className='flex items-center justify-center text-white text-[22px] leading-none border border-r-0 border-solid rounded-2xl rounded-r-none border-blue_primary h-full px-[18.5px] py-[21.5px]'>
 				<SocialIcon type={type} />
 			</div>
 			<Input

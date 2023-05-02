@@ -23,7 +23,7 @@ const Input: FC<IInputProps> = (props) => {
 				onChange(e.target.value);
 			}}
 			type={type}
-			className={classNames('w-full flex-1 bg-transparent flex items-center justify-center border border-solid border-blue_primary outline-none rounded-2xl px-[18.5px] py-[21.5px] text-[#ABA3A3] placeholder:text-[#ABA3A3] font-normal text-lg leading-[22px]', className, {
+			className={classNames('w-full flex-1 bg-transparent flex items-center justify-center border border-solid border-blue_primary outline-none rounded-2xl px-[18.5px] py-[21.5px] text-white placeholder:text-[#ABA3A3] font-normal text-lg leading-[22px]', className, {
 				'cursor-not-allowed': isDisabled,
 				'cursor-text': !isDisabled
 			})}
