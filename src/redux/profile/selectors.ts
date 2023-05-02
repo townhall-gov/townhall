@@ -60,7 +60,7 @@ const useAuthActionsCheck = () => {
 	};
 	const joinRoom = () => {
 		if (!isRoomJoined) {
-			router.push(`/house/${query.house_id}/room/${query.room_id}`);
+			router.push(`/house/${query.house_id}/room/${query.room_id}/proposals`);
 		}
 	};
 	return {

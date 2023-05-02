@@ -17,6 +17,7 @@ import { ENotificationStatus } from '~src/redux/notification/@types';
 import { profileActions } from '~src/redux/profile';
 import { useProfileIsRoomJoined } from '~src/redux/profile/selectors';
 import { roomActions } from '~src/redux/room';
+import { ERoomStage } from '~src/redux/room/@types';
 import { roomsActions } from '~src/redux/rooms';
 import { useRoomsSelector } from '~src/redux/selectors';
 import { useProfileSelector } from '~src/redux/selectors';
@@ -139,9 +140,10 @@ const Room: FC<IRoomProps> = (props) => {
 				})}
 			>
 				<Link
-					href={`/house/${house_id}/room/${id}`}
+					href={`/house/${house_id}/room/${id}/proposals`}
 					onClick={() => {
 						dispatch(roomActions.setRoom(room));
+						dispatch(roomActions.setCurrentStage(ERoomStage.PROPOSALS));
 					}}
 					className='border border-solid border-blue_primary rounded-lg outline-none flex flex-col gap-y-2 items-center bg-transparent p-5 px-7 cursor-pointer w-full min-w-[188px] min-h-[186px]'
 				>
