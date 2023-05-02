@@ -4,6 +4,10 @@
 
 import { IJoinedRoom } from '~src/types/schema';
 import { useProfileSelector } from '../selectors';
+import { useDispatch } from 'react-redux';
+import { modalActions } from '../modal';
+import { EContentType, EFooterType, ETitleType } from '../modal/@types';
+import { useRouter } from 'next/router';
 
 const useIsLoggedIn = () => {
 	const { user } = useProfileSelector();
@@ -38,8 +42,38 @@ const useProfileJoinedRooms = () => {
 	return joinedRooms;
 };
 
+const useAuthActionsCheck = () => {
+	const { user } = useProfileSelector();
+	const dispatch = useDispatch();
+	const router = useRouter();
+	const { query } = router;
+	const isRoomJoined = useProfileIsRoomJoined(String(query.house_id), String(query.room_id));
+	const connectWallet = () => {
+		if (!user || !user.address) {
+			dispatch(modalActions.setModal({
+				contentType: EContentType.CONNECT_WALLET,
+				footerType: EFooterType.NONE,
+				open: true,
+				titleType: ETitleType.CONNECT_WALLET
+			}));
+		}
+	};
+	const joinRoom = () => {
+		if (!isRoomJoined) {
+			router.push(`/house/${query.house_id}/room/${query.room_id}`);
+		}
+	};
+	return {
+		connectWallet,
+		isLoggedIn: !!(user && user.address),
+		isRoomJoined,
+		joinRoom
+	};
+};
+
 export {
 	useIsLoggedIn,
 	useProfileIsRoomJoined,
-	useProfileJoinedRooms
+	useProfileJoinedRooms,
+	useAuthActionsCheck
 };

@@ -7,8 +7,6 @@ import Divider from '~src/components/Room/Proposals/Divider';
 import { EReaction } from '~src/types/enums';
 import { IReactionResponse, IReactionBody } from 'pages/api/auth/actions/reaction';
 import { useDispatch } from 'react-redux';
-import { modalActions } from '~src/redux/modal';
-import { EContentType, EFooterType, ETitleType } from '~src/redux/modal/@types';
 import { notificationActions } from '~src/redux/notification';
 import { ENotificationStatus } from '~src/redux/notification/@types';
 import { proposalActions } from '~src/redux/proposal';
@@ -16,29 +14,25 @@ import { useUserReaction, useReactions } from '~src/redux/proposal/selectors';
 import { useProposalSelector, useProfileSelector } from '~src/redux/selectors';
 import api from '~src/services/api';
 import getErrorMessage from '~src/utils/getErrorMessage';
+import { useAuthActionsCheck } from '~src/redux/profile/selectors';
 
 const Reactions = () => {
 	const dispatch = useDispatch();
 	const { loading, proposal } = useProposalSelector();
 	const { user } = useProfileSelector();
+	const { isLoggedIn, isRoomJoined, connectWallet, joinRoom } = useAuthActionsCheck();
 	const userReaction = useUserReaction(user?.address || '');
 	const likeReactions = useReactions(EReaction.LIKE);
 	const dislikeReactions = useReactions(EReaction.DISLIKE);
 
 	const onReaction = async (type: EReaction) => {
 		if (loading) return;
-		if (!user || !user.address) {
-			dispatch(modalActions.setModal({
-				contentType: EContentType.CONNECT_WALLET,
-				footerType: EFooterType.NONE,
-				open: true,
-				titleType: ETitleType.CONNECT_WALLET
-			}));
-			dispatch(notificationActions.send({
-				message: 'Unable to find the address, Please connect your wallet again to create a proposal.',
-				status: ENotificationStatus.ERROR,
-				title: 'Failed!'
-			}));
+		if (!isLoggedIn) {
+			connectWallet();
+			return;
+		}
+		if (!isRoomJoined) {
+			joinRoom();
 			return;
 		}
 

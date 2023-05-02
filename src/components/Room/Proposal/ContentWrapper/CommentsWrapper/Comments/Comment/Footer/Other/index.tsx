@@ -10,13 +10,14 @@ import React, { FC } from 'react';
 import { useDispatch } from 'react-redux';
 import { notificationActions } from '~src/redux/notification';
 import { ENotificationStatus } from '~src/redux/notification/@types';
+import { useAuthActionsCheck } from '~src/redux/profile/selectors';
 import { proposalActions } from '~src/redux/proposal';
-import { useProfileSelector, useProposalSelector } from '~src/redux/selectors';
+import { useProposalSelector } from '~src/redux/selectors';
 import api from '~src/services/api';
 import { EAction } from '~src/types/enums';
 import { IComment } from '~src/types/schema';
-import { DeleteIcon, EditIcon, FlagIcon, LinkIcon, ShareIcon } from '~src/ui-components/CustomIcons';
 import getErrorMessage from '~src/utils/getErrorMessage';
+import useCommentOtherActionItems from './utils';
 
 interface ICommentOtherActionsDropdownProps {
     comment: IComment;
@@ -25,23 +26,16 @@ interface ICommentOtherActionsDropdownProps {
 const CommentOtherActionsDropdown: FC<ICommentOtherActionsDropdownProps> = (props) => {
 	const { comment } = props;
 	const router = useRouter();
-	const { user } = useProfileSelector();
+	const { isLoggedIn, isRoomJoined, connectWallet, joinRoom } = useAuthActionsCheck();
 	const { loading, proposal } = useProposalSelector();
 	const dispatch = useDispatch();
+	const items = useCommentOtherActionItems(comment?.user_address);
 
 	if (!comment || !proposal) return null;
 	const { id: comment_id } = comment;
 
 	const onDelete = async () => {
 		if (loading) return;
-		if (!user || !user.address) {
-			dispatch(notificationActions.send({
-				message: 'Unable to find the address, Please connect your wallet again to create a proposal.',
-				status: ENotificationStatus.ERROR,
-				title: 'Failed!'
-			}));
-			return;
-		}
 		try {
 			dispatch(proposalActions.setLoading(true));
 			const { data, error } = await api.post<ICommentResponse, ICommentBody>('auth/actions/comment', {
@@ -89,6 +83,17 @@ const CommentOtherActionsDropdown: FC<ICommentOtherActionsDropdownProps> = (prop
 	};
 
 	const handleEndpointChange: MenuProps['onClick'] = ({ key }) => {
+		if (['delete', 'edit'].includes(key)) {
+			if (loading) return;
+			if (!isLoggedIn) {
+				connectWallet();
+				return;
+			}
+			if (!isRoomJoined) {
+				joinRoom();
+				return;
+			}
+		}
 		switch(key) {
 		case 'copy-link': {
 			const origin = window.location.origin;
@@ -107,53 +112,6 @@ const CommentOtherActionsDropdown: FC<ICommentOtherActionsDropdownProps> = (prop
 		}
 	};
 
-	const items = [
-		{
-			key: 'share',
-			label: (
-				<div className='text-white flex items-center gap-x-[6px] font-normal text-xs leading-[15px]'>
-					<ShareIcon />
-					<span>Share</span>
-				</div>
-			)
-		},
-		{
-			key: 'edit',
-			label: (
-				<div className='text-white flex items-center gap-x-[6px] font-normal text-xs leading-[15px]'>
-					<EditIcon />
-					<span>Edit</span>
-				</div>
-			)
-		},
-		{
-			key: 'copy-link',
-			label: (
-				<div className='text-white flex items-center gap-x-[6px] font-normal text-xs leading-[15px]'>
-					<LinkIcon />
-					<span>Copy Link</span>
-				</div>
-			)
-		},
-		{
-			key: 'delete',
-			label: (
-				<div className='text-white flex items-center gap-x-[6px] font-normal text-xs leading-[15px]'>
-					<DeleteIcon />
-					<span>Delete</span>
-				</div>
-			)
-		},
-		{
-			key: 'flag',
-			label: (
-				<div className='text-white flex items-center gap-x-[6px] font-normal text-xs leading-[15px]'>
-					<FlagIcon />
-					<span>Flag</span>
-				</div>
-			)
-		}
-	];
 	return (
 		<div>
 			<Dropdown

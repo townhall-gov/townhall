@@ -18,19 +18,31 @@ import CommentedUserImage from '~src/components/Room/Proposal/ContentWrapper/Com
 import { modalActions } from '~src/redux/modal';
 import { EContentType, EFooterType, ETitleType } from '~src/redux/modal/@types';
 import CommentEditor from '../CommentEditor';
+import { useAuthActionsCheck } from '~src/redux/profile/selectors';
+import ConnectWalletBanner from './ConnectWalletBanner';
 
 const CreateComment = () => {
 	const commentCreation = useCommentCreation();
 	const dispatch = useDispatch();
 	const timeout = useRef<NodeJS.Timeout>();
 	const { loading, proposal } = useProposalSelector();
+	const { isLoggedIn, isRoomJoined, connectWallet, joinRoom } = useAuthActionsCheck();
 
 	const { user } = useProfileSelector();
 	if (!user || !user.address) {
-		return null;
+		return <ConnectWalletBanner connectWallet={connectWallet} />;
 	}
 
 	const onSentiment = async () => {
+		if (loading) return;
+		if (!isLoggedIn) {
+			connectWallet();
+			return;
+		}
+		if (!isRoomJoined) {
+			joinRoom();
+			return;
+		}
 		dispatch(modalActions.setModal({
 			contentType: EContentType.COMMENT_SENTIMENT,
 			footerType: EFooterType.COMMENT_SENTIMENT,
@@ -41,12 +53,12 @@ const CreateComment = () => {
 
 	const onComment = async () => {
 		if (loading) return;
-		if (!user || !user.address) {
-			dispatch(notificationActions.send({
-				message: 'Unable to find the address, Please connect your wallet again to create a proposal.',
-				status: ENotificationStatus.ERROR,
-				title: 'Failed!'
-			}));
+		if (!isLoggedIn) {
+			connectWallet();
+			return;
+		}
+		if (!isRoomJoined) {
+			joinRoom();
 			return;
 		}
 		try {
