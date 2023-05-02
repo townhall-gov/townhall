@@ -9,7 +9,7 @@ import authServiceInstance from '~src/auth';
 import getTokenFromReq from '~src/auth/utils/getTokenFromReq';
 import messages from '~src/auth/utils/messages';
 import { joinedRoomCollection, roomCollection } from '~src/services/firebase/utils';
-import { IRoom, IJoinedRoom } from '~src/types/schema';
+import { IRoom, IJoinedRoom, IJoinedRoomForUser } from '~src/types/schema';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
 
 export interface ILeaveRoomBody {
@@ -58,12 +58,12 @@ const handler: TNextApiHandler<ILeaveRoomResponse, ILeaveRoomBody, {}> = async (
 		return res.status(StatusCodes.NOT_FOUND).json({ error: `Room with id ${roomId} is not found in a house with id ${houseId}.` });
 	}
 
-	const leavedRoom: IJoinedRoom = {
+	const leavedRoom: IJoinedRoomForUser = {
 		house_id: houseId,
+		id: roomId,
 		is_joined: false,
 		joined_at: new Date(),
-		leaved_at: new Date(),
-		room_id: roomId
+		leaved_at: new Date()
 	};
 
 	const joinedRoomRef = joinedRoomCollection(address, houseId).doc(roomId);

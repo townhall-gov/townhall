@@ -19,7 +19,7 @@ const useProfileIsRoomJoined = (houseId: string, roomId: string) => {
 	if (user && user.joined_houses && Array.isArray(user.joined_houses)) {
 		const house = user.joined_houses.find((house) => house.house_id === houseId);
 		if (house && Array.isArray(house.joined_rooms)) {
-			return !!(house.joined_rooms.find((room) => room.room_id === roomId));
+			return !!(house.joined_rooms.find((room) => room.id === roomId));
 		}
 	}
 	return false;

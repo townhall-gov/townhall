@@ -9,7 +9,7 @@ import authServiceInstance from '~src/auth';
 import getTokenFromReq from '~src/auth/utils/getTokenFromReq';
 import messages from '~src/auth/utils/messages';
 import { joinedHouseCollection, joinedRoomCollection, roomCollection } from '~src/services/firebase/utils';
-import { IRoom, IJoinedRoom } from '~src/types/schema';
+import { IRoom, IJoinedRoom, IJoinedRoomForUser } from '~src/types/schema';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
 
 export interface IJoinRoomBody {
@@ -19,7 +19,7 @@ export interface IJoinRoomBody {
 
 export interface IJoinRoomResponse {
 	updatedRoom: IRoom;
-	joinedRoom: IJoinedRoom;
+	joinedRoom: IJoinedRoomForUser;
 }
 
 const handler: TNextApiHandler<IJoinRoomResponse, IJoinRoomBody, {}> = async (req, res) => {
@@ -59,12 +59,12 @@ const handler: TNextApiHandler<IJoinRoomResponse, IJoinRoomBody, {}> = async (re
 		return res.status(StatusCodes.NOT_FOUND).json({ error: `Room with id ${roomId} is not found in a house with id ${houseId}.` });
 	}
 
-	const joinedRoom: IJoinedRoom = {
+	const joinedRoom: IJoinedRoomForUser = {
 		house_id: houseId,
+		id: roomId,
 		is_joined: true,
 		joined_at: new Date(),
-		leaved_at: null,
-		room_id: roomId
+		leaved_at: null
 	};
 
 	const joinedRoomRef = joinedRoomCollection(address, houseId).doc(roomId);

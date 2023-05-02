@@ -19,11 +19,17 @@ interface IJoinedHouse {
 	joined_rooms: IJoinedRoom[];
 }
 
-interface IJoinedRoom {
-	house_id: string;
-	room_id: string;
+interface IJoinedRoom extends IRoom {
 	joined_at: Date;
 	leaved_at: Date | null;
+	is_joined: boolean;
+}
+
+interface IJoinedRoomForUser {
+	id: string;
+	house_id: string;
+	leaved_at: Date | null;
+	joined_at: Date;
 	is_joined: boolean;
 }
 
@@ -33,7 +39,7 @@ interface IHouse {
 	description: string;
 	logo?: string;
 	blockchain: EBlockchain;
-	total_members: number;
+	total_rooms: number;
 }
 
 interface IRoom {
@@ -128,5 +134,6 @@ export {
 	IVote,
 	IJoinedHouse,
 	IJoinedRoom,
+	IJoinedRoomForUser,
 	IReaction
 };

@@ -3,9 +3,10 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import React, { FC } from 'react';
+import { Image } from 'antd';
 import { IJoinedRoom } from '~src/types/schema';
 import ModalTrigger from './ModalTrigger';
-import { KusamaIcon } from '~src/ui-components/CustomIcons';
+import DefaultNameImage from '~src/ui-components/DefaultNameImage';
 
 interface IJoinedRoomListProps {
     joinedRooms: IJoinedRoom[];
@@ -17,9 +18,18 @@ const JoinedRoomList: FC<IJoinedRoomListProps> = (props) => {
 		<div className='m-0 p-0 leading-none flex items-center gap-x-2'>
 			{
 				joinedRooms.slice(0, totalShowing).map((joinedRoom, index) => {
+					if (!joinedRoom || !joinedRoom.id) return null;
 					return (
-						<article title={joinedRoom.room_id} key={index} className='flex items-center justify-center text-[45px]'>
-							<KusamaIcon />
+						<article title={joinedRoom.id} key={index} className='flex items-center justify-center text-[45px]'>
+
+							{
+								joinedRoom.logo?
+									<Image preview={false} width={45} height={45} className='rounded-full' src={joinedRoom.logo} alt='room logo' />
+									: <DefaultNameImage
+										name={joinedRoom.id}
+										className='w-[45px] h-[45px]'
+									/>
+							}
 						</article>
 					);
 				})

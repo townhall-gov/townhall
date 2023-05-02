@@ -66,7 +66,7 @@ export const profileStore = createSlice({
 					const joined_houses = state.user.joined_houses.map((joinedHouse) => {
 						if (joinedHouse.house_id === houseId) {
 							const joined_houses = ((joinedHouse?.joined_rooms && Array.isArray(joinedHouse.joined_rooms))? joinedHouse.joined_rooms: []);
-							joinedHouse.joined_rooms = [...joined_houses.filter((room) => room.room_id !== roomId)];
+							joinedHouse.joined_rooms = [...joined_houses.filter((room) => room.id !== roomId)];
 						}
 						return {
 							...joinedHouse

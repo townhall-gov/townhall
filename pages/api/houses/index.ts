@@ -6,7 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
-import { houseCollection } from '~src/services/firebase/utils';
+import { houseCollection, roomCollection } from '~src/services/firebase/utils';
 import { EBlockchain } from '~src/types/enums';
 import { IHouse } from '~src/types/schema';
 import getErrorMessage from '~src/utils/getErrorMessage';
@@ -17,22 +17,33 @@ export const getHouses: TGetHousesFn = async () => {
 		const houses: IHouse[] = [];
 		const housesSnapshot = await houseCollection.get();
 		if (housesSnapshot.size > 0) {
-			housesSnapshot.docs.forEach((doc) => {
+			const housesPromise = housesSnapshot.docs.map(async (doc) => {
 				if (doc && doc.exists) {
 					const data = doc.data() as IHouse;
 					if (data) {
 						// Sanitization
 						if (data.id && data.blockchain && Object.values(EBlockchain).includes(data.blockchain)) {
+							const roomsAggregateQuerySnapshot = await roomCollection(data.id).count().get();
+							const roomsAggregateData = roomsAggregateQuerySnapshot.data();
 							const house: IHouse = {
 								blockchain: data.blockchain,
 								description: data.description || '',
 								id: data.id,
 								logo: data.logo,
 								title: data.title || '',
-								total_members: Number(data.total_members || 0)
+								total_rooms: Number(roomsAggregateData.count || 0)
 							};
-							houses.push(house);
+							return house;
 						}
+					}
+				}
+			});
+			const housesPromiseSettledResult = await Promise.allSettled(housesPromise);
+			housesPromiseSettledResult.forEach((result) => {
+				if (result && result.status === 'fulfilled') {
+					const house = result.value;
+					if (house) {
+						houses.push(house);
 					}
 				}
 			});

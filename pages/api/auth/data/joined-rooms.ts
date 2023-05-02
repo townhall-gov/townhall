@@ -9,8 +9,8 @@ import { TNextApiHandler } from '~src/api/types';
 import authServiceInstance from '~src/auth';
 import getTokenFromReq from '~src/auth/utils/getTokenFromReq';
 import messages from '~src/auth/utils/messages';
-import { joinedHouseCollection, joinedRoomCollection } from '~src/services/firebase/utils';
-import { IJoinedHouse, IJoinedRoom } from '~src/types/schema';
+import { joinedHouseCollection, joinedRoomCollection, roomCollection } from '~src/services/firebase/utils';
+import { IJoinedHouse, IJoinedRoom, IJoinedRoomForUser, IRoom } from '~src/types/schema';
 import apiErrorWithStatusCode from '~src/utils/apiErrorWithStatusCode';
 import convertFirestoreTimestampToDate from '~src/utils/convertFirestoreTimestampToDate';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
@@ -40,21 +40,37 @@ export const getJoinedRooms: TGetJoinedRoomsFn = async (params) => {
 						};
 						const joinedRoomsSnapshot = await joinedRoomCollection(address, data.house_id).where('is_joined', '==', true).get();
 						if (joinedRoomsSnapshot.size > 0) {
-							joinedRoomsSnapshot.docs.forEach((doc) => {
+							const joinedRoomsPromise = joinedRoomsSnapshot.docs.map(async (doc) => {
 								if (doc && doc.exists) {
-									const data = doc.data() as IJoinedRoom;
+									const data = doc.data() as IJoinedRoomForUser;
 									if (data) {
 										// Sanitization
-										if (data.house_id && data.room_id) {
-											const joinedRoom: IJoinedRoom = {
-												house_id: data.house_id,
-												is_joined: data.is_joined,
-												joined_at: convertFirestoreTimestampToDate(data.joined_at),
-												leaved_at: convertFirestoreTimestampToDate(data.leaved_at),
-												room_id: data.room_id
-											};
-											joinedHouse.joined_rooms.push(joinedRoom);
+										if (data.house_id && data.id) {
+											const roomDocSnapshot = await roomCollection(data.house_id).doc(data.id).get();
+											if (roomDocSnapshot && roomDocSnapshot.exists) {
+												const roomData = roomDocSnapshot.data() as Omit<IRoom, 'house_id' | 'id'>;
+												if (roomData) {
+													const joinedRoom: IJoinedRoom = {
+														house_id: data.house_id,
+														id: data.id,
+														is_joined: data.is_joined,
+														joined_at: convertFirestoreTimestampToDate(data.joined_at),
+														leaved_at: convertFirestoreTimestampToDate(data.leaved_at),
+														...roomData
+													};
+													return joinedRoom;
+												}
+											}
 										}
+									}
+								}
+							});
+							const joinedRoomsPromiseSettledResult = await Promise.allSettled(joinedRoomsPromise);
+							joinedRoomsPromiseSettledResult.forEach((result) => {
+								if (result && result.status === 'fulfilled') {
+									const joinedRoom = result.value;
+									if (joinedRoom) {
+										joinedHouse.joined_rooms.push(joinedRoom);
 									}
 								}
 							});

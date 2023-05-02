@@ -22,10 +22,9 @@ import { roomsActions } from '~src/redux/rooms';
 import { useRoomsSelector } from '~src/redux/selectors';
 import { useProfileSelector } from '~src/redux/selectors';
 import api from '~src/services/api';
-import { EBlockchain } from '~src/types/enums';
 import { IRoom } from '~src/types/schema';
-import BlockchainIcon from '~src/ui-components/BlockchainIcon';
 import { CropFreeIcon } from '~src/ui-components/CustomIcons';
+import DefaultNameImage from '~src/ui-components/DefaultNameImage';
 import getErrorMessage from '~src/utils/getErrorMessage';
 
 interface IRoomProps {
@@ -91,7 +90,10 @@ const Room: FC<IRoomProps> = (props) => {
 						}));
 						dispatch(profileActions.addJoinedRoom({
 							houseId: house_id,
-							joinedRoom: data.joinedRoom
+							joinedRoom: {
+								...data.joinedRoom,
+								...data.updatedRoom
+							}
 						}));
 						dispatch(roomsActions.updateRoom({
 							room: data.updatedRoom,
@@ -150,7 +152,7 @@ const Room: FC<IRoomProps> = (props) => {
 					{
 						logo?
 							<Image preview={false} width={45} height={45} className='rounded-full' src={logo} alt='room logo' />
-							: <BlockchainIcon className='text-[45px]' type={EBlockchain.KUSAMA} />
+							: <DefaultNameImage className='w-[45px] h-[45px]' name={title} />
 					}
 
 					<h3 className='text-white m-0 p-0 text-2xl leading-[29px] tracking-[0.01em] font-semibold'>{title}</h3>
