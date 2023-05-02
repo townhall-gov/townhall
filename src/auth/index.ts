@@ -9,11 +9,12 @@ import verifySignature from './utils/verifySignature';
 import apiErrorWithStatusCode from '~src/utils/apiErrorWithStatusCode';
 import messages from './utils/messages';
 import { userCollection } from '~src/services/firebase/utils';
-import { IUser } from '~src/types/schema';
+import { IJoinedHouse, IUser } from '~src/types/schema';
 import { IToken, JWTPayloadType } from './types';
 import { StatusCodes } from 'http-status-codes';
 import Web3 from 'web3';
 import getUserFromJWT from './utils/getUserFromJWT';
+import { getJoinedRooms } from 'pages/api/auth/data/joined-rooms';
 
 // JWT globals
 process.env.JWT_PRIVATE_KEY = process.env.JWT_PRIVATE_KEY && process.env.JWT_PRIVATE_KEY.replace(/\\n/gm, '\n');
@@ -72,7 +73,7 @@ class AuthService {
 
 		const userDocRef = userCollection.doc(address);
 		const userDocSnapshot = await userDocRef.get();
-
+		let joined_houses: IJoinedHouse[] = [];
 		if (userDocSnapshot && userDocSnapshot.exists) {
 			const data = userDocSnapshot.data();
 			if (data) {
@@ -85,11 +86,24 @@ class AuthService {
 				if (data.username && typeof data.username === 'string') {
 					user.username = data.username;
 				}
+				try {
+					const { data, error } = await getJoinedRooms({ address: user.address });
+					if (data) {
+						joined_houses = data;
+					} else {
+						// TODO: better error handling
+						console.log(error);
+					}
+				} catch (error) {
+					// TODO: better error handling
+					console.log(error);
+				}
 			}
 		} else {
 			await userDocRef.set(user, { merge: true });
 		}
 		return {
+			joined_houses,
 			token: await this.getSignedToken(user)
 		};
 	}

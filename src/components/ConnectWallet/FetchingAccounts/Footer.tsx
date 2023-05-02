@@ -64,6 +64,9 @@ const SelectedWalletModalFooter: FC<ISelectedWalletModalFooterProps> = () => {
 										title: 'Success'
 									}));
 									const user = getUserFromToken(data.token);
+									if (user) {
+										user.joined_houses = data.joined_houses;
+									}
 									dispatch(profileActions.setUser(user));
 									dispatch(modalActions.setModal({
 										contentType: EContentType.NONE,

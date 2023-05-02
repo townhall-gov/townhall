@@ -33,8 +33,8 @@ const handler: TNextApiHandler<IToken, IConnectBody, {}> = async (req, res) => {
 	}
 
 	try {
-		const { token } = await authServiceInstance.Connect(address, wallet, signature);
-		res.status(StatusCodes.OK).json({ token });
+		const { token, joined_houses } = await authServiceInstance.Connect(address, wallet, signature);
+		res.status(StatusCodes.OK).json({ joined_houses, token });
 	} catch (error) {
 		res.status(getErrorStatus(error)).json({ error: getErrorMessage(error) });
 	}
