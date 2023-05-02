@@ -30,17 +30,27 @@ export const profileStore = createSlice({
 			if (state.user) {
 				const { houseId, joinedRoom } = action.payload;
 				if (state.user.joined_houses && Array.isArray(state.user.joined_houses) && state.user.joined_houses.length > 0) {
-					state.user.joined_houses = [...state.user.joined_houses.map((joinedHouse) => {
-						if (joinedHouse.house_id === houseId) {
+					if (state.user.joined_houses.find((joinedHouse) => joinedHouse.house_id === houseId)) {
+						state.user.joined_houses = [...state.user.joined_houses.map((joinedHouse) => {
+							if (joinedHouse.house_id === houseId) {
+								return {
+									...joinedHouse,
+									joined_rooms: [...joinedHouse.joined_rooms, joinedRoom]
+								};
+							}
 							return {
-								...joinedHouse,
-								joined_rooms: [...joinedHouse.joined_rooms, joinedRoom]
+								...joinedHouse
 							};
-						}
-						return {
-							...joinedHouse
-						};
-					})];
+						})];
+					} else {
+						state.user.joined_houses = [
+							...state.user.joined_houses,
+							{
+								house_id: houseId,
+								joined_rooms: [joinedRoom]
+							}
+						];
+					}
 				} else {
 					state.user.joined_houses = [
 						{
@@ -65,8 +75,8 @@ export const profileStore = createSlice({
 				if (state.user.joined_houses && Array.isArray(state.user.joined_houses)) {
 					const joined_houses = state.user.joined_houses.map((joinedHouse) => {
 						if (joinedHouse.house_id === houseId) {
-							const joined_houses = ((joinedHouse?.joined_rooms && Array.isArray(joinedHouse.joined_rooms))? joinedHouse.joined_rooms: []);
-							joinedHouse.joined_rooms = [...joined_houses.filter((room) => room.id !== roomId)];
+							const joined_rooms = ((joinedHouse?.joined_rooms && Array.isArray(joinedHouse.joined_rooms))? joinedHouse.joined_rooms: []);
+							joinedHouse.joined_rooms = [...joined_rooms.filter((room) => room.id !== roomId)];
 						}
 						return {
 							...joinedHouse

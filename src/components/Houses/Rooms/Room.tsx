@@ -147,7 +147,7 @@ const Room: FC<IRoomProps> = (props) => {
 						dispatch(roomActions.setRoom(room));
 						dispatch(roomActions.setCurrentStage(ERoomStage.PROPOSALS));
 					}}
-					className='border border-solid border-blue_primary rounded-lg outline-none flex flex-col gap-y-2 items-center bg-transparent p-5 px-7 cursor-pointer w-full min-w-[188px] min-h-[186px]'
+					className='border border-solid border-blue_primary rounded-lg outline-none flex flex-col gap-y-2 items-center bg-transparent p-5 px-7 cursor-pointer w-[188px] min-h-[186px]'
 				>
 					{
 						logo?
@@ -155,7 +155,7 @@ const Room: FC<IRoomProps> = (props) => {
 							: <DefaultNameImage className='w-[45px] h-[45px]' name={title} />
 					}
 
-					<h3 className='text-white m-0 p-0 text-2xl leading-[29px] tracking-[0.01em] font-semibold'>{title}</h3>
+					<h3 className='text-white m-0 p-0 text-2xl leading-[29px] tracking-[0.01em] font-semibold truncate'>{title}</h3>
 					<p className='m-0 text-sm font-normal leading-[17px] text-grey_tertiary'>{total_members} Members</p>
 					<CropFreeIcon className='text-grey_primary text-lg mt-[3px]' />
 				</Link>
