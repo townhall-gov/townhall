@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { EReaction } from '~src/types/enums';
+import { EReaction, EVotingSystem } from '~src/types/enums';
 import { IProposal, IRoom } from '~src/types/schema';
 
 export interface IRoomStore {
@@ -14,7 +14,7 @@ export interface IRoomStore {
     proposals: IListingProposal[];
 }
 
-export interface IListingProposal extends Omit<IProposal, 'discussion' | 'description' | 'updated_at' | 'end_date' | 'start_date' | 'preparation_period' | 'comments' | 'reactions' | 'is_vote_results_hide_before_voting_ends' | 'strategy' | 'timestamp'> {
+export interface IListingProposal extends Omit<IProposal, 'discussion' | 'description' | 'updated_at' | 'end_date' | 'start_date' | 'preparation_period' | 'comments' | 'reactions' | 'is_vote_results_hide_before_voting_ends' | 'voting_system' | 'timestamp' | 'snapshot_heights' | 'voting_system_options'> {
     comments_count: number;
     reactions_count: {
         [EReaction.LIKE]: number;
@@ -29,8 +29,13 @@ export type IProposalCreation = {
     discussion?: string;
     start_date: string | null;
     end_date: string | null;
-    preparation_period: string | null;
+    voting_system: EVotingSystem;
     is_vote_results_hide_before_voting_ends: boolean;
+    voting_system_options: IVotingSystemOption[];
+}
+
+export interface IVotingSystemOption {
+    value: string;
 }
 
 export enum ERoomStage {

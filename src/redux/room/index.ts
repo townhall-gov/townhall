@@ -4,9 +4,10 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
-import { ERoomStage, IProposalCreation, IRoomStore } from './@types';
+import { ERoomStage, IProposalCreation, IRoomStore, IVotingSystemOption } from './@types';
 import { IRoom } from '~src/types/schema';
 import { IListingProposal } from './@types';
+import { EVotingSystem } from '~src/types/enums';
 
 const initialState: IRoomStore = {
 	currentStage: ERoomStage.PROPOSALS,
@@ -17,10 +18,15 @@ const initialState: IRoomStore = {
 		discussion: '',
 		end_date: null,
 		is_vote_results_hide_before_voting_ends: false,
-		preparation_period: null,
 		start_date: null,
 		tags: [],
-		title: ''
+		title: '',
+		voting_system: EVotingSystem.SINGLE_CHOICE_VOTING,
+		voting_system_options: [
+			{
+				value: ''
+			}
+		]
 	},
 	proposals: [],
 	room: null
@@ -54,10 +60,15 @@ export const roomStore = createSlice({
 				discussion: '',
 				end_date: null,
 				is_vote_results_hide_before_voting_ends: false,
-				preparation_period: null,
 				start_date: null,
 				tags: [],
-				title: ''
+				title: '',
+				voting_system: EVotingSystem.SINGLE_CHOICE_VOTING,
+				voting_system_options: [
+					{
+						value: ''
+					}
+				]
 			};
 		},
 		setCurrentStage: (state, action: PayloadAction<ERoomStage>) => {
@@ -95,11 +106,16 @@ export const roomStore = createSlice({
 					break;
 				case 'start_date':
 				case 'end_date':
-				case 'preparation_period':
 					state.proposalCreation[key] = value as string | null;
 					break;
 				case 'is_vote_results_hide_before_voting_ends':
 					state.proposalCreation[key] = value as boolean;
+					break;
+				case 'voting_system':
+					state.proposalCreation[key] = value as EVotingSystem;
+					break;
+				case 'voting_system_options':
+					state.proposalCreation[key] = value as IVotingSystemOption[];
 					break;
 				default:
 					break;

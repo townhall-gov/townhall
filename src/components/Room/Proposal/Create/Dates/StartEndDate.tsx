@@ -57,10 +57,10 @@ const StartEndDate: FC<IStartEndDateProps> = (props) => {
 	};
 	return (
 		<div>
-			<p className='grid grid-cols-2 max-w-[400px] text-white font-medium text-sm m-0 mb-2'>
-				<span className='px-3'>Start Date:</span>
+			<h3 className='grid grid-cols-2 max-w-[400px] text-white font-medium text-xl m-0 mb-2'>
+				<span className=''>Start Date:</span>
 				<span className='px-2'>End Date:</span>
-			</p>
+			</h3>
 			<RangePicker
 				disabled={isDisabled}
 				disabledDate={disabledDate}

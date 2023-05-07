@@ -11,6 +11,7 @@ import { useProfileIsRoomJoined } from '~src/redux/profile/selectors';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import { Skeleton } from 'antd';
+import SelectVotingSystem from './SelectVotingSystem';
 
 const PreviewBtn = dynamic(() => import('./PreviewBtn'), {
 	loading: () => <Skeleton.Avatar active size='large' shape='circle' /> ,
@@ -27,6 +28,7 @@ const CreateProposal = () => {
 					<>
 						<Title />
 						<Description imageNamePrefix={`house_${query.house_id}_room_${query?.room_id}_proposal`} />
+						<SelectVotingSystem />
 						<Tags />
 						<Dates />
 						<HideResult />

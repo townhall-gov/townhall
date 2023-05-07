@@ -8,11 +8,14 @@ import { TNextApiHandler } from '~src/api/types';
 import authServiceInstance from '~src/auth';
 import getTokenFromReq from '~src/auth/utils/getTokenFromReq';
 import messages from '~src/auth/utils/messages';
-import { proposalCollection } from '~src/services/firebase/utils';
-import { IProposal } from '~src/types/schema';
+import { houseCollection, proposalCollection, roomCollection } from '~src/services/firebase/utils';
+import { IHouse, IProposal } from '~src/types/schema';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
 
-export type TProposalPayload = Omit<IProposal, 'proposer_address' | 'created_at' | 'updated_at' | 'id' | 'timestamp' | 'reactions' | 'comments'>;
+export type TProposalPayload = Omit<IProposal, 'proposer_address' | 'created_at' | 'updated_at' | 'id' | 'timestamp' | 'reactions' | 'comments' | 'snapshot_heights' | 'start_date' | 'end_date'> & {
+	start_date: string;
+	end_date: string;
+};
 
 export interface ICreateProposalBody {
     proposal: TProposalPayload & {
@@ -70,6 +73,17 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'LoggedIn address is not matching with Proposer address' });
 	}
 
+	const houseDocSnapshot = await houseCollection.doc(house_id).get();
+	const blockchain = (houseDocSnapshot?.data() as IHouse)?.blockchain;
+	if (!houseDocSnapshot.exists || !blockchain) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: `House with id ${house_id} does not exist.` });
+	}
+
+	const roomDocSnapshot = await roomCollection(house_id).doc(room_id).get();
+	if (!roomDocSnapshot.exists) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: `Room with id ${room_id} does not exist in a House with id ${house_id}.` });
+	}
+
 	let newID = 0;
 	const proposalsColRef = proposalCollection(house_id, room_id);
 	const lastProposalQuerySnapshot = await proposalsColRef.orderBy('id', 'desc').limit(1).get();
@@ -86,13 +100,28 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 	if (proposalDocSnapshot && proposalDocSnapshot.exists && proposalDocSnapshot.data()) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: `Proposal with id ${newID} already exists in a Room with id ${room_id} and a House with id ${house_id}.` });
 	}
+	const heightRes = await fetch(`${process.env.NEXT_PUBLIC_ONCHAIN_DATA_ENDPOINT}/api/${blockchain}/height?time=${proposal.start_date}`);
+	const data = await heightRes.json() as {
+		height: number;
+		time: number;
+	};
 
+	const now = new Date();
 	const newProposal: Omit<IProposal, 'comments' | 'reactions'> = {
 		...proposal,
-		created_at: new Date(),
+		created_at: now,
+		end_date: new Date(proposal.end_date),
 		id: newID,
 		proposer_address: proposer_address,
-		updated_at: new Date()
+		// TODO: other strategies snapshot heights
+		snapshot_heights: [
+			{
+				blockchain: blockchain,
+				height: data.height
+			}
+		],
+		start_date: new Date(proposal.start_date),
+		updated_at: now
 	};
 
 	await proposalDocRef.set(newProposal, { merge: true });

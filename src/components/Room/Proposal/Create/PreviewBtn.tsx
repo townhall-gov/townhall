@@ -15,7 +15,6 @@ import proposalCreationValidation, { removeErrorFieldHighlight } from '~src/redu
 import { useRoomSelector } from '~src/redux/selectors';
 import { useProfileSelector } from '~src/redux/selectors';
 import api from '~src/services/api';
-import { EStrategy } from '~src/types/enums';
 import getErrorMessage from '~src/utils/getErrorMessage';
 import { signApiData } from '~src/utils/sign';
 
@@ -70,21 +69,21 @@ const PreviewBtn = () => {
 					return;
 				}
 			}
-			const { description, end_date, is_vote_results_hide_before_voting_ends, preparation_period, start_date, tags, title, discussion } = proposalCreation;
+			const { description, end_date, is_vote_results_hide_before_voting_ends, start_date, tags, title, discussion, voting_system, voting_system_options } = proposalCreation;
 			const { query } = router;
-			if (start_date && end_date && preparation_period && query.house_id && query.room_id) {
+			if (start_date && end_date && voting_system && voting_system_options && query.house_id && query.room_id) {
 				const proposal: TProposalPayload = {
 					description,
 					discussion: discussion,
-					end_date: (new Date(end_date)).getTime(),
+					end_date: end_date,
 					house_id: String(query.house_id),
 					is_vote_results_hide_before_voting_ends: is_vote_results_hide_before_voting_ends,
-					preparation_period: (new Date(preparation_period)).getTime(),
 					room_id: String(query.room_id),
-					start_date: (new Date(start_date)).getTime(),
-					strategy: EStrategy.SINGLE,
+					start_date: start_date,
 					tags: tags,
-					title: title
+					title: title,
+					voting_system: voting_system,
+					voting_system_options: voting_system_options
 				};
 				const { address, data: proposalData, signature } = await signApiData<TProposalPayload>(proposal, user.address);
 				const { data, error } = await api.post<ICreateProposalResponse, ICreateProposalBody>('auth/actions/createProposal', {
@@ -133,6 +132,7 @@ const PreviewBtn = () => {
 					router.push(`/house/${query.house_id}/room/${query.room_id}/proposal/${data.createdProposal.id}`);
 				}
 			}
+			dispatch(roomActions.setLoading(false));
 		} catch (error) {
 			dispatch(roomActions.setLoading(false));
 			dispatch(roomActions.setError(getErrorMessage(error)));

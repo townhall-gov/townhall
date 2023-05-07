@@ -2,8 +2,9 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+import { IVotingSystemOption } from '~src/redux/room/@types';
 import { ICreatorDetails, IProjectSocial } from '~src/redux/rooms/@types';
-import { EBlockchain, EWallet, ESentiment, EStrategy, EReaction } from '~src/types/enums';
+import { EBlockchain, EWallet, ESentiment, EVotingSystem, EReaction } from '~src/types/enums';
 
 interface IUser {
 	address: string;
@@ -63,17 +64,23 @@ interface IProposal {
 	description: string;
     tags: string[];
 	discussion?: string;
-	strategy: EStrategy;
+	voting_system: EVotingSystem;
+	voting_system_options: IVotingSystemOption[];
 	proposer_address: string;
 	created_at: Date;
 	updated_at: Date;
-	start_date: number;
-	end_date: number;
-	preparation_period: number;
+	start_date: Date;
+	end_date: Date;
+	snapshot_heights: ISnapshotHeight[];
 	is_vote_results_hide_before_voting_ends: boolean;
 	timestamp: number;
 	reactions: IReaction[];
 	comments: IComment[];
+}
+
+interface ISnapshotHeight {
+	height: number;
+	blockchain: EBlockchain;
 }
 
 interface IReaction {

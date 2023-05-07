@@ -3,7 +3,8 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import dayjs from 'dayjs';
-import { IProposalCreation } from './@types';
+import { IProposalCreation, IVotingSystemOption } from './@types';
+import { EVotingSystem } from '~src/types/enums';
 
 const proposalCreationValidation = {
 	description: (description?: string | null) => {
@@ -31,30 +32,6 @@ const proposalCreationValidation = {
 				error = 'End date should be in the future.';
 			} else if (endDate.isBefore(startDate)) {
 				error = 'End date should be after start date.';
-			}
-		}
-		return error;
-	},
-	preparation_period: (start_date?: string | null, end_date?: string | null, preparation_period?: string | null) => {
-		let error = proposalCreationValidation.start_date(start_date);
-		if (error) return error;
-		error = proposalCreationValidation.end_date(start_date, end_date);
-		if (error) return error;
-		if (!preparation_period) {
-			error = 'Preparation period date is required.';
-		} else if (!dayjs(preparation_period).isValid()) {
-			error = 'Preparation period date is not valid.';
-		} else {
-			const endDate = dayjs(end_date);
-			const startDate = dayjs(start_date);
-			const preparationPeriodDate = dayjs(preparation_period);
-			const now = dayjs();
-			if (preparationPeriodDate.isBefore(now)) {
-				error = 'Preparation period date should be in the future.';
-			} else if (preparationPeriodDate.isBefore(startDate)) {
-				error = 'Preparation period date should be after start date.';
-			} else if (preparationPeriodDate.isAfter(endDate)) {
-				error = 'Preparation period date should be before end date.';
 			}
 		}
 		return error;
@@ -158,22 +135,32 @@ const proposalCreationValidation = {
 				}
 			}
 				break;
-			case 'preparation_period': {
-				const error = proposalCreationValidation.preparation_period(proposalCreation.start_date, proposalCreation.end_date, value as string);
-				if (error) {
-					errorFields.push({
-						error,
-						fieldKey: 'preparation_period'
-					});
-				}
-			}
-				break;
 			case 'tags': {
 				const error = proposalCreationValidation.tags(value as string[]);
 				if (error) {
 					errorFields.push({
 						error,
 						fieldKey: 'tags'
+					});
+				}
+			}
+				break;
+			case 'voting_system': {
+				const error = proposalCreationValidation.voting_system(value as EVotingSystem);
+				if (error) {
+					errorFields.push({
+						error,
+						fieldKey: 'voting_system'
+					});
+				}
+			}
+				break;
+			case 'voting_system_options': {
+				const error = proposalCreationValidation.voting_system_options(value as IVotingSystemOption[]);
+				if (error) {
+					errorFields.push({
+						error,
+						fieldKey: 'voting_system_options'
 					});
 				}
 			}
@@ -196,6 +183,16 @@ const proposalCreationValidation = {
 								});
 							});
 						}
+					} if (fieldKey === 'voting_system_options') {
+						if (error && Array.isArray(error)) {
+							error.forEach((optionError) => {
+								errorFieldHighlight({
+									applyClass,
+									className: `voting_system_option_${optionError.key}`,
+									removeClass
+								});
+							});
+						}
 					} else if (fieldKey === 'description') {
 						errorFieldHighlight({
 							applyClass,
@@ -214,6 +211,35 @@ const proposalCreationValidation = {
 			});
 		}
 		return errorFields;
+	},
+	voting_system: (voting_system?: EVotingSystem | null) => {
+		let error = '';
+		if (!voting_system || !Object.values(EVotingSystem).includes(voting_system)) {
+			error = 'Voting system is required.';
+		}
+		return error;
+	},
+	voting_system_options: (voting_system_options?: IVotingSystemOption[] | null) => {
+		const errors: {
+            key: string;
+            error: string;
+        }[] = [];
+		if (voting_system_options && Array.isArray(voting_system_options) && voting_system_options.length > 1) {
+			voting_system_options.forEach((option, i) => {
+				if (!option.value) {
+					errors.push({
+						error: `Option ${i + 1} of value "${option.value}" is not a valid option.`,
+						key: `${i}`
+					});
+				}
+			});
+		} else {
+			errors.push({
+				error: 'Voting system options must be at least 2.',
+				key: '0'
+			});
+		}
+		return errors;
 	}
 };
 

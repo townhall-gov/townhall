@@ -12,10 +12,6 @@ enum EBlockchain {
     KUSAMA = 'kusama',
 }
 
-enum EStrategy {
-    SINGLE = 'single'
-}
-
 enum EReaction {
     LIKE = '👍🏻',
     DISLIKE = '👎🏻',
@@ -35,11 +31,20 @@ enum EAction {
     EDIT = 'edit'
 }
 
+enum EVotingSystem {
+    SINGLE_CHOICE_VOTING = 'single_choice_voting',
+    APPROVAL_VOTING = 'approval_voting',
+    QUADRATIC_VOTING = 'quadratic_voting',
+    RANKED_CHOICE_VOTING = 'ranked_choice_voting',
+    WEIGHTED_VOTING = 'weighted_voting',
+    BASIC_VOTING = 'basic_voting',
+}
+
 export {
 	EBlockchain,
 	ESentiment,
-	EStrategy,
 	EWallet,
 	EReaction,
-	EAction
+	EAction,
+	EVotingSystem
 };
