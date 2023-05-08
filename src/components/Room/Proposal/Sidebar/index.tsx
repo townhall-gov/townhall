@@ -13,7 +13,7 @@ interface ISidebarProps {
 const Sidebar: FC<ISidebarProps> = (props) => {
 	const { className } = props;
 	return (
-		<div className={classNames('flex flex-col gap-y-10', className)}>
+		<div className={classNames('flex flex-col gap-y-6', className)}>
 			<Timestamp />
 			<VoteInfo />
 		</div>

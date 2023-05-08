@@ -40,7 +40,8 @@ const SelectedWalletModalFooter: FC<ISelectedWalletModalFooterProps> = () => {
 						try {
 							dispatch(walletActions.setLoading(true));
 							const { data: connectStartData, error } = await api.post<IConnectWalletStartResponse, IConnectWalletStartBody>('auth/actions/connectStart', {
-								address: selectedAddress
+								address: selectedAddress,
+								wallet: selectedWallet
 							});
 							if (error) {
 								dispatch(walletActions.setError(getErrorMessage(error)));

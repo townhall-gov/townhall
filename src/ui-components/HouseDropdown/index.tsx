@@ -7,7 +7,7 @@ import { Dropdown } from 'antd';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import classNames from 'classnames';
 import React, { FC, useEffect, useState } from 'react';
-import { useHousesSelector } from '~src/redux/selectors';
+import { useHousesSelector, useRoomsSelector } from '~src/redux/selectors';
 import HouseField from './HouseField';
 import { IHouse } from '~src/types/schema';
 import { useDispatch } from 'react-redux';
@@ -24,8 +24,9 @@ const HouseDropdown: FC<IHouseDropdownProps> = (props) => {
 	const { className } = props;
 	const [houseItems, setHouseItems] = useState<ItemType[]>([]);
 	const { houses } = useHousesSelector();
-	const [selectedHouse, setSelectedHouse] = useState<IHouse>();
 	const dispatch = useDispatch();
+	const { roomCreation } = useRoomsSelector();
+	const { select_house } = roomCreation;
 
 	useEffect(() => {
 		if (houses && Array.isArray(houses) && houses.length === 0) {
@@ -68,14 +69,13 @@ const HouseDropdown: FC<IHouseDropdownProps> = (props) => {
 				onClick: (e) => {
 					const house = houses.find((house) => house.id === e.key);
 					dispatch(roomsActions.setRoomCreation_House(house));
-					setSelectedHouse(house);
 				}
 			}}
 		>
 			<div id='addressDropdown' className="flex justify-between items-center">
 				{
-					selectedHouse?
-						<HouseField house={selectedHouse} />
+					select_house?
+						<HouseField house={select_house} />
 						: <span className='text-[#ABA3A3] font-normal text-lg leading-[22px]'>
                                 Select House
 						</span>

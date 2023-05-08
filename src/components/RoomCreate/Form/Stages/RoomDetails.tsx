@@ -18,6 +18,15 @@ const RoomDetails = () => {
 				A Room Name is Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..
 			</p>
 			<div className='flex flex-col mt-[28px] gap-y-5'>
+				<ImageUpload
+					imageUrl={roomDetails?.logo || ''}
+					setImageUrl={(v) => {
+						dispatch(roomsActions.setRoomCreation_RoomDetails_Field({
+							key: 'logo',
+							value: v
+						}));
+					}}
+				/>
 				<Input
 					value={roomDetails?.name || ''}
 					onChange={(v) => {
@@ -50,15 +59,6 @@ const RoomDetails = () => {
 					}}
 					type='text'
 					placeholder='Room description'
-				/>
-				<ImageUpload
-					imageUrl={roomDetails?.logo || ''}
-					setImageUrl={(v) => {
-						dispatch(roomsActions.setRoomCreation_RoomDetails_Field({
-							key: 'logo',
-							value: v
-						}));
-					}}
 				/>
 			</div>
 		</article>

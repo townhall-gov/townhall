@@ -47,6 +47,19 @@ const roomCreationValidation = {
 		}
 		return error;
 	},
+	[ERoomCreationStage.ROOM_STRATEGIES]: (roomCreation: IRoomCreation) => {
+		let error = '';
+		if (roomCreation) {
+			if (roomCreation.room_strategies && Array.isArray(roomCreation.room_strategies)) {
+				if (roomCreation.room_strategies.length === 0) {
+					error = 'At least one room strategy is required.';
+				}
+			} else {
+				error =  'Room strategies is required.';
+			}
+		}
+		return error;
+	},
 	[ERoomCreationStage.ROOM_SOCIALS]: (roomCreation: IRoomCreation) => {
 		let error = '';
 		if (roomCreation) {

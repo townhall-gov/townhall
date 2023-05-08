@@ -6,9 +6,11 @@ import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TNextApiHandler } from '~src/api/types';
 import authServiceInstance from '~src/auth';
+import { EWallet } from '~src/types/enums';
 
 export interface IConnectWalletStartBody {
     address: string;
+	wallet: EWallet;
 }
 
 export interface IConnectWalletStartResponse {
@@ -19,13 +21,13 @@ const handler: TNextApiHandler<IConnectWalletStartResponse, IConnectWalletStartB
 	if (req.method !== 'POST') {
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
 	}
-	const { address } = req.body;
+	const { address, wallet } = req.body;
 
 	if (!address) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid address.' });
 	}
 
-	const signMessage = await authServiceInstance.ConnectWalletStart(address);
+	const signMessage = await authServiceInstance.ConnectWalletStart(address, wallet);
 
 	res.status(StatusCodes.OK).json({ signMessage });
 };

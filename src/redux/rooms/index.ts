@@ -3,18 +3,21 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
-import { ESocial, ERoomCreationStage, ICreatorDetails, IRoomDetails, IRoomSocial, IRoomsStore } from './@types';
+import { ESocial, ERoomCreationStage, ICreatorDetails, IRoomDetails, IRoomSocial, IRoomsStore, IStrategy } from './@types';
 import { IHouse, IRoom } from '~src/types/schema';
+import { EVotingStrategy } from '~src/types/enums';
 
 const initialState: IRoomsStore = {
 	error: null,
 	joinOrRemoveRoom: null,
+	loading: false,
 	roomCreation: {
 		creator_details: null,
 		currentStage: ERoomCreationStage.GETTING_STARTED,
 		getting_started: null,
 		room_details: null,
 		room_socials: null,
+		room_strategies: [],
 		select_house: null
 	},
 	rooms: []
@@ -51,6 +54,9 @@ export const roomsStore = createSlice({
 		setJoinOrRemoveRoom: (state, action: PayloadAction<string | null>) => {
 			state.joinOrRemoveRoom = action.payload;
 		},
+		setLoading: (state, action: PayloadAction<boolean>) => {
+			state.loading = action.payload;
+		},
 		setRoomCreationStage: (state, action: PayloadAction<ERoomCreationStage>) => {
 			if (state.roomCreation) {
 				state.roomCreation.currentStage = action.payload;
@@ -61,6 +67,7 @@ export const roomsStore = createSlice({
 					getting_started: null,
 					room_details: null,
 					room_socials: null,
+					room_strategies: [],
 					select_house: null
 				};
 			}
@@ -76,14 +83,25 @@ export const roomsStore = createSlice({
 					getting_started: null,
 					room_details: null,
 					room_socials: null,
+					room_strategies: [],
 					select_house: null
 				};
 			}
 		},
 		setRoomCreation_House: (state, action: PayloadAction<IHouse | undefined>) => {
 			const house = action.payload || null;
+			const room_strategies = [];
+			if (house) {
+				room_strategies.push({
+					name: EVotingStrategy.BALANCE_OF,
+					network: house?.blockchain || ''
+				});
+			}
 			if (state.roomCreation) {
 				state.roomCreation.select_house = house;
+				if (state.roomCreation.room_strategies && Array.isArray(state.roomCreation.room_strategies) && state.roomCreation.room_strategies.length === 0) {
+					state.roomCreation.room_strategies = room_strategies;
+				}
 			} else {
 				state.roomCreation = {
 					creator_details: null,
@@ -91,6 +109,7 @@ export const roomsStore = createSlice({
 					getting_started: null,
 					room_details: null,
 					room_socials: null,
+					room_strategies: room_strategies,
 					select_house: house
 				};
 			}
@@ -122,6 +141,7 @@ export const roomsStore = createSlice({
 							[key]: value
 						},
 						room_socials: null,
+						room_strategies: [],
 						select_house: null
 					};
 				}
@@ -154,9 +174,35 @@ export const roomsStore = createSlice({
 						getting_started: null,
 						room_details: null,
 						room_socials: [projectSocial],
+						room_strategies: [],
 						select_house: null
 					};
 				}
+			}
+		},
+		setRoomCreation_RoomStrategies: (state, action: PayloadAction<IStrategy>) => {
+			const strategy = action.payload;
+			if (state.roomCreation) {
+				let room_strategies = state.roomCreation.room_strategies;
+				if (room_strategies && Array.isArray(room_strategies)) {
+					const index = room_strategies.findIndex((s) => (s.name === strategy.name && s.network === strategy.network));
+					if (index < 0) {
+						room_strategies.push(strategy);
+					}
+				} else {
+					room_strategies = [strategy];
+				}
+				state.roomCreation.room_strategies = room_strategies;
+			} else {
+				state.roomCreation = {
+					creator_details: null,
+					currentStage: ERoomCreationStage.ROOM_SOCIALS,
+					getting_started: null,
+					room_details: null,
+					room_socials: null,
+					room_strategies: [strategy],
+					select_house: null
+				};
 			}
 		},
 		setRooms: (state, action: PayloadAction<IRoom[]>) => {

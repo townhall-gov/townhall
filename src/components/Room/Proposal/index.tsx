@@ -10,7 +10,7 @@ const ProposalWrapper = () => {
 	const { proposal } = useProposalSelector();
 	if (!proposal) return null;
 	return (
-		<section className='grid grid-cols-12 gap-8 pl-[66px] pr-6'>
+		<section className='grid grid-cols-12 gap-6'>
 			<ContentWrapper className='col-span-9' />
 			<Sidebar className='col-span-3' />
 		</section>

@@ -30,6 +30,7 @@ export const getHouses: TGetHousesFn = async () => {
 								description: data.description || '',
 								id: data.id,
 								logo: data.logo,
+								networks: data.networks || [],
 								title: data.title || '',
 								total_rooms: Number(roomsAggregateData.count || 0)
 							};

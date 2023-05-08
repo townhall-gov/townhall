@@ -15,6 +15,7 @@ import { StatusCodes } from 'http-status-codes';
 import Web3 from 'web3';
 import getUserFromJWT from './utils/getUserFromJWT';
 import { getJoinedRooms } from 'pages/api/auth/data/joined-rooms';
+import { v4 as uuidv4 } from 'uuid';
 
 // JWT globals
 process.env.JWT_PRIVATE_KEY = process.env.JWT_PRIVATE_KEY && process.env.JWT_PRIVATE_KEY.replace(/\\n/gm, '\n');
@@ -29,9 +30,42 @@ class AuthService {
 		const user = getUserFromJWT(token, jwtPublicKey);
 		return user;
 	}
+	private async setSignMessage(address: string, wallet: EWallet): Promise<string> {
+		const randomString = uuidv4();
+
+		const user: IUser = {
+			address: address,
+			bio: null,
+			img_url: null,
+			joined_houses: [],
+			username: null,
+			wallet: wallet
+		};
+
+		const userDocRef = userCollection.doc(address);
+		const userDocSnapshot = await userDocRef.get();
+		if (!userDocSnapshot.exists) {
+			await userDocRef.set({
+				...user,
+				salt: randomString
+			}, { merge: true });
+		} else {
+			await userDocRef.update({
+				salt: randomString
+			});
+		}
+
+		const signMessage = address.startsWith('0x')? `Login in townhall ${randomString}`: `<Bytes>${randomString}</Bytes>`;
+		return signMessage;
+	}
 	private async getSignMessage(address: string): Promise<string> {
-		// TODO: randomString = uuidv4()
-		const randomString = 'random';
+		const userDocRef = userCollection.doc(address);
+		const userDocSnapshot = await userDocRef.get();
+		if (!userDocSnapshot.exists) {
+			throw apiErrorWithStatusCode('User not found', StatusCodes.NOT_FOUND);
+		}
+
+		const randomString = userDocSnapshot.data()?.salt;
 		const signMessage = address.startsWith('0x')? `Login in townhall ${randomString}`: `<Bytes>${randomString}</Bytes>`;
 		return signMessage;
 	}
@@ -107,9 +141,8 @@ class AuthService {
 			token: await this.getSignedToken(user)
 		};
 	}
-	public async ConnectWalletStart(address: string): Promise<string> {
-		const signMessage = await this.getSignMessage(address);
-		// TODO: storing signMessage in redis
+	public async ConnectWalletStart(address: string, wallet: EWallet): Promise<string> {
+		const signMessage = await this.setSignMessage(address, wallet);
 		return signMessage;
 	}
 }

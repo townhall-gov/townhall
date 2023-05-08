@@ -40,11 +40,17 @@ enum EVotingSystem {
     BASIC_VOTING = 'basic_voting',
 }
 
+enum EVotingStrategy {
+    BALANCE_OF = 'balance_of',
+    QUADRATIC_BALANCE_OF = 'quadratic_balance_of',
+}
+
 export {
 	EBlockchain,
 	ESentiment,
 	EWallet,
 	EReaction,
 	EAction,
-	EVotingSystem
+	EVotingSystem,
+	EVotingStrategy
 };

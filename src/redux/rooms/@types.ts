@@ -2,9 +2,11 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+import { EVotingStrategy } from '~src/types/enums';
 import { IHouse, IRoom } from '~src/types/schema';
 
 export interface IRoomsStore {
+    loading: boolean;
     rooms: IRoom[];
     joinOrRemoveRoom: string | null; // room_id
     error: string | null;
@@ -16,6 +18,7 @@ export interface IRoomCreation {
     getting_started: 'getting_started' | null;
     select_house: IHouse | null;
     room_details: IRoomDetails | null;
+    room_strategies: IStrategy[];
     creator_details: Omit<ICreatorDetails, 'address'> | null;
     room_socials: IRoomSocial[] | null;
 }
@@ -24,6 +27,7 @@ export enum ERoomCreationStage {
     GETTING_STARTED = 'getting_started',
     SELECT_HOUSE = 'select_house',
     ROOM_DETAILS = 'room_details',
+    ROOM_STRATEGIES = 'room_strategies',
     CREATOR_DETAILS = 'creator_details',
     ROOM_SOCIALS = 'room_socials',
 }
@@ -33,6 +37,11 @@ export interface IRoomDetails {
     title: string;
     description: string;
     logo: string;
+}
+
+export interface IStrategy {
+    name: EVotingStrategy;
+    network: string;
 }
 
 export interface ICreatorDetails {

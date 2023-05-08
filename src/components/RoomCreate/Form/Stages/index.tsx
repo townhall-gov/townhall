@@ -10,6 +10,7 @@ import SelectHouse from './SelectHouse';
 import RoomDetails from './RoomDetails';
 import CreatorDetails from './CreatorDetails';
 import RoomSocials from './RoomSocials';
+import RoomStrategies from './RoomStrategies';
 
 const Stages = () => {
 	const stage = useRoomCreationCurrentStage();
@@ -20,6 +21,8 @@ const Stages = () => {
 		return <SelectHouse />;
 	case ERoomCreationStage.ROOM_DETAILS:
 		return <RoomDetails />;
+	case ERoomCreationStage.ROOM_STRATEGIES:
+		return <RoomStrategies />;
 	case ERoomCreationStage.CREATOR_DETAILS:
 		return <CreatorDetails />;
 	case ERoomCreationStage.ROOM_SOCIALS:

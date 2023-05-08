@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { IVotingSystemOption } from '~src/redux/room/@types';
-import { ICreatorDetails, IProjectSocial } from '~src/redux/rooms/@types';
+import { ICreatorDetails, IProjectSocial, IStrategy } from '~src/redux/rooms/@types';
 import { EBlockchain, EWallet, ESentiment, EVotingSystem, EReaction } from '~src/types/enums';
 
 interface IUser {
@@ -40,7 +40,12 @@ interface IHouse {
 	description: string;
 	logo?: string;
 	blockchain: EBlockchain;
+	networks: INetwork[];
 	total_rooms: number;
+}
+
+interface INetwork {
+	name: string;
 }
 
 interface IRoom {
@@ -53,6 +58,7 @@ interface IRoom {
 	total_members: number;
 	socials: IProjectSocial[];
 	creator_details: ICreatorDetails;
+	voting_strategies: IStrategy[];
 	created_at: Date;
 }
 
@@ -142,5 +148,6 @@ export {
 	IJoinedHouse,
 	IJoinedRoom,
 	IJoinedRoomForUser,
-	IReaction
+	IReaction,
+	INetwork
 };

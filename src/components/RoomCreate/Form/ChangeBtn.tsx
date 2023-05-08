@@ -44,7 +44,7 @@ const StageChangeBtn = () => {
 			});
 			if (!isError) {
 				(async () => {
-					const { creator_details, room_details, room_socials, select_house } = roomCreation;
+					const { creator_details, room_details, room_socials, select_house, room_strategies } = roomCreation;
 					try {
 						const { data, error } = await api.post<ICreateRoomResponse, ICreateRoomBody>('auth/actions/createRoom', {
 							room: {
@@ -55,7 +55,8 @@ const StageChangeBtn = () => {
 								id: room_details?.name || '',
 								logo: room_details?.logo || '',
 								socials: room_socials || [],
-								title: room_details?.title || ''
+								title: room_details?.title || '',
+								voting_strategies: room_strategies || []
 							}
 						});
 						if (error) {
