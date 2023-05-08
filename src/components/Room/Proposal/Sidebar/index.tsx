@@ -3,6 +3,8 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import classNames from 'classnames';
 import React, { FC } from 'react';
+import Timestamp from './Timestamp';
+import VoteInfo from './Vote';
 
 interface ISidebarProps {
     className?: string;
@@ -11,7 +13,10 @@ interface ISidebarProps {
 const Sidebar: FC<ISidebarProps> = (props) => {
 	const { className } = props;
 	return (
-		<div className={classNames(className)}>Sidebar</div>
+		<div className={classNames('flex flex-col gap-y-10', className)}>
+			<Timestamp />
+			<VoteInfo />
+		</div>
 	);
 };
 

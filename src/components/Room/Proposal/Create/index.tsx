@@ -22,7 +22,7 @@ const CreateProposal = () => {
 	const { query } = useRouter();
 	const isRoomJoined = useProfileIsRoomJoined(String(query.house_id || ''), String(query.room_id || ''));
 	return (
-		<section className='flex flex-col gap-y-8 h-full'>
+		<section className='flex flex-col gap-y-8 h-full pr-6'>
 			{
 				isRoomJoined?
 					<>

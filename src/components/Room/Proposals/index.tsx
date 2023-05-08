@@ -9,7 +9,7 @@ const Proposals = () => {
 	const { proposals } = useRoomSelector();
 	return (
 		<section className='flex flex-col gap-y-8 h-full'>
-			<div className='flex flex-col gap-y-7'>
+			<div className='flex flex-col gap-y-7 max-h-[calc(100vh-182.5px-194px)] overflow-auto pr-2'>
 				{
 					proposals && Array.isArray(proposals)?
 						proposals.map((proposal) => {

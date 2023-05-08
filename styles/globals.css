@@ -16,21 +16,21 @@
 }
 
 ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 3px;
+    height: 3px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1; 
+    background: var(--grey_secondary); 
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: #888; 
+    background: var(--blue_primary); 
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #555; 
+    background: #3586f7; 
 }
 
 .scroll-hidden::-webkit-scrollbar {

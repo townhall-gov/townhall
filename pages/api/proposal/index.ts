@@ -114,20 +114,21 @@ export const getProposal: TGetProposalFn = async (params) => {
 				created_at: convertFirestoreTimestampToDate(data.created_at),
 				description: data.description || '',
 				discussion: data.discussion || '',
-				end_date: data.end_date || 0,
+				end_date: convertFirestoreTimestampToDate(data.end_date),
 				house_id: data.house_id,
 				id: data.id,
 				is_vote_results_hide_before_voting_ends: data.is_vote_results_hide_before_voting_ends || false,
 				proposer_address: data.proposer_address,
 				reactions: reactions,
 				room_id: data.room_id,
-				snapshot_heights: [],
-				start_date: data.start_date || 0,
-				strategy: data.strategy,
+				snapshot_heights: data.snapshot_heights,
+				start_date: convertFirestoreTimestampToDate(data.start_date),
 				tags: data.tags || [],
 				timestamp: data.timestamp || 0,
 				title: data.title || '',
-				updated_at: convertFirestoreTimestampToDate(data.updated_at)
+				updated_at: convertFirestoreTimestampToDate(data.updated_at),
+				voting_system: data.voting_system,
+				voting_system_options: data.voting_system_options
 			};
 			return {
 				data: JSON.parse(JSON.stringify(proposal)),
