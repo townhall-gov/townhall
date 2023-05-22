@@ -124,6 +124,7 @@ const CreateComment = () => {
 			dispatch(proposalActions.setError(getErrorMessage(error)));
 		}
 	};
+	const key = `house_${proposal?.house_id}_room_${proposal?.room_id}_proposal_${proposal?.id}_comment`;
 	return (
 		<section className='flex gap-x-[10px] p-2 min-h-[321px]'>
 			<div className='w-10'>
@@ -145,8 +146,8 @@ const CreateComment = () => {
 					}
 				</div>
 				<CommentEditor
-					imageNamePrefix={`house_${proposal?.house_id}_room_${proposal?.room_id}_proposal_${proposal?.id}_comment`}
-					localStorageKey='commentCreation'
+					imageNamePrefix={key}
+					localStorageKey={key}
 					onSentiment={onSentiment}
 					onComment={onComment}
 					onCancel={() => {}}

@@ -53,7 +53,10 @@ export const proposalStore = createSlice({
 	name: 'proposal',
 	reducers: {
 		resetCommentCreation: (state) => {
-			localStorage.removeItem('commentCreation');
+			const proposal = state.proposal;
+			if (proposal) {
+				localStorage.removeItem(`house_${proposal?.house_id}_room_${proposal?.room_id}_proposal_${proposal?.id}_comment`);
+			}
 			state.commentCreation = {
 				content: '',
 				sentiment: ESentiment.NEUTRAL

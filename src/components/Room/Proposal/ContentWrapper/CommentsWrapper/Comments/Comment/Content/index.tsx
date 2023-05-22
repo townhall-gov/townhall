@@ -102,6 +102,7 @@ const CommentContent: FC<ICommentContentProps> = (props) => {
 			dispatch(proposalActions.setError(getErrorMessage(error)));
 		}
 	};
+	const key = `house_${proposal?.house_id}_room_${proposal?.room_id}_proposal_${proposal?.id}_comment_${comment?.id}`;
 	return (
 		<section>
 			{
@@ -110,8 +111,8 @@ const CommentContent: FC<ICommentContentProps> = (props) => {
 						{ReactHTMLParser(comment.content)}
 					</div>
 					:<CommentEditor
-						imageNamePrefix={`house_${proposal?.house_id}_room_${proposal?.room_id}_proposal_${proposal?.id}_comment_${comment?.id}`}
-						localStorageKey='commentEditor'
+						imageNamePrefix={key}
+						localStorageKey={key}
 						disabled={loading}
 						onChange={(v) => {
 							clearTimeout(timeout.current);
@@ -127,7 +128,7 @@ const CommentContent: FC<ICommentContentProps> = (props) => {
 						onComment={onComment}
 						onCancel={() => {
 							dispatch(proposalActions.resetEditableComment());
-							localStorage.removeItem('commentEditor');
+							localStorage.removeItem(key);
 						}}
 						value=''
 						initialValue={editableComment?.content || ''}
