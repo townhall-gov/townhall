@@ -8,6 +8,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { notificationActions } from '~src/redux/notification';
 import { ENotificationStatus } from '~src/redux/notification/@types';
+import { useAuthActionsCheck } from '~src/redux/profile/selectors';
 import { roomActions } from '~src/redux/room';
 import { IListingProposal } from '~src/redux/room/@types';
 import { useProposalCreation } from '~src/redux/room/selectors';
@@ -23,16 +24,17 @@ const PreviewBtn = () => {
 	const { loading } = useRoomSelector();
 	const { user } = useProfileSelector();
 	const proposalCreation = useProposalCreation();
+	const { connectWallet, isLoggedIn, isRoomJoined, joinRoom } = useAuthActionsCheck();
 	const router = useRouter();
 
 	const onPublish = async () => {
 		if (loading) return;
-		if (!user || !user.address) {
-			dispatch(notificationActions.send({
-				message: 'Unable to find the address, Please connect your wallet again to create a proposal.',
-				status: ENotificationStatus.ERROR,
-				title: 'Failed!'
-			}));
+		if (!isLoggedIn) {
+			connectWallet();
+			return;
+		}
+		if (!isRoomJoined) {
+			joinRoom();
 			return;
 		}
 		try {
@@ -85,7 +87,7 @@ const PreviewBtn = () => {
 					voting_system: voting_system,
 					voting_system_options: voting_system_options
 				};
-				const { address, data: proposalData, signature } = await signApiData<TProposalPayload>(proposal, user.address);
+				const { address, data: proposalData, signature } = await signApiData<TProposalPayload>(proposal, user?.address || '');
 				const { data, error } = await api.post<ICreateProposalResponse, ICreateProposalBody>('auth/actions/createProposal', {
 					proposal: proposalData,
 					proposer_address: address,

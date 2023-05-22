@@ -8,6 +8,7 @@ const userCollection = firestore_db.collection('users');
 const houseCollection = firestore_db.collection('houses');
 const roomCollection = (houseId: string) => houseCollection.doc(houseId).collection('rooms');
 const proposalCollection = (houseId: string, roomId: string) => roomCollection(houseId).doc(roomId).collection('proposals');
+const voteCollection = (houseId: string, roomId: string, proposalId: string) => proposalCollection(houseId, roomId).doc(proposalId).collection('votes');
 const reactionsCollection = (houseId: string, roomId: string, proposalId: number) => proposalCollection(houseId, roomId).doc(String(proposalId)).collection('reactions');
 const proposalCommentCollection = (houseId: string, roomId: string, proposalId: number) => proposalCollection(houseId, roomId).doc(String(proposalId)).collection('comments');
 const joinedHouseCollection = (address: string) => userCollection.doc(address).collection('joined_houses');
@@ -20,6 +21,7 @@ export {
 	joinedRoomCollection,
 	roomCollection,
 	proposalCollection,
+	voteCollection,
 	reactionsCollection,
 	proposalCommentCollection
 };

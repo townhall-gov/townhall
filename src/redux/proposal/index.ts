@@ -66,6 +66,13 @@ export const proposalStore = createSlice({
 			localStorage.removeItem('commentEdit');
 			state.editableComment = null;
 		},
+		resetVoteCreation: (state) => {
+			state.voteCreation = {
+				balances: [],
+				note: '',
+				options: []
+			};
+		},
 		setCommentCreation_Field: (state, action: PayloadAction<ICommentCreationFieldPayload>) => {
 			const obj = action.payload;
 			if (obj) {

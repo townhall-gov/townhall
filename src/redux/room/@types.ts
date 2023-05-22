@@ -14,7 +14,7 @@ export interface IRoomStore {
     proposals: IListingProposal[];
 }
 
-export interface IListingProposal extends Omit<IProposal, 'discussion' | 'description' | 'updated_at' | 'end_date' | 'start_date' | 'preparation_period' | 'comments' | 'reactions' | 'is_vote_results_hide_before_voting_ends' | 'voting_system' | 'timestamp' | 'snapshot_heights' | 'voting_system_options'> {
+export interface IListingProposal extends Omit<IProposal, 'discussion' | 'description' | 'updated_at' | 'end_date' | 'start_date' | 'preparation_period' | 'comments' | 'reactions' | 'is_vote_results_hide_before_voting_ends' | 'voting_system' | 'timestamp' | 'snapshot_heights' | 'voting_system_options' | 'votes_result'> {
     comments_count: number;
     reactions_count: {
         [EReaction.LIKE]: number;

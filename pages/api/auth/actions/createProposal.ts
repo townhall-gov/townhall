@@ -9,10 +9,10 @@ import authServiceInstance from '~src/auth';
 import getTokenFromReq from '~src/auth/utils/getTokenFromReq';
 import messages from '~src/auth/utils/messages';
 import { houseCollection, proposalCollection, roomCollection } from '~src/services/firebase/utils';
-import { IProposal, IRoom, ISnapshotHeight } from '~src/types/schema';
+import { IProposal, IRoom, ISnapshotHeight, IVotesResult } from '~src/types/schema';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
 
-export type TProposalPayload = Omit<IProposal, 'proposer_address' | 'created_at' | 'updated_at' | 'id' | 'timestamp' | 'reactions' | 'comments' | 'snapshot_heights' | 'start_date' | 'end_date'> & {
+export type TProposalPayload = Omit<IProposal, 'proposer_address' | 'created_at' | 'updated_at' | 'id' | 'timestamp' | 'reactions' | 'comments' | 'snapshot_heights' | 'start_date' | 'end_date' | 'votes_result'> & {
 	start_date: string;
 	end_date: string;
 };
@@ -148,10 +148,25 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 		proposer_address: proposer_address,
 		snapshot_heights: snapshot_heights,
 		start_date: new Date(proposal.start_date),
-		updated_at: now
+		updated_at: now,
+		votes_result: proposal.voting_system_options.reduce((prev, option) => {
+			return {
+				...prev,
+				[option.value]: roomData.voting_strategies.map((strategy) => {
+					return {
+						amount: 0,
+						name: strategy.name,
+						network: strategy.network
+					};
+				})
+			};
+		}, {} as IVotesResult)
 	};
 
-	await proposalDocRef.set(newProposal, { merge: true });
+	await proposalDocRef.set({
+		newProposal,
+		signature
+	}, { merge: true });
 
 	res.status(StatusCodes.OK).json({
 		createdProposal: {

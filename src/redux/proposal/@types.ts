@@ -26,4 +26,5 @@ export type ICommentCreation = {
 export type IVoteCreation = {
     options: IVotingSystemOption[];
     balances: IBalanceWithNetwork[];
+    note?: string;
 };

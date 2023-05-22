@@ -127,6 +127,7 @@ export const getProposal: TGetProposalFn = async (params) => {
 				timestamp: data.timestamp || 0,
 				title: data.title || '',
 				updated_at: convertFirestoreTimestampToDate(data.updated_at),
+				votes_result: data.votes_result,
 				voting_system: data.voting_system,
 				voting_system_options: data.voting_system_options
 			};

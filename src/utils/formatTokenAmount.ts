@@ -6,11 +6,8 @@ import { BN, formatBalance } from '@polkadot/util';
 import { chainProperties } from './networkConstants';
 import * as ethers from 'ethers';
 
-const formatTokenAmount = async (amount: string | number, network: string) => {
+const formatTokenAmount = (amount: string | number, network: string) => {
 	const chain = chainProperties[network];
-	if (!chain) {
-		throw new Error('Can not format token amount, Invalid network');
-	}
 	const decimals = chain.tokenDecimals;
 	if (chain.isEVM) {
 		const ethersAmount = ethers.formatUnits(amount.toString(), decimals);

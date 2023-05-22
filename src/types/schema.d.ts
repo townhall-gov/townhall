@@ -4,7 +4,7 @@
 
 import { IVotingSystemOption } from '~src/redux/room/@types';
 import { ICreatorDetails, IProjectSocial, IStrategy } from '~src/redux/rooms/@types';
-import { EBlockchain, EWallet, ESentiment, EVotingSystem, EReaction } from '~src/types/enums';
+import { EBlockchain, EWallet, ESentiment, EVotingSystem, EReaction, EVotingStrategy } from '~src/types/enums';
 
 interface IUser {
 	address: string;
@@ -82,12 +82,23 @@ interface IProposal {
 	timestamp: number;
 	reactions: IReaction[];
 	comments: IComment[];
+	votes_result: IVotesResult;
+}
+
+interface IVotesResult {
+	[key: string]: {
+		name: EVotingStrategy;
+		network: string;
+		amount: number | string;
+	}[];
 }
 
 interface IVote {
+	id: string;
 	proposal_id: number;
-	user_address: string;
-	signature: string;
+	house_id: string;
+	room_id: string;
+	voter_address: string;
 	note?: string;
 	created_at: Date;
 	options: IVotingSystemOption[];
@@ -158,5 +169,6 @@ export {
 	INetwork,
 	ISnapshotHeight,
 	IBalanceWithNetwork,
-	IVote
+	IVote,
+	IVotesResult
 };
