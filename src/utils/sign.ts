@@ -37,12 +37,15 @@ export const signMessage = async (text: string, address: string): Promise<string
 	const injector = await web3FromAddress(address);
 
 	const data = stringToHex(text);
-	const result = await injector.signer.signRaw({
-		address,
-		data,
-		types: 'bytes'
-	});
-	return result?.signature;
+	if (injector.signer.signRaw) {
+		const result = await injector.signer.signRaw({
+			address,
+			data,
+			type: 'bytes'
+		});
+		return result?.signature;
+	}
+	throw new Error('Signer does not support signRaw.');
 };
 
 export const signApiData = async <T>(data: T, address: string) => {

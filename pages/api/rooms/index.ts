@@ -50,7 +50,8 @@ export const getRooms: TGetRoomsFn = async (params) => {
 								logo: data.logo,
 								socials: data.socials || [],
 								title: data.title || '',
-								total_members: Number(data.total_members || 0)
+								total_members: Number(data.total_members || 0),
+								voting_strategies: data.voting_strategies || []
 							};
 							rooms.push(room);
 						}

@@ -53,7 +53,8 @@ export const getRoom: TGetRoomFn = async (params) => {
 			logo: data.logo,
 			socials: data.socials || [],
 			title: data.title || '',
-			total_members: Number(data.total_members || 0)
+			total_members: Number(data.total_members || 0),
+			voting_strategies: data.voting_strategies || []
 		};
 		return {
 			data: JSON.parse(JSON.stringify(room)),
