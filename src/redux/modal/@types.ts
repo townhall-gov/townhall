@@ -15,6 +15,7 @@ export enum ETitleType {
     FETCHING_WALLET_ACCOUNTS = 'fetching-wallet-accounts',
     MULTIPLE_JOINED_ROOMS = 'multiple-joined-rooms',
     COMMENT_EDIT_HISTORY = 'comment-edit-history',
+    CAST_YOUR_VOTE = 'cast-your-vote',
 }
 
 export enum EFooterType {
@@ -22,6 +23,7 @@ export enum EFooterType {
     FETCHING_WALLET_ACCOUNTS = 'fetching-wallet-accounts',
     COMMENT_SENTIMENT = 'sentiment',
     COMMENT_EDIT_HISTORY = 'comment-edit-history',
+    CAST_YOUR_VOTE = 'cast-your-vote',
 }
 export enum EContentType {
     NONE = 'none',
@@ -30,4 +32,5 @@ export enum EContentType {
     MULTIPLE_JOINED_ROOMS = 'multiple-joined-rooms',
     COMMENT_SENTIMENT = 'sentiment',
     COMMENT_EDIT_HISTORY = 'comment-edit-history',
+    CAST_YOUR_VOTE = 'cast-your-vote',
 }

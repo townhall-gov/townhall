@@ -3,13 +3,15 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { ESentiment } from '~src/types/enums';
-import { IHistoryComment } from '~src/types/schema';
+import { IBalanceWithNetwork, IHistoryComment } from '~src/types/schema';
 import { IComment, IProposal } from '~src/types/schema';
+import { IVotingSystemOption } from '../room/@types';
 
 export interface IProposalStore {
     loading: boolean;
     error: string | null;
     proposal: IProposal | null;
+    voteCreation: IVoteCreation;
     commentCreation: ICommentCreation;
     isAllCommentsVisible: boolean;
     editableComment: IComment | null;
@@ -19,4 +21,9 @@ export interface IProposalStore {
 export type ICommentCreation = {
     content: string;
     sentiment: ESentiment;
+};
+
+export type IVoteCreation = {
+    options: IVotingSystemOption[];
+    balances: IBalanceWithNetwork[];
 };

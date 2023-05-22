@@ -84,6 +84,21 @@ interface IProposal {
 	comments: IComment[];
 }
 
+interface IVote {
+	proposal_id: number;
+	user_address: string;
+	signature: string;
+	note?: string;
+	created_at: Date;
+	options: IVotingSystemOption[];
+	balances: IBalanceWithNetwork[];
+}
+
+interface IBalanceWithNetwork {
+	network: string;
+	balance: number | string;
+}
+
 interface ISnapshotHeight {
 	height: number;
 	blockchain: EBlockchain;
@@ -115,15 +130,6 @@ interface IHistoryComment {
 	content: string;
 }
 
-interface IVote {
-	proposal_id: number;
-	user_address: string;
-	signature: string;
-	note?: string;
-	block_number: number;
-	balance_at_proposal_start_block_number: number;
-}
-
 interface ITag {
 	title: string;
 	proposal_id: number;
@@ -149,5 +155,8 @@ export {
 	IJoinedRoom,
 	IJoinedRoomForUser,
 	IReaction,
-	INetwork
+	INetwork,
+	ISnapshotHeight,
+	IBalanceWithNetwork,
+	IVote
 };

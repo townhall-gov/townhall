@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic';
 import { FC } from 'react';
 import EditHistoryModalFooter from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/Comments/Comment/Header/EditHistory/ModalFooter';
 import SentimentModalFooter from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/CreateComment/Sentiment/Footer';
+import CastYourVoteModalFooter from '~src/components/Room/Proposal/Sidebar/Vote/CastYourVote/Modal/Footer';
 import { EFooterType } from '~src/redux/modal/@types';
 
 interface IModalFooterProps {
@@ -26,6 +27,8 @@ const ModalFooter: FC<IModalFooterProps> = (props) => {
 		return <SentimentModalFooter />;
 	case EFooterType.COMMENT_EDIT_HISTORY:
 		return <EditHistoryModalFooter />;
+	case EFooterType.CAST_YOUR_VOTE:
+		return <CastYourVoteModalFooter />;
 	default:
 		return <></>;
 	}

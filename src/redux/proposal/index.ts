@@ -4,7 +4,7 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
-import { ICommentCreation, IProposalStore } from './@types';
+import { ICommentCreation, IProposalStore, IVoteCreation } from './@types';
 import { IComment, IHistoryComment, IProposal, IReaction } from '~src/types/schema';
 import { EAction, ESentiment } from '~src/types/enums';
 
@@ -18,7 +18,11 @@ const initialState: IProposalStore = {
 	error: null,
 	isAllCommentsVisible: false,
 	loading: false,
-	proposal: null
+	proposal: null,
+	voteCreation: {
+		balances: [],
+		options: []
+	}
 };
 
 type ICommentCreationFieldPayload = {
@@ -27,6 +31,13 @@ type ICommentCreationFieldPayload = {
       value: ICommentCreation[K];
     }
 }[keyof ICommentCreation];
+
+type IVoteCreationFieldPayload = {
+    [K in keyof IVoteCreation]: {
+      key: K;
+      value: IVoteCreation[K];
+    }
+}[keyof IVoteCreation];
 
 export const proposalStore = createSlice({
 	extraReducers: (builder) => {
@@ -127,6 +138,19 @@ export const proposalStore = createSlice({
 					}
 				} else {
 					state.proposal.reactions.push(reaction);
+				}
+			}
+		},
+		setVoteCreation_Field: (state, action: PayloadAction<IVoteCreationFieldPayload>) => {
+			const obj = action.payload;
+			if (obj) {
+				const { key, value } = obj;
+				switch(key) {
+				case 'balances':
+					state.voteCreation.balances = value;
+					break;
+				case 'options':
+					state.voteCreation.options = value;
 				}
 			}
 		},
