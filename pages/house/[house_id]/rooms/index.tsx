@@ -41,7 +41,7 @@ const House: FC<IHouseClientProps> = (props) => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [error, rooms]);
 	return (
-		<div>
+		<div className='h-full'>
 			<Rooms />
 		</div>
 	);

@@ -4,13 +4,14 @@
 import React, { FC } from 'react';
 import Room from './Room';
 import { useRoomsSelector } from '~src/redux/selectors';
+import EmptyHouse from '../EmptyHouse';
 
 interface IRoomsProps {}
 
 const Rooms: FC<IRoomsProps> = () => {
 	const { rooms } = useRoomsSelector();
-	if (!rooms) {
-		return null;
+	if (!rooms || !Array.isArray(rooms) || !rooms.length) {
+		return <EmptyHouse />;
 	}
 	return (
 		<section className='flex items-center flex-wrap gap-7'>
