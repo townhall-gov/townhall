@@ -25,6 +25,9 @@ import PolkadotJsSVG  from '~assets/wallet/polkadotjs-icon.svg';
 
 import PolkadotSVG from '~assets/blockchain/polkadot.svg';
 import KusamaSVG from '~assets/blockchain/kusama.svg';
+import MoonbaseSVG from '~assets/blockchain/moonbase.svg';
+import MoonbeamSVG from '~assets/blockchain/moonbeam.svg';
+import MoonriverSVG from '~assets/blockchain/moonriver.svg';
 
 import DiscordSVG from '~assets/socials/discord.svg';
 import GithubSVG from '~assets/socials/github.svg';
@@ -182,4 +185,16 @@ export const PolkadotIcon = (props: Partial<CustomIconComponentProps>) => (
 
 export const KusamaIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={KusamaSVG} {...props} />
+);
+
+export const MoonbaseIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={MoonbaseSVG} {...props} />
+);
+
+export const MoonbeamIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={MoonbeamSVG} {...props} />
+);
+
+export const MoonriverIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={MoonriverSVG} {...props} />
 );

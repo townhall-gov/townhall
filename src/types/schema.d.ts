@@ -41,6 +41,7 @@ interface IHouse {
 	logo?: string;
 	blockchain: EBlockchain;
 	networks: INetwork[];
+	is_erc20: boolean;
 	total_rooms: number;
 }
 

@@ -10,6 +10,9 @@ enum EWallet {
 enum EBlockchain {
     POLKADOT = 'polkadot',
     KUSAMA = 'kusama',
+    MOONBEAM = 'moonbeam',
+    MOONBASE = 'moonbase',
+    MOONRIVER = 'moonriver',
 }
 
 enum EReaction {
