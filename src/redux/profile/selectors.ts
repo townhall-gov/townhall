@@ -8,6 +8,8 @@ import { useDispatch } from 'react-redux';
 import { modalActions } from '../modal';
 import { EContentType, EFooterType, ETitleType } from '../modal/@types';
 import { useRouter } from 'next/router';
+import { notificationActions } from '../notification';
+import { ENotificationStatus } from '../notification/@types';
 
 const useIsLoggedIn = () => {
 	const { user } = useProfileSelector();
@@ -49,6 +51,11 @@ const useAuthActionsCheck = () => {
 	const { query } = router;
 	const isRoomJoined = useProfileIsRoomJoined(String(query.house_id), String(query.room_id));
 	const connectWallet = () => {
+		dispatch(notificationActions.send({
+			message: 'Please connect your wallet first.',
+			status: ENotificationStatus.WARNING,
+			title: 'Warning!'
+		}));
 		if (!user || !user.address) {
 			dispatch(modalActions.setModal({
 				contentType: EContentType.CONNECT_WALLET,
@@ -59,6 +66,11 @@ const useAuthActionsCheck = () => {
 		}
 	};
 	const joinRoom = () => {
+		dispatch(notificationActions.send({
+			message: 'Please join room first.',
+			status: ENotificationStatus.WARNING,
+			title: 'Warning!'
+		}));
 		if (!isRoomJoined) {
 			router.push(`/house/${query.house_id}/room/${query.room_id}/proposals`);
 		}
