@@ -164,7 +164,7 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 	};
 
 	await proposalDocRef.set({
-		newProposal,
+		...newProposal,
 		signature
 	}, { merge: true });
 

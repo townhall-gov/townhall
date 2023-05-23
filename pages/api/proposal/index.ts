@@ -30,7 +30,7 @@ export const getProposal: TGetProposalFn = async (params) => {
 		if (!room_id) {
 			throw apiErrorWithStatusCode('Invalid roomId.', StatusCodes.BAD_REQUEST);
 		}
-		if (!proposal_id && !(proposal_id == 0)) {
+		if (!(proposal_id == 0) && !proposal_id) {
 			throw apiErrorWithStatusCode('Invalid proposalId.', StatusCodes.BAD_REQUEST);
 		}
 		// Get proposal
