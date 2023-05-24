@@ -82,6 +82,12 @@ const CastYourVoteModalFooter = () => {
 					status: ENotificationStatus.SUCCESS,
 					title: 'Success!'
 				}));
+				dispatch(modalActions.setModal({
+					contentType: EContentType.NONE,
+					footerType: EFooterType.NONE,
+					open: false,
+					titleType: ETitleType.NONE
+				}));
 				dispatch(proposalActions.resetVoteCreation());
 			}
 			dispatch(proposalActions.setLoading(false));
