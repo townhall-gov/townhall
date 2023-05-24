@@ -59,7 +59,7 @@ const TextEditor: FC<ITextEditorProps> = (props) => {
 						content_css: 'dark',
 						content_style: 'body { font-family: Montserrat, sans-serif; font-size: 14px; letter-spacing: 1px; line-height: 1.5; }',
 						height: height || 300,
-						images_file_types: 'jpg',
+						images_file_types: 'jpg,png,jpeg',
 						images_upload_handler: (blobInfo, progress) => {
 							return new Promise<string>((resolve, reject) => {
 								const xhr = new XMLHttpRequest();

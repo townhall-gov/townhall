@@ -100,7 +100,7 @@ const CastYourVoteModalFooter = () => {
 				<button
 					disabled={loading}
 					className={
-						classNames('bg-transparent text-white border border-solid border-blue_primary rounded-lg py-1 px-5 font-medium text-sm cursor-pointer', {
+						classNames('bg-transparent text-white border border-solid border-blue_primary rounded-lg py-1 px-5 font-medium text-sm', {
 							'cursor-not-allowed': loading,
 							'cursor-pointer': !loading
 						})
@@ -121,7 +121,7 @@ const CastYourVoteModalFooter = () => {
 				<button
 					disabled={isAllZero || loading}
 					className={
-						classNames('text-white border border-solid border-blue_primary rounded-lg py-1 px-5 font-medium text-sm cursor-pointer bg-blue_primary', {
+						classNames('text-white border border-solid border-blue_primary rounded-lg py-1 px-5 font-medium text-sm bg-blue_primary', {
 							'cursor-not-allowed': isAllZero || loading,
 							'cursor-pointer': !isAllZero && !loading
 						})

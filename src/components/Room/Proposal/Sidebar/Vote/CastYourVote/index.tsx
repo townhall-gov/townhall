@@ -41,7 +41,10 @@ const CastYourVote: FC<ICastYourVoteProps> = (props) => {
 					voting_system_options.map((option, index) => {
 						return (
 							<Option
-								disabled={!isLoggedIn || !isRoomJoined}
+								connectWallet={connectWallet}
+								isLoggedIn={isLoggedIn}
+								isRoomJoined={isRoomJoined}
+								joinRoom={joinRoom}
 								option={option}
 								key={option.value + index}
 							/>

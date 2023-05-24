@@ -9,6 +9,7 @@ import { useDispatch } from 'react-redux';
 import { proposalActions } from '~src/redux/proposal';
 import { useProfileSelector, useProposalSelector } from '~src/redux/selectors';
 import { IBalanceWithNetwork } from '~src/types/schema';
+import Address from '~src/ui-components/Address';
 import formatTokenAmount from '~src/utils/formatTokenAmount';
 import { chainProperties } from '~src/utils/networkConstants';
 
@@ -16,60 +17,60 @@ const CastYourVoteModalContent = () => {
 	const { voteCreation, proposal, loading } = useProposalSelector();
 	const { user } = useProfileSelector();
 	const dispatch = useDispatch();
+	const isAllZero = voteCreation.balances.every((balance) => Number(balance.balance) === 0);
+
 	useEffect(() => {
-		const isAllZero = voteCreation.balances.every((balance) => Number(balance.balance) === 0);
-		if (isAllZero || voteCreation.balances.length === 0) {
-			(async () => {
-				dispatch(proposalActions.setLoading(true));
-				if (!proposal || !user) {
-					dispatch(proposalActions.setLoading(false));
-					return;
-				}
-				const promises: Promise<any>[] = [];
-				proposal.snapshot_heights.forEach((snapshot_height) => {
-					promises.push(
-						Promise.race([
-							fetch(`${process.env.NEXT_PUBLIC_ONCHAIN_DATA_ENDPOINT}/api/${snapshot_height.blockchain}/balance?address=${user.address}&height=${snapshot_height.height}`),
-							new Promise((_, reject) =>
-								setTimeout(() => reject(new Error('timeout')), 60 * 1000)
-							)
-						])
-					);
-				});
-				const fetchHeightsPromiseSettledResult = await Promise.allSettled(promises);
-				const heightsPromiseSettledResult = await Promise.allSettled(fetchHeightsPromiseSettledResult.map(async (promiseSettledResult, i) => {
-					if (promiseSettledResult && promiseSettledResult.status === 'fulfilled' && promiseSettledResult.value) {
-						const res = await promiseSettledResult.value.json();
-						const balance: IBalanceWithNetwork = {
-							balance: 0,
-							network: proposal?.snapshot_heights[i].blockchain
-						};
-						if (res) {
-							if (res.free) {
-								balance.balance = new BN(res.free).toString();
-							}
-							if (res.reserved) {
-								balance.balance = new BN(res.reserved).add(new BN(balance.balance)).toString();
-							}
-						}
-						return balance;
-					}
-				}));
-				const balances:IBalanceWithNetwork[] = [];
-				heightsPromiseSettledResult.forEach((promiseSettledResult) => {
-					if (promiseSettledResult && promiseSettledResult.status === 'fulfilled' && promiseSettledResult.value) {
-						balances.push(promiseSettledResult.value);
-					}
-				});
-				dispatch(proposalActions.setVoteCreation_Field({
-					key: 'balances',
-					value: balances
-				}));
+		(async () => {
+			dispatch(proposalActions.setLoading(true));
+			if (!proposal || !user) {
 				dispatch(proposalActions.setLoading(false));
-			})();
-		}
+				return;
+			}
+			const promises: Promise<any>[] = [];
+			proposal.snapshot_heights.forEach((snapshot_height) => {
+				promises.push(
+					Promise.race([
+						fetch(`${process.env.NEXT_PUBLIC_ONCHAIN_DATA_ENDPOINT}/api/${snapshot_height.blockchain}/balance?address=${user.address}&height=${snapshot_height.height}`),
+						new Promise((_, reject) =>
+							setTimeout(() => reject(new Error('timeout')), 60 * 1000)
+						)
+					])
+				);
+			});
+			const fetchHeightsPromiseSettledResult = await Promise.allSettled(promises);
+			const heightsPromiseSettledResult = await Promise.allSettled(fetchHeightsPromiseSettledResult.map(async (promiseSettledResult, i) => {
+				if (promiseSettledResult && promiseSettledResult.status === 'fulfilled' && promiseSettledResult.value) {
+					const res = await promiseSettledResult.value.json();
+					const balance: IBalanceWithNetwork = {
+						balance: 0,
+						network: proposal?.snapshot_heights[i].blockchain
+					};
+					if (res) {
+						if (res.free) {
+							balance.balance = new BN(res.free).toString();
+						}
+						if (res.reserved) {
+							balance.balance = new BN(res.reserved).add(new BN(balance.balance)).toString();
+						}
+					}
+					return balance;
+				}
+			}));
+			const balances:IBalanceWithNetwork[] = [];
+			heightsPromiseSettledResult.forEach((promiseSettledResult) => {
+				if (promiseSettledResult && promiseSettledResult.status === 'fulfilled' && promiseSettledResult.value) {
+					balances.push(promiseSettledResult.value);
+				}
+			});
+			dispatch(proposalActions.setVoteCreation_Field({
+				key: 'balances',
+				value: balances
+			}));
+			dispatch(proposalActions.setLoading(false));
+		})();
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [voteCreation.options]);
+	}, [voteCreation.options, user]);
+
 	return (
 		<section
 			className='flex flex-col gap-y-3 py-3'
@@ -86,7 +87,11 @@ const CastYourVoteModalContent = () => {
 					{voteCreation.options.map((option) => (option.value)).join(', ')}
 				</span>
 			</h4>
-			<Spin className='bg-app_background' spinning={loading} indicator={<LoadingOutlined />}>
+			<Spin
+				className='bg-app_background'
+				spinning={loading}
+				indicator={<LoadingOutlined />}
+			>
 				<article
 					className='flex flex-col gap-y-2'
 				>
@@ -128,6 +133,24 @@ const CastYourVoteModalContent = () => {
 							})
 						}
 					</ul>
+					{
+						isAllZero && user?.address && (
+							<div
+								className='flex flex-col gap-y-2 mt-5'
+							>
+								<p
+									className='text-sm text-red-500'
+								>
+									Insufficient balance, you can not vote from this account, please logged in with another account.
+								</p>
+								<Address
+									ethIdenticonSize={20}
+									identiconSize={20}
+									address={user?.address}
+								/>
+							</div>
+						)
+					}
 				</article>
 			</Spin>
 		</section>

@@ -13,7 +13,10 @@ import formatTokenAmount from '~src/utils/formatTokenAmount';
 
 interface IOptionProps {
 	option: IVotingSystemOption;
-	disabled: boolean;
+	isLoggedIn: boolean;
+	isRoomJoined: boolean;
+	connectWallet: () => void;
+	joinRoom: () => void;
 }
 
 const getOptionPercentage = (votes_result: IVotesResult, value: string) => {
@@ -41,7 +44,7 @@ const getOptionPercentage = (votes_result: IVotesResult, value: string) => {
 };
 
 const Option: FC<IOptionProps> = (props) => {
-	const { option, disabled } = props;
+	const { option, connectWallet, isLoggedIn, isRoomJoined, joinRoom } = props;
 	const { value } = option;
 	const { voteCreation, proposal } = useProposalSelector();
 	const dispatch = useDispatch();
@@ -58,16 +61,21 @@ const Option: FC<IOptionProps> = (props) => {
 	if (!proposal) return null;
 	return (
 		<button
-			disabled={disabled}
 			className={
-				classNames('outline-none border-[0.5px] border-solid border-[#90A0B7] rounded-[7px] p-3', {
+				classNames('outline-none border-[0.5px] border-solid border-[#90A0B7] rounded-[7px] p-3 cursor-pointer', {
 					'bg-[#04152F]': voteCreation.options.find((option) => option.value === value),
-					'bg-transparent': !voteCreation.options.find((option) => option.value === value),
-					'cursor-not-allowed': disabled,
-					'cursor-pointer': !disabled
+					'bg-transparent': !voteCreation.options.find((option) => option.value === value)
 				})
 			}
 			onClick={() => {
+				if (!isLoggedIn) {
+					connectWallet();
+					return;
+				}
+				if (!isRoomJoined) {
+					joinRoom();
+					return;
+				}
 				if (proposal.voting_system === EVotingSystem.SINGLE_CHOICE_VOTING) {
 					if (voteCreation.options.find((option) => option.value === value)) {
 						dispatch(proposalActions.setVoteCreation_Field({
