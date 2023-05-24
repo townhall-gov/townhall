@@ -84,6 +84,7 @@ interface IProposal {
 	reactions: IReaction[];
 	comments: IComment[];
 	votes_result: IVotesResult;
+	voting_strategies: IStrategy[];
 }
 
 interface IVotesResult {

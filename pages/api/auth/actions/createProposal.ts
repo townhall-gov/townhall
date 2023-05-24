@@ -12,7 +12,7 @@ import { houseCollection, proposalCollection, roomCollection } from '~src/servic
 import { IProposal, IRoom, ISnapshotHeight, IVotesResult } from '~src/types/schema';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
 
-export type TProposalPayload = Omit<IProposal, 'proposer_address' | 'created_at' | 'updated_at' | 'id' | 'timestamp' | 'reactions' | 'comments' | 'snapshot_heights' | 'start_date' | 'end_date' | 'votes_result'> & {
+export type TProposalPayload = Omit<IProposal, 'proposer_address' | 'created_at' | 'updated_at' | 'id' | 'timestamp' | 'reactions' | 'comments' | 'snapshot_heights' | 'start_date' | 'end_date' | 'votes_result' | 'voting_strategies'> & {
 	start_date: string;
 	end_date: string;
 };
@@ -140,7 +140,7 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 	}
 
 	const now = new Date();
-	const newProposal: Omit<IProposal, 'comments' | 'reactions'> = {
+	const newProposal: Omit<IProposal, 'comments' | 'reactions' | 'voting_strategies'> = {
 		...proposal,
 		created_at: now,
 		end_date: new Date(proposal.end_date),
@@ -172,7 +172,8 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 		createdProposal: {
 			...newProposal,
 			comments: [],
-			reactions: []
+			reactions: [],
+			voting_strategies: roomData.voting_strategies || []
 		}
 	});
 };

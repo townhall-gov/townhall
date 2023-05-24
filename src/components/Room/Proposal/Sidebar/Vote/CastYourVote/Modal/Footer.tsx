@@ -48,7 +48,7 @@ const CastYourVoteModalFooter = () => {
 			if (voteCreation.note) {
 				vote.note = voteCreation.note;
 			}
-			console.log(vote, user?.address);
+
 			const { address, data: voteData, signature } = await signApiData<TVotePayload>(vote, user?.address || '');
 			const { data, error } = await api.post<IVoteResponse, IVoteBody>('auth/actions/vote', {
 				signature: signature,
@@ -72,7 +72,11 @@ const CastYourVoteModalFooter = () => {
 				}));
 			} else {
 				const { createdVote, votes_result } = data;
-				console.log(createdVote, votes_result);
+				dispatch(proposalActions.setVote(createdVote));
+				dispatch(proposalActions.setProposal({
+					...proposal,
+					votes_result
+				}));
 				dispatch(notificationActions.send({
 					message: 'Voted successfully.',
 					status: ENotificationStatus.SUCCESS,

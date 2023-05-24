@@ -5,7 +5,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 import { ICommentCreation, IProposalStore, IVoteCreation } from './@types';
-import { IComment, IHistoryComment, IProposal, IReaction } from '~src/types/schema';
+import { IComment, IHistoryComment, IProposal, IReaction, IVote } from '~src/types/schema';
 import { EAction, ESentiment } from '~src/types/enums';
 
 const initialState: IProposalStore = {
@@ -19,10 +19,12 @@ const initialState: IProposalStore = {
 	isAllCommentsVisible: false,
 	loading: false,
 	proposal: null,
+	vote: null,
 	voteCreation: {
 		balances: [],
 		options: []
-	}
+	},
+	votes: []
 };
 
 type ICommentCreationFieldPayload = {
@@ -151,6 +153,10 @@ export const proposalStore = createSlice({
 				}
 			}
 		},
+		setVote: (state, action: PayloadAction<IVote>) => {
+			const vote = action.payload;
+			state.vote = vote;
+		},
 		setVoteCreation_Field: (state, action: PayloadAction<IVoteCreationFieldPayload>) => {
 			const obj = action.payload;
 			if (obj) {
@@ -163,6 +169,10 @@ export const proposalStore = createSlice({
 					state.voteCreation.options = value;
 				}
 			}
+		},
+		setVotes: (state, action: PayloadAction<IVote[]>) => {
+			const votes = action.payload;
+			state.votes = votes;
 		},
 		updateComments: (state, action: PayloadAction<{
 			comment: IComment;

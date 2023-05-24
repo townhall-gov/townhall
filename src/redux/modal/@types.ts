@@ -16,6 +16,7 @@ export enum ETitleType {
     MULTIPLE_JOINED_ROOMS = 'multiple-joined-rooms',
     COMMENT_EDIT_HISTORY = 'comment-edit-history',
     CAST_YOUR_VOTE = 'cast-your-vote',
+    ALL_VOTES = 'all-votes',
 }
 
 export enum EFooterType {
@@ -33,4 +34,5 @@ export enum EContentType {
     COMMENT_SENTIMENT = 'sentiment',
     COMMENT_EDIT_HISTORY = 'comment-edit-history',
     CAST_YOUR_VOTE = 'cast-your-vote',
+    ALL_VOTES = 'all-votes',
 }

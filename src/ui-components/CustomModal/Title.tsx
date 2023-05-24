@@ -7,6 +7,7 @@ import { JoinedRoomsModalTitle } from '~src/components/AppLayout/JoinedRooms/Mod
 import { ConnectWalletModalTitle } from '~src/components/ConnectWallet';
 import { SelectedWalletModalTitle } from '~src/components/ConnectWallet/FetchingAccounts';
 import EditHistoryModalTitle from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/Comments/Comment/Header/EditHistory/ModalTitle';
+import AllVotesModalTitle from '~src/components/Room/Proposal/Sidebar/Vote/All/Modal/Title';
 import CastYourVoteModalTitle from '~src/components/Room/Proposal/Sidebar/Vote/CastYourVote/Modal/Title';
 import { ETitleType } from '~src/redux/modal/@types';
 import { useWalletSelector } from '~src/redux/selectors';
@@ -27,6 +28,8 @@ const ModalTitle: FC<IModalTitleProps> = (props) => {
 		return <EditHistoryModalTitle />;
 	case ETitleType.CAST_YOUR_VOTE:
 		return <CastYourVoteModalTitle />;
+	case ETitleType.ALL_VOTES:
+		return <AllVotesModalTitle />;
 	default:
 		return <></>;
 	}

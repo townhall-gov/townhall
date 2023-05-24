@@ -6,9 +6,9 @@ import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
-import { proposalCollection } from '~src/services/firebase/utils';
+import { proposalCollection, roomCollection } from '~src/services/firebase/utils';
 import { ESentiment } from '~src/types/enums';
-import { IComment, IProposal, IReaction } from '~src/types/schema';
+import { IComment, IProposal, IReaction, IRoom } from '~src/types/schema';
 import apiErrorWithStatusCode from '~src/utils/apiErrorWithStatusCode';
 import convertFirestoreTimestampToDate from '~src/utils/convertFirestoreTimestampToDate';
 import getErrorMessage from '~src/utils/getErrorMessage';
@@ -33,6 +33,14 @@ export const getProposal: TGetProposalFn = async (params) => {
 		if (!(proposal_id == 0) && !proposal_id) {
 			throw apiErrorWithStatusCode('Invalid proposalId.', StatusCodes.BAD_REQUEST);
 		}
+		const roomDocRef = roomCollection(house_id).doc(room_id);
+		const roomDocSnapshot = await roomDocRef.get();
+		const roomData = roomDocSnapshot?.data() as IRoom;
+
+		if (!roomDocSnapshot || !roomDocSnapshot.exists || !roomData) {
+			throw apiErrorWithStatusCode(`Room with id ${room_id} is not found in a house with id ${house_id}.`, StatusCodes.NOT_FOUND);
+		}
+
 		// Get proposal
 		const proposalDocRef = proposalCollection(house_id, room_id).doc(String(proposal_id));
 		const proposalDocSnapshot = await proposalDocRef.get();
@@ -128,6 +136,7 @@ export const getProposal: TGetProposalFn = async (params) => {
 				title: data.title || '',
 				updated_at: convertFirestoreTimestampToDate(data.updated_at),
 				votes_result: data.votes_result,
+				voting_strategies: roomData.voting_strategies || [],
 				voting_system: data.voting_system,
 				voting_system_options: data.voting_system_options
 			};
@@ -154,6 +163,7 @@ export interface IProposalQuery {
     room_id: string;
     proposal_id: number;
 }
+
 const handler: TNextApiHandler<IProposal, IProposalBody, IProposalQuery> = async (req, res) => {
 	if (req.method !== 'GET') {
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, GET required.' });

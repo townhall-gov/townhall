@@ -29,6 +29,7 @@ export const getHouses: TGetHousesFn = async () => {
 								blockchain: data.blockchain,
 								description: data.description || '',
 								id: data.id,
+								is_erc20: data.is_erc20 || false,
 								logo: data.logo,
 								networks: data.networks || [],
 								title: data.title || '',

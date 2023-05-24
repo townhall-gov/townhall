@@ -8,6 +8,7 @@ import ConnectWallet from '~src/components/ConnectWallet';
 import FetchingAccounts from '~src/components/ConnectWallet/FetchingAccounts';
 import EditHistoryModalContent from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/Comments/Comment/Header/EditHistory/ModalContent';
 import SentimentModalContent from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/CreateComment/Sentiment/Content';
+import AllVotesModalContent from '~src/components/Room/Proposal/Sidebar/Vote/All/Modal/Content';
 import CastYourVoteModalContent from '~src/components/Room/Proposal/Sidebar/Vote/CastYourVote/Modal/Content';
 import { EContentType } from '~src/redux/modal/@types';
 
@@ -29,6 +30,8 @@ const ModalContent: FC<IModalContentProps> = (props) => {
 		return <EditHistoryModalContent />;
 	case EContentType.CAST_YOUR_VOTE:
 		return <CastYourVoteModalContent />;
+	case EContentType.ALL_VOTES:
+		return <AllVotesModalContent />;
 	default:
 		return <></>;
 	}
