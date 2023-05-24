@@ -4,10 +4,15 @@
 
 import 'dayjs-init';
 import React from 'react';
+import WorkingOnItBanner from '~src/ui-components/WorkingOnItBanner';
 
 const Home = () => {
 	return (
-		<div>Home</div>
+		<div
+			className='h-full'
+		>
+			<WorkingOnItBanner />
+		</div>
 	);
 };
 

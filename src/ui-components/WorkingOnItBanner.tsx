@@ -2,14 +2,17 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React from 'react';
-import WorkingOnItBanner from '~src/ui-components/WorkingOnItBanner';
 
-const RoomSettings = () => {
+const WorkingOnItBanner = () => {
 	return (
-		<div className='h-full'>
-			<WorkingOnItBanner />
+		<div className='h-full flex items-center justify-center'>
+			<p
+				className='text-green_primary font-bold text-2xl'
+			>
+                Working on it...
+			</p>
 		</div>
 	);
 };
 
-export default RoomSettings;
+export default WorkingOnItBanner;

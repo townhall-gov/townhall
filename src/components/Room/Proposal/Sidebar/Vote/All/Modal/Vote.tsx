@@ -1,29 +1,18 @@
 // Copyright 2019-2025 @polka-labs/townhall authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
-import { BN } from '@polkadot/util';
+
 import { Tooltip } from 'antd';
 import React, { FC } from 'react';
-import { IStrategy } from '~src/redux/rooms/@types';
 import { useProposalSelector } from '~src/redux/selectors';
-import { IBalanceWithNetwork, IVote } from '~src/types/schema';
+import { IVote } from '~src/types/schema';
 import Address from '~src/ui-components/Address';
-import { getStrategyWeight } from '~src/utils/calculation/getStrategyWeight';
+import { getStrategyWeight, getTotalWeight } from '~src/utils/calculation/getStrategyWeight';
 import { chainProperties } from '~src/utils/networkConstants';
 
 interface IVoteProps {
     vote: IVote;
 }
-
-const getTotalWeight = (strategies: IStrategy[], balances: IBalanceWithNetwork[]) => {
-	let total = new BN(0);
-
-	strategies.forEach((strategy) => {
-		total = total.add(getStrategyWeight(strategy, balances));
-	});
-
-	return total.toString();
-};
 
 const Vote: FC<IVoteProps> = (props) => {
 	const { vote } = props;

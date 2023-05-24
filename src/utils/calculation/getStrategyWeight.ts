@@ -4,9 +4,43 @@
 
 import { IStrategy } from '~src/redux/rooms/@types';
 import { EVotingStrategy } from '~src/types/enums';
-import { IBalanceWithNetwork } from '~src/types/schema';
+import { IBalanceWithNetwork, IVotesResult } from '~src/types/schema';
 import formatTokenAmount from '../formatTokenAmount';
 import { BN } from '@polkadot/util';
+
+const getOptionPercentage = (votes_result: IVotesResult, value: string) => {
+	const results = votes_result[value];
+	if (results && Array.isArray(results) && results.length > 0) {
+		const balances =  results.map((result) => {
+			return formatTokenAmount(result.amount, result.network);
+		});
+		const singleOptionTotal = balances.reduce((acc, curr) => {
+			return acc + Number(curr);
+		}, 0);
+		const total =  Object.entries(votes_result).reduce((acc, [, value]) => {
+			const balances = value.map((result) => {
+				return formatTokenAmount(result.amount, result.network);
+			});
+			const total = balances.reduce((acc, curr) => {
+				return acc + Number(curr);
+			}, 0);
+			return acc + total;
+		}, 0);
+		return (singleOptionTotal / total) * 100;
+	} else {
+		return 0;
+	}
+};
+
+const getTotalWeight = (strategies: IStrategy[], balances: IBalanceWithNetwork[]) => {
+	let total = new BN(0);
+
+	strategies.forEach((strategy) => {
+		total = total.add(getStrategyWeight(strategy, balances));
+	});
+
+	return total.toString();
+};
 
 const getStrategyWeight = (strategy: IStrategy, balances: IBalanceWithNetwork[]) => {
 	let total = new BN(0);
@@ -29,5 +63,7 @@ const getBalanceOfStrategyWeight = (balance: IBalanceWithNetwork) => {
 };
 
 export {
-	getStrategyWeight
+	getStrategyWeight,
+	getTotalWeight,
+	getOptionPercentage
 };

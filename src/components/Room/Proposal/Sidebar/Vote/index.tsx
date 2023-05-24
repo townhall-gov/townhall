@@ -13,6 +13,8 @@ import { EVotingSystem } from '~src/types/enums';
 import { proposalActions } from '~src/redux/proposal';
 import { useDispatch } from 'react-redux';
 import { IVote } from '~src/types/schema';
+import dayjs from 'dayjs';
+import VotingResult from './Result';
 
 const VoteInfo = () => {
 	const { proposal, voteCreation } = useProposalSelector();
@@ -71,7 +73,7 @@ const VoteInfo = () => {
 	}, [user]);
 
 	if (!proposal) return null;
-	const { start_date, voting_system_options } = proposal;
+	const { end_date, start_date, voting_system_options } = proposal;
 	return (
 		<section
 			className='border border-solid border-blue_primary rounded-2xl drop-shadow-[0px_6px_18px_rgba(0,0,0,0.06)] p-6 text-white'
@@ -80,11 +82,18 @@ const VoteInfo = () => {
                 Vote
 			</h2>
 			<div>
-				<CastYourVote
-					voting_system_options={voting_system_options}
-					start_date={start_date}
-					voteCreation={voteCreation}
-				/>
+				{
+					dayjs().isAfter(dayjs(end_date))?
+						<VotingResult />
+						: (
+							<CastYourVote
+								voting_system_options={voting_system_options}
+								start_date={start_date}
+								voteCreation={voteCreation}
+							/>
+						)
+				}
+
 				<Divider
 					className='bg-blue_primary my-6'
 				/>
