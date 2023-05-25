@@ -7,6 +7,7 @@ import { getHouses } from 'pages/api/houses';
 import { FC, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import RoomCreate from '~src/components/RoomCreate';
+import SEOHead from '~src/global/SEOHead';
 import { housesActions } from '~src/redux/houses';
 import { IHouse } from '~src/types/schema';
 import getErrorMessage from '~src/utils/getErrorMessage';
@@ -42,9 +43,12 @@ const RoomCreation: FC<IRoomCreationClientProps> = (props) => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props]);
 	return (
-		<div>
-			<RoomCreate />
-		</div>
+		<>
+			<SEOHead title='Create a Room in a House.' />
+			<div>
+				<RoomCreate />
+			</div>
+		</>
 	);
 };
 

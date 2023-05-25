@@ -4,15 +4,19 @@
 
 import 'dayjs-init';
 import React from 'react';
+import SEOHead from '~src/global/SEOHead';
 import WorkingOnItBanner from '~src/ui-components/WorkingOnItBanner';
 
 const Home = () => {
 	return (
-		<div
-			className='h-full'
-		>
-			<WorkingOnItBanner />
-		</div>
+		<>
+			<SEOHead title='Home' desc='Democratizing governance for all blockchains.' />
+			<div
+				className='h-full'
+			>
+				<WorkingOnItBanner />
+			</div>
+		</>
 	);
 };
 

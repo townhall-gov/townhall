@@ -6,6 +6,7 @@ import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import Room from '~src/components/Room';
+import SEOHead from '~src/global/SEOHead';
 
 export const getServerSideProps: GetServerSideProps<any> = async () => {
 	return {
@@ -15,15 +16,18 @@ export const getServerSideProps: GetServerSideProps<any> = async () => {
 
 const SingleRoom = () => {
 	const router = useRouter();
+	const { query } = router;
 	useEffect(() => {
-		const { query } = router;
 		router.push(`/house/${query['house_id']}/room/${query['room_id']}/proposals`);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 	return (
-		<div>
-			<Room />
-		</div>
+		<>
+			<SEOHead title={`House ${query['house_id']} room.`} />
+			<div>
+				<Room />
+			</div>
+		</>
 	);
 };
 

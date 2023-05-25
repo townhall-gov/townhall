@@ -2,13 +2,17 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React from 'react';
+import SEOHead from '~src/global/SEOHead';
 import WorkingOnItBanner from '~src/ui-components/WorkingOnItBanner';
 
 const About = () => {
 	return (
-		<div className='h-full'>
-			<WorkingOnItBanner />
-		</div>
+		<>
+			<SEOHead title='About Us' />
+			<div className='h-full'>
+				<WorkingOnItBanner />
+			</div>
+		</>
 	);
 };
 

@@ -2,10 +2,12 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
 import { getProposals } from 'pages/api/proposals';
 import React, { FC, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import Room from '~src/components/Room';
+import SEOHead from '~src/global/SEOHead';
 import { roomActions } from '~src/redux/room';
 import { IListingProposal } from '~src/redux/room/@types';
 
@@ -34,6 +36,8 @@ interface IProposalsClientProps extends IProposalsServerProps {}
 
 const Proposals: FC<IProposalsClientProps> = (props) => {
 	const dispatch = useDispatch();
+	const router = useRouter();
+	const { query } = router;
 
 	useEffect(() => {
 		if (props.error) {
@@ -45,9 +49,12 @@ const Proposals: FC<IProposalsClientProps> = (props) => {
 	}, [props]);
 
 	return (
-		<div>
-			<Room />
-		</div>
+		<>
+			<SEOHead title={`Proposals of Room ${query['room_id']} in House ${query['house_id']}`} />
+			<div>
+				<Room />
+			</div>
+		</>
 	);
 };
 

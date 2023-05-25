@@ -9,6 +9,7 @@ import { getRooms } from 'pages/api/rooms';
 import { useDispatch } from 'react-redux';
 import Rooms from '~src/components/Houses/Rooms';
 import { roomsActions } from '~src/redux/rooms';
+import SEOHead from '~src/global/SEOHead';
 
 interface IHouseServerProps {
 	rooms: IRoom[] | null;
@@ -41,9 +42,12 @@ const House: FC<IHouseClientProps> = (props) => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [error, rooms]);
 	return (
-		<div className='h-full'>
-			<Rooms />
-		</div>
+		<>
+			<SEOHead title='Rooms in a House.' />
+			<div className='h-full'>
+				<Rooms />
+			</div>
+		</>
 	);
 };
 
