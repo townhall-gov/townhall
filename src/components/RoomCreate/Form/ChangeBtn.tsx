@@ -19,6 +19,7 @@ import { Button } from 'antd';
 import { useRoomsSelector } from '~src/redux/selectors';
 import classNames from 'classnames';
 import { useAuthActionsCheck } from '~src/redux/profile/selectors';
+import { profileActions } from '~src/redux/profile';
 
 const StageChangeBtn = () => {
 	const router = useRouter();
@@ -93,12 +94,20 @@ const StageChangeBtn = () => {
 							const room = data.createdRoom;
 							// GO to newly created room page
 							dispatch(roomActions.setRoom(room));
+							dispatch(profileActions.addJoinedRoom({
+								houseId: room.house_id,
+								joinedRoom: {
+									...data.joinedRoom,
+									...room
+								}
+							}));
 							dispatch(roomsActions.setLoading(false));
 							dispatch(roomsActions.setRoomCreationReset());
 							router.push(`/house/${room.house_id}/room/${room.id}/proposals`);
 						}
 						dispatch(roomsActions.setLoading(false));
 					} catch (error) {
+						dispatch(roomsActions.setLoading(false));
 						dispatch(notificationActions.send({
 							message: getErrorMessage(error),
 							status: ENotificationStatus.ERROR,

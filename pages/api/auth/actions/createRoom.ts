@@ -9,8 +9,8 @@ import authServiceInstance from '~src/auth';
 import getTokenFromReq from '~src/auth/utils/getTokenFromReq';
 import messages from '~src/auth/utils/messages';
 import { ICreatorDetails } from '~src/redux/rooms/@types';
-import { roomCollection } from '~src/services/firebase/utils';
-import { IRoom } from '~src/types/schema';
+import { joinedHouseCollection, joinedRoomCollection, roomCollection } from '~src/services/firebase/utils';
+import { IJoinedRoomForUser, IRoom } from '~src/types/schema';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
 
 interface ICustomRoom extends Omit<IRoom, 'created_at' | 'total_members' | 'creator_details'> {
@@ -22,6 +22,7 @@ export interface ICreateRoomBody {
 
 export interface ICreateRoomResponse {
 	createdRoom: IRoom;
+	joinedRoom: IJoinedRoomForUser;
 }
 
 const handler: TNextApiHandler<ICreateRoomResponse, ICreateRoomBody, {}> = async (req, res) => {
@@ -72,12 +73,28 @@ const handler: TNextApiHandler<ICreateRoomResponse, ICreateRoomBody, {}> = async
 			...room.creator_details,
 			address
 		},
-		total_members: 0
+		total_members: 1
 	};
 	await roomRef.set(createdRoom, { merge: true });
 
+	const joinedRoom: IJoinedRoomForUser = {
+		house_id: house_id,
+		id: id,
+		is_joined: true,
+		joined_at: new Date(),
+		leaved_at: null
+	};
+
+	const joinedRoomRef = joinedRoomCollection(address, house_id).doc(id);
+	const joinedHouseRef = joinedHouseCollection(address).doc(house_id);
+	// adding joined house id
+	joinedHouseRef.set({ house_id: house_id }, { merge: true }).then(() => {});
+
+	await joinedRoomRef.set(joinedRoom, { merge: true });
+
 	res.status(StatusCodes.OK).json({
-		createdRoom
+		createdRoom,
+		joinedRoom
 	});
 };
 
