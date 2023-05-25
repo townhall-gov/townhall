@@ -42,6 +42,7 @@ async function cleanChainApis() {
 	}
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function reConnect(network: keyof typeof chains, endpoint: string, logger = console) {
 	const nowApis = chainApis[network] || [];
 
@@ -70,10 +71,10 @@ async function createApi(network: keyof typeof chains, endpoint: string, logger 
 	}
 
 	api.on('error', () => {
-		reConnect(network, endpoint, logger);
+		// reConnect(network, endpoint, logger);
 	});
 	api.on('disconnected', () => {
-		reConnect(network, endpoint, logger);
+		// reConnect(network, endpoint, logger);
 	});
 
 	const nowApis = chainApis[network] || [];

@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useProfileSelector, useProposalSelector } from '~src/redux/selectors';
 import Address from '~src/ui-components/Address';
 import { useDispatch } from 'react-redux';
@@ -26,7 +26,8 @@ const CreateComment = () => {
 	const commentCreation = useCommentCreation();
 	const dispatch = useDispatch();
 	const timeout = useRef<NodeJS.Timeout>();
-	const { loading, proposal } = useProposalSelector();
+	const { proposal } = useProposalSelector();
+	const [loading, setLoading] = useState(false);
 	const { isLoggedIn, isRoomJoined, connectWallet, joinRoom } = useAuthActionsCheck();
 
 	const { user } = useProfileSelector();
@@ -64,7 +65,7 @@ const CreateComment = () => {
 		}
 		try {
 			if (proposal) {
-				dispatch(proposalActions.setLoading(true));
+				setLoading(true);
 				const { data, error } = await api.post<ICommentResponse, ICommentBody>('auth/actions/comment', {
 					action_type: EAction.ADD,
 					comment: {
@@ -112,7 +113,7 @@ const CreateComment = () => {
 					}));
 					dispatch(proposalActions.resetCommentCreation());
 				}
-				dispatch(proposalActions.setLoading(false));
+				setLoading(false);
 				dispatch(editorActions.setIsClean(true));
 			} else {
 				dispatch(notificationActions.send({
@@ -122,7 +123,7 @@ const CreateComment = () => {
 				}));
 			}
 		} catch (error) {
-			dispatch(proposalActions.setLoading(false));
+			setLoading(false);
 			dispatch(proposalActions.setError(getErrorMessage(error)));
 		}
 	};

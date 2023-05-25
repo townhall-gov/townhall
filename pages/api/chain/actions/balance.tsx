@@ -6,7 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TNextApiHandler } from '~src/api/types';
 import { balance } from '~src/onchain-data';
-import { clean, create } from '~src/onchain-data/utils/apis';
+import { create } from '~src/onchain-data/utils/apis';
 
 export interface IBalanceBody {
     snapshot: {
@@ -36,7 +36,6 @@ const handler: TNextApiHandler<IBalanceResponse, IBalanceBody, IBalanceQuery> = 
 	create();
 
 	if (!snapshot || !Array.isArray(snapshot) || snapshot.length === 0) {
-		clean();
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Network, Address, Height is not available, unable to find Balance.' });
 	}
 
@@ -56,9 +55,7 @@ const handler: TNextApiHandler<IBalanceResponse, IBalanceBody, IBalanceQuery> = 
 				});
 			}
 		});
-		clean();
 	} catch (error) {
-		clean();
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
 	}
 

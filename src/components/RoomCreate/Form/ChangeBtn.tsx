@@ -94,6 +94,7 @@ const StageChangeBtn = () => {
 							// GO to newly created room page
 							dispatch(roomActions.setRoom(room));
 							dispatch(roomsActions.setLoading(false));
+							dispatch(roomsActions.setRoomCreationReset());
 							router.push(`/house/${room.house_id}/room/${room.id}/proposals`);
 						}
 						dispatch(roomsActions.setLoading(false));
