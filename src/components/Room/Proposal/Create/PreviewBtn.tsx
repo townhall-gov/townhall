@@ -1,6 +1,7 @@
 // Copyright 2019-2025 @polka-labs/townhall authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
+import { Button } from 'antd';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import { ICreateProposalBody, ICreateProposalResponse, TProposalPayload } from 'pages/api/auth/actions/createProposal';
@@ -137,23 +138,29 @@ const PreviewBtn = () => {
 			dispatch(roomActions.setLoading(false));
 		} catch (error) {
 			dispatch(roomActions.setLoading(false));
-			dispatch(roomActions.setError(getErrorMessage(error)));
+			const err = getErrorMessage(error);
+			dispatch(roomActions.setError(err));
+			dispatch(notificationActions.send({
+				message: err,
+				status: ENotificationStatus.ERROR,
+				title: 'Error!'
+			}));
 		}
 	};
 	return (
 		<div className='mb-10'>
-			<button
-				disabled={loading}
+			<Button
+				loading={loading}
 				onClick={onPublish}
 				className={
-					classNames('outline-none border border-solid border-[#66A5FF] flex items-center justify-center bg-blue_primary rounded-2xl text-white py-[11px] px-[22px] max-w-[188px] w-full text-base leading-[19px] font-normal tracking-[0.01em]', {
+					classNames('outline-none border h-full border-solid border-[#66A5FF] flex items-center justify-center bg-blue_primary rounded-2xl text-white py-[11px] px-[22px] max-w-[188px] w-full text-base leading-[19px] font-normal tracking-[0.01em]', {
 						'cursor-not-allowed': loading,
 						'cursor-pointer': !loading
 					})
 				}
 			>
                 Publish
-			</button>
+			</Button>
 		</div>
 	);
 };
