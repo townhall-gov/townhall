@@ -18,6 +18,12 @@ const roomCreationValidation = {
 				}
 				if (!roomCreation.creator_details.email) {
 					error = 'Creator email is required.';
+				} else {
+					// eslint-disable-next-line no-useless-escape
+					const re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+					if (!re.test(roomCreation.creator_details.email)) {
+						error = 'Invalid email format.';
+					}
 				}
 				if (!roomCreation.creator_details.phone) {
 					error = 'Creator phone is required.';
@@ -74,7 +80,7 @@ const roomCreationValidation = {
 					}
 				});
 			} else {
-				error = 'Invalid room socials.';
+				error = 'Room socials is required.';
 			}
 		}
 		return error;

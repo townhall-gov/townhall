@@ -15,6 +15,7 @@ import { roomsStore } from './rooms';
 import { notificationStore } from './notification';
 import { roomStore } from './room';
 import { proposalStore } from './proposal';
+import { editorStore } from './editor';
 
 export const makeStore = () => {
 	const isServer = typeof window === 'undefined';
@@ -27,7 +28,8 @@ export const makeStore = () => {
 		[proposalStore.name]: proposalStore.reducer,
 		[roomStore.name]: roomStore.reducer,
 		[roomsStore.name]: roomsStore.reducer,
-		[walletStore.name]: walletStore.reducer
+		[walletStore.name]: walletStore.reducer,
+		[editorStore.name]: editorStore.reducer
 	});
 
 	if (isServer) {
@@ -46,7 +48,7 @@ export const makeStore = () => {
 		const persistConfig = {
 			key: 'townhall',
 			storage,
-			whitelist: [authStore.name, modalStore.name, profileStore.name, walletStore.name] // make sure it does not clash with server keys
+			whitelist: [authStore.name, modalStore.name, profileStore.name, walletStore.name, notificationStore.name, housesStore.name, proposalStore.name, roomStore.name, roomsStore.name, editorStore.name] // make sure it does not clash with server keys
 		};
 		const persistedReducer = persistReducer(persistConfig, rootReducer);
 		const store: any = configureStore({

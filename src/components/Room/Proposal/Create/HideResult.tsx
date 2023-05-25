@@ -5,18 +5,17 @@ import { Checkbox } from 'antd';
 import React, { FC } from 'react';
 import { useDispatch } from 'react-redux';
 import { roomActions } from '~src/redux/room';
+import { useRoomSelector } from '~src/redux/selectors';
 
-interface IHideResultProps {
-	isDisabled?: boolean;
-}
+interface IHideResultProps {}
 
-const HideResult: FC<IHideResultProps> = (props) => {
-	const { isDisabled } = props;
+const HideResult: FC<IHideResultProps> = () => {
 	const dispatch = useDispatch();
+	const { loading } = useRoomSelector();
 	return (
 		<div className='flex items-center gap-x-2'>
 			<Checkbox
-				disabled={isDisabled}
+				disabled={loading}
 				onChange={(e) => {
 					dispatch(roomActions.setProposalCreation_Field({
 						key: 'is_vote_results_hide_before_voting_ends',

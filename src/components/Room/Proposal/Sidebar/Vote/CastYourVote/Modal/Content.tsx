@@ -4,10 +4,12 @@
 import { LoadingOutlined } from '@ant-design/icons';
 import { BN } from '@polkadot/util';
 import { Spin } from 'antd';
+import { IBalanceBody, IBalanceResponse } from 'pages/api/chain/actions/balance';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { proposalActions } from '~src/redux/proposal';
 import { useProfileSelector, useProposalSelector } from '~src/redux/selectors';
+import api from '~src/services/api';
 import { IBalanceWithNetwork } from '~src/types/schema';
 import Address from '~src/ui-components/Address';
 import formatTokenAmount from '~src/utils/formatTokenAmount';
@@ -26,46 +28,39 @@ const CastYourVoteModalContent = () => {
 				dispatch(proposalActions.setLoading(false));
 				return;
 			}
-			const promises: Promise<any>[] = [];
-			proposal.snapshot_heights.forEach((snapshot_height) => {
-				promises.push(
-					Promise.race([
-						fetch(`${process.env.NEXT_PUBLIC_ONCHAIN_DATA_ENDPOINT}/api/${snapshot_height.blockchain}/balance?address=${user.address}&height=${snapshot_height.height}`),
-						new Promise((_, reject) =>
-							setTimeout(() => reject(new Error('timeout')), 60 * 1000)
-						)
-					])
-				);
+
+			const { data, error } = await api.post<IBalanceResponse, IBalanceBody>('chain/actions/balance', {
+				snapshot: proposal.snapshot_heights.map((v) => {
+					return {
+						address: user.address,
+						height: v.height,
+						network: v.blockchain
+					};
+				})
 			});
-			const fetchHeightsPromiseSettledResult = await Promise.allSettled(promises);
-			const heightsPromiseSettledResult = await Promise.allSettled(fetchHeightsPromiseSettledResult.map(async (promiseSettledResult, i) => {
-				if (promiseSettledResult && promiseSettledResult.status === 'fulfilled' && promiseSettledResult.value) {
-					const res = await promiseSettledResult.value.json();
+			if (error) {
+				console.log(error);
+			} else if (data) {
+				const balances = data.balances.map((v, i) => {
 					const balance: IBalanceWithNetwork = {
 						balance: 0,
-						network: proposal?.snapshot_heights[i].blockchain
+						network: v.network || proposal?.snapshot_heights[i].blockchain
 					};
-					if (res) {
-						if (res.free) {
-							balance.balance = new BN(res.free).toString();
+					if (v.value) {
+						if (v.value.free) {
+							balance.balance = new BN(v.value.free).toString();
 						}
-						if (res.reserved) {
-							balance.balance = new BN(res.reserved).add(new BN(balance.balance)).toString();
+						if (v.value.reserved) {
+							balance.balance = new BN(v.value.reserved).add(new BN(balance.balance)).toString();
 						}
 					}
 					return balance;
-				}
-			}));
-			const balances:IBalanceWithNetwork[] = [];
-			heightsPromiseSettledResult.forEach((promiseSettledResult) => {
-				if (promiseSettledResult && promiseSettledResult.status === 'fulfilled' && promiseSettledResult.value) {
-					balances.push(promiseSettledResult.value);
-				}
-			});
-			dispatch(proposalActions.setVoteCreation_Field({
-				key: 'balances',
-				value: balances
-			}));
+				});
+				dispatch(proposalActions.setVoteCreation_Field({
+					key: 'balances',
+					value: balances
+				}));
+			}
 			dispatch(proposalActions.setLoading(false));
 		})();
 	// eslint-disable-next-line react-hooks/exhaustive-deps

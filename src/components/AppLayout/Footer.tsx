@@ -1,7 +1,7 @@
 // Copyright 2019-2025 @polka-labs/townhall authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
-import { RightCircleOutlined, TwitterOutlined } from '@ant-design/icons';
+import { RightCircleOutlined, TwitterOutlined, GithubOutlined } from '@ant-design/icons';
 import React, { FC } from 'react';
 import { Layout } from 'antd';
 import Link from 'next/link';
@@ -24,17 +24,11 @@ const Footer: FC<IFooterProps> = () => {
 					/>
 					<RightCircleOutlined className='text-grey_primary text-xl' />
 				</div>
-				<span className='text-white text-xs leading-[15px] tracking-[0.02em] font-normal'>&#169; 2023 Polkassembly</span>
+				<span className='text-white text-xs leading-[15px] tracking-[0.02em] font-normal'>&#169; 2023 Townhall</span>
 			</article>
 			<ul className='col-span-1 m-0 p-0 grid grid-cols-2 gap-x-2 text-grey_primary list-none'>
 				<li className='col-span-1 m-0 p-0 flex items-center'>
 					<Link className='text-grey_primary text-base leading-[20px] font-light' href='/about'>About</Link>
-				</li>
-				<li className='col-span-1 m-0 p-0 flex items-center'>
-					<Link className='text-grey_primary text-base leading-[20px] font-light' href='/Jobs'>Jobs</Link>
-				</li>
-				<li className='col-span-1 m-0 p-0 flex items-center'>
-					<Link className='text-grey_primary text-base leading-[20px] font-light' href='/blog'>Blog</Link>
 				</li>
 				<li className='col-span-1 m-0 p-0 flex items-center'>
 					<Link className='text-grey_primary text-base leading-[20px] font-light' href='/contact-us'>Contact Us</Link>
@@ -46,8 +40,15 @@ const Footer: FC<IFooterProps> = () => {
 				</button>
 				<div className='flex flex-col mt-[18px]'>
 					<p className='m-0 p-0 text-grey_primary leading-[22px] text-lg'>Join Polkroom Community</p>
-					<div className='mt-2 flex items-center text-white text-base gap-x-[16.33px]'>
-						<TwitterOutlined />
+					<div
+						className='flex items-center gap-x-2'
+					>
+						<a href='https://twitter.com/townhallgov' target='_blank' className='mt-2 flex items-center text-white text-base gap-x-[16.33px]' rel="noreferrer">
+							<TwitterOutlined />
+						</a>
+						<a href='https://github.com/townhall-gov/townhall' target='_blank' className='mt-2 flex items-center text-white text-base gap-x-[16.33px]' rel="noreferrer">
+							<GithubOutlined />
+						</a>
 					</div>
 				</div>
 			</article>

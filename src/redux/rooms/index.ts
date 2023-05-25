@@ -57,6 +57,17 @@ export const roomsStore = createSlice({
 		setLoading: (state, action: PayloadAction<boolean>) => {
 			state.loading = action.payload;
 		},
+		setRoomCreationReset: (state) => {
+			state.roomCreation = {
+				creator_details: null,
+				currentStage: ERoomCreationStage.GETTING_STARTED,
+				getting_started: null,
+				room_details: null,
+				room_socials: null,
+				room_strategies: [],
+				select_house: null
+			};
+		},
 		setRoomCreationStage: (state, action: PayloadAction<ERoomCreationStage>) => {
 			if (state.roomCreation) {
 				state.roomCreation.currentStage = action.payload;
@@ -99,9 +110,7 @@ export const roomsStore = createSlice({
 			}
 			if (state.roomCreation) {
 				state.roomCreation.select_house = house;
-				if (state.roomCreation.room_strategies && Array.isArray(state.roomCreation.room_strategies) && state.roomCreation.room_strategies.length === 0) {
-					state.roomCreation.room_strategies = room_strategies;
-				}
+				state.roomCreation.room_strategies = room_strategies;
 			} else {
 				state.roomCreation = {
 					creator_details: null,

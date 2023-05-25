@@ -8,6 +8,9 @@ import styled from 'styled-components';
 import classNames from 'classnames';
 import { Spin } from 'antd';
 import { IMG_BB_API_KEY } from '~src/global/imgAPIKey';
+import { useEditorSelector } from '~src/redux/selectors';
+import { useDispatch } from 'react-redux';
+import { editorActions } from '~src/redux/editor';
 
 interface ITextEditorProps {
     className?: string;
@@ -24,6 +27,9 @@ const TextEditor: FC<ITextEditorProps> = (props) => {
 	const { className, height, onChange, localStorageKey, value, isDisabled, imageNamePrefix } = props;
 	const initialValue = useRef(props.initialValue || (localStorageKey? (localStorage.getItem(localStorageKey) || ''): ''));
 	const [spin, setSpin] = useState(true);
+	const ref = useRef<Editor>(null!);
+	const { isClean } = useEditorSelector();
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (value !== initialValue.current) {
@@ -38,12 +44,21 @@ const TextEditor: FC<ITextEditorProps> = (props) => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	useEffect(() => {
+		if (isClean) {
+			ref.current.editor?.setContent('');
+			dispatch(editorActions.setIsClean(false));
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isClean]);
+
 	return (
 		<div style={{
 			minHeight: `${height || 300}px`
 		}} className={classNames('flex-1 w-full', className)}>
 			<Spin className='bg-app_background' spinning={spin} indicator={<LoadingOutlined />}>
 				<Editor
+					ref={ref}
 					disabled={isDisabled}
 					initialValue={initialValue.current}
 					onEditorChange={(v) => {

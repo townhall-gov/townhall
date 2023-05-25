@@ -1,7 +1,7 @@
 // Copyright 2019-2025 @polka-labs/townhall authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
-import React, { FC, useRef } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import ReactHTMLParser from 'react-html-parser';
 import { useProfileSelector, useProposalSelector } from '~src/redux/selectors';
 import { IComment } from '~src/types/schema';
@@ -24,7 +24,8 @@ interface ICommentContentProps {
 const CommentContent: FC<ICommentContentProps> = (props) => {
 	const { comment } = props;
 	const timeout = useRef<NodeJS.Timeout>();
-	const { proposal, editableComment, loading } = useProposalSelector();
+	const { proposal, editableComment } = useProposalSelector();
+	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch();
 
 	const { user } = useProfileSelector();
@@ -54,7 +55,7 @@ const CommentContent: FC<ICommentContentProps> = (props) => {
 		}
 		try {
 			if (proposal && editableComment) {
-				dispatch(proposalActions.setLoading(true));
+				setLoading(true);
 				const { data, error } = await api.post<ICommentResponse, ICommentBody>('auth/actions/comment', {
 					action_type: EAction.EDIT,
 					comment: editableComment,
@@ -89,7 +90,7 @@ const CommentContent: FC<ICommentContentProps> = (props) => {
 					}));
 					dispatch(proposalActions.resetEditableComment());
 				}
-				dispatch(proposalActions.setLoading(false));
+				setLoading(false);
 			} else {
 				dispatch(notificationActions.send({
 					message: 'Something went wrong!',
@@ -98,7 +99,7 @@ const CommentContent: FC<ICommentContentProps> = (props) => {
 				}));
 			}
 		} catch (error) {
-			dispatch(proposalActions.setLoading(false));
+			setLoading(false);
 			dispatch(proposalActions.setError(getErrorMessage(error)));
 		}
 	};
@@ -113,7 +114,7 @@ const CommentContent: FC<ICommentContentProps> = (props) => {
 					:<CommentEditor
 						imageNamePrefix={key}
 						localStorageKey={key}
-						disabled={loading}
+						loading={loading}
 						onChange={(v) => {
 							clearTimeout(timeout.current);
 							timeout.current = setTimeout(() => {

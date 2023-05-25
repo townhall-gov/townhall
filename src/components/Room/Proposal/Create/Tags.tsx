@@ -26,8 +26,9 @@ const Tags: FC<ITagsProps> = (props) => {
 			newTags = newTags.filter((item) => item !== tag);
 		} else if (tags.includes(tag)) {
 			return;
+		} else {
+			newTags.push(tag);
 		}
-		newTags.push(tag);
 		dispatch(roomActions.setProposalCreation_Field({
 			key: 'tags',
 			value: newTags

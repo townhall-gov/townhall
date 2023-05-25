@@ -4,7 +4,7 @@
 import { LoadingOutlined } from '@ant-design/icons';
 import { Divider, Spin } from 'antd';
 import { IVotesInfoQuery } from 'pages/api/votes';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { proposalActions } from '~src/redux/proposal';
 import { useProposalSelector } from '~src/redux/selectors';
@@ -13,12 +13,14 @@ import { IVote } from '~src/types/schema';
 import Vote from './Vote';
 
 const AllVotesModalContent = () => {
-	const { proposal, loading, votes } = useProposalSelector();
+	const { proposal, votes } = useProposalSelector();
 	const dispatch = useDispatch();
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		(async () => {
 			if (!proposal) return;
+			setLoading(true);
 			const res = await api.get<IVote[], IVotesInfoQuery>('votes', {
 				house_id: proposal.house_id,
 				proposal_id: proposal.id,
@@ -27,6 +29,7 @@ const AllVotesModalContent = () => {
 			if (res.data) {
 				dispatch(proposalActions.setVotes(res.data));
 			}
+			setLoading(false);
 		})();
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [proposal]);

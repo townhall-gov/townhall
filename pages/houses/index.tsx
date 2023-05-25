@@ -9,6 +9,7 @@ import { getHouses } from 'pages/api/houses';
 import Houses from '~src/components/Houses';
 import { useDispatch } from 'react-redux';
 import { housesActions } from '~src/redux/houses';
+import SEOHead from '~src/global/SEOHead';
 
 interface IHomeServerProps {
 	houses: IHouse[] | null;
@@ -39,9 +40,12 @@ const Home: FC<IHomeClientProps> = (props) => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [error, houses]);
 	return (
-		<div>
-			<Houses />
-		</div>
+		<>
+			<SEOHead title='Blockchains Houses.' />
+			<div>
+				<Houses />
+			</div>
+		</>
 	);
 };
 

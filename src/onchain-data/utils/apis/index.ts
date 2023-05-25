@@ -32,7 +32,27 @@ async function createEvmChainProviders() {
 	return Promise.all(promises);
 }
 
+const clean = () => {
+	createChainApis().then(() => {});
+	createEvmChainProviders().then(() => {});
+};
+
+const create = () => {
+	createChainApis().then(() => {
+		console.log('Apis created');
+	}).catch(() => {
+		console.log('Error when creating Apis');
+	});
+	createEvmChainProviders().then(() => {
+		console.log('Providers created');
+	}).catch(() => {
+		console.log('Error initializing Evm providers');
+	});
+};
+
 export {
 	createChainApis,
-	createEvmChainProviders
+	createEvmChainProviders,
+	clean,
+	create
 };

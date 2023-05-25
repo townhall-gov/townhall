@@ -8,6 +8,8 @@ import { TNextApiHandler } from '~src/api/types';
 import authServiceInstance from '~src/auth';
 import getTokenFromReq from '~src/auth/utils/getTokenFromReq';
 import messages from '~src/auth/utils/messages';
+import { height } from '~src/onchain-data';
+import { create } from '~src/onchain-data/utils/apis';
 import { houseCollection, proposalCollection, roomCollection } from '~src/services/firebase/utils';
 import { IProposal, IRoom, ISnapshotHeight, IVotesResult } from '~src/types/schema';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
@@ -34,7 +36,7 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
 	}
 	const { proposal, proposer_address, signature } = req.body;
-
+	create();
 	if (!proposal || typeof proposal !== 'object') {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Unable to create a proposal, insufficient information for creating a proposal.' });
 	}
@@ -60,10 +62,14 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 	let logged_in_address: string | null = null;
 	try {
 		const token = getTokenFromReq(req);
-		if(!token) return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid token' });
+		if(!token) {
+			return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid token' });
+		}
 
 		const user = await authServiceInstance.GetUser(token);
-		if(!user) return res.status(StatusCodes.FORBIDDEN).json({ error: messages.UNAUTHORISED });
+		if(!user) {
+			return res.status(StatusCodes.FORBIDDEN).json({ error: messages.UNAUTHORISED });
+		}
 		logged_in_address = user.address;
 	} catch (error) {
 		return res.status(getErrorStatus(error)).json({ error: getErrorMessage(error) });
@@ -107,17 +113,12 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 
 	const heightsPromise = roomData.voting_strategies.map(async (strategy) => {
 		const { network } = strategy;
-		const heightRes: any = await Promise.race([
-			fetch(`${process.env.NEXT_PUBLIC_ONCHAIN_DATA_ENDPOINT}/api/${network}/height?time=${new Date(proposal.start_date).getTime()}`),
+		const data: any = await Promise.race([
+			height(network, new Date(proposal.start_date).getTime()),
 			new Promise((_, reject) =>
 				setTimeout(() => reject(new Error('timeout')), 60 * 1000)
 			)
 		]);
-
-		const data = await heightRes.json() as {
-			height: number;
-			time: number;
-		};
 
 		return {
 			blockchain: network,

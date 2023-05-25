@@ -32,7 +32,7 @@ const RoomDetails = () => {
 					onChange={(v) => {
 						dispatch(roomsActions.setRoomCreation_RoomDetails_Field({
 							key: 'name',
-							value: v
+							value: v.toLowerCase()
 						}));
 					}}
 					type='text'
