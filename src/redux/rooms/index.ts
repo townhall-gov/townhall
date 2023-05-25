@@ -99,9 +99,7 @@ export const roomsStore = createSlice({
 			}
 			if (state.roomCreation) {
 				state.roomCreation.select_house = house;
-				if (state.roomCreation.room_strategies && Array.isArray(state.roomCreation.room_strategies) && state.roomCreation.room_strategies.length === 0) {
-					state.roomCreation.room_strategies = room_strategies;
-				}
+				state.roomCreation.room_strategies = room_strategies;
 			} else {
 				state.roomCreation = {
 					creator_details: null,
