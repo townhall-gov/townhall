@@ -98,8 +98,12 @@ const handler: TNextApiHandler<IVoteResponse, IVoteBody, {}> = async (req, res) 
 	if (isAllZero) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Can not vote, All balances are zero.' });
 	}
-
-	const voteDocRef = voteCollection(house_id, room_id, String(proposal_id)).doc();
+	const voteColRef = voteCollection(house_id, room_id, String(proposal_id));
+	const voteQuerySnapshot = await voteColRef.where('voter_address', '==', voter_address).limit(0).get();
+	if (!voteQuerySnapshot.empty) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: `Voter ${voter_address} already voted for this proposal.` });
+	}
+	const voteDocRef = voteColRef.doc();
 	const now = new Date();
 	const newVote: IVote = {
 		balances: vote.balances,
