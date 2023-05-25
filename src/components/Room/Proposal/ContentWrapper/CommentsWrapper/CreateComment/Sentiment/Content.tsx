@@ -11,7 +11,8 @@ import { ESentiment } from '~src/types/enums';
 import SentimentIcon from '~src/ui-components/SentimentIcon';
 
 const SentimentModalContent = () => {
-	const { commentCreation } = useProposalSelector();
+	const { commentCreation, editableComment } = useProposalSelector();
+	const selectedSentiment = editableComment?.id? editableComment.sentiment || commentCreation.sentiment: commentCreation?.sentiment;
 	const dispatch = useDispatch();
 	return (
 		<section>
@@ -31,10 +32,17 @@ const SentimentModalContent = () => {
 					className='w-full max-w-[276px]'
 					trackStyle={{ backgroundColor:'#5E6F80' }}
 					onChange={(value: number) => {
-						dispatch(proposalActions.setCommentCreation_Field({
-							key: 'sentiment',
-							value: Object.values(ESentiment)[value - 1]
-						}));
+						if (editableComment?.id) {
+							dispatch(proposalActions.setEditableComment({
+								...editableComment,
+								sentiment: Object.values(ESentiment)[value - 1]
+							}));
+						} else {
+							dispatch(proposalActions.setCommentCreation_Field({
+								key: 'sentiment',
+								value: Object.values(ESentiment)[value - 1]
+							}));
+						}
 					}}
 					step={5}
 					marks={Object.values(ESentiment).reduce((prev, sentiment, index) => {
@@ -45,8 +53,8 @@ const SentimentModalContent = () => {
 									<SentimentIcon
 										type={sentiment}
 										className={classNames('text-[36px]', {
-											'text-grey_tertiary': commentCreation?.sentiment !== sentiment,
-											'text-purple_primary': commentCreation?.sentiment === sentiment
+											'text-grey_tertiary': selectedSentiment !== sentiment,
+											'text-purple_primary': selectedSentiment === sentiment
 										})}
 									/>),
 								style: { marginTop:'-22.5px' }
@@ -56,11 +64,11 @@ const SentimentModalContent = () => {
 					}, {})}
 					min={1}
 					max={5}
-					value={Object.values(ESentiment).indexOf(commentCreation?.sentiment) + 1}
+					value={Object.values(ESentiment).indexOf(selectedSentiment) + 1}
 					defaultValue={3}
 				/>
 				<h4 className='m-0 text-purple_primary font-semibold text-xl leading-6 tracking-[0.01em]'>
-					{(commentCreation?.sentiment || '')?.toString().split('_').map((str) => str.charAt(0)?.toUpperCase() + str.slice(1).toLowerCase()).join(' ')}
+					{(selectedSentiment || '')?.toString().split('_').map((str) => str.charAt(0)?.toUpperCase() + str.slice(1).toLowerCase()).join(' ')}
 				</h4>
 			</article>
 		</section>

@@ -45,7 +45,7 @@ const RoomCreation: FC<IRoomCreationClientProps> = (props) => {
 	return (
 		<>
 			<SEOHead title='Create a Room in a House.' />
-			<div>
+			<div className='h-full'>
 				<RoomCreate />
 			</div>
 		</>

@@ -18,6 +18,7 @@ import { roomActions } from '~src/redux/room';
 import { Button } from 'antd';
 import { useRoomsSelector } from '~src/redux/selectors';
 import classNames from 'classnames';
+import { useAuthActionsCheck } from '~src/redux/profile/selectors';
 
 const StageChangeBtn = () => {
 	const router = useRouter();
@@ -25,8 +26,13 @@ const StageChangeBtn = () => {
 	const { loading, roomCreation } = useRoomsSelector();
 	const nextCreationStage = getNextCreationStage(roomCreationCurrentStage);
 	const dispatch = useDispatch();
+	const { connectWallet, isLoggedIn } = useAuthActionsCheck();
 
 	const onStageChange = () => {
+		if (!isLoggedIn) {
+			connectWallet();
+			return;
+		}
 		if (nextCreationStage) {
 			dispatch(roomsActions.setRoomCreationStage(nextCreationStage.stage));
 		} else {

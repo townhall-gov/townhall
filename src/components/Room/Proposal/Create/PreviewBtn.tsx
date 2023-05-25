@@ -86,7 +86,7 @@ const PreviewBtn = () => {
 					tags: tags,
 					title: title,
 					voting_system: voting_system,
-					voting_system_options: voting_system_options
+					voting_system_options: voting_system_options.filter((option) => option.value.trim())
 				};
 				const { address, data: proposalData, signature } = await signApiData<TProposalPayload>(proposal, user?.address || '');
 				const { data, error } = await api.post<ICreateProposalResponse, ICreateProposalBody>('auth/actions/createProposal', {

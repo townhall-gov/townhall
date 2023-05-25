@@ -20,6 +20,7 @@ import { EContentType, EFooterType, ETitleType } from '~src/redux/modal/@types';
 import CommentEditor from '../CommentEditor';
 import { useAuthActionsCheck } from '~src/redux/profile/selectors';
 import ConnectWalletBanner from './ConnectWalletBanner';
+import { editorActions } from '~src/redux/editor';
 
 const CreateComment = () => {
 	const commentCreation = useCommentCreation();
@@ -112,6 +113,7 @@ const CreateComment = () => {
 					dispatch(proposalActions.resetCommentCreation());
 				}
 				dispatch(proposalActions.setLoading(false));
+				dispatch(editorActions.setIsClean(true));
 			} else {
 				dispatch(notificationActions.send({
 					message: 'Something went wrong!',
@@ -150,8 +152,15 @@ const CreateComment = () => {
 					localStorageKey={key}
 					onSentiment={onSentiment}
 					onComment={onComment}
-					onCancel={() => {}}
-					disabled={loading}
+					onCancel={() => {
+						dispatch(proposalActions.setCommentCreation_Field({
+							key: 'content',
+							value: ''
+						}));
+						localStorage.removeItem(key);
+						dispatch(editorActions.setIsClean(true));
+					}}
+					loading={loading}
 					onChange={(v) => {
 						clearTimeout(timeout.current);
 						timeout.current = setTimeout(() => {

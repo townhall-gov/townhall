@@ -225,14 +225,14 @@ const proposalCreationValidation = {
             error: string;
         }[] = [];
 		if (voting_system_options && Array.isArray(voting_system_options) && voting_system_options.length > 1) {
-			voting_system_options.forEach((option, i) => {
-				if (!option.value) {
-					errors.push({
-						error: `Option ${i + 1} of value "${option.value}" is not a valid option.`,
-						key: `${i}`
-					});
-				}
-			});
+			// voting_system_options.forEach((option, i) => {
+			// if (!option.value) {
+			// errors.push({
+			// error: `Option ${i + 1} of value "${option.value}" is not a valid option.`,
+			// key: `${i}`
+			// });
+			// }
+			// });
 		} else {
 			errors.push({
 				error: 'Voting system options must be at least 2.',
