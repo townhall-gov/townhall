@@ -8,6 +8,8 @@ import { TNextApiHandler } from '~src/api/types';
 import authServiceInstance from '~src/auth';
 import getTokenFromReq from '~src/auth/utils/getTokenFromReq';
 import messages from '~src/auth/utils/messages';
+import { height } from '~src/onchain-data';
+import { clean, create } from '~src/onchain-data/utils/apis';
 import { houseCollection, proposalCollection, roomCollection } from '~src/services/firebase/utils';
 import { IProposal, IRoom, ISnapshotHeight, IVotesResult } from '~src/types/schema';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
@@ -34,57 +36,73 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
 	}
 	const { proposal, proposer_address, signature } = req.body;
-
+	create();
 	if (!proposal || typeof proposal !== 'object') {
+		clean();
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Unable to create a proposal, insufficient information for creating a proposal.' });
 	}
 
 	if (!signature) {
+		clean();
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid signature.' });
 	}
 
 	if (!proposer_address) {
+		clean();
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid address.' });
 	}
 
 	const { house_id, room_id } = proposal;
 
 	if (!house_id || typeof house_id !== 'string') {
+		clean();
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid houseId.' });
 	}
 
 	if (!room_id || typeof room_id !== 'string') {
+		clean();
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid roomId.' });
 	}
 
 	let logged_in_address: string | null = null;
 	try {
 		const token = getTokenFromReq(req);
-		if(!token) return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid token' });
+		if(!token) {
+			clean();
+			return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid token' });
+		}
 
 		const user = await authServiceInstance.GetUser(token);
-		if(!user) return res.status(StatusCodes.FORBIDDEN).json({ error: messages.UNAUTHORISED });
+		if(!user) {
+			clean();
+			return res.status(StatusCodes.FORBIDDEN).json({ error: messages.UNAUTHORISED });
+		}
 		logged_in_address = user.address;
 	} catch (error) {
+		clean();
 		return res.status(getErrorStatus(error)).json({ error: getErrorMessage(error) });
 	}
 
 	if (proposer_address !== logged_in_address) {
+		clean();
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'LoggedIn address is not matching with Proposer address' });
 	}
 
 	const houseDocSnapshot = await houseCollection.doc(house_id).get();
 	if (!houseDocSnapshot.exists) {
+		clean();
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: `House with id ${house_id} does not exist.` });
 	}
 
 	const roomDocSnapshot = await roomCollection(house_id).doc(room_id).get();
 	const roomData = roomDocSnapshot.data() as IRoom;
 	if (!roomDocSnapshot.exists || !roomData) {
+		clean();
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: `Room with id ${room_id} does not exist in a House with id ${house_id}.` });
 	}
 
 	if (roomData.voting_strategies.length === 0) {
+		clean();
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: `Room with id ${room_id} does not have any voting strategies.` });
 	}
 
@@ -102,22 +120,18 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 	const proposalDocRef = proposalsColRef.doc(String(newID));
 	const proposalDocSnapshot = await proposalDocRef.get();
 	if (proposalDocSnapshot && proposalDocSnapshot.exists && proposalDocSnapshot.data()) {
+		clean();
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: `Proposal with id ${newID} already exists in a Room with id ${room_id} and a House with id ${house_id}.` });
 	}
 
 	const heightsPromise = roomData.voting_strategies.map(async (strategy) => {
 		const { network } = strategy;
-		const heightRes: any = await Promise.race([
-			fetch(`${process.env.NEXT_PUBLIC_ONCHAIN_DATA_ENDPOINT}/api/${network}/height?time=${new Date(proposal.start_date).getTime()}`),
+		const data: any = await Promise.race([
+			height(network, new Date(proposal.start_date).getTime()),
 			new Promise((_, reject) =>
 				setTimeout(() => reject(new Error('timeout')), 60 * 1000)
 			)
 		]);
-
-		const data = await heightRes.json() as {
-			height: number;
-			time: number;
-		};
 
 		return {
 			blockchain: network,
@@ -126,6 +140,7 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 	});
 
 	const heightsPromiseSettledResult = await Promise.allSettled(heightsPromise);
+	clean();
 
 	const snapshot_heights: ISnapshotHeight[] = [];
 

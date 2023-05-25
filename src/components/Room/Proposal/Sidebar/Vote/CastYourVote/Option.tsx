@@ -81,14 +81,17 @@ const Option: FC<IOptionProps> = (props) => {
 		>
 			<p className='flex items-center justify-center gap-x-2'>
 				<span
-					className='flex items-center justify-center'
+					className='max-w-[75px] truncate'
+					title={value}
 				>
 					{value}
 				</span>
 				<span
 					className='flex items-center justify-center text-grey_primary text-xs'
 				>
-					{(total || 0).toFixed(1)}%
+					{
+						isNaN(total) ? 0: (total || 0).toFixed(1)
+					}%
 				</span>
 			</p>
 		</button>

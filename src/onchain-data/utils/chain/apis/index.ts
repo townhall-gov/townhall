@@ -31,6 +31,17 @@ const chainApis: IChainApis = {
 	polkadot: []
 };
 
+async function cleanChainApis() {
+	for (const network in chainApis) {
+		const apis = chainApis[network as keyof typeof chains];
+		for (let api of apis) {
+			await api.api.disconnect();
+			(api as any) = null;
+		}
+		chainApis[network as keyof typeof chains] = [];
+	}
+}
+
 async function reConnect(network: keyof typeof chains, endpoint: string, logger = console) {
 	const nowApis = chainApis[network] || [];
 
@@ -145,5 +156,6 @@ export {
 	createApiForChain,
 	createApiInLimitTime,
 	getApis,
-	logApiStatus
+	logApiStatus,
+	cleanChainApis
 };

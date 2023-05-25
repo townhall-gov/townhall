@@ -88,7 +88,7 @@ const CastYourVoteModalFooter = () => {
 					open: false,
 					titleType: ETitleType.NONE
 				}));
-				dispatch(proposalActions.resetVoteCreation());
+				// dispatch(proposalActions.resetVoteCreation());
 			}
 			dispatch(proposalActions.setLoading(false));
 		} catch (error) {

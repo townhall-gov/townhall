@@ -14,6 +14,20 @@ const evmProviderMap: TEvmProviderMap = {
 	moonriver: []
 };
 
+async function cleanEvmChainProviders() {
+	for (const chain in evmProviderMap) {
+		const providers = evmProviderMap[chain as keyof typeof evmChains];
+		for (let provider of providers) {
+			if (provider) {
+				provider.removeAllListeners();
+				provider.destroy();
+				(provider as any) = null;
+			}
+		}
+		evmProviderMap[chain as keyof typeof evmChains] = [];
+	}
+}
+
 function createProvider(url: string | ethers.FetchRequest | ethers.WebSocketLike | ethers.WebSocketCreator, network: ethers.Networkish) {
 	try {
 		if (typeof url === 'string' && url.startsWith('wss')) {
@@ -60,5 +74,6 @@ function getProvidersForEvmChain(chain: keyof typeof evmChains) {
 
 export {
 	createProviderForEvmChain,
-	getProvidersForEvmChain
+	getProvidersForEvmChain,
+	cleanEvmChainProviders
 };
