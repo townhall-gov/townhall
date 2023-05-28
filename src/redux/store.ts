@@ -3,7 +3,6 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { Action, ThunkAction, combineReducers, configureStore } from '@reduxjs/toolkit';
-import { authStore } from './auth';
 import { modalStore } from './modal';
 import { walletStore } from './wallet';
 import { createWrapper } from 'next-redux-wrapper';
@@ -20,7 +19,6 @@ import { editorStore } from './editor';
 export const makeStore = () => {
 	const isServer = typeof window === 'undefined';
 	const rootReducer = combineReducers({
-		[authStore.name]: authStore.reducer,
 		[housesStore.name]: housesStore.reducer,
 		[modalStore.name]: modalStore.reducer,
 		[notificationStore.name]: notificationStore.reducer,
@@ -48,7 +46,7 @@ export const makeStore = () => {
 		const persistConfig = {
 			key: 'townhall',
 			storage,
-			whitelist: [authStore.name, profileStore.name] // make sure it does not clash with server keys
+			whitelist: [modalStore.name, profileStore.name, walletStore.name] // make sure it does not clash with server keys
 		};
 		const persistedReducer = persistReducer(persistConfig, rootReducer);
 		const store: any = configureStore({

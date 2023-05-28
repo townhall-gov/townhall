@@ -5,7 +5,6 @@
 import { useSelector } from 'react-redux';
 import { TAppState } from './store';
 import { IModalStore } from './modal/@types';
-import { IAuthStore } from './auth/@types';
 import { IWalletStore } from './wallet/@types';
 import { IProfileStore } from './profile/@types';
 import { IHousesStore } from './houses/@types';
@@ -16,10 +15,6 @@ import { IEditorStore } from './editor/@types';
 
 const useModalSelector = () => {
 	return useSelector<TAppState, IModalStore>((state) => state.modal);
-};
-
-const useAuthSelector = () => {
-	return useSelector<TAppState, IAuthStore>((state) => state.modal);
 };
 
 const useWalletSelector = () => {
@@ -51,7 +46,6 @@ const useEditorSelector = () => {
 };
 
 export {
-	useAuthSelector,
 	useModalSelector,
 	useWalletSelector,
 	useProfileSelector,
