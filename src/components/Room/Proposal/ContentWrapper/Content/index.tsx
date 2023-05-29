@@ -10,7 +10,7 @@ import Reactions from './Reactions';
 const Content = () => {
 	const { proposal } = useProposalSelector();
 	if (!proposal) return null;
-	const { proposer_address, title, tags, description, id } = proposal;
+	const { proposer_address, title, tags, description, id, house_id } = proposal;
 	return (
 		<section
 			className='border border-solid border-blue_primary rounded-2xl'
@@ -20,6 +20,7 @@ const Content = () => {
 				tags={tags}
 				title={title}
 				id={id}
+				house_id={house_id}
 			/>
 			<div className='py-[18px] px-[25px] flex flex-col gap-y-[14.5px]'>
 				<Reactions />
