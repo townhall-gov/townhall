@@ -22,7 +22,7 @@ const ProposalCard: FC<IProposalCardProps> = (props) => {
 	const { created_at, room_id, house_id, id, proposer_address, title, tags, comments_count, reactions_count } = proposal;
 	return (
 		<Link
-			href={`/house/${house_id}/room/${room_id}/proposal/${id}`}
+			href={`/${house_id}/${room_id}/proposal/${id}`}
 			className='bg-[#04152F] rounded-2xl py-5 px-[18.5px] text-white'
 		>
 			<section className='flex flex-col m-0'>
