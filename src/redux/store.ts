@@ -46,7 +46,7 @@ export const makeStore = () => {
 		const persistConfig = {
 			key: 'townhall',
 			storage,
-			whitelist: [modalStore.name, profileStore.name, walletStore.name] // make sure it does not clash with server keys
+			whitelist: [modalStore.name, profileStore.name, walletStore.name, housesStore.name] // make sure it does not clash with server keys
 		};
 		const persistedReducer = persistReducer(persistConfig, rootReducer);
 		const store: any = configureStore({

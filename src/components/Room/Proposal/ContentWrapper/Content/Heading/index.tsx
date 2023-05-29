@@ -3,15 +3,16 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React, { FC } from 'react';
 import Title from './Title';
-import { KusamaIcon } from '~src/ui-components/CustomIcons';
 import Tags from '~src/components/Room/Proposals/Tags';
 import Address from '~src/ui-components/Address';
+import ProposalHouse from './ProposalHouse';
 
 interface IHeadingProps {
     title: string;
     tags: string[];
     address: string;
 	id: number;
+	house_id: string;
 }
 
 const Heading: FC<IHeadingProps> = (props) => {
@@ -27,15 +28,7 @@ const Heading: FC<IHeadingProps> = (props) => {
 			}
 			<article className='flex items-center justify-between gap-x-5'>
 				<div className='flex items-center gap-x-3'>
-					<p className='flex items-center font-semibold text-base leading-[20px] tracking-[0.01em] text-grey_tertiary gap-x-1 m-0 p-0'>
-						<KusamaIcon className='text-xl' />
-						<span>Kusama</span>
-					</p>
-					<span
-						className='text-sm leading-[17px] text-grey_tertiary font-normal tracking-[0.01em]'
-					>
-                        by
-					</span>
+					<ProposalHouse house_id={props.house_id} />
 					<Address
 						identiconSize={20}
 						ethIdenticonSize={20}
