@@ -132,7 +132,7 @@ const PreviewBtn = () => {
 						title: 'Success!'
 					}));
 					dispatch(roomActions.resetProposalCreation());
-					router.push(`/house/${query.house_id}/room/${query.room_id}/proposal/${data.createdProposal.id}`);
+					router.push(`/${query.house_id}/${query.room_id}/proposal/${data.createdProposal.id}`);
 				}
 			}
 			dispatch(roomActions.setLoading(false));

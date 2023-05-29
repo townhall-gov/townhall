@@ -103,7 +103,7 @@ const StageChangeBtn = () => {
 							}));
 							dispatch(roomsActions.setLoading(false));
 							dispatch(roomsActions.setRoomCreationReset());
-							router.push(`/house/${room.house_id}/room/${room.id}/proposals`);
+							router.push(`/${room.house_id}/${room.id}/proposals`);
 						}
 						dispatch(roomsActions.setLoading(false));
 					} catch (error) {

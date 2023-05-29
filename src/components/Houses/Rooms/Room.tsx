@@ -142,7 +142,7 @@ const Room: FC<IRoomProps> = (props) => {
 				})}
 			>
 				<Link
-					href={`/house/${house_id}/room/${id}/proposals`}
+					href={`/${house_id}/${id}/proposals`}
 					onClick={() => {
 						dispatch(roomActions.setRoom(room));
 						dispatch(roomActions.setCurrentStage(ERoomStage.PROPOSALS));

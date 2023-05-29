@@ -72,7 +72,7 @@ const useAuthActionsCheck = () => {
 			title: 'Warning!'
 		}));
 		if (!isRoomJoined) {
-			router.push(`/house/${query.house_id}/room/${query.room_id}/proposals`);
+			router.push(`/${query.house_id}/${query.room_id}/proposals`);
 		}
 	};
 	return {
