@@ -14,7 +14,7 @@ const House: FC<IHouseProps> = (props) => {
 	const { blockchain, title, id, total_rooms } = props;
 
 	return (
-		<Link href={`/house/${id}/rooms`} className='border border-solid border-blue_primary rounded-lg outline-none flex flex-col gap-y-2 items-center bg-transparent p-5 px-7 cursor-pointer min-w-[188px] min-h-[186px]'>
+		<Link href={`/${id}/rooms`} className='border border-solid border-blue_primary rounded-lg outline-none flex flex-col gap-y-2 items-center bg-transparent p-5 px-7 cursor-pointer min-w-[188px] min-h-[186px]'>
 			<BlockchainIcon className='text-[45px]' type={blockchain} />
 			<h3 className='text-white m-0 p-0 text-2xl leading-[29px] tracking-[0.01em] font-semibold'>{title}</h3>
 			<p className='m-0 text-sm font-normal leading-[17px] text-grey_tertiary'>

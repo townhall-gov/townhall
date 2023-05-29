@@ -98,7 +98,7 @@ const CommentOtherActionsDropdown: FC<ICommentOtherActionsDropdownProps> = (prop
 		case 'copy-link': {
 			const origin = window.location.origin;
 			const query = router.query;
-			const url = `${origin}/house/${query.house_id}/room/${query.room_id}/proposal/${query.proposal_id}#${comment_id}`;
+			const url = `${origin}/${query.house_id}/${query.room_id}/proposal/${query.proposal_id}#${comment_id}`;
 			navigator.clipboard.writeText(url);
 		}
 			break;
