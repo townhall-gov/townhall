@@ -11,14 +11,14 @@ import { useDispatch } from 'react-redux';
 import { housesActions } from '~src/redux/houses';
 import SEOHead from '~src/global/SEOHead';
 
-interface IHomeServerProps {
+interface IHousesServerProps {
 	houses: IHouse[] | null;
 	error: string | null;
 }
 
-export const getServerSideProps: GetServerSideProps<IHomeServerProps> = async () => {
+export const getServerSideProps: GetServerSideProps<IHousesServerProps> = async () => {
 	const { data: houses, error } = await getHouses();
-	const props: IHomeServerProps = {
+	const props: IHousesServerProps = {
 		error: error? error: null,
 		houses: ((houses && Array.isArray(houses))? houses: null)
 	};
@@ -27,8 +27,8 @@ export const getServerSideProps: GetServerSideProps<IHomeServerProps> = async ()
 	};
 };
 
-interface IHomeClientProps extends IHomeServerProps {}
-const Home: FC<IHomeClientProps> = (props) => {
+interface IHousesClientProps extends IHousesServerProps {}
+const AllHouses: FC<IHousesClientProps> = (props) => {
 	const { error, houses } = props;
 	const dispatch = useDispatch();
 	useEffect(() => {
@@ -49,4 +49,4 @@ const Home: FC<IHomeClientProps> = (props) => {
 	);
 };
 
-export default Home;
+export default AllHouses;

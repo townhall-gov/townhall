@@ -38,11 +38,11 @@ interface IHouse {
 	id: string;
 	title: string;
 	description: string;
-	logo?: string;
+	logo: string;
 	blockchain: EBlockchain;
 	networks: INetwork[];
 	is_erc20: boolean;
-	total_rooms: number;
+	total_members: number;
 }
 
 interface INetwork {
@@ -54,7 +54,7 @@ interface IRoom {
 	house_id: string;
 	title: string;
 	description: string;
-	logo?: string;
+	logo: string;
 	contract_address: string;
 	total_members: number;
 	socials: IProjectSocial[];
