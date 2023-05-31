@@ -76,7 +76,7 @@ const ImageUpload: FC<IImageUploadProps> = (props) => {
 				setLoading(false);
 			};
 			const formData = new FormData();
-			formData.append('image', info.file.originFileObj, `${info.file.fileName}_${new Date().valueOf()}.jpg`);
+			formData.append('image', info.file.originFileObj, `${info.file.name}`);
 			xhr.send(formData);
 		}
 	};

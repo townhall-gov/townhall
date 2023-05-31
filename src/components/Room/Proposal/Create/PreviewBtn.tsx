@@ -114,6 +114,7 @@ const PreviewBtn = () => {
 					const proposal: IListingProposal = {
 						comments_count: 0,
 						created_at: createdProposal.created_at,
+						end_date: createdProposal.end_date,
 						house_id: createdProposal.house_id,
 						id: createdProposal.id,
 						proposer_address: createdProposal.proposer_address,
@@ -122,6 +123,7 @@ const PreviewBtn = () => {
 							'👎🏻': 0
 						},
 						room_id: createdProposal.room_id,
+						start_date: createdProposal.start_date,
 						tags: createdProposal.tags,
 						title: createdProposal.title
 					};

@@ -61,11 +61,13 @@ export const getProposals: TGetProposalsFn = async (params) => {
 							const proposal: IListingProposal = {
 								comments_count,
 								created_at: convertFirestoreTimestampToDate(data.created_at),
+								end_date: convertFirestoreTimestampToDate(data.end_date),
 								house_id: data.house_id,
 								id: data.id,
 								proposer_address: data.proposer_address,
 								reactions_count,
 								room_id: data.room_id,
+								start_date: convertFirestoreTimestampToDate(data.start_date),
 								tags: data.tags || [],
 								title: data.title || ''
 							};

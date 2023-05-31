@@ -16,7 +16,7 @@ const Footer: FC<IFooterProps> = () => {
 	return (
 		<AntdFooter className='bg-black rounded-t-2xl grid grid-cols-3 gap-x-5 lg:py-[44.5px] lg:px-[183px]'>
 			<article className='col-span-1 flex flex-col gap-y-[14px]'>
-				<h6 className='m-0 p-0 text-base font-normal leading-[20px] text-grey_primary'>Get the latest Polkroom updates</h6>
+				<h6 className='m-0 p-0 text-base font-normal leading-[20px] text-grey_primary'>Get the latest Townhall updates</h6>
 				<div className='flex items-center relative border border-solid border-grey_primary rounded-2xl max-w-[292px] px-2'>
 					<input
 						className='flex-1 flex items-center justify-center m-0 p-0 border-none min-h-[40px] bg-transparent rounded-l-2xl px-2 py-[10px] outline-none text-grey_primary placeholder:text-grey_primary'
@@ -39,7 +39,7 @@ const Footer: FC<IFooterProps> = () => {
 					Request a House for your Blockchain
 				</button>
 				<div className='flex flex-col mt-[18px]'>
-					<p className='m-0 p-0 text-grey_primary leading-[22px] text-lg'>Join Polkroom Community</p>
+					<p className='m-0 p-0 text-grey_primary leading-[22px] text-lg'>Join Townhall Community</p>
 					<div
 						className='flex items-center gap-x-2'
 					>

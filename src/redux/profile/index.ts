@@ -7,6 +7,8 @@ import { IProfileStore } from './@types';
 import { IJoinedHouse, IJoinedRoom, IUser } from '~src/types/schema';
 
 const initialState: IProfileStore = {
+	joinOrRemoveHouseIds: [],
+	joinOrRemoveRoomIds: [],
 	user: null
 };
 
@@ -66,6 +68,19 @@ export const profileStore = createSlice({
 				state.user.joined_houses = action.payload;
 			}
 		},
+		joinHouse: (state, action: PayloadAction<string>) => {
+			if (!state.joinOrRemoveHouseIds.includes(action.payload)) {
+				state.joinOrRemoveHouseIds = [...state.joinOrRemoveHouseIds, action.payload];
+			}
+		},
+		joinRoom: (state, action: PayloadAction<string>) => {
+			if (!state.joinOrRemoveRoomIds.includes(action.payload)) {
+				state.joinOrRemoveRoomIds = [...state.joinOrRemoveRoomIds, action.payload];
+			}
+		},
+		removeHouse: (state, action: PayloadAction<string>) => {
+			state.joinOrRemoveHouseIds = (state.joinOrRemoveHouseIds || []).filter((id) => id !== action.payload);
+		},
 		removeJoinedRoom: (state, action: PayloadAction<{
 			houseId: string;
 			roomId: string;
@@ -92,6 +107,9 @@ export const profileStore = createSlice({
 					state.user.joined_houses = [];
 				}
 			}
+		},
+		removeRoom: (state, action: PayloadAction<string>) => {
+			state.joinOrRemoveRoomIds = (state.joinOrRemoveRoomIds || []).filter((id) => id !== action.payload);
 		},
 		setUser: (state, action: PayloadAction<IUser | null>) => {
 			state.user = action.payload;

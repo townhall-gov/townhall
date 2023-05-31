@@ -8,7 +8,7 @@ import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
 import { houseCollection, roomCollection } from '~src/services/firebase/utils';
 import { EBlockchain } from '~src/types/enums';
-import { IHouse } from '~src/types/schema';
+import { IHouse, IRoom } from '~src/types/schema';
 import getErrorMessage from '~src/utils/getErrorMessage';
 
 export type TGetHousesFn = () => Promise<TApiResponse<IHouse[]>>;
@@ -23,8 +23,17 @@ export const getHouses: TGetHousesFn = async () => {
 					if (data) {
 						// Sanitization
 						if (data.id && data.blockchain && Object.values(EBlockchain).includes(data.blockchain)) {
-							const roomsAggregateQuerySnapshot = await roomCollection(data.id).count().get();
-							const roomsAggregateData = roomsAggregateQuerySnapshot.data();
+							let total_members = 0;
+							const roomsQuerySnapshot = await roomCollection(data.id).get();
+							roomsQuerySnapshot.docs.forEach((roomDoc) => {
+								if (roomDoc && roomDoc.exists) {
+									const data = roomDoc.data() as IRoom;
+									if (data && data.total_members) {
+										total_members += data.total_members;
+									}
+								}
+							});
+
 							const house: IHouse = {
 								blockchain: data.blockchain,
 								description: data.description || '',
@@ -33,7 +42,7 @@ export const getHouses: TGetHousesFn = async () => {
 								logo: data.logo,
 								networks: data.networks || [],
 								title: data.title || '',
-								total_rooms: Number(roomsAggregateData.count || 0)
+								total_members: Number(total_members || 0)
 							};
 							return house;
 						}

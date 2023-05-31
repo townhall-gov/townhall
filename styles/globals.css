@@ -12,6 +12,7 @@
     --grey_tertiary: #5E6F80;
     --red_primary: #FF3C5F;
     --green_primary: #2ED47A;
+    --yellow_primary: #FFAD08;
     --font_default: 'Montserrat', sans-serif;
 }
 
@@ -105,57 +106,57 @@ div.ant-card-body {
 }
 
 /* Room Hover states Start */
-.room-hover:hover:not(.room-disabled) a {
+.card-hover:hover:not(.card-disabled) a {
     border-color: white !important;
 }
-.room-hover:hover:not(.room-disabled) button {
+.card-hover:hover:not(.card-disabled) button {
     border-color: white !important;
 }
 
-.room-hover:hover:not(.room-disabled) button.join {
+.card-hover:hover:not(.card-disabled) button.join {
     background-color: white !important;
     color: #0E2D59 !important;
 }
 
-.room-joined:not(.room-disabled) a {
+.card-joined:not(.card-disabled) a {
     border-color: var(--green_primary) !important;
 }
 
-.room-joined:not(.room-disabled) button {
+.card-joined:not(.card-disabled) button {
     border-color: var(--green_primary) !important;
 }
 
-.room-joined:not(.room-disabled) button.join {
+.card-joined:not(.card-disabled) button.join {
     background-color: var(--green_primary) !important;
     color: white !important;
 }
 
-.room-hover-joined:hover:not(.room-disabled) a {
+.card-hover-joined:hover:not(.card-disabled) a {
     border-color: var(--red_primary) !important;
 }
 
-.room-hover-joined:hover:not(.room-disabled) button {
+.card-hover-joined:hover:not(.card-disabled) button {
     border-color: var(--red_primary) !important;
 }
 
-.room-hover-joined:hover:not(.room-disabled) button.join {
+.card-hover-joined:hover:not(.card-disabled) button.join {
     background-color: var(--red_primary) !important;
     color: white !important;
 }
 
-.room-disabled, .room-disabled a {
+.card-disabled, .card-disabled a {
     cursor: not-allowed !important;
 }
-.room-disabled .ant-spin-nested-loading {
+.card-disabled .ant-spin-nested-loading {
     cursor: not-allowed !important;
 }
-.room-disabled .ant-spin {
+.card-disabled .ant-spin {
     background-color: rgba(0, 0, 0, 0.1) !important;
 }
-.room-disabled a {
+.card-disabled a {
     border-color: var(--grey_primary) !important;
 }
-.room-disabled button {
+.card-disabled button {
     border-color: var(--grey_primary) !important;
 }
 /* Room Hover states End */

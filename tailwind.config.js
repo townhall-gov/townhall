@@ -23,7 +23,8 @@ module.exports = {
 				grey_secondary: 'var(--grey_secondary)',
 				grey_tertiary: 'var(--grey_tertiary)',
 				purple_primary: 'var(--purple_primary)',
-				red_primary: 'var(--red_primary)'
+				red_primary: 'var(--red_primary)',
+				yellow_primary: 'var(--yellow_primary)'
 			},
 			fontFamily: {
 				poppins: ['var(--font-montserrat)']
