@@ -16,6 +16,30 @@ const useIsLoggedIn = () => {
 	return !!(user && user.address);
 };
 
+const useIsJoinOrRemoveHouseId = (houseId: string) => {
+	const { joinOrRemoveHouseIds } = useProfileSelector();
+	if (joinOrRemoveHouseIds && Array.isArray(joinOrRemoveHouseIds)) {
+		return !!(joinOrRemoveHouseIds.find((joinOrRemoveHouseId) => joinOrRemoveHouseId === houseId));
+	}
+	return false;
+};
+
+const useIsJoinOrRemoveRoomId = (roomId: string) => {
+	const { joinOrRemoveRoomIds } = useProfileSelector();
+	if (joinOrRemoveRoomIds && Array.isArray(joinOrRemoveRoomIds)) {
+		return !!(joinOrRemoveRoomIds.find((joinOrRemoveRoomId) => joinOrRemoveRoomId === roomId));
+	}
+	return false;
+};
+
+const useProfileIsHouseJoined = (houseId: string) => {
+	const { user } = useProfileSelector();
+	if (user && user.joined_houses && Array.isArray(user.joined_houses)) {
+		return !!(user.joined_houses.find((house) => house.house_id === houseId));
+	}
+	return false;
+};
+
 const useProfileIsRoomJoined = (houseId: string, roomId: string) => {
 	const { user } = useProfileSelector();
 	if (user && user.joined_houses && Array.isArray(user.joined_houses)) {
@@ -86,6 +110,9 @@ const useAuthActionsCheck = () => {
 export {
 	useIsLoggedIn,
 	useProfileIsRoomJoined,
+	useProfileIsHouseJoined,
 	useProfileJoinedRooms,
-	useAuthActionsCheck
+	useAuthActionsCheck,
+	useIsJoinOrRemoveHouseId,
+	useIsJoinOrRemoveRoomId
 };
