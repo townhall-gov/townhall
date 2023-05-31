@@ -79,7 +79,7 @@ export const profileStore = createSlice({
 			}
 		},
 		removeHouse: (state, action: PayloadAction<string>) => {
-			state.joinOrRemoveHouseIds = state.joinOrRemoveHouseIds.filter((id) => id !== action.payload);
+			state.joinOrRemoveHouseIds = (state.joinOrRemoveHouseIds || []).filter((id) => id !== action.payload);
 		},
 		removeJoinedRoom: (state, action: PayloadAction<{
 			houseId: string;
@@ -109,7 +109,7 @@ export const profileStore = createSlice({
 			}
 		},
 		removeRoom: (state, action: PayloadAction<string>) => {
-			state.joinOrRemoveRoomIds = state.joinOrRemoveRoomIds.filter((id) => id !== action.payload);
+			state.joinOrRemoveRoomIds = (state.joinOrRemoveRoomIds || []).filter((id) => id !== action.payload);
 		},
 		setUser: (state, action: PayloadAction<IUser | null>) => {
 			state.user = action.payload;

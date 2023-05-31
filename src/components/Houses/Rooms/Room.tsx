@@ -39,7 +39,8 @@ const Room: FC<IRoomProps> = (props) => {
 		}
 		if (user && user.address) {
 			try {
-				dispatch(roomsActions.setJoinOrRemoveRoom(id));
+				dispatch(profileActions.joinHouse(house_id));
+				dispatch(profileActions.joinRoom(id));
 				if (isJoined) {
 					const { data, error } = await api.post<ILeaveRoomResponse, ILeaveRoomBody>('auth/actions/leaveRoom', {
 						houseId: house_id,
@@ -59,6 +60,7 @@ const Room: FC<IRoomProps> = (props) => {
 							room: data.updatedRoom,
 							roomId: id
 						}));
+						dispatch(roomActions.setRoom(data.updatedRoom));
 					} else {
 						dispatch(notificationActions.send({
 							message: getErrorMessage(error) || 'Something went wrong, unable to leave the room.',
@@ -88,6 +90,7 @@ const Room: FC<IRoomProps> = (props) => {
 							room: data.updatedRoom,
 							roomId: id
 						}));
+						dispatch(roomActions.setRoom(data.updatedRoom));
 					} else {
 						dispatch(notificationActions.send({
 							message: getErrorMessage(error) || 'Something went wrong, unable to join the room.',

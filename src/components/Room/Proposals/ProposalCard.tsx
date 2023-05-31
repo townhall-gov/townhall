@@ -11,6 +11,7 @@ import Divider from './Divider';
 import Tags from './Tags';
 import { IListingProposal } from '~src/redux/room/@types';
 import { EReaction } from '~src/types/enums';
+import Status from './Status';
 
 interface IProposalCardProps {
     proposal: IListingProposal;
@@ -19,7 +20,7 @@ interface IProposalCardProps {
 const ProposalCard: FC<IProposalCardProps> = (props) => {
 	const { proposal } = props;
 	if (!proposal) return null;
-	const { created_at, room_id, house_id, id, proposer_address, title, tags, comments_count, reactions_count } = proposal;
+	const { created_at, room_id, house_id, id, proposer_address, title, tags, comments_count, reactions_count, end_date, start_date } = proposal;
 	return (
 		<Link
 			href={`/${house_id}/${room_id}/proposal/${id}`}
@@ -27,14 +28,24 @@ const ProposalCard: FC<IProposalCardProps> = (props) => {
 		>
 			<section className='flex flex-col m-0'>
 				<article className='flex flex-col gap-y-[15px]'>
-					<Address
-						betweenIdenticonAndAddress={<span className='font-medium text-lg leading-[22px] tracking-[0.01em] -mx-[2px]'>By</span>}
-						className='font-medium text-lg leading-[22px] tracking-[0.01em] '
-						identiconSize={20}
-						ethIdenticonSize={20}
-						address={proposer_address}
-						addressMaxLength={10}
-					/>
+					<div
+						className='flex items-center justify-between gap-x-5'
+					>
+						<Address
+							betweenIdenticonAndAddress={<span className='font-medium text-lg leading-[22px] tracking-[0.01em] -mx-[2px]'>By</span>}
+							className='font-medium text-lg leading-[22px] tracking-[0.01em] '
+							identiconSize={20}
+							ethIdenticonSize={20}
+							address={proposer_address}
+							addressMaxLength={10}
+						/>
+						<article>
+							<Status
+								end_at={end_date}
+								start_at={start_date}
+							/>
+						</article>
+					</div>
 					<p className='m-0 p-0'>
 						{title}
 					</p>
