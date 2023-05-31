@@ -47,7 +47,7 @@ const ProposalCard: FC<IProposalCardProps> = (props) => {
 						</article>
 					</div>
 					<p className='m-0 p-0'>
-						{title}
+						#{id} {title}
 					</p>
 				</article>
 			</section>
