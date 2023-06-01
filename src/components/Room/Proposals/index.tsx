@@ -9,9 +9,9 @@ const Proposals = () => {
 	const { proposals } = useRoomSelector();
 	return (
 		<section className='flex flex-col gap-y-8 h-full'>
-			<div className='flex flex-col gap-y-7 h-full max-h-[calc(100vh-182.5px-194px)] overflow-auto pr-2'>
+			<div className='flex flex-col gap-y-7 h-full max-h-[calc(100vh-194px)] overflow-auto pr-2'>
 				{
-					proposals && Array.isArray(proposals) && proposals.length?
+					proposals && Array.isArray(proposals) && proposals.length ?
 						proposals.map((proposal) => {
 							return <ProposalCard key={proposal.id} proposal={proposal} />;
 						})
