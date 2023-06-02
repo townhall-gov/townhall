@@ -6,6 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
+import { MIN_TOKEN_TO_CREATE_ROOM } from '~src/global/min_token';
 import { houseCollection, roomCollection } from '~src/services/firebase/utils';
 import { EBlockchain } from '~src/types/enums';
 import { IHouse, IRoom } from '~src/types/schema';
@@ -40,6 +41,7 @@ export const getHouses: TGetHousesFn = async () => {
 								id: data.id,
 								is_erc20: data.is_erc20 || false,
 								logo: data.logo,
+								min_token_to_create_room: data.min_token_to_create_room || MIN_TOKEN_TO_CREATE_ROOM,
 								networks: data.networks || [],
 								title: data.title || '',
 								total_members: Number(total_members || 0)

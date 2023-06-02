@@ -38,6 +38,7 @@ interface IHouse {
 	id: string;
 	title: string;
 	description: string;
+	min_token_to_create_room: number;
 	logo: string;
 	blockchain: EBlockchain;
 	networks: INetwork[];
