@@ -15,6 +15,7 @@ import { notificationStore } from './notification';
 import { roomStore } from './room';
 import { proposalStore } from './proposal';
 import { editorStore } from './editor';
+import { homeStore } from './home';
 
 export const makeStore = () => {
 	const isServer = typeof window === 'undefined';
@@ -27,7 +28,8 @@ export const makeStore = () => {
 		[roomStore.name]: roomStore.reducer,
 		[roomsStore.name]: roomsStore.reducer,
 		[walletStore.name]: walletStore.reducer,
-		[editorStore.name]: editorStore.reducer
+		[editorStore.name]: editorStore.reducer,
+		[homeStore.name]:homeStore.reducer
 	});
 
 	if (isServer) {
