@@ -39,6 +39,17 @@ const RoomDetails = () => {
 					placeholder='Room unique name'
 				/>
 				<Input
+					value={roomDetails?.contract_address || ''}
+					onChange={(v) => {
+						dispatch(roomsActions.setRoomCreation_RoomDetails_Field({
+							key: 'contract_address',
+							value: v
+						}));
+					}}
+					type='text'
+					placeholder='Room contract address'
+				/>
+				<Input
 					value={roomDetails?.title || ''}
 					onChange={(v) => {
 						dispatch(roomsActions.setRoomCreation_RoomDetails_Field({

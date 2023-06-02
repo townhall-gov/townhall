@@ -34,6 +34,7 @@ export enum ERoomCreationStage {
 
 export interface IRoomDetails {
     name: string;
+    contract_address: string;
     title: string;
     description: string;
     logo: string;
