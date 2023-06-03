@@ -77,9 +77,6 @@ const Home: FC<IHomeClientProps> = (props) => {
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [houses, rooms]);
-	useEffect(() => {
-		dispatch(homeActions.setCategory('Houses'));
-	}, []);
 	return (
 		<>
 			<SEOHead title='Home' desc='Democratizing governance for all blockchains.' />
@@ -88,12 +85,12 @@ const Home: FC<IHomeClientProps> = (props) => {
 			>
 				<div className='w-1/2 mb-2 flex relative'>
 					<SearchIcon className='text-transparent stroke-app_background text-2xl absolute flex border border-black mt-6 ml-2' />
-					<Input value={useSearchTerm()} onChange={(value: string) => dispatch(homeActions.setsearchTerm(value))} type='text' placeholder='Search' className='pl-10'></Input>
+					<Input value={useSearchTerm()} onChange={(value: string) => dispatch(homeActions.setSearchQuery(value))} type='text' placeholder='Search' className='pl-10'></Input>
 					<SearchCategoryDropdown className='p-4' />
 				</div>
 				<section className='flex items-center flex-wrap gap-7'>
 					{
-						(category == 'Houses' || category == 'All') && housefiltered && housefiltered.map((house, index) => {
+						(category == 'houses' || category == 'all') && housefiltered && housefiltered.map((house, index) => {
 							return (
 								<>
 									<House
@@ -105,7 +102,7 @@ const Home: FC<IHomeClientProps> = (props) => {
 						})
 					}
 					{
-						(category == 'Rooms' || category == 'All') && roomfiltered && roomfiltered.map((room, index) => {
+						(category == 'rooms' || category == 'all') && roomfiltered && roomfiltered.map((room, index) => {
 							return (
 								<>
 									<Room

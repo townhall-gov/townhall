@@ -7,12 +7,12 @@ import { IHomeStore } from './@types';
 import { IHouse, IRoom } from '~src/types/schema';
 
 const initialState: IHomeStore = {
-	category: '',
+	category: 'houses',
 	error: null,
 	houses: [],
 	loading: false,
 	rooms: [],
-	searchTerm: ''
+	searchQuery: ''
 };
 
 export const homeStore = createSlice({
@@ -40,8 +40,8 @@ export const homeStore = createSlice({
 		setRooms: (state, action: PayloadAction<IRoom[]>) => {
 			state.rooms = action.payload;
 		},
-		setsearchTerm: (state, action: PayloadAction<string>) => {
-			state.searchTerm = action.payload;
+		setSearchQuery: (state, action: PayloadAction<string>) => {
+			state.searchQuery = action.payload;
 		}
 	}
 });

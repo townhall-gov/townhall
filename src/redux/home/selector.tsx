@@ -6,15 +6,15 @@ import { useHomeSelector } from '~src/redux/selectors';
 
 const useFilteredHouses = () => {
 	const { houses } = useHomeSelector();
-	const { searchTerm } = useHomeSelector();
+	const { searchQuery } = useHomeSelector();
 
 	if (houses && Array.isArray(houses) && houses.length > 0) {
-		if (!searchTerm) {
+		if (!searchQuery) {
 			return houses;
 		}
 
 		const filteredHouses = houses.filter(house => {
-			const lowercaseSearchValue = searchTerm.toLowerCase();
+			const lowercaseSearchValue = searchQuery.toLowerCase();
 			const lowercaseHouseName = house.title.toLowerCase();
 
 			return lowercaseHouseName.includes(lowercaseSearchValue);
@@ -27,14 +27,14 @@ const useFilteredHouses = () => {
 };
 const useFilteredRooms = () => {
 	const { rooms } = useHomeSelector();
-	const { searchTerm } = useHomeSelector();
+	const { searchQuery } = useHomeSelector();
 	if (rooms && Array.isArray(rooms) && rooms.length > 0) {
-		if (!searchTerm) {
+		if (!searchQuery) {
 			return rooms;
 		}
 
 		const filteredRooms = rooms.filter(room => {
-			const lowercaseSearchValue = searchTerm.toLowerCase();
+			const lowercaseSearchValue = searchQuery.toLowerCase();
 			const lowercaseHouseName = room.title.toLowerCase();
 
 			return lowercaseHouseName.includes(lowercaseSearchValue);
@@ -52,8 +52,8 @@ const useCategory = () => {
 };
 
 const useSearchTerm = () => {
-	const { searchTerm } = useHomeSelector();
-	return searchTerm;
+	const { searchQuery } = useHomeSelector();
+	return searchQuery;
 };
 
 export {

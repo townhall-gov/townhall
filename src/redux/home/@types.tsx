@@ -10,5 +10,5 @@ export interface IHomeStore {
     category: any;
     loading: boolean;
     error: string | null;
-    searchTerm: string;
+    searchQuery: string;
 }

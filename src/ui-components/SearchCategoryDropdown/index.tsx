@@ -15,15 +15,15 @@ interface ISearchCategoryDropdownProps {
 
 const items: MenuProps['items'] = [
 	{
-		key: 'Houses',
+		key: 'houses',
 		label: 'Houses'
 	},
 	{
-		key: 'Rooms',
+		key: 'rooms',
 		label: 'Rooms'
 	},
 	{
-		key: 'All',
+		key: 'all',
 		label: 'All'
 	}
 ];
@@ -45,7 +45,7 @@ const SearchCategoryDropdown: React.FC<ISearchCategoryDropdownProps> = () => {
 		>
 			<Typography.Link>
 				<Space>
-					{useCategory()}
+					{useCategory().toUpperCase()}
 					<DownOutlined />
 				</Space>
 			</Typography.Link>
