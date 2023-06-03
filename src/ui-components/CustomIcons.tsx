@@ -6,22 +6,22 @@ import Icon from '@ant-design/icons';
 import React from 'react';
 import type { CustomIconComponentProps } from '@ant-design/icons/lib/components/Icon';
 
-import ConnectWalletSVG  from '~assets/icons/connect-wallet.svg';
-import ThreeDotsSVG  from '~assets/icons/3-dots.svg';
-import HomeSVG  from '~assets/icons/home.svg';
-import ContactPageSVG  from '~assets/icons/contact-page.svg';
-import DevicesSVG  from '~assets/icons/devices.svg';
-import EarthSVG  from '~assets/icons/earth.svg';
-import CropFreeSVG  from '~assets/icons/crop-free.svg';
-import HolidayVillageSVG  from '~assets/icons/holiday-village.svg';
-import ZoomInAreaSVG  from '~assets/icons/zoom-in-area.svg';
-import RocketLaunchSVG  from '~assets/icons/rocket-launch.svg';
-import DiamondSVG  from '~assets/icons/diamond.svg';
-import PlusSignSquareSVG  from '~assets/icons/plus-sign-square.svg';
-import SettingsSVG  from '~assets/icons/settings.svg';
-import TownhallLogoWithNameSVG  from '~assets/logo/townhall-with-name.svg';
-import MetamaskSVG  from '~assets/wallet/metamask-icon.svg';
-import PolkadotJsSVG  from '~assets/wallet/polkadotjs-icon.svg';
+import ConnectWalletSVG from '~assets/icons/connect-wallet.svg';
+import ThreeDotsSVG from '~assets/icons/3-dots.svg';
+import HomeSVG from '~assets/icons/home.svg';
+import ContactPageSVG from '~assets/icons/contact-page.svg';
+import DevicesSVG from '~assets/icons/devices.svg';
+import EarthSVG from '~assets/icons/earth.svg';
+import CropFreeSVG from '~assets/icons/crop-free.svg';
+import HolidayVillageSVG from '~assets/icons/holiday-village.svg';
+import ZoomInAreaSVG from '~assets/icons/zoom-in-area.svg';
+import RocketLaunchSVG from '~assets/icons/rocket-launch.svg';
+import DiamondSVG from '~assets/icons/diamond.svg';
+import PlusSignSquareSVG from '~assets/icons/plus-sign-square.svg';
+import SettingsSVG from '~assets/icons/settings.svg';
+import TownhallLogoWithNameSVG from '~assets/logo/townhall-with-name.svg';
+import MetamaskSVG from '~assets/wallet/metamask-icon.svg';
+import PolkadotJsSVG from '~assets/wallet/polkadotjs-icon.svg';
 
 import PolkadotSVG from '~assets/blockchain/polkadot.svg';
 import KusamaSVG from '~assets/blockchain/kusama.svg';
@@ -47,6 +47,7 @@ import ForSVG from '~assets/sentiment/for.svg';
 import ReplySVG from '~assets/icons/reply.svg';
 import DeleteSVG from '~assets/icons/delete.svg';
 import EditSVG from '~assets/icons/edit.svg';
+import SearchSVG from '~assets/icons/searchicon.svg';
 import FlagSVG from '~assets/icons/flag.svg';
 import LinkSVG from '~assets/icons/link.svg';
 import ShareSVG from '~assets/icons/share.svg';
@@ -197,4 +198,8 @@ export const MoonbeamIcon = (props: Partial<CustomIconComponentProps>) => (
 
 export const MoonriverIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={MoonriverSVG} {...props} />
+);
+
+export const SearchIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={SearchSVG} {...props} />
 );

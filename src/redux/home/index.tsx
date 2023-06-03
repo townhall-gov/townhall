@@ -12,7 +12,7 @@ const initialState: IHomeStore = {
 	houses: [],
 	loading: false,
 	rooms: [],
-	rooms_and_houses: []
+	searchTerm: ''
 };
 
 export const homeStore = createSlice({
@@ -40,8 +40,8 @@ export const homeStore = createSlice({
 		setRooms: (state, action: PayloadAction<IRoom[]>) => {
 			state.rooms = action.payload;
 		},
-		setRoomsandHouses: (state, action: PayloadAction<(IHouse | IRoom)[]>) => {
-			state.rooms_and_houses = [...state.rooms_and_houses, ...action.payload];
+		setsearchTerm: (state, action: PayloadAction<string>) => {
+			state.searchTerm = action.payload;
 		}
 	}
 });

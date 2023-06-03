@@ -9,26 +9,26 @@ import classNames from 'classnames';
 import { useDispatch } from 'react-redux';
 import { homeActions } from '~src/redux/home';
 import { useCategory } from '~src/redux/home/selector';
-interface IRoomAndHouseDropdownProps {
-    className?: string;
+interface ISearchCategoryDropdownProps {
+	className?: string;
 }
 
 const items: MenuProps['items'] = [
 	{
-		key: '1',
+		key: 'Houses',
 		label: 'Houses'
 	},
 	{
-		key: '2',
+		key: 'Rooms',
 		label: 'Rooms'
 	},
 	{
-		key: '3',
+		key: 'All',
 		label: 'All'
 	}
 ];
 
-const RoomandHouseDropdown: React.FC<IRoomAndHouseDropdownProps> = () => {
+const SearchCategoryDropdown: React.FC<ISearchCategoryDropdownProps> = () => {
 	const dispatch = useDispatch();
 	return (
 		<Dropdown
@@ -38,16 +38,7 @@ const RoomandHouseDropdown: React.FC<IRoomAndHouseDropdownProps> = () => {
 			menu={{
 				items: items,
 				onClick: (e) => {
-					const category = items.find((item: any) => item.key === e.key) as any;
-					if (category.label === 'Houses') {
-						dispatch(homeActions.setCategory('Houses'));
-					}
-					else if (category.label === 'Rooms') {
-						dispatch(homeActions.setCategory('Rooms'));
-					}
-					else if (category.label === 'All') {
-						dispatch(homeActions.setCategory('All'));
-					}
+					dispatch(homeActions.setCategory(e.key));
 				}
 
 			}}
@@ -62,4 +53,4 @@ const RoomandHouseDropdown: React.FC<IRoomAndHouseDropdownProps> = () => {
 	);
 };
 
-export default RoomandHouseDropdown;
+export default SearchCategoryDropdown;
