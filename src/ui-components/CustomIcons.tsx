@@ -51,6 +51,7 @@ import SearchSVG from '~assets/icons/searchicon.svg';
 import FlagSVG from '~assets/icons/flag.svg';
 import LinkSVG from '~assets/icons/link.svg';
 import ShareSVG from '~assets/icons/share.svg';
+import GeometricSVG from '~assets/icons/gerometric-shape.svg';
 // Comment Related Icons Import End
 
 // Sentiment Icons Start
@@ -160,6 +161,10 @@ export const DiamondIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={DiamondSVG} {...props} />
 );
 
+export const GeometricIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={GeometricSVG} {...props} />
+);
+
 export const PlusSignSquareIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={PlusSignSquareSVG} {...props} />
 );
@@ -203,3 +208,4 @@ export const MoonriverIcon = (props: Partial<CustomIconComponentProps>) => (
 export const SearchIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={SearchSVG} {...props} />
 );
+
