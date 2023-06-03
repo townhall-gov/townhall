@@ -33,7 +33,6 @@ const PreviewBtn = () => {
 	const { connectWallet, isLoggedIn, isRoomJoined, joinRoom } = useAuthActionsCheck();
 	const router = useRouter();
 	const [canCreateProposal, setCanCreateProposal] = React.useState(false);
-	console.log(user, selectedHouse, room);
 	useEffect(() => {
 		(async () => {
 			setCanCreateProposal(false);
@@ -44,7 +43,6 @@ const PreviewBtn = () => {
 						contract: room?.contract_address,
 						network: selectedHouse.blockchain
 					});
-					console.log(data, error);
 					if (error) {
 						dispatch(notificationActions.send({
 							message: getErrorMessage(error),

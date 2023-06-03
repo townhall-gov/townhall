@@ -10,6 +10,7 @@ export interface IRoomStore {
     error: string;
     room: IRoom | null;
     proposalCreation: IProposalCreation;
+    roomSettings: IRoomSettings;
     currentStage: ERoomStage;
     proposals: IListingProposal[];
 }
@@ -33,6 +34,10 @@ export type IProposalCreation = {
     is_vote_results_hide_before_voting_ends: boolean;
     voting_system_options: IVotingSystemOption[];
 }
+
+export type IRoomSettings = {
+    min_token_to_create_proposal_in_room: number;
+};
 
 export interface IVotingSystemOption {
     value: string;
