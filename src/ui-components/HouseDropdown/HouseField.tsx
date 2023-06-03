@@ -14,7 +14,7 @@ const HouseField: FC<IHouseFieldProps> = (props) => {
 	return (
 		<div className='flex items-center gap-x-3'>
 			<div className='flex items-center justify-center'>
-				<Image preview={false} width={30} height={30} className='rounded-full' src={logo} alt='room logo' />
+				<Image preview={false} width={30} height={30} className='rounded-full' src={logo} alt='house logo' />
 			</div>
 			<div className='flex flex-col gap-y-1 text-white'>
 				<h5 className='m-0 p-0 text-sm leading-none'>{title}</h5>

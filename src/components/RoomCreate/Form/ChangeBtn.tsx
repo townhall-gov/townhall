@@ -32,7 +32,6 @@ const StageChangeBtn = () => {
 	const nextCreationStage = getNextCreationStage(roomCreationCurrentStage);
 	const dispatch = useDispatch();
 	const { connectWallet, isLoggedIn } = useAuthActionsCheck();
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [canCreateRoom, setCanCreateRoom] = React.useState(false);
 
 	useEffect(() => {
@@ -113,7 +112,7 @@ const StageChangeBtn = () => {
 						dispatch(roomsActions.setLoading(true));
 						const { data, error } = await api.post<ICreateRoomResponse, ICreateRoomBody>('auth/actions/createRoom', {
 							room: {
-								contract_address: '',
+								contract_address: room_details?.contract_address || '',
 								creator_details: creator_details!,
 								description: room_details?.description || '',
 								house_id: select_house?.id || '',

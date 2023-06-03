@@ -6,6 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
+import { MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM } from '~src/global/min_token';
 import { ICreatorDetails } from '~src/redux/rooms/@types';
 import { roomCollection } from '~src/services/firebase/utils';
 import { IRoom } from '~src/types/schema';
@@ -51,6 +52,7 @@ export const getRoom: TGetRoomFn = async (params) => {
 			house_id: data.house_id,
 			id: data.id,
 			logo: data.logo,
+			min_token_to_create_proposal_in_room: data.min_token_to_create_proposal_in_room || MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM,
 			socials: data.socials || [],
 			title: data.title || '',
 			total_members: Number(data.total_members || 0),

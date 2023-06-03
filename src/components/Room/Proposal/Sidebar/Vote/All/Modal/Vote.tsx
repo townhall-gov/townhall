@@ -24,6 +24,7 @@ const Vote: FC<IVoteProps> = (props) => {
 		>
 			<Address
 				identiconSize={20}
+				ethIdenticonSize={20}
 				addressClassName='text-sm'
 				addressMaxLength={10}
 				address={vote.voter_address}

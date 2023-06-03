@@ -3,5 +3,6 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 const MIN_TOKEN_TO_CREATE_ROOM = 10;
+const MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM = 10;
 
-export { MIN_TOKEN_TO_CREATE_ROOM };
+export { MIN_TOKEN_TO_CREATE_ROOM, MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM };
