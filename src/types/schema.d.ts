@@ -57,6 +57,8 @@ interface IRoom {
 	description: string;
 	logo: string;
 	contract_address: string;
+	decimals: string | number;
+	symbol: string;
 	total_members: number;
 	socials: IProjectSocial[];
 	creator_details: ICreatorDetails;
