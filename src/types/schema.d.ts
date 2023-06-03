@@ -57,11 +57,14 @@ interface IRoom {
 	description: string;
 	logo: string;
 	contract_address: string;
+	decimals: string | number;
+	symbol: string;
 	total_members: number;
 	socials: IProjectSocial[];
 	creator_details: ICreatorDetails;
 	voting_strategies: IStrategy[];
 	created_at: Date;
+	min_token_to_create_proposal_in_room: number;
 }
 
 interface IProposal {

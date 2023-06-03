@@ -5,8 +5,11 @@ import { Button } from 'antd';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import { ICreateProposalBody, ICreateProposalResponse, TProposalPayload } from 'pages/api/auth/actions/createProposal';
-import React from 'react';
+import { ICurrentBalanceResponse, ICurrentBalanceBody } from 'pages/api/chain/data/currentBalance';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM } from '~src/global/min_token';
+import { useSelectedHouse } from '~src/redux/houses/selectors';
 import { notificationActions } from '~src/redux/notification';
 import { ENotificationStatus } from '~src/redux/notification/@types';
 import { useAuthActionsCheck } from '~src/redux/profile/selectors';
@@ -17,16 +20,58 @@ import proposalCreationValidation, { removeErrorFieldHighlight } from '~src/redu
 import { useRoomSelector } from '~src/redux/selectors';
 import { useProfileSelector } from '~src/redux/selectors';
 import api from '~src/services/api';
+import { formatToken } from '~src/utils/formatTokenAmount';
 import getErrorMessage from '~src/utils/getErrorMessage';
 import { signApiData } from '~src/utils/sign';
 
 const PreviewBtn = () => {
 	const dispatch = useDispatch();
-	const { loading } = useRoomSelector();
+	const { loading, room } = useRoomSelector();
 	const { user } = useProfileSelector();
+	const selectedHouse = useSelectedHouse(room?.house_id || '');
 	const proposalCreation = useProposalCreation();
 	const { connectWallet, isLoggedIn, isRoomJoined, joinRoom } = useAuthActionsCheck();
 	const router = useRouter();
+	const [canCreateProposal, setCanCreateProposal] = React.useState(false);
+	useEffect(() => {
+		(async () => {
+			setCanCreateProposal(false);
+			if (user?.address && selectedHouse && selectedHouse.blockchain && room && room?.contract_address) {
+				try {
+					const { data, error } = await api.post<ICurrentBalanceResponse, ICurrentBalanceBody>('chain/data/currentBalance', {
+						address: user?.address,
+						contract: room?.contract_address,
+						network: selectedHouse.blockchain
+					});
+					if (error) {
+						dispatch(notificationActions.send({
+							message: getErrorMessage(error),
+							status: ENotificationStatus.ERROR,
+							title: 'Error!'
+						}));
+					} else if (!data || !data.balance || !data.decimals || !data.symbol) {
+						dispatch(notificationActions.send({
+							message: 'This token is not supported.',
+							status: ENotificationStatus.ERROR,
+							title: 'Error!'
+						}));
+					} else {
+						const token = formatToken(data?.balance || 0, true, Number(data?.decimals || 0));
+						if (token && Number(token) >= Number(room.min_token_to_create_proposal_in_room || MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM)) {
+							setCanCreateProposal(true);
+						}
+					}
+				} catch (error) {
+					dispatch(notificationActions.send({
+						message: getErrorMessage(error),
+						status: ENotificationStatus.ERROR,
+						title: 'Error!'
+					}));
+				}
+			}
+		})();
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [user?.address, room?.contract_address, selectedHouse?.blockchain]);
 
 	const onPublish = async () => {
 		if (loading) return;
@@ -36,6 +81,14 @@ const PreviewBtn = () => {
 		}
 		if (!isRoomJoined) {
 			joinRoom();
+			return;
+		}
+		if (!canCreateProposal) {
+			dispatch(notificationActions.send({
+				message: 'You can\'t create a proposal with less than 10 tokens.',
+				status: ENotificationStatus.ERROR,
+				title: 'Error!'
+			}));
 			return;
 		}
 		try {

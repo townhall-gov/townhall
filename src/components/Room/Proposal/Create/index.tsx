@@ -20,7 +20,6 @@ const PreviewBtn = dynamic(() => import('./PreviewBtn'), {
 
 const CreateProposal = () => {
 	const { query } = useRouter();
-	console.log(query);
 	const isRoomJoined = useProfileIsRoomJoined(String(query.house_id || ''), String(query.room_id || ''));
 	return (
 		<section className='flex flex-col gap-y-8 h-full'>

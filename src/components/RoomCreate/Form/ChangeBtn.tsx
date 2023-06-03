@@ -1,7 +1,7 @@
 // Copyright 2019-2025 @polka-labs/townhall authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRoomCreationCurrentStage } from '~src/redux/rooms/selectors';
 import { getNextCreationStage } from '../utils';
 import { useDispatch } from 'react-redux';
@@ -32,8 +32,11 @@ const StageChangeBtn = () => {
 	const nextCreationStage = getNextCreationStage(roomCreationCurrentStage);
 	const dispatch = useDispatch();
 	const { connectWallet, isLoggedIn } = useAuthActionsCheck();
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [canCreateRoom, setCanCreateRoom] = React.useState(false);
+	const [canCreateRoom, setCanCreateRoom] = useState(false);
+	const [dappInfo, setDappInfo] = useState({
+		decimals: '',
+		symbol: ''
+	});
 
 	useEffect(() => {
 		(async () => {
@@ -59,6 +62,10 @@ const StageChangeBtn = () => {
 						}));
 					} else {
 						const token = formatToken(data?.balance || 0, true, Number(data?.decimals || 0));
+						setDappInfo({
+							decimals: data?.decimals || '',
+							symbol: data?.symbol || ''
+						});
 						if (token && Number(token) >= Number(roomCreation.select_house.min_token_to_create_room || MIN_TOKEN_TO_CREATE_ROOM)) {
 							setCanCreateRoom(true);
 						}
@@ -113,13 +120,15 @@ const StageChangeBtn = () => {
 						dispatch(roomsActions.setLoading(true));
 						const { data, error } = await api.post<ICreateRoomResponse, ICreateRoomBody>('auth/actions/createRoom', {
 							room: {
-								contract_address: '',
+								contract_address: room_details?.contract_address || '',
 								creator_details: creator_details!,
+								decimals: dappInfo.decimals,
 								description: room_details?.description || '',
 								house_id: select_house?.id || '',
 								id: room_details?.name || '',
 								logo: room_details?.logo || '',
 								socials: room_socials || [],
+								symbol: dappInfo.symbol,
 								title: room_details?.title || '',
 								voting_strategies: room_strategies || []
 							}

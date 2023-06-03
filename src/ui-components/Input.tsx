@@ -5,9 +5,9 @@ import classNames from 'classnames';
 import React, { FC } from 'react';
 
 interface IInputProps {
-    value: string;
+    value: string | number;
     onChange: (v: string) => void;
-    type: 'email' | 'text' | 'password' | 'tel';
+    type: 'email' | 'text' | 'password' | 'tel' | 'number';
     placeholder?: string;
     className?: string;
 	isDisabled?: boolean;

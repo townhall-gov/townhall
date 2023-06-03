@@ -8,12 +8,13 @@ import { TNextApiHandler } from '~src/api/types';
 import authServiceInstance from '~src/auth';
 import getTokenFromReq from '~src/auth/utils/getTokenFromReq';
 import messages from '~src/auth/utils/messages';
+import { MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM } from '~src/global/min_token';
 import { ICreatorDetails } from '~src/redux/rooms/@types';
 import { joinedHouseCollection, joinedRoomCollection, roomCollection } from '~src/services/firebase/utils';
 import { IJoinedRoomForUser, IRoom } from '~src/types/schema';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
 
-interface ICustomRoom extends Omit<IRoom, 'created_at' | 'total_members' | 'creator_details'> {
+interface ICustomRoom extends Omit<IRoom, 'created_at' | 'total_members' | 'creator_details' | 'min_token_to_create_proposal_in_room'> {
     creator_details: Omit<ICreatorDetails, 'address'>
 }
 export interface ICreateRoomBody {
@@ -73,6 +74,7 @@ const handler: TNextApiHandler<ICreateRoomResponse, ICreateRoomBody, {}> = async
 			...room.creator_details,
 			address
 		},
+		min_token_to_create_proposal_in_room: MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM,
 		total_members: 1
 	};
 	await roomRef.set(createdRoom, { merge: true });

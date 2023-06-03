@@ -14,7 +14,13 @@ const useProposalCreation = () => {
 	return room.proposalCreation;
 };
 
+const useRoomSettings = () => {
+	const room = useRoomSelector();
+	return room.roomSettings;
+};
+
 export {
 	useProposalCreation,
-	useRoomCurrentStage
+	useRoomCurrentStage,
+	useRoomSettings
 };
