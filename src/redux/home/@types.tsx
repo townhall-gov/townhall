@@ -11,4 +11,6 @@ export interface IHomeStore {
     loading: boolean;
     error: string | null;
     searchQuery: string;
+    visibleHouseCards:number,
+    visibleRoomCards:number,
 }

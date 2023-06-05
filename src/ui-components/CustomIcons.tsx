@@ -52,6 +52,7 @@ import FlagSVG from '~assets/icons/flag.svg';
 import LinkSVG from '~assets/icons/link.svg';
 import ShareSVG from '~assets/icons/share.svg';
 import GeometricSVG from '~assets/icons/gerometric-shape.svg';
+import LoadMoreSVG from '~assets/icons/loadmore.svg';
 // Comment Related Icons Import End
 
 // Sentiment Icons Start
@@ -207,5 +208,9 @@ export const MoonriverIcon = (props: Partial<CustomIconComponentProps>) => (
 
 export const SearchIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={SearchSVG} {...props} />
+);
+
+export const LoadMoreIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={LoadMoreSVG} {...props} />
 );
 

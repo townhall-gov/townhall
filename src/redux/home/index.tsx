@@ -12,7 +12,9 @@ const initialState: IHomeStore = {
 	houses: [],
 	loading: false,
 	rooms: [],
-	searchQuery: ''
+	searchQuery: '',
+	visibleHouseCards:3,
+	visibleRoomCards:3
 };
 
 export const homeStore = createSlice({
@@ -33,6 +35,12 @@ export const homeStore = createSlice({
 		},
 		setHouses: (state, action: PayloadAction<IHouse[]>) => {
 			state.houses = action.payload;
+		},
+		setLoadMoreHouses: (state) => {
+			state.visibleHouseCards = state.visibleHouseCards+3;
+		},
+		setLoadMoreRooms: (state) => {
+			state.visibleRoomCards = state.visibleRoomCards+3;
 		},
 		setLoading: (state, action: PayloadAction<boolean>) => {
 			state.loading = action.payload;

@@ -16,8 +16,9 @@ import House from '~src/components/Houses/House';
 import Input from '~src/ui-components/Input';
 import { homeActions } from '~src/redux/home';
 import SearchCategoryDropdown from '~src/ui-components/SearchCategoryDropdown';
-import { useCategory, useFilteredHouses, useFilteredRooms, useSearchTerm } from '~src/redux/home/selector';
+import { useCategory, useFilteredHouses, useFilteredRooms, useSearchTerm, useVisibleHouseCards, useVisibleRoomCards } from '~src/redux/home/selector';
 import { SearchIcon } from '~src/ui-components/CustomIcons';
+import LoadMore from '~src/ui-components/LoadMore';
 
 interface IHomeServerProps {
 	houses: IHouse[] | null;
@@ -62,6 +63,8 @@ const Home: FC<IHomeClientProps> = (props) => {
 	const dispatch = useDispatch();
 	const housefiltered = useFilteredHouses();
 	const roomfiltered = useFilteredRooms();
+	const visibleHousesCards=useVisibleHouseCards();
+	const visibleRoomCards=useVisibleRoomCards();
 	const category = useCategory();
 	useEffect(() => {
 		if (rooms) {
@@ -95,7 +98,7 @@ const Home: FC<IHomeClientProps> = (props) => {
 
 				<section className='flex items-center flex-wrap gap-7'>
 					{
-						(category == 'houses' || category == 'all') && housefiltered && housefiltered.map((house, index) => {
+						(category == 'houses' || category == 'all') && housefiltered && housefiltered.slice(0,visibleHousesCards).map((house, index) => {
 							return (
 								<>
 									<House
@@ -107,7 +110,7 @@ const Home: FC<IHomeClientProps> = (props) => {
 						})
 					}
 					{
-						(category == 'rooms' || category == 'all') && roomfiltered && roomfiltered.map((room, index) => {
+						(category == 'rooms' || category == 'all') && roomfiltered && roomfiltered.slice(0,visibleRoomCards).map((room, index) => {
 							return (
 								<>
 									<Room
@@ -119,6 +122,27 @@ const Home: FC<IHomeClientProps> = (props) => {
 						})
 					}
 				</section>
+				{category === 'all' && (
+					<div className={`flex justify-center items-center mt-[100px] ${(visibleHousesCards+visibleRoomCards) >= (housefiltered?.length+roomfiltered.length) ? 'hidden' : ''}`} onClick={() => {
+						dispatch(homeActions.setLoadMoreHouses());
+						dispatch(homeActions.setLoadMoreRooms());
+					}}>
+						<LoadMore />
+					</div>
+				)}
+
+				{category === 'houses' && (
+					<div className={`flex justify-center items-center mt-[100px] ${visibleHousesCards >= housefiltered?.length ? 'hidden' : ''}`} onClick={() => dispatch(homeActions.setLoadMoreHouses())}>
+						<LoadMore />
+					</div>
+				)}
+
+				{category === 'rooms' && (
+					<div className={`flex justify-center items-center mt-[100px] ${visibleRoomCards >= roomfiltered.length ? 'hidden' : ''}`} onClick={() => dispatch(homeActions.setLoadMoreRooms())}>
+						<LoadMore />
+					</div>
+				)}
+
 			</div>
 		</>
 	);

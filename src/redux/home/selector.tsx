@@ -56,10 +56,21 @@ const useSearchTerm = () => {
 	return searchQuery;
 };
 
+const useVisibleHouseCards = () =>{
+	const { visibleHouseCards  } = useHomeSelector();
+	return visibleHouseCards ;
+};
+const useVisibleRoomCards = () =>{
+	const { visibleRoomCards  } = useHomeSelector();
+	return visibleRoomCards ;
+};
+
 export {
 	useFilteredHouses,
 	useFilteredRooms,
 	useCategory,
-	useSearchTerm
+	useSearchTerm,
+	useVisibleHouseCards,
+	useVisibleRoomCards
 
 };
