@@ -81,13 +81,18 @@ const Home: FC<IHomeClientProps> = (props) => {
 		<>
 			<SEOHead title='Home' desc='Democratizing governance for all blockchains.' />
 			<div
-				className='h-full'
+				className='h-full ml-20'
 			>
-				<div className='w-1/2 mb-2 flex relative'>
-					<SearchIcon className='text-transparent stroke-app_background text-2xl absolute flex border border-black mt-6 ml-2' />
-					<Input value={useSearchTerm()} onChange={(value: string) => dispatch(homeActions.setSearchQuery(value))} type='text' placeholder='Search' className='pl-10'></Input>
-					<SearchCategoryDropdown className='p-4' />
+				<div className='flex'>
+					<div className='w-[36rem] mb-12 h-12 flex relative'>
+						<SearchIcon className='text-transparent stroke-app_background text-2xl absolute flex border border-black mt-3 ml-4' />
+						<Input value={useSearchTerm()} onChange={(value: string) => dispatch(homeActions.setSearchQuery(value))} type='text' placeholder='Search' className='pl-12'></Input>
+					</div>
+					<div>
+						<SearchCategoryDropdown />
+					</div>
 				</div>
+
 				<section className='flex items-center flex-wrap gap-7'>
 					{
 						(category == 'houses' || category == 'all') && housefiltered && housefiltered.map((house, index) => {
