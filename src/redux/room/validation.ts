@@ -64,9 +64,9 @@ const proposalCreationValidation = {
 						error: `Tag "${tag}" should be at least 3 characters long.`,
 						key: tag
 					});
-				} else if (tag.length > 15) {
+				} else if (tag.length > 64) {
 					errors.push({
-						error: `Tag "${tag}" should be less than 15 characters long.`,
+						error: `Tag "${tag}" should be less than 64 characters long.`,
 						key: tag
 					});
 				}

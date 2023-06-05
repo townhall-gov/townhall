@@ -129,6 +129,7 @@ export const roomsStore = createSlice({
 				const { key, value } = obj;
 				if (state.roomCreation) {
 					state.roomCreation.room_details = {
+						contract_address: '',
 						description: '',
 						logo: '',
 						name: '',
@@ -142,6 +143,7 @@ export const roomsStore = createSlice({
 						currentStage: ERoomCreationStage.ROOM_DETAILS,
 						getting_started: null,
 						room_details: {
+							contract_address: '',
 							description: '',
 							logo: '',
 							name: '',

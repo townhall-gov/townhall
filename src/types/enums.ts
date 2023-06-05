@@ -13,6 +13,8 @@ enum EBlockchain {
     MOONBEAM = 'moonbeam',
     MOONBASE = 'moonbase',
     MOONRIVER = 'moonriver',
+    ASTAR = 'astar',
+    ACALA = 'acala'
 }
 
 enum EReaction {

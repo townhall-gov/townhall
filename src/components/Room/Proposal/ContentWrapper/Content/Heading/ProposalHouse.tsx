@@ -1,9 +1,9 @@
 // Copyright 2019-2025 @polka-labs/townhall authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
+import { Image } from 'antd';
 import React, { FC } from 'react';
 import { useSelectedHouse } from '~src/redux/houses/selectors';
-import BlockchainIcon from '~src/ui-components/BlockchainIcon';
 import { firstCharUppercase } from '~src/utils/getFirstCharUppercase';
 
 interface IProposalHouseProps {
@@ -16,7 +16,7 @@ const ProposalHouse: FC<IProposalHouseProps> = (props) => {
 	return (
 		<>
 			<p className='flex items-center font-semibold text-base leading-[20px] tracking-[0.01em] text-grey_tertiary gap-x-1 m-0 p-0'>
-				<BlockchainIcon type={house.blockchain} className='text-2xl' />
+				<Image preview={false} width={25} height={25} className='rounded-full' src={house.logo} alt='room logo' />
 				<span>{firstCharUppercase(house.blockchain)}</span>
 			</p>
 			<span

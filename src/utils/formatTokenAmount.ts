@@ -19,4 +19,15 @@ const formatTokenAmount = (amount: string | number, network: string) => {
 	}
 };
 
+export const formatToken = (amount: string | number, isEVM: boolean, decimals: number) => {
+	if (isEVM) {
+		const ethersAmount = ethers.formatUnits(amount.toString(), decimals);
+		return ethersAmount;
+	} else {
+		const bnAmount = new BN(amount);
+		const formattedAmount = formatBalance(bnAmount, { decimals, withSi: false }).toString();
+		return formattedAmount;
+	}
+};
+
 export default formatTokenAmount;

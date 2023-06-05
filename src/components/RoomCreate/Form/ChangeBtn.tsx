@@ -1,7 +1,7 @@
 // Copyright 2019-2025 @polka-labs/townhall authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRoomCreationCurrentStage } from '~src/redux/rooms/selectors';
 import { getNextCreationStage } from '../utils';
 import { useDispatch } from 'react-redux';
@@ -16,18 +16,71 @@ import { ICreateRoomBody, ICreateRoomResponse } from 'pages/api/auth/actions/cre
 import { useRouter } from 'next/router';
 import { roomActions } from '~src/redux/room';
 import { Button } from 'antd';
-import { useRoomsSelector } from '~src/redux/selectors';
+import { useProfileSelector, useRoomsSelector } from '~src/redux/selectors';
 import classNames from 'classnames';
 import { useAuthActionsCheck } from '~src/redux/profile/selectors';
 import { profileActions } from '~src/redux/profile';
+import { ICurrentBalanceResponse, ICurrentBalanceBody } from 'pages/api/chain/data/currentBalance';
+import { formatToken } from '~src/utils/formatTokenAmount';
+import { MIN_TOKEN_TO_CREATE_ROOM } from '~src/global/min_token';
 
 const StageChangeBtn = () => {
 	const router = useRouter();
+	const { user } = useProfileSelector();
 	const roomCreationCurrentStage = useRoomCreationCurrentStage();
 	const { loading, roomCreation } = useRoomsSelector();
 	const nextCreationStage = getNextCreationStage(roomCreationCurrentStage);
 	const dispatch = useDispatch();
 	const { connectWallet, isLoggedIn } = useAuthActionsCheck();
+	const [canCreateRoom, setCanCreateRoom] = useState(false);
+	const [dappInfo, setDappInfo] = useState({
+		decimals: '',
+		symbol: ''
+	});
+
+	useEffect(() => {
+		(async () => {
+			setCanCreateRoom(false);
+			if (roomCreation.select_house && user?.address && roomCreation.room_details?.contract_address) {
+				try {
+					const { data, error } = await api.post<ICurrentBalanceResponse, ICurrentBalanceBody>('chain/data/currentBalance', {
+						address: user?.address,
+						contract: roomCreation.room_details?.contract_address,
+						network: roomCreation.select_house.blockchain
+					});
+					if (error) {
+						dispatch(notificationActions.send({
+							message: getErrorMessage(error),
+							status: ENotificationStatus.ERROR,
+							title: 'Error!'
+						}));
+					} else if (!data || !data.balance || !data.decimals || !data.symbol) {
+						dispatch(notificationActions.send({
+							message: 'This token is not supported.',
+							status: ENotificationStatus.ERROR,
+							title: 'Error!'
+						}));
+					} else {
+						const token = formatToken(data?.balance || 0, true, Number(data?.decimals || 0));
+						setDappInfo({
+							decimals: data?.decimals || '',
+							symbol: data?.symbol || ''
+						});
+						if (token && Number(token) >= Number(roomCreation.select_house.min_token_to_create_room || MIN_TOKEN_TO_CREATE_ROOM)) {
+							setCanCreateRoom(true);
+						}
+					}
+				} catch (error) {
+					dispatch(notificationActions.send({
+						message: getErrorMessage(error),
+						status: ENotificationStatus.ERROR,
+						title: 'Error!'
+					}));
+				}
+			}
+		})();
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [user?.address, roomCreation.select_house, roomCreation.room_details?.contract_address]);
 
 	const onStageChange = () => {
 		if (!isLoggedIn) {
@@ -37,6 +90,14 @@ const StageChangeBtn = () => {
 		if (nextCreationStage) {
 			dispatch(roomsActions.setRoomCreationStage(nextCreationStage.stage));
 		} else {
+			if (!canCreateRoom) {
+				dispatch(notificationActions.send({
+					message: 'You can\'t create a room with less than 10 tokens.',
+					status: ENotificationStatus.ERROR,
+					title: 'Error!'
+				}));
+				return;
+			}
 			let isError = false;
 			Object.values(ERoomCreationStage).some((stage) => {
 				const error = roomCreationValidation?.[stage]?.(roomCreation);
@@ -59,13 +120,15 @@ const StageChangeBtn = () => {
 						dispatch(roomsActions.setLoading(true));
 						const { data, error } = await api.post<ICreateRoomResponse, ICreateRoomBody>('auth/actions/createRoom', {
 							room: {
-								contract_address: '',
+								contract_address: room_details?.contract_address || '',
 								creator_details: creator_details!,
+								decimals: dappInfo.decimals,
 								description: room_details?.description || '',
 								house_id: select_house?.id || '',
 								id: room_details?.name || '',
 								logo: room_details?.logo || '',
 								socials: room_socials || [],
+								symbol: dappInfo.symbol,
 								title: room_details?.title || '',
 								voting_strategies: room_strategies || []
 							}

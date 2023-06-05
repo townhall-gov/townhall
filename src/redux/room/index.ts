@@ -4,10 +4,11 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
-import { ERoomStage, IProposalCreation, IRoomStore, IVotingSystemOption } from './@types';
+import { ERoomStage, IProposalCreation, IRoomSettings, IRoomStore, IVotingSystemOption } from './@types';
 import { IRoom } from '~src/types/schema';
 import { IListingProposal } from './@types';
 import { EVotingSystem } from '~src/types/enums';
+import { MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM } from '~src/global/min_token';
 
 const initialState: IRoomStore = {
 	currentStage: ERoomStage.PROPOSALS,
@@ -29,7 +30,10 @@ const initialState: IRoomStore = {
 		]
 	},
 	proposals: [],
-	room: null
+	room: null,
+	roomSettings: {
+		min_token_to_create_proposal_in_room: MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM
+	}
 };
 
 // Interesting type here. It's a mapped type that takes the keys of IProposalCreation and returns an object with those keys as the key, and the value is an object with the key and value of the key in IProposalCreation. So it's like:
@@ -39,6 +43,13 @@ type IProposalCreationFieldPayload = {
       value: IProposalCreation[K];
     }
 }[keyof IProposalCreation];
+
+type IRoomSettingsFieldPayload = {
+    [K in keyof IRoomSettings]: {
+      key: K;
+      value: IRoomSettings[K];
+    }
+}[keyof IRoomSettings];
 
 export const roomStore = createSlice({
 	extraReducers: (builder) => {
@@ -129,7 +140,25 @@ export const roomStore = createSlice({
 			}
 		},
 		setRoom: (state, action: PayloadAction<IRoom |null>) => {
-			state.room = action.payload;
+			const room = action.payload;
+			state.room = room;
+			state.roomSettings = {
+				min_token_to_create_proposal_in_room: (room?.min_token_to_create_proposal_in_room || room?.min_token_to_create_proposal_in_room === 0)? room?.min_token_to_create_proposal_in_room: MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM
+			};
+		},
+		setRoomSettings_Field: (state, action: PayloadAction<IRoomSettingsFieldPayload>) => {
+			const obj = action.payload;
+			state.loading = false;
+			if (obj) {
+				const { key, value } = obj;
+				switch (key) {
+				case 'min_token_to_create_proposal_in_room':
+					state.roomSettings[key] = value as number;
+					break;
+				default:
+					break;
+				}
+			}
 		}
 	}
 });
