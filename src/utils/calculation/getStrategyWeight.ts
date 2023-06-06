@@ -58,7 +58,11 @@ const getStrategyWeight = (strategy: IStrategy, balances: IBalanceWithNetwork[])
 const getBalanceOfStrategyWeight = (balance: IBalanceWithNetwork) => {
 	const balanceAmount = formatTokenAmount(balance.balance, balance.network);
 	const len = balanceAmount.length;
-	const result = new BN(balanceAmount.replace('.', '')).div(new BN(10).pow(new BN(len - 1 - balanceAmount.indexOf('.'))));
+	const i = balanceAmount.indexOf('.');
+	if (i === -1) {
+		return new BN(balanceAmount);
+	}
+	const result = new BN(balanceAmount.replace('.', '')).div(new BN(10).pow(new BN(len - 1 - i)));
 	return result;
 };
 

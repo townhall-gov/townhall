@@ -2,17 +2,18 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { JsonRpcProvider, WebSocketProvider, ethers } from 'ethers';
 import { evmChains } from '../utils/constants';
 import { getProvidersForEvmChain } from '../utils/evmChain/apis';
 import { erc20Abi } from './abi';
+import Web3 from 'web3';
 
-async function querySymbol(contract: string, provider: WebSocketProvider | JsonRpcProvider) {
-	const erc20 = new ethers.Contract(contract, erc20Abi, provider);
+async function querySymbol(contract: string, provider: any) {
+	const web3 = new Web3(provider);
+	const erc20 = new web3.eth.Contract(erc20Abi as any, contract);
 
 	const promises = [];
 	for (let i = 0; i < 2; i++) {
-		const promise = erc20.symbol();
+		const promise = erc20.methods.symbol().call();
 		promises.push(promise);
 	}
 
