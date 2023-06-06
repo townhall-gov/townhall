@@ -13,6 +13,12 @@ import { useDispatch } from 'react-redux';
 import { housesActions } from '~src/redux/houses';
 import Room from '~src/components/Houses/Rooms/Room';
 import House from '~src/components/Houses/House';
+import Input from '~src/ui-components/Input';
+import { homeActions } from '~src/redux/home';
+import SearchCategoryDropdown from '~src/ui-components/SearchCategoryDropdown';
+import { useCategory, useFilteredHouses, useFilteredRooms, useSearchTerm, useVisibleHouseCards, useVisibleRoomCards } from '~src/redux/home/selector';
+import { SearchIcon } from '~src/ui-components/CustomIcons';
+import LoadMore from '~src/ui-components/LoadMore';
 
 interface IHomeServerProps {
 	houses: IHouse[] | null;
@@ -42,8 +48,8 @@ export const getServerSideProps: GetServerSideProps<IHomeServerProps> = async ()
 		});
 	}
 	const props: IHomeServerProps = {
-		error: error? error: null,
-		houses: ((houses && Array.isArray(houses))? houses: null),
+		error: error ? error : null,
+		houses: ((houses && Array.isArray(houses)) ? houses : null),
 		rooms: rooms
 	};
 	return {
@@ -51,27 +57,48 @@ export const getServerSideProps: GetServerSideProps<IHomeServerProps> = async ()
 	};
 };
 
-interface IHomeClientProps extends IHomeServerProps {}
+interface IHomeClientProps extends IHomeServerProps { }
 const Home: FC<IHomeClientProps> = (props) => {
 	const { houses, rooms } = props;
 	const dispatch = useDispatch();
+	const housefiltered = useFilteredHouses();
+	const roomfiltered = useFilteredRooms();
+	const visibleHousesCards=useVisibleHouseCards();
+	const visibleRoomCards=useVisibleRoomCards();
+	const category = useCategory();
 	useEffect(() => {
+		if (rooms) {
+			dispatch(homeActions.setRooms(rooms));
+		}
+		if (houses) {
+			dispatch(homeActions.setHouses(houses));
+		}
 		if (houses && Array.isArray(houses) && houses.length > 0) {
 			dispatch(housesActions.setHouses(houses));
 		} else {
 			dispatch(housesActions.setHouses([]));
 		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [houses, rooms]);
 	return (
 		<>
 			<SEOHead title='Home' desc='Democratizing governance for all blockchains.' />
 			<div
-				className='h-full'
+				className='h-full ml-20'
 			>
+				<div className='flex'>
+					<div className='w-[36rem] mb-12 h-12 flex relative'>
+						<SearchIcon className='text-transparent stroke-app_background text-2xl absolute flex border border-black mt-3 ml-4' />
+						<Input value={useSearchTerm()} onChange={(value: string) => dispatch(homeActions.setSearchQuery(value))} type='text' placeholder='Search' className='pl-12'></Input>
+					</div>
+					<div>
+						<SearchCategoryDropdown />
+					</div>
+				</div>
+
 				<section className='flex items-center flex-wrap gap-7'>
 					{
-						houses && houses.map((house, index) => {
+						(category == 'houses' || category == 'all') && housefiltered && housefiltered.slice(0,visibleHousesCards).map((house, index) => {
 							return (
 								<>
 									<House
@@ -83,7 +110,7 @@ const Home: FC<IHomeClientProps> = (props) => {
 						})
 					}
 					{
-						rooms && rooms.map((room, index) => {
+						(category == 'rooms' || category == 'all') && roomfiltered && roomfiltered.slice(0,visibleRoomCards).map((room, index) => {
 							return (
 								<>
 									<Room
@@ -95,6 +122,27 @@ const Home: FC<IHomeClientProps> = (props) => {
 						})
 					}
 				</section>
+				{category === 'all' && (
+					<div className={`flex justify-center items-center mt-[100px] ${(visibleHousesCards+visibleRoomCards) >= (housefiltered?.length+roomfiltered.length) ? 'hidden' : ''}`} onClick={() => {
+						dispatch(homeActions.setLoadMoreHouses());
+						dispatch(homeActions.setLoadMoreRooms());
+					}}>
+						<LoadMore />
+					</div>
+				)}
+
+				{category === 'houses' && (
+					<div className={`flex justify-center items-center mt-[100px] ${visibleHousesCards >= housefiltered?.length ? 'hidden' : ''}`} onClick={() => dispatch(homeActions.setLoadMoreHouses())}>
+						<LoadMore />
+					</div>
+				)}
+
+				{category === 'rooms' && (
+					<div className={`flex justify-center items-center mt-[100px] ${visibleRoomCards >= roomfiltered.length ? 'hidden' : ''}`} onClick={() => dispatch(homeActions.setLoadMoreRooms())}>
+						<LoadMore />
+					</div>
+				)}
+
 			</div>
 		</>
 	);
