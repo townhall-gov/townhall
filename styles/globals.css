@@ -62,7 +62,8 @@ body {
     background-color: var(--app_background);
     scroll-behavior: smooth;
     font-family: var(--font_default), 'Montserrat', sans-serif;
-    overflow: overlay;
+    overflow-y: overlay;
+    overflow-x: hidden;
 }
 
 a {

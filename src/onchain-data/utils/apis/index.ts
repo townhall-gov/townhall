@@ -23,9 +23,9 @@ async function createEvmChainProviders() {
 	const evmChainEndpoints = getEvmEndpoints();
 
 	const promises = [];
-	for (const { chain, endpoints, chainId } of evmChainEndpoints) {
+	for (const { chain, endpoints } of evmChainEndpoints) {
 		if ((endpoints || []).length > 0) {
-			promises.push(createProviderForEvmChain(chain, chainId, endpoints));
+			promises.push(createProviderForEvmChain(chain, endpoints));
 		}
 	}
 
@@ -38,11 +38,11 @@ const clean = () => {
 };
 
 const create = () => {
-	createChainApis().then(() => {
-		console.log('Apis created');
-	}).catch(() => {
-		console.log('Error when creating Apis');
-	});
+	// createChainApis().then(() => {
+	// console.log('Apis created');
+	// }).catch(() => {
+	// console.log('Error when creating Apis');
+	// });
 	createEvmChainProviders().then(() => {
 		console.log('Providers created');
 	}).catch(() => {
