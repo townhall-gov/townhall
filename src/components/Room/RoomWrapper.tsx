@@ -7,17 +7,18 @@ import { useRoomCurrentStage } from '~src/redux/room/selectors';
 import CreateProposal from './Proposal/Create';
 import Proposals from './Proposals';
 import RoomSettings from './Settings';
+import { useRoomSelector } from '~src/redux/selectors';
 
 const RoomWrapper = () => {
 	const currentStage = useRoomCurrentStage();
-
+	const { proposals } = useRoomSelector();
 	return (
 		<div className='flex-1'>
 			{
 				(() => {
 					switch(currentStage){
 					case ERoomStage.PROPOSALS:
-						return <Proposals />;
+						return <Proposals proposals={proposals} />;
 					case ERoomStage.NEW_PROPOSAL:
 						return <CreateProposal />;
 					case ERoomStage.SETTINGS:

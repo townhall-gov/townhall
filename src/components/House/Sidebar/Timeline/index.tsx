@@ -3,8 +3,8 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import React from 'react';
-import { timeline } from '../utils';
 import TimelineCard from './Card';
+import { timeline } from '../../utils';
 
 const Timeline = () => {
 	return (

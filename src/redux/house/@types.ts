@@ -1,0 +1,34 @@
+// Copyright 2019-2025 @polka-labs/townhall authors & contributors
+// This software may be modified and distributed under the terms
+// of the Apache-2.0 license. See the LICENSE file for details.
+
+import { EReaction } from '~src/types/enums';
+import { IHouse, IProposal, IRoom } from '~src/types/schema';
+
+export interface IHouseStore {
+    loading: boolean;
+    error: string;
+    house: IHouse | null;
+    houseDefaultRoom: IRoom | null;
+    houseSettings: IHouseSettings;
+    currentStage: EHouseStage;
+    proposals: IListingProposal[];
+}
+
+export interface IListingProposal extends Omit<IProposal, 'discussion' | 'description' | 'updated_at' | 'preparation_period' | 'comments' | 'reactions' | 'is_vote_results_hide_before_voting_ends' | 'voting_system' | 'timestamp' | 'snapshot_heights' | 'voting_system_options' | 'votes_result' | 'voting_strategies'> {
+    comments_count: number;
+    reactions_count: {
+        [EReaction.LIKE]: number;
+        [EReaction.DISLIKE]: number;
+    };
+}
+
+export type IHouseSettings = {
+    min_token_to_create_room: number;
+};
+
+export enum EHouseStage {
+    PROPOSALS = 'proposals',
+    NEW_PROPOSAL = 'new_proposal',
+    SETTINGS = 'settings',
+}

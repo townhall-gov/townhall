@@ -2,16 +2,14 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React from 'react';
-import Timeline from './Timeline';
-import RoomCard from './RoomCard';
+import WorkingOnItBanner from '~src/ui-components/WorkingOnItBanner';
 
-const RoomSidebar = () => {
+const HouseSettings = () => {
 	return (
-		<div className='flex flex-col gap-y-[18px]'>
-			<RoomCard />
-			<Timeline />
+		<div className='h-full'>
+			<WorkingOnItBanner />
 		</div>
 	);
 };
 
-export default RoomSidebar;
+export default HouseSettings;

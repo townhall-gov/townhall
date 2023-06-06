@@ -56,11 +56,11 @@ const useSearchTerm = () => {
 	return searchQuery;
 };
 
-const useVisibleHouseCards = () =>{
+const useVisibleHouseCards = () => {
 	const { visibleHouseCards  } = useHomeSelector();
 	return visibleHouseCards ;
 };
-const useVisibleRoomCards = () =>{
+const useVisibleRoomCards = () => {
 	const { visibleRoomCards  } = useHomeSelector();
 	return visibleRoomCards ;
 };

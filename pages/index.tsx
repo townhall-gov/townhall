@@ -61,8 +61,8 @@ interface IHomeClientProps extends IHomeServerProps { }
 const Home: FC<IHomeClientProps> = (props) => {
 	const { houses, rooms } = props;
 	const dispatch = useDispatch();
-	const housefiltered = useFilteredHouses();
-	const roomfiltered = useFilteredRooms();
+	const houseFiltered = useFilteredHouses();
+	const roomFiltered = useFilteredRooms();
 	const visibleHousesCards=useVisibleHouseCards();
 	const visibleRoomCards=useVisibleRoomCards();
 	const category = useCategory();
@@ -84,33 +84,33 @@ const Home: FC<IHomeClientProps> = (props) => {
 		<>
 			<SEOHead title='Home' desc='Democratizing governance for all blockchains.' />
 			<div
-				className='h-full ml-20'
+				className='h-full flex flex-col gap-y-[42px]'
 			>
-				<div className='flex'>
-					<div className='w-[36rem] mb-12 h-12 flex relative'>
-						<SearchIcon className='text-transparent stroke-app_background text-2xl absolute flex border border-black mt-3 ml-4' />
-						<Input value={useSearchTerm()} onChange={(value: string) => dispatch(homeActions.setSearchQuery(value))} type='text' placeholder='Search' className='pl-12'></Input>
+				<div className='flex gap-x-[18.5px]'>
+					<div className='w-full max-w-[538px] flex items-center relative'>
+						<SearchIcon className='text-transparent stroke-app_background text-2xl absolute ml-[18px] mr-4' />
+						<Input value={useSearchTerm()} onChange={(value: string) => dispatch(homeActions.setSearchQuery(value))} type='text' placeholder='Search' className='placeholder:text-grey_tertiary font-normal text-xl leading-[24px] pl-12 rounded-2xl max-h-[62px]'></Input>
 					</div>
 					<div>
 						<SearchCategoryDropdown />
 					</div>
 				</div>
 
-				<section className='flex items-center flex-wrap gap-7'>
+				<section className='grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 justify-between gap-[50px]'>
 					{
-						(category == 'houses' || category == 'all') && housefiltered && housefiltered.slice(0,visibleHousesCards).map((house, index) => {
+						(category == 'houses' || category == 'all') && houseFiltered && houseFiltered.slice(0,visibleHousesCards).map((house, index) => {
 							return (
 								<>
 									<House
 										key={index}
-										{...house}
+										house={house}
 									/>
 								</>
 							);
 						})
 					}
 					{
-						(category == 'rooms' || category == 'all') && roomfiltered && roomfiltered.slice(0,visibleRoomCards).map((room, index) => {
+						(category == 'rooms' || category == 'all') && roomFiltered && roomFiltered.slice(0,visibleRoomCards).map((room, index) => {
 							return (
 								<>
 									<Room
@@ -123,7 +123,7 @@ const Home: FC<IHomeClientProps> = (props) => {
 					}
 				</section>
 				{category === 'all' && (
-					<div className={`flex justify-center items-center mt-[100px] ${(visibleHousesCards+visibleRoomCards) >= (housefiltered?.length+roomfiltered.length) ? 'hidden' : ''}`} onClick={() => {
+					<div className={`flex justify-center items-center mt-[100px] ${(visibleHousesCards+visibleRoomCards) >= (houseFiltered?.length+roomFiltered.length) ? 'hidden' : ''}`} onClick={() => {
 						dispatch(homeActions.setLoadMoreHouses());
 						dispatch(homeActions.setLoadMoreRooms());
 					}}>
@@ -132,17 +132,16 @@ const Home: FC<IHomeClientProps> = (props) => {
 				)}
 
 				{category === 'houses' && (
-					<div className={`flex justify-center items-center mt-[100px] ${visibleHousesCards >= housefiltered?.length ? 'hidden' : ''}`} onClick={() => dispatch(homeActions.setLoadMoreHouses())}>
+					<div className={`flex justify-center items-center mt-[100px] ${visibleHousesCards >= houseFiltered?.length ? 'hidden' : ''}`} onClick={() => dispatch(homeActions.setLoadMoreHouses())}>
 						<LoadMore />
 					</div>
 				)}
 
 				{category === 'rooms' && (
-					<div className={`flex justify-center items-center mt-[100px] ${visibleRoomCards >= roomfiltered.length ? 'hidden' : ''}`} onClick={() => dispatch(homeActions.setLoadMoreRooms())}>
+					<div className={`flex justify-center items-center mt-[100px] ${visibleRoomCards >= roomFiltered.length ? 'hidden' : ''}`} onClick={() => dispatch(homeActions.setLoadMoreRooms())}>
 						<LoadMore />
 					</div>
 				)}
-
 			</div>
 		</>
 	);

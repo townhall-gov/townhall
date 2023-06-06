@@ -43,7 +43,7 @@ interface IHouse {
 	blockchain: EBlockchain;
 	networks: INetwork[];
 	is_erc20: boolean;
-	total_members: number;
+	total_room: number;
 }
 
 interface INetwork {
