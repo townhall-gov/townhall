@@ -81,11 +81,11 @@ const Home: FC<IHomeClientProps> = (props) => {
 		<>
 			<SEOHead title='Home' desc='Democratizing governance for all blockchains.' />
 			<div
-				className='h-full ml-20'
+				className='h-full ml-[40px]'
 			>
 				<div className='flex'>
-					<div className='w-[36rem] mb-12 h-12 flex relative'>
-						<SearchIcon className='text-transparent stroke-app_background text-2xl absolute flex border border-black mt-3 ml-4' />
+					<div className='w-[538px] mb-12 h-[62px] flex relative'>
+						<SearchIcon className='text-transparent stroke-app_background text-2xl absolute flex border border-black mt-5 ml-4' />
 						<Input value={useSearchTerm()} onChange={(value: string) => dispatch(homeActions.setSearchQuery(value))} type='text' placeholder='Search' className='pl-12'></Input>
 					</div>
 					<div>
