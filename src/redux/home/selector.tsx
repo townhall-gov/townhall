@@ -28,16 +28,17 @@ const useFilteredHouses = () => {
 const useFilteredRooms = () => {
 	const { rooms } = useHomeSelector();
 	const { searchQuery } = useHomeSelector();
-	if (rooms && Array.isArray(rooms) && rooms.length > 0) {
+	if (rooms && Array.isArray(rooms) && rooms.length > 0 ) {
+		console.log(rooms);
 		if (!searchQuery) {
-			return rooms;
+			return rooms.filter(room => room.id !== room.house_id);
 		}
 
 		const filteredRooms = rooms.filter(room => {
 			const lowercaseSearchValue = searchQuery.toLowerCase();
-			const lowercaseHouseName = room.title.toLowerCase();
+			const lowercaseRoomName = room.title.toLowerCase();
 
-			return lowercaseHouseName.includes(lowercaseSearchValue);
+			return lowercaseRoomName.includes(lowercaseSearchValue) && room.id !== room.house_id;
 		});
 
 		return filteredRooms;

@@ -7,7 +7,7 @@ import { Image, Spin } from 'antd';
 import classNames from 'classnames';
 import Link from 'next/link';
 import React, { FC, useRef } from 'react';
-import { CropFreeIcon } from './CustomIcons';
+import { CropFreeIcon, HouseIcon } from './CustomIcons';
 import DefaultNameImage from './DefaultNameImage';
 import { useHousesSelector } from '~src/redux/selectors';
 
@@ -75,10 +75,12 @@ const RoomHouseCard: FC<IRoomHouseCardProps> = (props) => {
 							</div>
 							: <DefaultNameImage className='w-[45px] h-[45px]' name={name} />
 					}
-
-					<h3 className='text-white m-0 p-0 text-2xl leading-[29px] tracking-[0.01em] font-semibold truncate'>{name}</h3>
+					<h3 className='text-white m-0 p-0 text-[24px] line-height-29 tracking-[0.01em] font-semibold truncate'>{name}</h3>
 					<p className='m-0 text-sm font-normal leading-[17px] text-grey_tertiary'>{totalMembers} Members</p>
-					<CropFreeIcon className='text-grey_primary text-lg mt-[3px]' />
+					<div className='flex'>
+						{!roomHouse &&<HouseIcon className='text-grey_primary text-lg mt-[3px] mr-2'/>}
+						<CropFreeIcon className='text-grey_primary text-lg mt-[3px]' />
+					</div>
 				</Link>
 				<Spin
 					className='text-white'
@@ -86,14 +88,16 @@ const RoomHouseCard: FC<IRoomHouseCardProps> = (props) => {
 					spinning={isDisabled}
 					indicator={<LoadingOutlined />}
 				>
-					<button
-						ref={joinBtnRef}
-						disabled={isDisabled}
-						onClick={onClick}
-						className='join border border-solid border-blue_primary rounded-2xl outline-none flex items-center justify-center py-1 px-2 w-full bg-transparent text-sm leading-[20px] font-semibold text-white cursor-pointer'
-					>
-						{ isJoined ? 'Joined' : 'Join' }
-					</button>
+					<div className='flex justify-center items-center'>
+						<button
+							ref={joinBtnRef}
+							disabled={isDisabled}
+							onClick={onClick}
+							className={'join border border-solid border-blue_primary rounded-2xl outline-none flex items-center justify-center py-1 px-2 w-[188px] bg-transparent text-sm leading-[20px] font-semibold text-white cursor-pointer'}
+						>
+							{ isJoined ? 'Joined' : 'Join' }
+						</button>
+					</div>
 				</Spin>
 			</article>
 		</>

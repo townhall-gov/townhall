@@ -95,7 +95,6 @@ const Home: FC<IHomeClientProps> = (props) => {
 						<SearchCategoryDropdown />
 					</div>
 				</div>
-
 				<section className='flex items-center flex-wrap gap-7'>
 					{
 						(category == 'houses' || category == 'all') && housefiltered && housefiltered.slice(0,visibleHousesCards).map((house, index) => {
