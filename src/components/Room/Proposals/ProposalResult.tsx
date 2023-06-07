@@ -82,7 +82,7 @@ const ProposalResult: FC<IProposalResultProps> = (props) => {
 													<div
 														className='text-white text-sm font-light leading-[17px] tracking-[0.01em] mb-[5px]'
 													>
-                                                        # {index}
+                                                        # {index + 1}
 													</div>
 													<div
 														className='flex items-center justify-between gap-x-2 text-[#90A0B7] font-medium text-xs leading-[22px]'

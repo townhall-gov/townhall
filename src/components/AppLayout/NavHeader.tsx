@@ -10,7 +10,7 @@ const { Header } = Layout;
 
 const NavHeader = () => {
 	return (
-		<Header className='h-min p-0 m-0 flex flex-col bg-transparent'>
+		<Header className='h-min z-[1001] sticky top-0 p-0 m-0 flex flex-col bg-app_background'>
 			<section className='px-[50px] pt-[20px] pb-[22.5px] border-0 border-b-[1.5px] border-solid border-blue_primary flex items-center justify-between text-grey_primary m-0'>
 				<div className='flex items-center justify-center max-h-[35.97px]'>
 					<TownhallLogoWithNamePNG />
