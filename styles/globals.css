@@ -77,8 +77,10 @@ p {
 
 /* MODAL CSS */
 .ant-modal-content {
-    background-color: var(--app_background) !important;
+    background-color: #04152F !important;
     color: white !important;
+    box-shadow: 2px 1px 16px rgba(102, 165, 255, 0.85) !important; 
+    border-radius: 16px;
 }
 /* MODAL CSS */
 
