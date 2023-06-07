@@ -7,7 +7,7 @@ import { Image, Spin } from 'antd';
 import classNames from 'classnames';
 import Link from 'next/link';
 import React, { FC, ReactNode, useRef } from 'react';
-import { CropFreeIcon } from './CustomIcons';
+import { CropFreeIcon, HouseIcon } from './CustomIcons';
 import DefaultNameImage from './DefaultNameImage';
 import { useHousesSelector } from '~src/redux/selectors';
 
@@ -80,7 +80,10 @@ const RoomHouseCard: FC<IRoomHouseCardProps> = (props) => {
 					<p className='m-0 text-sm font-normal leading-[17px] text-grey_tertiary'>
 						{totalLabel}
 					</p>
-					<CropFreeIcon className='text-grey_primary text-lg mt-[3px]' />
+					<div className='flex items-center justify-center gap-x-2 mt-[3px]'>
+						<HouseIcon className='text-grey_primary text-lg'/>
+						<CropFreeIcon className='text-grey_primary text-lg' />
+					</div>
 				</Link>
 				<Spin
 					className='text-white'
@@ -88,14 +91,17 @@ const RoomHouseCard: FC<IRoomHouseCardProps> = (props) => {
 					spinning={isDisabled}
 					indicator={<LoadingOutlined />}
 				>
-					<button
-						ref={joinBtnRef}
-						disabled={isDisabled}
-						onClick={onClick}
-						className='join border border-solid border-blue_primary rounded-2xl outline-none flex items-center justify-center py-1 px-2 w-full bg-transparent text-sm leading-[20px] font-semibold text-white cursor-pointer'
-					>
-						{ isJoined ? 'Joined' : 'Join' }
-					</button>
+					<div className='flex justify-center items-center'>
+						<button
+							ref={joinBtnRef}
+							disabled={isDisabled}
+							onClick={onClick}
+							className='join border border-solid border-blue_primary rounded-2xl outline-none flex items-center justify-center py-1 px-2 w-[188px] bg-transparent text-sm leading-[20px] font-semibold text-white cursor-pointer'
+						>
+							{ isJoined ? 'Joined' : 'Join' }
+						</button>
+					</div>
+
 				</Spin>
 			</article>
 		</>
