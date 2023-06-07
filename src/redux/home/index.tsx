@@ -30,7 +30,7 @@ export const homeStore = createSlice({
 	initialState,
 	name: 'home',
 	reducers: {
-		setCategory: (state, action: PayloadAction<string>) => {
+		setCategory: (state, action: PayloadAction<'houses' | 'rooms' | 'all'>) => {
 			state.category = action.payload;
 		},
 		setHouses: (state, action: PayloadAction<IHouse[]>) => {

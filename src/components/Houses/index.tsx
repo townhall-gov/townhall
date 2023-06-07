@@ -13,14 +13,14 @@ const Houses: FC<IHousesProps> = () => {
 		return null;
 	}
 	return (
-		<section className='flex items-center flex-wrap gap-7'>
+		<section className='grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 justify-between gap-[50px]'>
 			{
 				houses.map((house, index) => {
 					return (
 						<>
 							<House
 								key={index}
-								{...house}
+								house={house}
 							/>
 						</>
 					);

@@ -6,6 +6,7 @@ import Title from './Title';
 import Tags from '~src/components/Room/Proposals/Tags';
 import Address from '~src/ui-components/Address';
 import ProposalHouse from './ProposalHouse';
+import Status from '~src/components/Room/Proposals/Status';
 
 interface IHeadingProps {
     title: string;
@@ -13,10 +14,12 @@ interface IHeadingProps {
     address: string;
 	id: number;
 	house_id: string;
+	start_date: Date;
+	end_date: Date;
 }
 
 const Heading: FC<IHeadingProps> = (props) => {
-	const { title, tags, address, id } = props;
+	const { title, tags, address, id, start_date, end_date } = props;
 	return (
 		<header
 			className='rounded-2xl bg-[#04152F] py-8 px-7 text-white flex flex-col gap-y-[30px]'
@@ -38,8 +41,18 @@ const Heading: FC<IHeadingProps> = (props) => {
 						className='text-grey_tertiary font-medium text-base leading-[20px] tracking-[0.01em]'
 					/>
 				</div>
-				<div>
+				<div
+					className='flex items-center gap-x-[11.5px]'
+				>
 					<Tags tags={tags} />
+					<div
+						className='flex items-center justify-center -mr-[9px]'
+					>
+						<Status
+							end_at={end_date}
+							start_at={start_date}
+						/>
+					</div>
 				</div>
 			</article>
 		</header>

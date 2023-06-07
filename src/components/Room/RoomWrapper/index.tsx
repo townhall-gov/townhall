@@ -4,20 +4,34 @@
 import React from 'react';
 import { ERoomStage } from '~src/redux/room/@types';
 import { useRoomCurrentStage } from '~src/redux/room/selectors';
-import CreateProposal from './Proposal/Create';
-import Proposals from './Proposals';
-import RoomSettings from './Settings';
+import CreateProposal from '../Proposal/Create';
+import Proposals from '../Proposals';
+import RoomSettings from '../Settings';
+import { useRoomSelector } from '~src/redux/selectors';
+import RoomAbout from './RoomAbout';
 
 const RoomWrapper = () => {
 	const currentStage = useRoomCurrentStage();
-
+	const { proposals } = useRoomSelector();
+	const { room } = useRoomSelector();
+	if (!room) {
+		return null;
+	}
 	return (
-		<div className='flex-1'>
+		<div className='flex-1 flex flex-col gap-y-[21px]'>
+			<section
+				className='flex gap-x-[17.5px]'
+			>
+				<RoomAbout
+					description={room.description}
+					socials={room.socials}
+				/>
+			</section>
 			{
 				(() => {
 					switch(currentStage){
 					case ERoomStage.PROPOSALS:
-						return <Proposals />;
+						return <Proposals proposals={proposals} />;
 					case ERoomStage.NEW_PROPOSAL:
 						return <CreateProposal />;
 					case ERoomStage.SETTINGS:

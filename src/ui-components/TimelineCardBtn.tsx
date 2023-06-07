@@ -14,7 +14,7 @@ interface ITimelineCardBtnProps {
 const TimelineCardBtn: FC<ITimelineCardBtnProps> = (props) => {
 	const { icon, title, onClick, isActiveStage } = props;
 	return (
-		<article className='flex items-center gap-x-[6px] w-full'>
+		<article className='flex items-center gap-x-[6px] w-[188px]'>
 			{
 				isActiveStage?
 					<span className='max-h-[35px] h-full w-2 bg-blue_primary rounded-[4.3px]'>
@@ -23,13 +23,11 @@ const TimelineCardBtn: FC<ITimelineCardBtnProps> = (props) => {
 			}
 			<button
 				onClick={onClick}
-				className={classNames('outline-none bg-transparent cursor-pointer grid grid-cols-10 gap-x-2 rounded-2xl border border-solid border-blue_primary py-[11px] px-[30px] text-white text-base leading-[20px] font-normal flex-1', {
-					'pl-4': isActiveStage
-				})}>
-				<span className='col-span-2 flex items-center justify-center text-xl leading-none'>
+				className={classNames('outline-none bg-transparent cursor-pointer flex items-center justify-center gap-x-2 rounded-2xl border border-solid border-blue_primary py-[11px] text-white text-base leading-[20px] font-normal flex-1 h-[40px]')}>
+				<span className='flex items-center justify-center text-xl leading-none'>
 					{icon}
 				</span>
-				<h4 className='col-span-8 m-0 p-0 text-left'>
+				<h4 className='m-0 p-0'>
 					{title}
 				</h4>
 			</button>

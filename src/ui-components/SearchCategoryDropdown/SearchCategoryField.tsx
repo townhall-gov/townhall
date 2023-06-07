@@ -4,14 +4,14 @@
 import React, { FC } from 'react';
 
 interface ISearchCategoryFieldProps {
-    category: any;
+    title: string;
 }
 
 const SearchCategoryField: FC<ISearchCategoryFieldProps> = (props) => {
-	const { category } = props;
+	const { title } = props;
 	return (
 		<div className='flex items-center gap-x-3 text-white m-2'>
-			<h5 className='m-0 p-0 text-sm leading-none'>{category.label.toUpperCase()}</h5>
+			<h5 className='m-0 p-0 text-sm leading-none'>{title}</h5>
 		</div>
 	);
 };

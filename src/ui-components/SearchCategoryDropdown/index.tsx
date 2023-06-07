@@ -1,81 +1,61 @@
 // Copyright 2019-2025 @polka-labs/townhall authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { DownOutlined } from '@ant-design/icons';
-import type { MenuProps } from 'antd';
-import { Dropdown, Space, Typography } from 'antd';
+import { Dropdown } from 'antd';
 import classNames from 'classnames';
 import { useDispatch } from 'react-redux';
 import { homeActions } from '~src/redux/home';
 import { useCategory } from '~src/redux/home/selector';
 import { GeometricIcon } from '../CustomIcons';
 import SearchCategoryField from './SearchCategoryField';
+import { firstCharUppercase } from '~src/utils/getFirstCharUppercase';
+
 interface ISearchCategoryDropdownProps {
 	className?: string;
 }
 
-const items: MenuProps['items'] = [
-	{
-		key: 'houses',
-		label: 'Houses'
-	},
-	{
-		key: 'rooms',
-		label: 'Rooms'
-	},
-	{
-		key: 'all',
-		label: 'All'
-	}
-];
-
 const SearchCategoryDropdown: React.FC<ISearchCategoryDropdownProps> = () => {
-	const [houseItems, setHouseItems] = useState<any[]>([
+	const category = useCategory();
+	const items = [
 		{
 			key: 'houses',
-			label: 'Houses'
+			label: <SearchCategoryField title='Houses' />
 		},
 		{
 			key: 'rooms',
-			label: 'Rooms'
+			label: <SearchCategoryField title='Rooms' />
 		},
 		{
 			key: 'all',
-			label: 'All'
+			label: <SearchCategoryField title='All' />
 		}
-	]);
-	useEffect(() => {
-		setHouseItems(items.map((item) => {
-			return {
-				key: item?.key,
-				label: (
-					<SearchCategoryField category={item} />
-				)
-			};
-		}));
-	}, []);
+	];
 	const dispatch = useDispatch();
 	return (
 		<Dropdown
 			trigger={['click']}
-			className={classNames(' flex justify-center items-center cursor-pointer px-[18.5px] h-12 ml-2 text-white border border-solid border-blue_primary rounded-2xl')}
+			className={classNames('flex justify-center items-center cursor-pointer text-white border border-solid border-blue_primary rounded-2xl h-full max-h-[62px] px-[18px]')}
 			overlayClassName='ant-dropdown-menu-border-blue_primary'
 			menu={{
-				items: houseItems,
+				items: items,
 				onClick: (e) => {
-					dispatch(homeActions.setCategory(e.key));
+					dispatch(homeActions.setCategory(e.key as any));
 				}
-
 			}}
 		>
-			<Typography.Link>
-				<Space>
-					<GeometricIcon className='text-transparent stroke-app_background text-2xl flex' />
-					{useCategory().toUpperCase()}
-					<DownOutlined />
-				</Space>
-			</Typography.Link>
+			<div
+				className='flex items-center justify-between min-w-[175px] gap-x-[10px]'
+			>
+				<GeometricIcon className='text-transparent stroke-app_background text-2xl flex' />
+				<span
+					className='font-normal text-xl leading-[24px] text-white'
+				>
+					{firstCharUppercase(category)}
+				</span>
+				<DownOutlined />
+			</div>
 		</Dropdown>
 	);
 };

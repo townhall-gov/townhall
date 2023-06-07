@@ -9,7 +9,7 @@ import { TNextApiHandler } from '~src/api/types';
 import { MIN_TOKEN_TO_CREATE_ROOM } from '~src/global/min_token';
 import { houseCollection, roomCollection } from '~src/services/firebase/utils';
 import { EBlockchain } from '~src/types/enums';
-import { IHouse, IRoom } from '~src/types/schema';
+import { IHouse } from '~src/types/schema';
 import getErrorMessage from '~src/utils/getErrorMessage';
 
 export type TGetHousesFn = () => Promise<TApiResponse<IHouse[]>>;
@@ -24,17 +24,8 @@ export const getHouses: TGetHousesFn = async () => {
 					if (data) {
 						// Sanitization
 						if (data.id && data.blockchain && Object.values(EBlockchain).includes(data.blockchain)) {
-							let total_members = 0;
-							const roomsQuerySnapshot = await roomCollection(data.id).get();
-							roomsQuerySnapshot.docs.forEach((roomDoc) => {
-								if (roomDoc && roomDoc.exists) {
-									const data = roomDoc.data() as IRoom;
-									if (data && data.total_members) {
-										total_members += data.total_members;
-									}
-								}
-							});
-
+							const roomAggregateQuerySnapshot = await roomCollection(data.id).count().get();
+							const totalRoom = roomAggregateQuerySnapshot.data().count || 0;
 							const house: IHouse = {
 								blockchain: data.blockchain,
 								description: data.description || '',
@@ -44,7 +35,7 @@ export const getHouses: TGetHousesFn = async () => {
 								min_token_to_create_room: data.min_token_to_create_room || MIN_TOKEN_TO_CREATE_ROOM,
 								networks: data.networks || [],
 								title: data.title || '',
-								total_members: Number(total_members || 0)
+								total_room: Number(totalRoom || 0)
 							};
 							return house;
 						}

@@ -16,6 +16,7 @@ import { roomStore } from './room';
 import { proposalStore } from './proposal';
 import { editorStore } from './editor';
 import { homeStore } from './home';
+import { houseStore } from './house';
 
 export const makeStore = () => {
 	const isServer = typeof window === 'undefined';
@@ -25,6 +26,7 @@ export const makeStore = () => {
 		[notificationStore.name]: notificationStore.reducer,
 		[profileStore.name]: profileStore.reducer,
 		[proposalStore.name]: proposalStore.reducer,
+		[houseStore.name]: houseStore.reducer,
 		[roomStore.name]: roomStore.reducer,
 		[roomsStore.name]: roomsStore.reducer,
 		[walletStore.name]: walletStore.reducer,

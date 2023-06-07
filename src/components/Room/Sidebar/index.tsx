@@ -7,7 +7,7 @@ import RoomCard from './RoomCard';
 
 const RoomSidebar = () => {
 	return (
-		<div className='w-[210px] flex flex-col gap-y-5'>
+		<div className='flex flex-col gap-y-[18px]'>
 			<RoomCard />
 			<Timeline />
 		</div>
