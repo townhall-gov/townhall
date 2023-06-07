@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useProfileSelector, useProposalSelector } from '~src/redux/selectors';
 import Address from '~src/ui-components/Address';
 import { useDispatch } from 'react-redux';
@@ -29,12 +29,19 @@ const CreateComment = () => {
 	const { proposal } = useProposalSelector();
 	const [loading, setLoading] = useState(false);
 	const { isLoggedIn, isRoomJoined, connectWallet, joinRoom } = useAuthActionsCheck();
-
+	const { editableComment } = useProposalSelector();
 	const { user } = useProfileSelector();
+	const selectedSentiment = editableComment?.id? editableComment.sentiment || commentCreation.sentiment: commentCreation?.sentiment;
+	useEffect(()=>{
+		if(selectedSentiment)
+		{
+			onComment();
+		}
+	},[selectedSentiment]);
+
 	if (!user || !user.address) {
 		return <ConnectWalletBanner connectWallet={connectWallet} />;
 	}
-
 	const onSentiment = async () => {
 		if (loading) return;
 		if (!isLoggedIn) {
