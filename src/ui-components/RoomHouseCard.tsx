@@ -81,7 +81,11 @@ const RoomHouseCard: FC<IRoomHouseCardProps> = (props) => {
 						{totalLabel}
 					</p>
 					<div className='flex items-center justify-center gap-x-2 mt-[3px]'>
-						<HouseIcon className='text-grey_primary text-lg'/>
+						{
+							!house_id?
+								<HouseIcon className='text-grey_primary text-lg'/>
+								: null
+						}
 						<CropFreeIcon className='text-grey_primary text-lg' />
 					</div>
 				</Link>
