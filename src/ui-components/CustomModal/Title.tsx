@@ -6,6 +6,7 @@ import { FC } from 'react';
 import { JoinedRoomsModalTitle } from '~src/components/AppLayout/JoinedRooms/Modal';
 import { ConnectWalletModalTitle } from '~src/components/ConnectWallet';
 import { SelectedWalletModalTitle } from '~src/components/ConnectWallet/FetchingAccounts';
+import { HouseRoomsModalTitle } from '~src/components/House/HouseWrapper/Modal';
 import EditHistoryModalTitle from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/Comments/Comment/Header/EditHistory/ModalTitle';
 import AllVotesModalTitle from '~src/components/Room/Proposal/Sidebar/Vote/All/Modal/Title';
 import CastYourVoteModalTitle from '~src/components/Room/Proposal/Sidebar/Vote/CastYourVote/Modal/Title';
@@ -24,6 +25,8 @@ const ModalTitle: FC<IModalTitleProps> = (props) => {
 		return <ConnectWalletModalTitle />;
 	case ETitleType.MULTIPLE_JOINED_ROOMS:
 		return <JoinedRoomsModalTitle />;
+	case ETitleType.HOUSE_ROOMS:
+		return <HouseRoomsModalTitle />;
 	case ETitleType.COMMENT_EDIT_HISTORY:
 		return <EditHistoryModalTitle />;
 	case ETitleType.CAST_YOUR_VOTE:

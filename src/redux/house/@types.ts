@@ -2,6 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+import { IHouseRoom } from 'pages/api/house/rooms';
 import { EReaction } from '~src/types/enums';
 import { IHouse, IProposal, IRoom } from '~src/types/schema';
 
@@ -9,13 +10,14 @@ export interface IHouseStore {
     loading: boolean;
     error: string;
     house: IHouse | null;
+    houseRooms: IHouseRoom[] | null;
     houseDefaultRoom: IRoom | null;
     houseSettings: IHouseSettings;
     currentStage: EHouseStage;
     proposals: IListingProposal[];
 }
 
-export interface IListingProposal extends Omit<IProposal, 'discussion' | 'description' | 'updated_at' | 'preparation_period' | 'comments' | 'reactions' | 'is_vote_results_hide_before_voting_ends' | 'voting_system' | 'timestamp' | 'snapshot_heights' | 'voting_system_options' | 'votes_result' | 'voting_strategies'> {
+export interface IListingProposal extends Omit<IProposal, 'discussion' | 'description' | 'updated_at' | 'preparation_period' | 'comments' | 'reactions' | 'is_vote_results_hide_before_voting_ends' | 'voting_system' | 'timestamp' | 'snapshot_heights' | 'voting_system_options' | 'voting_strategies'> {
     comments_count: number;
     reactions_count: {
         [EReaction.LIKE]: number;

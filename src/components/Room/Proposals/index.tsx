@@ -4,6 +4,8 @@
 import React, { FC } from 'react';
 import ProposalCard from './ProposalCard';
 import { IListingProposal } from '~src/redux/room/@types';
+import Filter from './Filter';
+import NoProposalsYet from '~src/ui-components/NoProposalsYet';
 
 interface IProposalsProps {
 	proposals: IListingProposal[];
@@ -12,25 +14,26 @@ interface IProposalsProps {
 const Proposals: FC<IProposalsProps> = (props) => {
 	const { proposals } = props;
 	return (
-		<section className='flex flex-col gap-y-8 h-full'>
-			<div className='flex flex-col gap-y-7 h-full max-h-[calc(100vh-194px)] overflow-auto pr-2'>
-				{
-					proposals && Array.isArray(proposals) && proposals.length ?
-						proposals.map((proposal) => {
-							return <ProposalCard key={proposal.id} proposal={proposal} />;
-						})
-						: <div
-							className='flex flex-col justify-center items-center gap-4 flex-1'
+		<section className='flex flex-col h-full'>
+			{
+				proposals && Array.isArray(proposals) && proposals.length ?
+					<>
+						<div
+							className='flex items-center justify-end mb-[8.5px]'
 						>
-							<p
-								className='text-green_primary text-xl font-bold'
-							>
-								No proposals yet.
-							</p>
+							<Filter />
 						</div>
-				}
+						<div className='flex flex-col gap-y-7 h-full max-h-[calc(100vh-194px)] overflow-auto pr-2'>
+							{
+								proposals.map((proposal) => {
+									return <ProposalCard key={proposal.id} proposal={proposal} />;
+								})
+							}
+						</div>
+					</>
+					: <NoProposalsYet />
+			}
 
-			</div>
 		</section>
 	);
 };

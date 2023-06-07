@@ -4,17 +4,33 @@
 import React from 'react';
 import { EHouseStage } from '~src/redux/house/@types';
 import { useHouseCurrentStage } from '~src/redux/house/selectors';
-import HouseSettings from './Settings';
-import CreateProposal from '../Room/Proposal/Create';
-import Proposals from '../Room/Proposals';
+import HouseSettings from '../Settings';
+import CreateProposal from '../../Room/Proposal/Create';
+import Proposals from '../../Room/Proposals';
 import { useHouseSelector } from '~src/redux/selectors';
+import HouseRooms from './HouseRooms';
+import HouseAbout from './HouseAbout';
 
 const HouseWrapper = () => {
 	const currentStage = useHouseCurrentStage();
 	const { proposals } = useHouseSelector();
-
+	const { house, houseRooms } = useHouseSelector();
+	if (!house) {
+		return null;
+	}
 	return (
-		<div className='flex-1'>
+		<div className='flex-1 flex flex-col gap-y-[21px]'>
+			<section
+				className='flex gap-x-[17.5px]'
+			>
+				<HouseAbout
+					description={house.description}
+				/>
+				<HouseRooms
+					houseRooms={houseRooms}
+					house_id={house.id}
+				/>
+			</section>
 			{
 				(() => {
 					switch(currentStage){

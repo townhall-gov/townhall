@@ -17,6 +17,7 @@ export enum ETitleType {
     COMMENT_EDIT_HISTORY = 'comment-edit-history',
     CAST_YOUR_VOTE = 'cast-your-vote',
     ALL_VOTES = 'all-votes',
+    HOUSE_ROOMS = 'house-rooms',
 }
 
 export enum EFooterType {
@@ -35,4 +36,5 @@ export enum EContentType {
     COMMENT_EDIT_HISTORY = 'comment-edit-history',
     CAST_YOUR_VOTE = 'cast-your-vote',
     ALL_VOTES = 'all-votes',
+    HOUSE_ROOMS = 'house-rooms',
 }

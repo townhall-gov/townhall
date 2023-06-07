@@ -41,7 +41,7 @@ const SearchCategoryDropdown: React.FC<ISearchCategoryDropdownProps> = () => {
 			menu={{
 				items: items,
 				onClick: (e) => {
-					dispatch(homeActions.setCategory(e.key));
+					dispatch(homeActions.setCategory(e.key as any));
 				}
 			}}
 		>

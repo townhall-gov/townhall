@@ -55,7 +55,7 @@ const RoomHouseCard: FC<IRoomHouseCardProps> = (props) => {
 				<Link
 					href={link}
 					onClick={onLinkClick}
-					className='border border-solid border-blue_primary rounded-lg outline-none flex flex-col gap-y-2 items-center bg-transparent p-5 px-7 w-full cursor-pointer min-h-[186px]'
+					className='border border-solid border-blue_primary rounded-2xl outline-none flex flex-col gap-y-2 items-center bg-transparent p-5 px-7 w-full cursor-pointer min-h-[186px]'
 				>
 					{
 						logo?

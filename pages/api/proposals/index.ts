@@ -2,13 +2,14 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+import dayjs from 'dayjs';
 import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
 import { IListingProposal } from '~src/redux/room/@types';
 import { proposalCollection } from '~src/services/firebase/utils';
-import { EReaction } from '~src/types/enums';
+import { EProposalStatus, EReaction } from '~src/types/enums';
 import { IProposal } from '~src/types/schema';
 import apiErrorWithStatusCode from '~src/utils/apiErrorWithStatusCode';
 import convertFirestoreTimestampToDate from '~src/utils/convertFirestoreTimestampToDate';
@@ -17,12 +18,13 @@ import getErrorMessage from '~src/utils/getErrorMessage';
 interface IGetProposalsFnParams {
     house_id: string;
     room_id: string;
+	filterBy?: string;
 }
 
 export type TGetProposalsFn = (params: IGetProposalsFnParams) => Promise<TApiResponse<IListingProposal[]>>;
 export const getProposals: TGetProposalsFn = async (params) => {
 	try {
-		const { house_id, room_id } = params;
+		const { house_id, room_id, filterBy } = params;
 		if (!house_id) {
 			throw apiErrorWithStatusCode('Invalid houseId.', StatusCodes.BAD_REQUEST);
 		}
@@ -30,7 +32,10 @@ export const getProposals: TGetProposalsFn = async (params) => {
 			throw apiErrorWithStatusCode('Invalid roomId.', StatusCodes.BAD_REQUEST);
 		}
 		const proposals: IListingProposal[] = [];
-		const proposalsSnapshot = await proposalCollection(house_id, room_id).orderBy('created_at', 'desc').get();
+		let proposalsSnapshot: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData> = await proposalCollection(house_id, room_id).orderBy('created_at', 'desc').get();
+		if (filterBy && [EProposalStatus.ACTIVE.toString(), EProposalStatus.PENDING.toString(), EProposalStatus.CLOSED.toString()].includes(filterBy)) {
+			proposalsSnapshot = await proposalCollection(house_id, room_id).orderBy('created_at', 'desc').where('status', '==', filterBy).get();
+		}
 		if (proposalsSnapshot.size > 0) {
 			const proposalsPromise = proposalsSnapshot.docs.map(async (doc) => {
 				if (doc && doc.exists) {
@@ -58,6 +63,26 @@ export const getProposals: TGetProposalsFn = async (params) => {
 								const dislikeAggregateSpecData = dislikeReactionsAggregateQuery.data();
 								reactions_count[EReaction.DISLIKE] = dislikeAggregateSpecData.count;
 							}
+							const isClosed = dayjs().isAfter(convertFirestoreTimestampToDate(data.end_date));
+							const isActive = dayjs().isBetween(convertFirestoreTimestampToDate(data.start_date), convertFirestoreTimestampToDate(data.end_date));
+							const isPending = dayjs().isBefore(convertFirestoreTimestampToDate(data.start_date));
+							let status = data.status;
+							if (isClosed && status !== EProposalStatus.CLOSED) {
+								doc.ref.set({
+									status: EProposalStatus.CLOSED
+								}, { merge: true }).then(() => {});
+								status = EProposalStatus.CLOSED;
+							} else if (isActive && status !== EProposalStatus.ACTIVE) {
+								doc.ref.set({
+									status: EProposalStatus.ACTIVE
+								}, { merge: true }).then(() => {});
+								status = EProposalStatus.ACTIVE;
+							} else if (isPending && status !== EProposalStatus.PENDING) {
+								doc.ref.set({
+									status: EProposalStatus.PENDING
+								}, { merge: true }).then(() => {});
+								status = EProposalStatus.PENDING;
+							}
 							const proposal: IListingProposal = {
 								comments_count,
 								created_at: convertFirestoreTimestampToDate(data.created_at),
@@ -68,8 +93,10 @@ export const getProposals: TGetProposalsFn = async (params) => {
 								reactions_count,
 								room_id: data.room_id,
 								start_date: convertFirestoreTimestampToDate(data.start_date),
+								status: status,
 								tags: data.tags || [],
-								title: data.title || ''
+								title: data.title || '',
+								votes_result: data.votes_result || {}
 							};
 							return proposal;
 						}
@@ -100,17 +127,18 @@ export interface IProposalsBody {}
 export interface IProposalsQuery {
     house_id: string;
     room_id: string;
+	filterBy?: string;
 }
 const handler: TNextApiHandler<IListingProposal[], IProposalsBody, IProposalsQuery> = async (req, res) => {
 	if (req.method !== 'GET') {
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, GET required.' });
 	}
-	const { house_id, room_id } = req.query;
+	const { house_id, room_id, filterBy } = req.query;
 	const {
 		data: proposals,
 		error,
 		status
-	} = await getProposals({ house_id, room_id });
+	} = await getProposals({ filterBy, house_id, room_id });
 
 	if (proposals && !error && (status === 200)) {
 		res.status(StatusCodes.OK).json(proposals);

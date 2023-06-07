@@ -7,12 +7,14 @@ import { HYDRATE } from 'next-redux-wrapper';
 import { MIN_TOKEN_TO_CREATE_ROOM } from '~src/global/min_token';
 import { IHouse, IRoom } from '~src/types/schema';
 import { IHouseStore, EHouseStage, IHouseSettings, IListingProposal } from './@types';
+import { IHouseRoom } from 'pages/api/house/rooms';
 
 const initialState: IHouseStore = {
 	currentStage: EHouseStage.PROPOSALS,
 	error: '',
 	house: null,
 	houseDefaultRoom: null,
+	houseRooms: [],
 	houseSettings: {
 		min_token_to_create_room: MIN_TOKEN_TO_CREATE_ROOM
 	},
@@ -58,6 +60,10 @@ export const houseStore = createSlice({
 		setHouseDefaultRoom: (state, action: PayloadAction<IRoom |null>) => {
 			const room = action.payload;
 			state.houseDefaultRoom = room;
+		},
+		setHouseRooms: (state, action: PayloadAction<IHouseRoom[] | null>) => {
+			const houseRoom = action.payload;
+			state.houseRooms = houseRoom;
 		},
 		setHouseSettings_Field: (state, action: PayloadAction<IHouseSettingsFieldPayload>) => {
 			const obj = action.payload;

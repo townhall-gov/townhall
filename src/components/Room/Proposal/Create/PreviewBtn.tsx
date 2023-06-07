@@ -177,8 +177,10 @@ const PreviewBtn = () => {
 						},
 						room_id: createdProposal.room_id,
 						start_date: createdProposal.start_date,
+						status: createdProposal.status,
 						tags: createdProposal.tags,
-						title: createdProposal.title
+						title: createdProposal.title,
+						votes_result: createdProposal.votes_result
 					};
 					dispatch(roomActions.setProposal(proposal));
 					dispatch(notificationActions.send({

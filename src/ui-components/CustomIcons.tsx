@@ -18,6 +18,8 @@ import ZoomInAreaSVG from '~assets/icons/zoom-in-area.svg';
 import RocketLaunchSVG from '~assets/icons/rocket-launch.svg';
 import DiamondSVG from '~assets/icons/diamond.svg';
 import PlusSignSquareSVG from '~assets/icons/plus-sign-square.svg';
+import NoProposalsSVG from '~assets/icons/no-proposals.svg';
+import SortByDownSVG from '~assets/icons/sort-by-down.svg';
 import SettingsSVG from '~assets/icons/settings.svg';
 import TownhallLogoWithNameSVG from '~assets/logo/townhall-with-name.svg';
 import MetamaskSVG from '~assets/wallet/metamask-icon.svg';
@@ -168,6 +170,14 @@ export const GeometricIcon = (props: Partial<CustomIconComponentProps>) => (
 
 export const PlusSignSquareIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={PlusSignSquareSVG} {...props} />
+);
+
+export const NoProposalsIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={NoProposalsSVG} {...props} />
+);
+
+export const SortByDownIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={SortByDownSVG} {...props} />
 );
 
 export const SettingsIcon = (props: Partial<CustomIconComponentProps>) => (
