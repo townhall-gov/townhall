@@ -76,7 +76,7 @@ const RoomHouseCard: FC<IRoomHouseCardProps> = (props) => {
 							: <DefaultNameImage className='w-[45px] h-[45px]' name={name} />
 					}
 
-					<h3 className='text-white m-0 p-0 text-2xl leading-[29px] tracking-[0.01em] font-semibold truncate'>{name}</h3>
+					<div className='text-white font-poppins m-0 p-0 text-[24px] leading-[29.26px] tracking-[0.01em] font-semibold truncate'>{name}</div>
 					<p className='m-0 text-sm font-normal leading-[17px] text-grey_tertiary'>
 						{totalLabel}
 					</p>
