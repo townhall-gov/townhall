@@ -4,6 +4,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { modalActions } from '~src/redux/modal';
+import { proposalActions } from '~src/redux/proposal';
 
 const SentimentModalFooter = () => {
 	const dispatch = useDispatch();
@@ -12,6 +13,7 @@ const SentimentModalFooter = () => {
 			<button
 				onClick={() => {
 					dispatch(modalActions.setOpen(false));
+					dispatch(proposalActions.setCommentOpen(true));
 				}}
 				className='bg-green_primary py-[2px] px-2 rounded-[4px] font-medium text-xs leading-[18px] tracking-[0.01em] border-none outline-none cursor-pointer'
 			>
