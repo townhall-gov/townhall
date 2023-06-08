@@ -29,12 +29,10 @@ const CreateComment = () => {
 	const { proposal } = useProposalSelector();
 	const [loading, setLoading] = useState(false);
 	const { isLoggedIn, isRoomJoined, connectWallet, joinRoom } = useAuthActionsCheck();
-
 	const { user } = useProfileSelector();
 	if (!user || !user.address) {
 		return <ConnectWalletBanner connectWallet={connectWallet} />;
 	}
-
 	const onSentiment = async () => {
 		if (loading) return;
 		if (!isLoggedIn) {
@@ -51,6 +49,16 @@ const CreateComment = () => {
 			open: true,
 			titleType: ETitleType.NONE
 		}));
+		try{
+			clearTimeout(timeout.current);
+			timeout.current = setTimeout(() => {
+				onComment();
+				clearTimeout(timeout.current);
+			}, 3000);
+		}
+		catch(error){
+			dispatch(proposalActions.setError(getErrorMessage(error)));
+		}
 	};
 
 	const onComment = async () => {
