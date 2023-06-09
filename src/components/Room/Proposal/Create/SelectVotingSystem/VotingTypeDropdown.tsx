@@ -2,6 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { Dropdown } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 import classNames from 'classnames';
 import React, { FC, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -64,7 +65,12 @@ const VotingTypeDropdown: FC<IVotingTypeDropdownProps> = (props) => {
 				}}
 			>
 				<p id='votingTypeDropdown' className="flex justify-between items-center text-white font-medium text-base leading-none">
-					{getVotingSystemTitle(votingSystem)}
+					<>
+						{getVotingSystemTitle(votingSystem)}
+						<span className='flex items-center justify-center text-white'>
+							<DownOutlined />
+						</span>
+					</>
 				</p>
 			</Dropdown>
 		</div>
