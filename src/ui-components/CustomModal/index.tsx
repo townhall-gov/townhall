@@ -23,11 +23,11 @@ const CustomModal: FC<ICustomModalProps> = () => {
 			open={open}
 			onCancel={onCancel}
 			title={
-				<div className='flex items-center bg-app_background justify-between gap-x-2'>
-					<h3 className='m-0 bg-app_background text-white font-semibold text-2xl leading-[32px] '>
+				<div className='flex items-center bg-[#04152F] justify-between gap-x-2'>
+					<h3 className='m-0 text-white font-semibold text-2xl leading-[32px] '>
 						<ModalTitle type={titleType} />
 					</h3>
-					<button onClick={onCancel} className='cursor-pointer border-none outline-none bg-transparent flex items-center justify-center text-white'>
+					<button onClick={onCancel} className='cursor-pointer border-none w-[10px] h-[10px] outline-none bg-transparent flex items-center justify-center text-[#66A5FF]'>
 						<CloseOutlined />
 					</button>
 				</div>
