@@ -78,6 +78,7 @@ const CreateComment = () => {
 						is_deleted: false,
 						proposal_id: proposal.id,
 						reactions: [],
+						replies: [],
 						sentiment: commentCreation.sentiment,
 						updated_at: new Date(),
 						user_address: user.address

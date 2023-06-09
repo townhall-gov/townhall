@@ -30,7 +30,7 @@ const useFilteredRooms = () => {
 	const { searchQuery } = useHomeSelector();
 	if (rooms && Array.isArray(rooms) && rooms.length > 0) {
 		if (!searchQuery) {
-			return rooms.filter(room=>room.id!=room.house_id);
+			return rooms.filter(room => room.id!=room.house_id);
 		}
 
 		const filteredRooms = rooms.filter(room => {
