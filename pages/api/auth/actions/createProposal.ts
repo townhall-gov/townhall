@@ -11,10 +11,11 @@ import messages from '~src/auth/utils/messages';
 import { height } from '~src/onchain-data';
 import { create } from '~src/onchain-data/utils/apis';
 import { houseCollection, proposalCollection, roomCollection } from '~src/services/firebase/utils';
+import { EProposalStatus } from '~src/types/enums';
 import { IProposal, IRoom, ISnapshotHeight, IVotesResult } from '~src/types/schema';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
 
-export type TProposalPayload = Omit<IProposal, 'proposer_address' | 'created_at' | 'updated_at' | 'id' | 'timestamp' | 'reactions' | 'comments' | 'snapshot_heights' | 'start_date' | 'end_date' | 'votes_result' | 'voting_strategies'> & {
+export type TProposalPayload = Omit<IProposal, 'proposer_address' | 'created_at' | 'updated_at' | 'id' | 'timestamp' | 'reactions' | 'comments' | 'snapshot_heights' | 'start_date' | 'end_date' | 'votes_result' | 'voting_strategies' | 'status'> & {
 	start_date: string;
 	end_date: string;
 };
@@ -149,6 +150,7 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 		proposer_address: proposer_address,
 		snapshot_heights: snapshot_heights,
 		start_date: new Date(proposal.start_date),
+		status: EProposalStatus.PENDING,
 		updated_at: now,
 		votes_result: proposal.voting_system_options.reduce((prev, option) => {
 			return {

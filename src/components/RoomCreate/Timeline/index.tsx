@@ -8,7 +8,7 @@ import TimelineCard from './Card';
 
 const Timeline = () => {
 	return (
-		<aside className='w-[210px] flex flex-col gap-y-3'>
+		<aside className='flex flex-col gap-y-3'>
 			{
 				timeline.map((item, index) => {
 					return (

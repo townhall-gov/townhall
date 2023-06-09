@@ -7,7 +7,7 @@ import { IHouse, IRoom } from '~src/types/schema';
 export interface IHomeStore {
     houses: IHouse[];
     rooms: IRoom[];
-    category: any;
+    category: 'all' | 'houses' | 'rooms';
     loading: boolean;
     error: string | null;
     searchQuery: string;

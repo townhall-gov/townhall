@@ -2,12 +2,13 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+import dayjs from 'dayjs';
 import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
 import { proposalCollection, roomCollection } from '~src/services/firebase/utils';
-import { ESentiment } from '~src/types/enums';
+import { EProposalStatus, ESentiment } from '~src/types/enums';
 import { IComment, IProposal, IReaction, IRoom } from '~src/types/schema';
 import apiErrorWithStatusCode from '~src/utils/apiErrorWithStatusCode';
 import convertFirestoreTimestampToDate from '~src/utils/convertFirestoreTimestampToDate';
@@ -116,6 +117,26 @@ export const getProposal: TGetProposalFn = async (params) => {
 					comments.push(result.value);
 				}
 			});
+			const isClosed = dayjs().isAfter(convertFirestoreTimestampToDate(data.end_date));
+			const isActive = dayjs().isBetween(convertFirestoreTimestampToDate(data.start_date), convertFirestoreTimestampToDate(data.end_date));
+			const isPending = dayjs().isBefore(convertFirestoreTimestampToDate(data.start_date));
+			let status = data.status;
+			if (isClosed && status !== EProposalStatus.CLOSED) {
+				proposalDocRef.set({
+					status: EProposalStatus.CLOSED
+				}, { merge: true }).then(() => {});
+				status = EProposalStatus.CLOSED;
+			} else if (isActive && status !== EProposalStatus.ACTIVE) {
+				proposalDocRef.set({
+					status: EProposalStatus.ACTIVE
+				}, { merge: true }).then(() => {});
+				status = EProposalStatus.ACTIVE;
+			} else if (isPending && status !== EProposalStatus.PENDING) {
+				proposalDocRef.set({
+					status: EProposalStatus.PENDING
+				}, { merge: true }).then(() => {});
+				status = EProposalStatus.PENDING;
+			}
 			// Construct proposal
 			const proposal: IProposal = {
 				comments: comments,
@@ -131,6 +152,7 @@ export const getProposal: TGetProposalFn = async (params) => {
 				room_id: data.room_id,
 				snapshot_heights: data.snapshot_heights,
 				start_date: convertFirestoreTimestampToDate(data.start_date),
+				status: status,
 				tags: data.tags || [],
 				timestamp: data.timestamp || 0,
 				title: data.title || '',

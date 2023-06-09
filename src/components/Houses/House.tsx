@@ -6,6 +6,8 @@ import { IJoinRoomResponse, IJoinRoomBody } from 'pages/api/auth/actions/joinRoo
 import { ILeaveRoomResponse, ILeaveRoomBody } from 'pages/api/auth/actions/leaveRoom';
 import React, { FC } from 'react';
 import { useDispatch } from 'react-redux';
+import { houseActions } from '~src/redux/house';
+import { EHouseStage } from '~src/redux/house/@types';
 import { modalActions } from '~src/redux/modal';
 import { EContentType, EFooterType, ETitleType } from '~src/redux/modal/@types';
 import { notificationActions } from '~src/redux/notification';
@@ -19,10 +21,13 @@ import { IHouse } from '~src/types/schema';
 import RoomHouseCard from '~src/ui-components/RoomHouseCard';
 import getErrorMessage from '~src/utils/getErrorMessage';
 
-interface IHouseProps extends IHouse {}
+interface IHouseProps {
+	house: IHouse;
+}
 
 const House: FC<IHouseProps> = (props) => {
-	const { title, id, total_members, logo } = props;
+	const { house } = props;
+	const { title, id, total_room, logo } = house;
 	const isJoined = useProfileIsHouseJoined(id);
 	const { user } = useProfileSelector();
 	const dispatch = useDispatch();
@@ -117,25 +122,17 @@ const House: FC<IHouseProps> = (props) => {
 		<RoomHouseCard
 			isDisabled={isDisabled}
 			isJoined={isJoined}
-			link={`/${id}/rooms`}
+			link={`/${id}/proposals`}
 			logo={logo}
 			name={title}
 			onClick={onClick}
-			totalMembers={total_members}
+			onLinkClick={() => {
+				dispatch(houseActions.setHouse(house));
+				dispatch(houseActions.setCurrentStage(EHouseStage.PROPOSALS));
+			}}
+			totalLabel={`${total_room} Rooms`}
 		/>
 	);
-	/**
-	return (
-		<Link href={`/${id}/rooms`} className='border border-solid border-blue_primary rounded-lg outline-none flex flex-col gap-y-2 items-center bg-transparent p-5 px-7 cursor-pointer min-w-[188px] min-h-[186px]'>
-			<BlockchainIcon className='text-[45px]' type={blockchain} />
-			<h3 className='text-white m-0 p-0 text-2xl leading-[29px] tracking-[0.01em] font-semibold'>{title}</h3>
-			<p className='m-0 text-sm font-normal leading-[17px] text-grey_tertiary'>
-				{total_members} Rooms
-			</p>
-			<CropFreeIcon className='text-[#94A2AF] text-lg mt-[3px]' />
-		</Link>
-	);
-	**/
 };
 
 export default House;

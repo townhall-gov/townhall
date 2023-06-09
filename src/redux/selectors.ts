@@ -13,6 +13,7 @@ import { IRoomStore } from './room/@types';
 import { IProposalStore } from './proposal/@types';
 import { IEditorStore } from './editor/@types';
 import { IHomeStore } from './home/@types';
+import { IHouseStore } from './house/@types';
 
 const useModalSelector = () => {
 	return useSelector<TAppState, IModalStore>((state) => state.modal);
@@ -28,6 +29,10 @@ const useProfileSelector = () => {
 
 const useHousesSelector = () => {
 	return useSelector<TAppState, IHousesStore>((state) => state.houses);
+};
+
+const useHouseSelector = () => {
+	return useSelector<TAppState, IHouseStore>((state) => state.house);
 };
 
 const useRoomSelector = () => {
@@ -55,6 +60,7 @@ export {
 	useWalletSelector,
 	useProfileSelector,
 	useHousesSelector,
+	useHouseSelector,
 	useRoomSelector,
 	useRoomsSelector,
 	useProposalSelector,

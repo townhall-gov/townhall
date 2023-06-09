@@ -17,7 +17,9 @@ interface IProposalsServerProps {
 }
 
 export const getServerSideProps: GetServerSideProps<IProposalsServerProps> = async ({ query }) => {
+	const { filterBy } = query;
 	const { data, error } = await getProposals({
+		filterBy: String(filterBy),
 		house_id: (query?.house_id? String(query?.house_id): ''),
 		room_id: (query?.room_id? String(query?.room_id): '')
 	});

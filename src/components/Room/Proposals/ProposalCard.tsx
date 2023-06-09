@@ -4,7 +4,7 @@
 
 import { ClockCircleOutlined, LikeOutlined, DislikeOutlined, CommentOutlined } from '@ant-design/icons';
 import Link from 'next/link';
-import React, { FC } from 'react';
+import React, { FC, useRef } from 'react';
 import Address from '~src/ui-components/Address';
 import getRelativeCreatedAt from '~src/utils/getRelativeCreatedAt';
 import Divider from './Divider';
@@ -12,6 +12,7 @@ import Tags from './Tags';
 import { IListingProposal } from '~src/redux/room/@types';
 import { EReaction } from '~src/types/enums';
 import Status from './Status';
+import ProposalResult from './ProposalResult';
 
 interface IProposalCardProps {
     proposal: IListingProposal;
@@ -19,10 +20,16 @@ interface IProposalCardProps {
 
 const ProposalCard: FC<IProposalCardProps> = (props) => {
 	const { proposal } = props;
+	const btnRef = useRef<HTMLButtonElement>(null!);
 	if (!proposal) return null;
-	const { created_at, room_id, house_id, id, proposer_address, title, tags, comments_count, reactions_count, end_date, start_date } = proposal;
+	const { created_at, room_id, house_id, id, proposer_address, title, tags, comments_count, reactions_count, end_date, start_date, votes_result } = proposal;
 	return (
 		<Link
+			onClick={(e) => {
+				if (btnRef.current && btnRef.current.contains(e.target as any)) {
+					e.preventDefault();
+				}
+			}}
 			href={`/${house_id}/${room_id}/proposal/${id}`}
 			className='bg-[#04152F] rounded-2xl py-5 px-[18.5px] text-white'
 		>
@@ -39,7 +46,13 @@ const ProposalCard: FC<IProposalCardProps> = (props) => {
 							address={proposer_address}
 							addressMaxLength={10}
 						/>
-						<article>
+						<article
+							className='flex items-center gap-x-[9.5px]'
+						>
+							<ProposalResult
+								btnRef={btnRef}
+								votes_result={votes_result}
+							/>
 							<Status
 								end_at={end_date}
 								start_at={start_date}

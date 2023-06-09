@@ -50,6 +50,12 @@ enum EVotingStrategy {
     QUADRATIC_BALANCE_OF = 'quadratic_balance_of',
 }
 
+enum EProposalStatus {
+    PENDING = 'pending',
+    ACTIVE = 'active',
+    CLOSED = 'closed',
+}
+
 export {
 	EBlockchain,
 	ESentiment,
@@ -57,5 +63,6 @@ export {
 	EReaction,
 	EAction,
 	EVotingSystem,
-	EVotingStrategy
+	EVotingStrategy,
+	EProposalStatus
 };
