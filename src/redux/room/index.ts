@@ -4,7 +4,7 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
-import { ERoomStage, IProposalCreation, IRoomSettings, IRoomStore, IVotingSystemOption } from './@types';
+import { ERoomStage, IDiscussionCreation, IListingDiscussion, IProposalCreation, IRoomSettings, IRoomStore, IVotingSystemOption } from './@types';
 import { IRoom } from '~src/types/schema';
 import { IListingProposal } from './@types';
 import { EVotingSystem } from '~src/types/enums';
@@ -12,6 +12,12 @@ import { MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM } from '~src/global/min_token';
 
 const initialState: IRoomStore = {
 	currentStage: ERoomStage.PROPOSALS,
+	discussionCreation: {
+		description: '',
+		tags: [],
+		title: ''
+	},
+	discussions: [],
 	error: '',
 	loading: false,
 	proposalCreation: {
@@ -43,6 +49,13 @@ type IProposalCreationFieldPayload = {
       value: IProposalCreation[K];
     }
 }[keyof IProposalCreation];
+
+type IDiscussionCreationFieldPayload = {
+    [K in keyof IDiscussionCreation]: {
+      key: K;
+      value: IDiscussionCreation[K];
+    }
+}[keyof IDiscussionCreation];
 
 type IRoomSettingsFieldPayload = {
     [K in keyof IRoomSettings]: {
@@ -84,6 +97,30 @@ export const roomStore = createSlice({
 		},
 		setCurrentStage: (state, action: PayloadAction<ERoomStage>) => {
 			state.currentStage = action.payload;
+		},
+		setDiscussionCreation_Field: (state, action: PayloadAction<IDiscussionCreationFieldPayload>) => {
+			const obj = action.payload;
+			state.loading = false;
+			if (obj) {
+				const { key, value } = obj;
+				switch (key) {
+				case 'title':
+				case 'description':
+					state.discussionCreation[key] = value as string;
+					break;
+				case 'tags':
+					state.discussionCreation[key] = value as string[];
+					break;
+				default:
+					break;
+				}
+			}
+		},
+		setDiscussions: (state, action: PayloadAction<IListingDiscussion[]>) => {
+			const discussions = action.payload;
+			if (discussions && Array.isArray(discussions)) {
+				state.discussions = discussions;
+			}
 		},
 		setError: (state, action: PayloadAction<string>) => {
 			state.error = action.payload;

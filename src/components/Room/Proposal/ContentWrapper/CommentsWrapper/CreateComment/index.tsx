@@ -29,11 +29,11 @@ const CreateComment = () => {
 	const { proposal } = useProposalSelector();
 	const [loading, setLoading] = useState(false);
 	const { isLoggedIn, isRoomJoined, connectWallet, joinRoom } = useAuthActionsCheck();
-	useEffect(()=>{
-		if(commentCreation.comment_open)
-		{
+	useEffect(() => {
+		if(commentCreation.comment_open) {
 			onComment();
 		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	},[commentCreation]);
 	const { user } = useProfileSelector();
 	if (!user || !user.address) {

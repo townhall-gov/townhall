@@ -92,6 +92,27 @@ interface IProposal {
 	status: EProposalStatus;
 }
 
+interface IDiscussion {
+	id: number;
+	house_id: string;
+	room_id: string;
+	title: string;
+	description: string;
+    tags: string[];
+	proposer_address: string;
+	created_at: Date;
+	updated_at: Date;
+	reactions: IReaction[];
+	comments: IComment[];
+	post_link: IPostLink | null;
+}
+
+interface IPostLink {
+	house_id: string;
+	room_id: string;
+	post_id: number;
+}
+
 interface IVotesResult {
 	[key: string]: {
 		name: EVotingStrategy;
@@ -201,5 +222,7 @@ export {
 	ISnapshotHeight,
 	IBalanceWithNetwork,
 	IVote,
-	IVotesResult
+	IVotesResult,
+	IDiscussion,
+	IPostLink
 };

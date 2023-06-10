@@ -12,6 +12,11 @@ export const timeline = [
 		title: 'Proposals'
 	},
 	{
+		icon: <DiamondIcon className='text-transparent stroke-white' />,
+		stage: ERoomStage.DISCUSSIONS,
+		title: 'Discussions'
+	},
+	{
 		icon: <PlusSignSquareIcon className='text-transparent stroke-white' />,
 		stage: ERoomStage.NEW_PROPOSAL,
 		title: 'New Proposal'
@@ -27,6 +32,8 @@ export const getTimelineUrl = (stage: ERoomStage) => {
 	switch(stage) {
 	case ERoomStage.PROPOSALS:
 		return '/proposals';
+	case ERoomStage.DISCUSSIONS:
+		return '/discussions';
 	case ERoomStage.NEW_PROPOSAL:
 		return '/proposal/create';
 	case ERoomStage.SETTINGS:

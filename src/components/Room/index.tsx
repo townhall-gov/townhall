@@ -29,6 +29,10 @@ const Room = () => {
 			if (currentStage !== ERoomStage.SETTINGS) {
 				dispatch(roomActions.setCurrentStage(ERoomStage.SETTINGS));
 			}
+		} else if (asPath.endsWith('discussions')) {
+			if (currentStage !== ERoomStage.DISCUSSIONS) {
+				dispatch(roomActions.setCurrentStage(ERoomStage.DISCUSSIONS));
+			}
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);

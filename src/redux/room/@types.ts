@@ -3,19 +3,29 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { EReaction, EVotingSystem } from '~src/types/enums';
-import { IProposal, IRoom } from '~src/types/schema';
+import { IDiscussion, IProposal, IRoom } from '~src/types/schema';
 
 export interface IRoomStore {
     loading: boolean;
     error: string;
     room: IRoom | null;
     proposalCreation: IProposalCreation;
+    discussionCreation: IDiscussionCreation;
     roomSettings: IRoomSettings;
     currentStage: ERoomStage;
     proposals: IListingProposal[];
+    discussions: IListingDiscussion[];
 }
 
 export interface IListingProposal extends Omit<IProposal, 'discussion' | 'description' | 'updated_at' | 'preparation_period' | 'comments' | 'reactions' | 'is_vote_results_hide_before_voting_ends' | 'voting_system' | 'timestamp' | 'snapshot_heights' | 'voting_system_options' | 'voting_strategies'> {
+    comments_count: number;
+    reactions_count: {
+        [EReaction.LIKE]: number;
+        [EReaction.DISLIKE]: number;
+    };
+}
+
+export interface IListingDiscussion extends Omit<IDiscussion, 'description' | 'updated_at' | 'comments' | 'reactions' > {
     comments_count: number;
     reactions_count: {
         [EReaction.LIKE]: number;
@@ -35,6 +45,12 @@ export type IProposalCreation = {
     voting_system_options: IVotingSystemOption[];
 }
 
+export type IDiscussionCreation = {
+    title: string;
+    description: string;
+    tags: string[];
+}
+
 export type IRoomSettings = {
     min_token_to_create_proposal_in_room: number;
 };
@@ -47,4 +63,5 @@ export enum ERoomStage {
     PROPOSALS = 'proposals',
     NEW_PROPOSAL = 'new_proposal',
     SETTINGS = 'settings',
+    DISCUSSIONS = 'discussions'
 }
