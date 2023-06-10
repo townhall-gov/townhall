@@ -9,7 +9,7 @@ import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
 import { proposalCollection, roomCollection } from '~src/services/firebase/utils';
 import { EProposalStatus, ESentiment } from '~src/types/enums';
-import { IComment, IProposal, IReaction, IRoom } from '~src/types/schema';
+import { IComment, IProposal, IReaction, IReply, IRoom } from '~src/types/schema';
 import apiErrorWithStatusCode from '~src/utils/apiErrorWithStatusCode';
 import convertFirestoreTimestampToDate from '~src/utils/convertFirestoreTimestampToDate';
 import getErrorMessage from '~src/utils/getErrorMessage';
@@ -91,6 +91,63 @@ export const getProposal: TGetProposalFn = async (params) => {
 								}
 							}
 						});
+
+						// Get comment Replies
+						const replies: IReply[] = [];
+						const repliesQuerySnapshot = await doc.ref.collection('replies').orderBy('updated_at', 'desc').get();
+						const repliesPromise = repliesQuerySnapshot.docs.map(async (doc) => {
+							if (doc && doc.exists) {
+								const data = doc.data() as IReply;
+								// only take reply which is not deleted
+								if (data && data.user_address && data.id && !data.is_deleted) {
+									// need to create history array manually because we need to transform the created_at date
+									const history = (data.history || []).map((historyItem) => {
+										return {
+											content: historyItem.content,
+											created_at: convertFirestoreTimestampToDate(historyItem.created_at),
+											sentiment: historyItem.sentiment || ESentiment.NEUTRAL
+										};
+									});
+									// Get reply reactions
+									const reactions: IReaction[] = [];
+									const reactionsQuerySnapshot = await doc.ref.collection('reactions').get();
+									reactionsQuerySnapshot.docs.forEach((doc) => {
+										if (doc && doc.exists) {
+											const data  = doc.data() as IReaction;
+											if (data && data.user_address && data.id && data.type) {
+												reactions.push(data);
+											}
+										}
+									});
+
+									// Construct reply
+									const reply: IReply = {
+										comment_id: data.comment_id,
+										content: data.content,
+										created_at: convertFirestoreTimestampToDate(data.created_at),
+										deleted_at: convertFirestoreTimestampToDate(data.deleted_at),
+										history: history,
+										id: data.id,
+										is_deleted: data.is_deleted || false,
+										proposal_id: data.proposal_id,
+										reactions: reactions,
+										sentiment: data.sentiment || ESentiment.NEUTRAL,
+										updated_at: convertFirestoreTimestampToDate(data.updated_at),
+										user_address: data.user_address
+									};
+									return reply;
+								}
+							}
+						});
+						// Wait for all replies to be resolved
+						const repliesPromiseSettledResult = await Promise.allSettled(repliesPromise);
+						repliesPromiseSettledResult.forEach((result) => {
+							// Only push reply if it is resolved and has value
+							if (result && result.status === 'fulfilled' && result.value) {
+								replies.push(result.value);
+							}
+						});
+
 						// Construct comment
 						const comment: IComment = {
 							content: data.content,
@@ -101,6 +158,7 @@ export const getProposal: TGetProposalFn = async (params) => {
 							is_deleted: data.is_deleted || false,
 							proposal_id: data.proposal_id || proposal_id,
 							reactions: reactions,
+							replies,
 							sentiment: data.sentiment || ESentiment.NEUTRAL,
 							updated_at: convertFirestoreTimestampToDate(data.updated_at),
 							user_address: data.user_address

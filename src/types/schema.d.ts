@@ -140,9 +140,31 @@ interface IComment {
 	history: IHistoryComment[];
 	reactions: IReaction[];
 	sentiment: ESentiment | null;
+	replies: IReply[] | null;
+}
+
+interface IReply {
+	id: string;
+	is_deleted: boolean;
+	created_at: Date;
+	updated_at: Date;
+	deleted_at: Date | null;
+	proposal_id: number;
+	comment_id: string;
+	content: string;
+	user_address: string;
+	history: IHistoryReply[];
+	reactions: IReaction[];
+	sentiment: ESentiment | null;
 }
 
 interface IHistoryComment {
+	created_at: Date;
+	sentiment: ESentiment | null;
+	content: string;
+}
+
+interface IHistoryReply {
 	created_at: Date;
 	sentiment: ESentiment | null;
 	content: string;
@@ -165,6 +187,8 @@ export {
 	IRoom,
 	IComment,
 	IHistoryComment,
+	IReply,
+	IHistoryReply,
 	IProposal,
 	ISentiment,
 	ITag,

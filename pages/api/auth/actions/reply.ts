@@ -11,28 +11,29 @@ import messages from '~src/auth/utils/messages';
 import { firebaseAdmin } from '~src/services/firebase';
 import { proposalCollection } from '~src/services/firebase/utils';
 import { EAction, ESentiment } from '~src/types/enums';
-import { IComment, IHistoryComment } from '~src/types/schema';
+import { IReply, IHistoryReply } from '~src/types/schema';
 import convertFirestoreTimestampToDate from '~src/utils/convertFirestoreTimestampToDate';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
 
-export interface ICommentBody {
-    comment: IComment;
+export interface IReplyBody {
+    reply: IReply;
+    comment_id: string;
     proposal_id: number;
     room_id: string;
     house_id: string;
     action_type: EAction;
 }
 
-export interface ICommentResponse {
-    comment: IComment;
+export interface IReplyResponse {
+    reply: IReply;
 }
 
-const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req, res) => {
+const handler: TNextApiHandler<IReplyResponse, IReplyBody, {}> = async (req, res) => {
 	if (req.method !== 'POST') {
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
 	}
 
-	const { proposal_id, room_id, house_id, comment, action_type } = req.body;
+	const { proposal_id, room_id, house_id, reply, comment_id, action_type } = req.body;
 
 	if (!house_id || typeof house_id !== 'string') {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid houseId.' });
@@ -46,20 +47,24 @@ const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req,
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid proposalId.' });
 	}
 
+	if (!comment_id || typeof comment_id !== 'string') {
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid commentId.' });
+	}
+
 	if (!action_type || ![EAction.ADD, EAction.DELETE, EAction.EDIT].includes(action_type)) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid api action type.' });
 	}
 
-	if (!comment?.content) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Comment content must be greater than 5 characters.' });
+	if (!reply?.content) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Reply content must be greater than 5 characters.' });
 	}
 
-	if ([EAction.EDIT, EAction.DELETE].includes(action_type) && !comment?.id) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Comment id is invalid.' });
+	if ([EAction.EDIT, EAction.DELETE].includes(action_type) && !reply?.id) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Reply id is invalid.' });
 	}
 
-	if (comment.sentiment && ![ESentiment.COMPLETELY_AGAINST, ESentiment.COMPLETELY_FOR, ESentiment.NEUTRAL, ESentiment.SLIGHTLY_AGAINST, ESentiment.SLIGHTLY_FOR].includes(comment?.sentiment)) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Comment sentiment is invalid.' });
+	if (reply.sentiment && ![ESentiment.COMPLETELY_AGAINST, ESentiment.COMPLETELY_FOR, ESentiment.NEUTRAL, ESentiment.SLIGHTLY_AGAINST, ESentiment.SLIGHTLY_FOR].includes(reply?.sentiment)) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Reply sentiment is invalid.' });
 	}
 
 	let user_address: string | null = null;
@@ -83,63 +88,68 @@ const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req,
 	const proposalDoc = await proposalDocRef.get();
 
 	if (!proposalDoc || !proposalDoc.exists) {
-		return res.status(StatusCodes.NOT_FOUND).json({ error: `Proposal with id "${proposal_id}" is not found in a Room with id "${room_id}" and a House with id "${house_id}".` });
+		return res.status(StatusCodes.NOT_FOUND).json({ error: `Proposal "${proposal_id}" is not found in a Room "${room_id}" and a House "${house_id}".` });
 	}
 
-	const commentsColRef = proposalDocRef.collection('comments');
-	const newComment: IComment = {
-		...comment
+	const commentDocRef = proposalDocRef.collection('comments').doc(comment_id);
+	const commentDocSnapshot = await commentDocRef.get();
+	if (!commentDocSnapshot || !commentDocSnapshot.exists || !commentDocSnapshot.data()) {
+		return res.status(StatusCodes.NOT_FOUND).json({ error: `Comment "${comment_id}" is not found in a Proposal "${proposal_id}".` });
+	}
+
+	const newReply: IReply = {
+		...reply
 	};
 
 	const now = new Date();
 	if (action_type === EAction.ADD) {
-		const commentDocRef = commentsColRef.doc();
-		newComment.id = commentDocRef.id;
-		newComment.is_deleted = false;
-		newComment.created_at = now;
-		newComment.updated_at = now;
-		newComment.deleted_at = null;
-		newComment.proposal_id = proposal_id;
-		newComment.user_address = user_address;
-		newComment.history = [];
-		const comment = {
-			...newComment
+		const replyDocRef = commentDocRef.collection('replies').doc();
+		newReply.id = replyDocRef.id;
+		newReply.is_deleted = false;
+		newReply.created_at = now;
+		newReply.updated_at = now;
+		newReply.deleted_at = null;
+		newReply.proposal_id = proposal_id;
+		newReply.comment_id = comment_id;
+		newReply.user_address = user_address;
+		newReply.history = [];
+		const reply = {
+			...newReply
 		};
-		delete (comment as any).reactions;
-		delete (comment as any).replies;
-		await commentDocRef.set(comment, { merge: true });
+		delete (reply as any).reactions;
+		await replyDocRef.set(reply, { merge: true });
 	} else if (action_type === EAction.DELETE) {
-		const commentDocRef = commentsColRef.doc(String(comment.id));
-		const commentDoc = await commentDocRef.get();
-		if (commentDoc && commentDoc.exists) {
-			newComment.deleted_at = now;
+		const replyDocRef = commentDocRef.collection('replies').doc(String(reply.id));
+		const replyDoc = await replyDocRef.get();
+		if (replyDoc && replyDoc.exists) {
+			newReply.deleted_at = now;
 			// Marked it as deleted, so that we can not show it in the UI, and we can use this comment for further reference.
-			newComment.is_deleted = true;
+			newReply.is_deleted = true;
 			await commentDocRef.update({
 				deleted_at: now,
 				is_deleted: true
 			});
 		} else {
-			return res.status(StatusCodes.NOT_FOUND).json({ error: `Comment with id "${comment.id}" is not found for proposal of id "${proposal_id}".` });
+			return res.status(StatusCodes.NOT_FOUND).json({ error: `Reply "${reply.id}" is not found for proposal "${proposal_id}".` });
 		}
 	} else if (action_type === EAction.EDIT) {
-		const commentDocRef = commentsColRef.doc(String(comment.id));
-		const commentDoc = await commentDocRef.get();
-		if (commentDoc && commentDoc.exists) {
-			const data = commentDoc.data() as IComment;
+		const replyDocRef = commentDocRef.collection('replies').doc(String(reply.id));
+		const replyDoc = await replyDocRef.get();
+		if (replyDoc && replyDoc.exists) {
+			const data = replyDoc.data() as IReply;
 			// IF content is same return error
-			if (data.content === comment.content) {
-				return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Unable to edit comment as content is same.' });
+			if (data.content === reply.content) {
+				return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Unable to edit reply as content is same.' });
 			}
 			// Edit history
-			const historyComment: IHistoryComment = {
+			const historyReply: IHistoryReply = {
 				content: data.content,
 				created_at: data.updated_at,
 				sentiment: data.sentiment
 			};
 			// Populate history array
-			newComment.history = (data.history && Array.isArray(data.history)) ? [...data.history, historyComment] : [historyComment];
-			newComment.history = newComment.history.map((historyItem) => {
+			newReply.history = (data.history && Array.isArray(data.history)) ? [...data.history, historyReply] : [historyReply];
+			newReply.history = newReply.history.map((historyItem) => {
 				return {
 					content: historyItem.content,
 					created_at: convertFirestoreTimestampToDate(historyItem.created_at),
@@ -147,23 +157,23 @@ const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req,
 				};
 			});
 			// Update comment date
-			newComment.updated_at = now;
-			await commentDocRef.update({
-				content: comment.content,
+			newReply.updated_at = now;
+			await replyDocRef.update({
+				content: reply.content,
 				// Array union is used to add new history comment to the array
-				history: firebaseAdmin.firestore.FieldValue.arrayUnion(historyComment),
-				sentiment: comment.sentiment,
+				history: firebaseAdmin.firestore.FieldValue.arrayUnion(historyReply),
+				sentiment: reply.sentiment,
 				updated_at: now
 			});
 		} else {
-			return res.status(StatusCodes.NOT_FOUND).json({ error: `Comment with id "${comment.id}" is not found for proposal of id "${proposal_id}".` });
+			return res.status(StatusCodes.NOT_FOUND).json({ error: `Reply "${reply.id}" is not found for proposal "${proposal_id}".` });
 		}
 	} else {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid api action type.' });
 	}
 
 	res.status(StatusCodes.OK).json({
-		comment: newComment
+		reply: newReply
 	});
 };
 
