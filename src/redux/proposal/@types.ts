@@ -22,6 +22,7 @@ export interface IProposalStore {
 
 export type ICommentCreation = {
     content: string;
+    comment_open:boolean;
     sentiment: ESentiment;
 };
 

@@ -19,7 +19,7 @@ interface ICommentEditorProps {
 }
 
 const CommentEditor: FC<ICommentEditorProps> = (props) => {
-	const { loading, onComment, onSentiment, onChange, value, initialValue, localStorageKey, onCancel, imageNamePrefix } = props;
+	const { loading, onSentiment, onChange, value, initialValue, localStorageKey, onCancel, imageNamePrefix } = props;
 	return (
 		<div className=' flex flex-col gap-y-[13px]'>
 			<TextEditor
@@ -47,17 +47,6 @@ const CommentEditor: FC<ICommentEditorProps> = (props) => {
 					loading={loading}
 					disabled={loading}
 					onClick={onSentiment}
-					className={classNames('border border-solid border-blue_primary text-white py-1 px-6 rounded-md text-base font-medium bg-blue_primary flex items-center justify-center', {
-						'cursor-not-allowed': loading,
-						'cursor-pointer': !loading
-					})}
-				>
-                    Sentiment
-				</Button>
-				<Button
-					loading={loading}
-					disabled={loading}
-					onClick={onComment}
 					className={classNames('border border-solid border-blue_primary text-white py-1 px-6 rounded-md text-base font-medium bg-blue_primary flex items-center justify-center', {
 						'cursor-not-allowed': loading,
 						'cursor-pointer': !loading
