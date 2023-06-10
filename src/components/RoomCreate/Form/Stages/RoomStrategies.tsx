@@ -2,6 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { Dropdown } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 import classNames from 'classnames';
 import React, { FC, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -100,9 +101,12 @@ const RoomStrategies: FC<IRoomStrategiesProps> = (props) => {
 							strategy?.name?
 								<p id='votingTypeDropdown' className="flex justify-between items-center text-white font-medium text-base leading-none">
 									{getVotingStrategyTitle(strategy?.name)}
+									<DownOutlined/>
 								</p>
-								: <p className='m-0 text-grey_light text-base leading-none'>
-                                Select voting strategy
+								:
+								<p className='m-0 flex justify-between text-grey_light text-base leading-none'>
+									<div>Select voting strategy</div>
+									<DownOutlined/>
 								</p>
 						}
 					</Dropdown>
@@ -145,9 +149,11 @@ const RoomStrategies: FC<IRoomStrategiesProps> = (props) => {
 								strategy?.network?
 									<p id='votingTypeDropdown' className="flex justify-between items-center text-white font-medium text-base leading-none">
 										{getNetworkTitle(strategy?.network)}
+										<DownOutlined/>
 									</p>
-									: <p className='m-0 text-grey_light text-base leading-none'>
-                                    Select network for voting strategy
+									: <p className='m-0 flex justify-between items-center text-grey_light text-base leading-none'>
+										<div>Select network for voting strategy</div>
+										<DownOutlined/>
 									</p>
 								: <p className='text-red_primary flex justify-between items-center text-white font-medium text-base leading-none'>
                                     No networks available, please select different house
