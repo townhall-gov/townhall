@@ -98,6 +98,16 @@ export const roomStore = createSlice({
 		setCurrentStage: (state, action: PayloadAction<ERoomStage>) => {
 			state.currentStage = action.payload;
 		},
+		setDiscussion: (state, action: PayloadAction<IListingDiscussion>) => {
+			const discussion = action.payload;
+			if (discussion) {
+				if (state.discussions && Array.isArray(state.discussions)) {
+					state.discussions = [...state.discussions, discussion];
+				} else {
+					state.discussions = [discussion];
+				}
+			}
+		},
 		setDiscussionCreation_Field: (state, action: PayloadAction<IDiscussionCreationFieldPayload>) => {
 			const obj = action.payload;
 			state.loading = false;

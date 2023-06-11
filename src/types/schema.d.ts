@@ -155,7 +155,7 @@ interface IComment {
 	created_at: Date;
 	updated_at: Date;
 	deleted_at: Date | null;
-	proposal_id: number;
+	post_id: number;
 	content: string;
 	user_address: string;
 	history: IHistoryComment[];
@@ -170,7 +170,7 @@ interface IReply {
 	created_at: Date;
 	updated_at: Date;
 	deleted_at: Date | null;
-	proposal_id: number;
+	post_id: number;
 	comment_id: string;
 	content: string;
 	user_address: string;
@@ -193,11 +193,11 @@ interface IHistoryReply {
 
 interface ITag {
 	title: string;
-	proposal_id: number;
+	post_id: number;
 }
 
 interface ISentiment {
-	proposal_id: number;
+	post_id: number;
 	user_address: string;
 	sentiment: ESentiment
 }

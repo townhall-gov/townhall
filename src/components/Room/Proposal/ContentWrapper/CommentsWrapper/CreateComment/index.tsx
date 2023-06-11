@@ -13,7 +13,7 @@ import { ENotificationStatus } from '~src/redux/notification/@types';
 import getErrorMessage from '~src/utils/getErrorMessage';
 import api from '~src/services/api';
 import { ICommentBody, ICommentResponse } from 'pages/api/auth/actions/comment';
-import { EAction } from '~src/types/enums';
+import { EAction, EPostType } from '~src/types/enums';
 import CommentedUserImage from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/Comments/Comment/CommentedUserImage';
 import { modalActions } from '~src/redux/modal';
 import { EContentType, EFooterType, ETitleType } from '~src/redux/modal/@types';
@@ -81,7 +81,7 @@ const CreateComment = () => {
 						history: [],
 						id: '',
 						is_deleted: false,
-						proposal_id: proposal.id,
+						post_id: proposal.id,
 						reactions: [],
 						replies: [],
 						sentiment: commentCreation.sentiment,
@@ -89,7 +89,8 @@ const CreateComment = () => {
 						user_address: user.address
 					},
 					house_id: proposal.house_id,
-					proposal_id: proposal.id,
+					post_id: proposal.id,
+					post_type: EPostType.PROPOSAL,
 					room_id: proposal.room_id
 				});
 				if (error) {
@@ -157,8 +158,7 @@ const CreateComment = () => {
 				<CommentEditor
 					imageNamePrefix={key}
 					localStorageKey={key}
-					onSentiment={onSentiment}
-					onComment={onComment}
+					onComment={onSentiment}
 					onCancel={() => {
 						dispatch(proposalActions.setCommentCreation_Field({
 							key: 'content',

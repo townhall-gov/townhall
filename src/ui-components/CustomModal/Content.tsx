@@ -9,6 +9,7 @@ import FetchingAccounts from '~src/components/ConnectWallet/FetchingAccounts';
 import HouseRoomsModalContent from '~src/components/House/HouseWrapper/Modal';
 import EditHistoryModalContent from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/Comments/Comment/Header/EditHistory/ModalContent';
 import SentimentModalContent from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/CreateComment/Sentiment/Content';
+import DiscussionSentimentModalContent from '~src/components/Room/Discussion/ContentWrapper/CommentsWrapper/CreateComment/Sentiment/Content';
 import AllVotesModalContent from '~src/components/Room/Proposal/Sidebar/Vote/All/Modal/Content';
 import CastYourVoteModalContent from '~src/components/Room/Proposal/Sidebar/Vote/CastYourVote/Modal/Content';
 import { EContentType } from '~src/redux/modal/@types';
@@ -29,6 +30,8 @@ const ModalContent: FC<IModalContentProps> = (props) => {
 		return <HouseRoomsModalContent />;
 	case EContentType.COMMENT_SENTIMENT:
 		return <SentimentModalContent />;
+	case EContentType.DISCUSSION_COMMENT_SENTIMENT:
+		return <DiscussionSentimentModalContent />;
 	case EContentType.COMMENT_EDIT_HISTORY:
 		return <EditHistoryModalContent />;
 	case EContentType.CAST_YOUR_VOTE:
