@@ -3,25 +3,20 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import React, { FC, useEffect } from 'react';
-import { IComment } from '~src/types/schema';
-import CommentedUserImage from './CommentedUserImage';
-import CommentHeader from './Header';
-import CommentContent from './Content';
-import CommentFooter from './Footer';
-
+import { IReply } from '~src/types/schema';
+import RepliedUserImage from './RepliedUserImage';
+import ReplyHeader from './Header';
 import { useRouter } from 'next/router';
-import RepliesWrapper from './RepliesWrapper/index';
-import { useReplyVisibility } from '~src/redux/proposal/selectors';
+import ReplyContent from './Content';
+import ReplyFooter from './Footer';
 
 interface ICommentProps {
-	comment: IComment;
+	reply: IReply;
 }
 
-const Comment: FC<ICommentProps> = (props) => {
-	const { comment } = props;
-	const { replies }=comment;
+const Reply: FC<ICommentProps> = (props) => {
+	const { reply } = props;
 	const { asPath } = useRouter();
-	const { comment_id } = useReplyVisibility();
 
 	useEffect(() => {
 		if (typeof window == 'undefined') return;
@@ -29,7 +24,7 @@ const Comment: FC<ICommentProps> = (props) => {
 			const hash = window.location.hash.replace('#', '');
 			const commentWrapperElm = document.getElementById(hash);
 			const commentContentElm = document.getElementById(`${hash}-content`);
-			if (commentWrapperElm && commentContentElm && hash === `${comment.id}`) {
+			if (commentWrapperElm && commentContentElm && hash === `${reply.id}`) {
 				const timeout = setTimeout(() => {
 					window.scrollTo({
 						behavior: 'smooth',
@@ -48,35 +43,35 @@ const Comment: FC<ICommentProps> = (props) => {
 			}
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [asPath, comment.id]);
+	}, [asPath, reply.id]);
 
-	if (!comment) return null;
-	const { user_address, created_at, updated_at, history, id } = comment;
+	if (!reply) return null;
+	const { user_address, created_at, updated_at, history, id, comment_id } = reply;
 
 	return (
 		<section id={id} className='flex gap-x-[10px] rounded-md p-2 pb-0  border border-solid border-transparent relative'>
 			<article className='w-10'>
-				<CommentedUserImage />
+				<RepliedUserImage />
 			</article>
 			<article id={`${id}-content`} className='flex-1 flex flex-col border-0 border-b border-solid border-blue_primary pb-5'>
 				<section className='flex flex-col gap-y-2'>
-					<CommentHeader
+					<ReplyHeader
 						created_at={created_at}
 						updated_at={updated_at}
 						history={history}
 						user_address={user_address}
+						comment_id={comment_id}
 					/>
-					<CommentContent
-						comment={comment}
+					<ReplyContent
+						reply={reply}
 					/>
-					<CommentFooter
-						comment={comment}
+					<ReplyFooter
+						reply={reply}
 					/>
 				</section>
-				{ (comment_id==comment.id) && <RepliesWrapper replies={replies} comment_id={comment_id} />}
 			</article>
 		</section>
 	);
 };
 
-export default Comment;
+export default Reply;

@@ -21,7 +21,7 @@ const CommentFooter: FC<ICommentFooterProps> = (props) => {
 		<footer className='flex items-center gap-x-3'>
 			<Sentiment sentiment={sentiment} />
 			<CommentReactions comment_id={id} reactions={reactions} />
-			<CommentReply />
+			<CommentReply comment_id={id}/>
 			<CommentOtherActionsDropdown comment={comment} />
 		</footer>
 	);

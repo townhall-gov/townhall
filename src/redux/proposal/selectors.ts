@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { IReaction } from '~src/types/schema';
+import { IReaction, IReply } from '~src/types/schema';
 import { useProposalSelector } from '../selectors';
 import { EReaction } from '~src/types/enums';
 
@@ -17,6 +17,11 @@ const useUserReaction = (address: string) => {
 		});
 	}
 	return userReaction?.type;
+};
+
+const useReplyVisibility = () =>{
+	const { isReplyVisible } = useProposalSelector();
+	return isReplyVisible;
 };
 
 const useReactions = (type: EReaction) => {
@@ -60,6 +65,10 @@ const useCommentCreation = () => {
 	const proposal = useProposalSelector();
 	return proposal.commentCreation;
 };
+const useReplyCreation = () => {
+	const proposal = useProposalSelector();
+	return proposal.replyCreation;
+};
 
 const useSelectedComments = (select: number) => {
 	const { proposal, isAllCommentsVisible } = useProposalSelector();
@@ -79,18 +88,45 @@ const useSelectedComments = (select: number) => {
 		};
 	}
 };
+const useSelectedReplies = (select: number,replies:IReply[]|null) => {
+	const { proposal, isAllRepliesVisible } = useProposalSelector();
+	console.log(isAllRepliesVisible);
+	if(!proposal || !replies || !Array.isArray(replies))
+		return{
+			replies:[],
+			total:0
+		};
+	if (isAllRepliesVisible) {
+		return {
+			selectedReplies: replies,
+			total: replies?.length
+		};
+	} else {
+		return {
+			selectedReplies: replies?.slice(0,select),
+			total: replies?.length
+		};
+	}
+};
 
 const useCommentEditHistory = () => {
 	const { commentEditHistory } = useProposalSelector();
 	return [...commentEditHistory];
 };
-
+const useReplyEditHistory = () => {
+	const { replyEditHistory } = useProposalSelector();
+	return [...replyEditHistory];
+};
 export {
 	useCommentCreation,
 	useUserReaction,
 	useReactions,
+	useSelectedReplies,
 	useSelectedComments,
+	useReplyCreation,
+	useReplyEditHistory,
 	useCommentEditHistory,
 	useCommentUserReaction,
-	useCommentReactions
+	useCommentReactions,
+	useReplyVisibility
 };
