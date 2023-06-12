@@ -29,7 +29,6 @@ export type ICommentCreation = {
     content: string;
     comment_open:boolean;
     sentiment: ESentiment;
-    comment_open:boolean;
 };
 
 export type IReplyVisible = {

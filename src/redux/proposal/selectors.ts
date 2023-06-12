@@ -19,7 +19,7 @@ const useUserReaction = (address: string) => {
 	return userReaction?.type;
 };
 
-const useReplyVisibility = () =>{
+const useReplyVisibility = () => {
 	const { isReplyVisible } = useProposalSelector();
 	return isReplyVisible;
 };
