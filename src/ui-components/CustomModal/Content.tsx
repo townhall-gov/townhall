@@ -10,7 +10,7 @@ import HouseRoomsModalContent from '~src/components/House/HouseWrapper/Modal';
 import EditHistoryModalContent from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/Comments/Comment/Header/EditHistory/ModalContent';
 import SentimentModalContent from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/CreateComment/Sentiment/Content';
 import DiscussionSentimentModalContent from '~src/components/Room/Discussion/ContentWrapper/CommentsWrapper/CreateComment/Sentiment/Content';
-import AllVotesModalContent from '~src/components/Room/Proposal/Sidebar/Vote/All/Modal/Content';
+import AllVotesModalContent from '~src/components/Room/Proposal/Sidebar/Vote/VoteInfo/All/Modal/Content';
 import CastYourVoteModalContent from '~src/components/Room/Proposal/Sidebar/Vote/CastYourVote/Modal/Content';
 import { EContentType } from '~src/redux/modal/@types';
 

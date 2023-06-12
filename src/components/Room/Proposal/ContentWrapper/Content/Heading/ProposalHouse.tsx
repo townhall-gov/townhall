@@ -15,10 +15,10 @@ const ProposalHouse: FC<IProposalHouseProps> = (props) => {
 	if (!house) return null;
 	return (
 		<>
-			<p className='flex items-center font-semibold text-base leading-[20px] tracking-[0.01em] text-grey_tertiary gap-x-1 m-0 p-0'>
+			<div className='flex items-center font-semibold text-base leading-[20px] tracking-[0.01em] text-grey_tertiary gap-x-1 m-0 p-0'>
 				<Image preview={false} width={25} height={25} className='rounded-full' src={house.logo} alt='room logo' />
 				<span>{firstCharUppercase(house.blockchain)}</span>
-			</p>
+			</div>
 			<span
 				className='text-sm leading-[17px] text-grey_tertiary font-normal tracking-[0.01em]'
 			>

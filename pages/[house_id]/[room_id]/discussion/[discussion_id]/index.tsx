@@ -10,6 +10,7 @@ import DiscussionWrapper from '~src/components/Room/Discussion';
 import SEOHead from '~src/global/SEOHead';
 import { discussionActions } from '~src/redux/discussion';
 import { IDiscussion } from '~src/types/schema';
+import BackButton from '~src/ui-components/BackButton';
 
 interface IDiscussionServerProps {
 	discussion: IDiscussion | null;
@@ -53,7 +54,7 @@ const Discussion: FC<IDiscussionClientProps> = (props) => {
 		<>
 			<SEOHead title={`This is a Discussion in Room ${query['room_id']} of House ${query['house_id']}.`} />
 			<div className='flex flex-col gap-y-[20.27px] items-start'>
-				<button onClick={() => router.back()} className='outline-none border-none text-[#90A0B7] font-normal text-sm leading-[17px] bg-transparent cursor-pointer'>Back</button>
+				<BackButton />
 				<DiscussionWrapper />
 			</div>
 		</>
