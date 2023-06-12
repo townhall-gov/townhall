@@ -10,6 +10,7 @@ import { EAction, ESentiment } from '~src/types/enums';
 
 const initialState: IProposalStore = {
 	commentCreation: {
+		comment_open:false,
 		content: '',
 		sentiment: ESentiment.NEUTRAL
 	},
@@ -71,6 +72,7 @@ export const proposalStore = createSlice({
 				localStorage.removeItem(`house_${proposal?.house_id}_room_${proposal?.room_id}_proposal_${proposal?.id}_comment`);
 			}
 			state.commentCreation = {
+				comment_open:false,
 				content: '',
 				sentiment: ESentiment.NEUTRAL
 			};
@@ -106,7 +108,9 @@ export const proposalStore = createSlice({
 		setCommentEditHistory: (state, action: PayloadAction<IHistoryComment[]>) => {
 			state.commentEditHistory = action.payload;
 		},
-
+		setCommentOpen: (state, action: PayloadAction<boolean>) => {
+			state.commentCreation.comment_open = action.payload;
+		},
 		setCommentReaction: (state, action: PayloadAction<{
 			reaction: IReaction;
 			isDeleted: boolean;
