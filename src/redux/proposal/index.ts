@@ -20,6 +20,7 @@ const initialState: IProposalStore = {
 	error: null,
 	isAllCommentsVisible: false,
 	isAllRepliesVisible: false,
+	isReplyEditorVisible:false,
 	isReplyVisible:{
 		comment_id:'',
 		isVisible:false
@@ -215,6 +216,9 @@ export const proposalStore = createSlice({
 		},
 		setReplyEditHistory: (state, action: PayloadAction<IHistoryReply[]>) => {
 			state.replyEditHistory = action.payload;
+		},
+		setReplyEditorVisibility: (state, action: PayloadAction<boolean>) => {
+			state.isReplyEditorVisible=action.payload;
 		},
 		setReplyOpen: (state, action: PayloadAction<boolean>) => {
 			state.replyCreation.comment_open = action.payload;

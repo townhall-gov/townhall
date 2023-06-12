@@ -22,6 +22,7 @@ export interface IProposalStore {
     editableReply: IReply | null;
     commentEditHistory: IHistoryComment[];
     replyEditHistory: IHistoryReply[];
+    isReplyEditorVisible:boolean;
     isReplyVisible:IReplyVisible;
 }
 

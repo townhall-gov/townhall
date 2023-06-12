@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import React, { FC, useRef, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { useProfileSelector, useProposalSelector } from '~src/redux/selectors';
 import Address from '~src/ui-components/Address';
 import { useDispatch } from 'react-redux';
@@ -33,10 +33,12 @@ const CreateReply :FC<ICreateProps>= (props) => {
 	const replyCreation = useReplyCreation();
 	const dispatch = useDispatch();
 	const timeout = useRef<NodeJS.Timeout>();
-	const { proposal } = useProposalSelector();
+	const { proposal , isReplyEditorVisible } = useProposalSelector();
 	const [loading, setLoading] = useState(false);
 	const { isLoggedIn, isRoomJoined, connectWallet, joinRoom } = useAuthActionsCheck();
-
+	useEffect(() => {
+		dispatch(proposalActions.setReplyEditorVisibility(true));
+	},[]);
 	const { user } = useProfileSelector();
 	if (!user || !user.address) {
 		return <ConnectWalletBanner connectWallet={connectWallet} />;
@@ -120,8 +122,7 @@ const CreateReply :FC<ICreateProps>= (props) => {
 						status: ENotificationStatus.SUCCESS,
 						title: 'Success!'
 					}));
-					// dispatch(proposalActions.resetReplyCreation({
-					// }));
+					dispatch(proposalActions.setReplyEditorVisibility(false));
 				}
 				setLoading(false);
 				dispatch(editorActions.setIsClean(true));
@@ -140,54 +141,56 @@ const CreateReply :FC<ICreateProps>= (props) => {
 
 	const key = `house_${proposal?.house_id}_room_${proposal?.room_id}_proposal_${proposal?.id}_comment_${comment_id}_reply`;
 	return (
-		<section className='flex gap-x-[10px] p-2 min-h-[321px]'>
-			<div className='w-10'>
-				<CommentedUserImage />
-			</div>
-			<div className='flex-1 flex flex-col gap-y-[13px]'>
-				<div className='flex items-center gap-x-2 m-0 text-base text-white font-medium leading-[20px] tracking-[0.01em]'>
-					<span>By</span>
-					{
-						user.username?
-							<span>{user.username}</span>
-							: (
-								<Address
-									identiconSize={20}
-									ethIdenticonSize={20}
-									address={user.address}
-								/>
-							)
-					}
+		<>{isReplyEditorVisible && <>
+			<section className='flex gap-x-[10px] p-2 min-h-[321px]'>
+				<div className='w-10'>
+					<CommentedUserImage />
 				</div>
-				<ReplyEditor
-					imageNamePrefix={key}
-					localStorageKey={key}
-					onSentiment={onSentiment}
-					onComment={onComment}
-					onCancel={() => {
-						dispatch(proposalActions.setReplyCreation_Field({
-							key: 'content',
-							value: ''
-						}));
-						localStorage.removeItem(key);
-						dispatch(editorActions.setIsClean(true));
-					}}
-					loading={loading}
-					onChange={(v) => {
-						clearTimeout(timeout.current);
-						timeout.current = setTimeout(() => {
+				<div className='flex-1 flex flex-col gap-y-[13px]'>
+					<div className='flex items-center gap-x-2 m-0 text-base text-white font-medium leading-[20px] tracking-[0.01em]'>
+						<span>By</span>
+						{
+							user.username?
+								<span>{user.username}</span>
+								: (
+									<Address
+										identiconSize={20}
+										ethIdenticonSize={20}
+										address={user.address}
+									/>
+								)
+						}
+					</div>
+					<ReplyEditor
+						imageNamePrefix={key}
+						localStorageKey={key}
+						onSentiment={onSentiment}
+						onComment={onComment}
+						onCancel={() => {
 							dispatch(proposalActions.setReplyCreation_Field({
 								key: 'content',
-								value: v
+								value: ''
 							}));
+							localStorage.removeItem(key);
+							dispatch(editorActions.setIsClean(true));
+						}}
+						loading={loading}
+						onChange={(v) => {
 							clearTimeout(timeout.current);
-						}, 1000);
-					}}
-					initialValue=''
-					value={replyCreation?.content}
-				/>
-			</div>
-		</section>
+							timeout.current = setTimeout(() => {
+								dispatch(proposalActions.setReplyCreation_Field({
+									key: 'content',
+									value: v
+								}));
+								clearTimeout(timeout.current);
+							}, 1000);
+						}}
+						initialValue=''
+						value={replyCreation?.content}
+					/>
+				</div>
+			</section>
+		</>}</>
 	);
 };
 
