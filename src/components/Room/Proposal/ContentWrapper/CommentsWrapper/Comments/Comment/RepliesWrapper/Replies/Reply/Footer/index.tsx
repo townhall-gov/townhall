@@ -17,6 +17,7 @@ const ReplyFooter: FC<ICommentFooterProps> = (props) => {
 	const { reply } = props;
 	if (!reply) return null;
 	const { sentiment, id, reactions } = reply;
+	console.log( sentiment, id, reactions);
 	return (
 		<footer className='flex items-center gap-x-3'>
 			<Sentiment sentiment={sentiment} />

@@ -78,7 +78,6 @@ const Proposals: FC<IProposalsClientProps> = (props) => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props]);
 
-	console.log(props);
 	return (
 		<>
 			<SEOHead title={`Proposals of Room ${query['house_id']} in House ${query['house_id']}`} />

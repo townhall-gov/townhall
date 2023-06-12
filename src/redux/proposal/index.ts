@@ -27,6 +27,7 @@ const initialState: IProposalStore = {
 	loading: false,
 	proposal: null,
 	replyCreation:{
+		comment_open:false,
 		content: '',
 		sentiment: ESentiment.NEUTRAL
 	},
@@ -84,6 +85,18 @@ export const proposalStore = createSlice({
 		resetEditableReply: (state) => {
 			localStorage.removeItem('replyEdit');
 			state.editableReply = null;
+		},
+		resetReplyCreation: (state,action: PayloadAction<String>) => {
+			const proposal = state.proposal;
+			const comment_id =action.payload;
+			if (proposal) {
+				localStorage.removeItem(`house_${proposal?.house_id}_room_${proposal?.room_id}_proposal_${proposal?.id}_comment_${comment_id}_reply`);
+			}
+			state.commentCreation = {
+				comment_open:false,
+				content: '',
+				sentiment: ESentiment.NEUTRAL
+			};
 		},
 		resetVoteCreation: (state) => {
 			state.voteCreation = {
@@ -187,7 +200,6 @@ export const proposalStore = createSlice({
 				}
 			}
 		},
-		
 		setReplyCreation_Field: (state, action: PayloadAction<ICommentCreationFieldPayload>) => {
 			const obj = action.payload;
 			if (obj) {
@@ -203,6 +215,9 @@ export const proposalStore = createSlice({
 		},
 		setReplyEditHistory: (state, action: PayloadAction<IHistoryReply[]>) => {
 			state.replyEditHistory = action.payload;
+		},
+		setReplyOpen: (state, action: PayloadAction<boolean>) => {
+			state.replyCreation.comment_open = action.payload;
 		},
 		setReplyReaction: (state, action: PayloadAction<{
 			reaction: IReaction;

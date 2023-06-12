@@ -19,11 +19,11 @@ import getErrorMessage from '~src/utils/getErrorMessage';
 import useReplyOtherActionItems from './utils';
 import { IReplyBody, IReplyResponse } from 'pages/api/auth/actions/reply';
 
-interface ICommentOtherActionsDropdownProps {
+interface IReplyOtherActionsDropdownProps {
     reply: IReply;
 }
 
-const ReplyOtherActionsDropdown: FC<ICommentOtherActionsDropdownProps> = (props) => {
+const ReplyOtherActionsDropdown: FC<IReplyOtherActionsDropdownProps> = (props) => {
 	const { reply } = props;
 	const router = useRouter();
 	const { isLoggedIn, isRoomJoined, connectWallet, joinRoom } = useAuthActionsCheck();
@@ -32,7 +32,7 @@ const ReplyOtherActionsDropdown: FC<ICommentOtherActionsDropdownProps> = (props)
 	const items = useReplyOtherActionItems(reply?.user_address);
 
 	if (!reply || !proposal) return null;
-	const { id: reply_id } = reply;
+	// const { id: reply_id } = reply;
 
 	const onDelete = async () => {
 		if (loading) return;
@@ -99,7 +99,7 @@ const ReplyOtherActionsDropdown: FC<ICommentOtherActionsDropdownProps> = (props)
 		case 'copy-link': {
 			const origin = window.location.origin;
 			const query = router.query;
-			const url = `${origin}/${query.house_id}/${query.room_id}/proposal/${query.proposal_id}#${reply.comment_id}${reply_id}`;
+			const url = `${origin}/${query.house_id}/${query.room_id}/proposal/${query.proposal_id}#${reply.comment_id}`;
 			navigator.clipboard.writeText(url);
 		}
 			break;

@@ -90,7 +90,6 @@ const useSelectedComments = (select: number) => {
 };
 const useSelectedReplies = (select: number,replies:IReply[]|null) => {
 	const { proposal, isAllRepliesVisible } = useProposalSelector();
-	console.log(isAllRepliesVisible);
 	if(!proposal || !replies || !Array.isArray(replies))
 		return{
 			replies:[],

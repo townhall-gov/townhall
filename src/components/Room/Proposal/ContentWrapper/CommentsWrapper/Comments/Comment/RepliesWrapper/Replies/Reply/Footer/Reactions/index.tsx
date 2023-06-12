@@ -25,7 +25,6 @@ interface IReplyReactionsProps {
 
 const ReplyReactions: FC<IReplyReactionsProps> = (props) => {
 	const { reactions, reply_id,comment_id } = props;
-	console.log(reactions, reply_id,comment_id);
 	const dispatch = useDispatch();
 	const { loading, proposal } = useProposalSelector();
 	const { user } = useProfileSelector();
@@ -63,7 +62,6 @@ const ReplyReactions: FC<IReplyReactionsProps> = (props) => {
 						status: ENotificationStatus.ERROR,
 						title: 'Failed!'
 					}));
-					console.log('this'+error);
 				} else if (!data) {
 					const error = 'Something went wrong, unable to give a reaction to proposal.';
 					dispatch(proposalActions.setError(error));

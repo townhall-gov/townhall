@@ -29,7 +29,7 @@ interface ICreateProps {
 }
 
 const CreateReply :FC<ICreateProps>= (props) => {
-	const { comment_id ,replies } = props;
+	const { comment_id } = props;
 	const replyCreation = useReplyCreation();
 	const dispatch = useDispatch();
 	const timeout = useRef<NodeJS.Timeout>();
@@ -138,7 +138,7 @@ const CreateReply :FC<ICreateProps>= (props) => {
 		}
 	};
 
-	const key = `house_${proposal?.house_id}_room_${proposal?.room_id}_proposal_${proposal?.id}_comment_${comment_id}_reply_${replies[0]?.id}`;
+	const key = `house_${proposal?.house_id}_room_${proposal?.room_id}_proposal_${proposal?.id}_comment_${comment_id}_reply`;
 	return (
 		<section className='flex gap-x-[10px] p-2 min-h-[321px]'>
 			<div className='w-10'>

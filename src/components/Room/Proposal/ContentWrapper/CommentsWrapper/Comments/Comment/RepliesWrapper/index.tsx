@@ -19,14 +19,12 @@ interface IRepliesWrapperProps {
 }
 
 const RepliesWrapper :FC<IRepliesWrapperProps>= (props) => {
-	const select = 5;
+	const select = 2;
 	const { replies,comment_id }=props;
-	console.log(replies);
 	const { selectedReplies, total } = useSelectedReplies(select,replies);
 	const { isAllRepliesVisible } = useProposalSelector();
 	const { isVisible }= useReplyVisibility();
 	const dispatch = useDispatch();
-	console.log(selectedReplies);
 	return (
 		<div>
 			{

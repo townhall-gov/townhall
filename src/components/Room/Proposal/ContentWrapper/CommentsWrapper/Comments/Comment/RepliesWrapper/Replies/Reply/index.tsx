@@ -2,11 +2,10 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import { IReply } from '~src/types/schema';
 import RepliedUserImage from './RepliedUserImage';
 import ReplyHeader from './Header';
-import { useRouter } from 'next/router';
 import ReplyContent from './Content';
 import ReplyFooter from './Footer';
 
@@ -16,34 +15,6 @@ interface ICommentProps {
 
 const Reply: FC<ICommentProps> = (props) => {
 	const { reply } = props;
-	const { asPath } = useRouter();
-
-	useEffect(() => {
-		if (typeof window == 'undefined') return;
-		if (window.location.hash) {
-			const hash = window.location.hash.replace('#', '');
-			const commentWrapperElm = document.getElementById(hash);
-			const commentContentElm = document.getElementById(`${hash}-content`);
-			if (commentWrapperElm && commentContentElm && hash === `${reply.id}`) {
-				const timeout = setTimeout(() => {
-					window.scrollTo({
-						behavior: 'smooth',
-						top: commentWrapperElm.offsetTop
-					});
-				}, 500);
-				commentWrapperElm.classList.remove('border-transparent');
-				commentWrapperElm.classList.add('border-blue_primary');
-				commentContentElm.classList.remove('border-b');
-				return () => {
-					commentWrapperElm.classList.add('border-transparent');
-					commentWrapperElm.classList.remove('border-blue_primary');
-					commentContentElm.classList.add('border-b');
-					clearTimeout(timeout);
-				};
-			}
-		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [asPath, reply.id]);
 
 	if (!reply) return null;
 	const { user_address, created_at, updated_at, history, id, comment_id } = reply;
