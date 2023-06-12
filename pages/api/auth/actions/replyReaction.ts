@@ -80,7 +80,7 @@ const handler: TNextApiHandler<IReplyReactionResponse, IReplyReactionBody, {}> =
 	const commentDoc = await commentDocRef.get();
 
 	if (!commentDoc || !commentDoc.exists || !commentDoc.data()) {
-		return res.status(StatusCodes.NOT_FOUND).json({ error: `Comment "${comment_id}" is not found for a Proposal "${post_id}" in a Room "${room_id}" and a House "${house_id}".` });
+		return res.status(StatusCodes.NOT_FOUND).json({ error: `Comment "${comment_id}" is not found for a Post "${post_id}" in a Room "${room_id}" and a House "${house_id}".` });
 	}
 
 	if (commentDoc.data()?.is_deleted) {
@@ -92,7 +92,7 @@ const handler: TNextApiHandler<IReplyReactionResponse, IReplyReactionBody, {}> =
 	const replyDoc = await replyDocRef.get();
 
 	if (!replyDoc || !replyDoc.exists || !replyDoc.data()) {
-		return res.status(StatusCodes.NOT_FOUND).json({ error: `Reply "${reply_id}" is not found for a Comment "${comment_id}" of a Proposal "${post_id}" in a Room "${room_id}" and a House "${house_id}".` });
+		return res.status(StatusCodes.NOT_FOUND).json({ error: `Reply "${reply_id}" is not found for a Comment "${comment_id}" of a Post "${post_id}" in a Room "${room_id}" and a House "${house_id}".` });
 	}
 
 	if (replyDoc.data()?.is_deleted) {

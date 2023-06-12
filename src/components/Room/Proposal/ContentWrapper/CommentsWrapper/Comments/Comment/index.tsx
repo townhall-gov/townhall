@@ -4,7 +4,7 @@
 
 import React, { FC, useEffect } from 'react';
 import { IComment } from '~src/types/schema';
-import CommentedUserImage from './CommentedUserImage';
+import CommentedUserImage from '~src/ui-components/CommentedUserImage';
 import CommentHeader from './Header';
 import CommentContent from './Content';
 import CommentFooter from './Footer';

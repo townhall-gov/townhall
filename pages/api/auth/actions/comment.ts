@@ -125,7 +125,7 @@ const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req,
 				is_deleted: true
 			});
 		} else {
-			return res.status(StatusCodes.NOT_FOUND).json({ error: `Comment "${comment.id}" is not found for proposal "${post_id}".` });
+			return res.status(StatusCodes.NOT_FOUND).json({ error: `Comment "${comment.id}" is not found for post "${post_id}".` });
 		}
 	} else if (action_type === EAction.EDIT) {
 		const commentDocRef = commentsColRef.doc(String(comment.id));
@@ -161,7 +161,7 @@ const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req,
 				updated_at: now
 			});
 		} else {
-			return res.status(StatusCodes.NOT_FOUND).json({ error: `Comment "${comment.id}" is not found for proposal "${post_id}".` });
+			return res.status(StatusCodes.NOT_FOUND).json({ error: `Comment "${comment.id}" is not found for post "${post_id}".` });
 		}
 	} else {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid api action type.' });

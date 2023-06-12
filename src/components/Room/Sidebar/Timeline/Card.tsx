@@ -29,7 +29,6 @@ const TimelineCard: FC<ITimelineCardProps> = (props) => {
 			isActiveStage={roomCurrentStage === stage}
 			onClick={() => {
 				const { query } = router;
-				console.log(stage);
 				router.push(`/${query['house_id']}/${query['room_id']}` + getTimelineUrl(stage));
 				dispatch(roomActions.setCurrentStage(stage));
 			}}

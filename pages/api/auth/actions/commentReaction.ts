@@ -76,7 +76,7 @@ const handler: TNextApiHandler<ICommentReactionResponse, ICommentReactionBody, {
 	const commentDoc = await commentDocRef.get();
 
 	if (!commentDoc || !commentDoc.exists || !commentDoc.data()) {
-		return res.status(StatusCodes.NOT_FOUND).json({ error: `Comment "${comment_id}" is not found for a Proposal "${post_id}" in a Room "${room_id}" and a House "${house_id}".` });
+		return res.status(StatusCodes.NOT_FOUND).json({ error: `Comment "${comment_id}" is not found for a Post "${post_id}" in a Room "${room_id}" and a House "${house_id}".` });
 	}
 
 	if (commentDoc.data()?.is_deleted) {

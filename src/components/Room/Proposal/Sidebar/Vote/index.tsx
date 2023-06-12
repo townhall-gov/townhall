@@ -21,7 +21,6 @@ const Vote = () => {
 
 	useEffect(() => {
 		(async () => {
-			console.log('hi');
 			if (!proposal || !user) return;
 			const { house_id, id, room_id } = proposal;
 			const res = await api.get<IVote, IVoteInfoQuery>('vote', {

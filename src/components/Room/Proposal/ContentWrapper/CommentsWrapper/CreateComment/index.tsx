@@ -14,7 +14,7 @@ import getErrorMessage from '~src/utils/getErrorMessage';
 import api from '~src/services/api';
 import { ICommentBody, ICommentResponse } from 'pages/api/auth/actions/comment';
 import { EAction, EPostType } from '~src/types/enums';
-import CommentedUserImage from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/Comments/Comment/CommentedUserImage';
+import CommentedUserImage from '~src/ui-components/CommentedUserImage';
 import { modalActions } from '~src/redux/modal';
 import { EContentType, EFooterType, ETitleType } from '~src/redux/modal/@types';
 import CommentEditor from '../CommentEditor';

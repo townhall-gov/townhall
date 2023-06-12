@@ -20,7 +20,7 @@ interface IProposalServerProps {
 export const getServerSideProps: GetServerSideProps<IProposalServerProps> = async ({ query }) => {
 	const { data, error } = await getProposal({
 		house_id: (query?.house_id? String(query?.house_id): ''),
-		proposal_id: (query?.proposal_id? Number(query?.proposal_id): 0),
+		proposal_id: Number(query?.proposal_id),
 		room_id: (query?.room_id? String(query?.room_id): '')
 	});
 

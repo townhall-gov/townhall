@@ -99,7 +99,7 @@ const handler: TNextApiHandler<IReplyResponse, IReplyBody, {}> = async (req, res
 	const commentDocRef = postDocRef.collection('comments').doc(comment_id);
 	const commentDocSnapshot = await commentDocRef.get();
 	if (!commentDocSnapshot || !commentDocSnapshot.exists || !commentDocSnapshot.data()) {
-		return res.status(StatusCodes.NOT_FOUND).json({ error: `Comment "${comment_id}" is not found in a Proposal "${post_id}".` });
+		return res.status(StatusCodes.NOT_FOUND).json({ error: `Comment "${comment_id}" is not found in a Post "${post_id}".` });
 	}
 
 	const newReply: IReply = {
@@ -135,7 +135,7 @@ const handler: TNextApiHandler<IReplyResponse, IReplyBody, {}> = async (req, res
 				is_deleted: true
 			});
 		} else {
-			return res.status(StatusCodes.NOT_FOUND).json({ error: `Reply "${reply.id}" is not found for proposal "${post_id}".` });
+			return res.status(StatusCodes.NOT_FOUND).json({ error: `Reply "${reply.id}" is not found for Post "${post_id}".` });
 		}
 	} else if (action_type === EAction.EDIT) {
 		const replyDocRef = commentDocRef.collection('replies').doc(String(reply.id));
@@ -171,7 +171,7 @@ const handler: TNextApiHandler<IReplyResponse, IReplyBody, {}> = async (req, res
 				updated_at: now
 			});
 		} else {
-			return res.status(StatusCodes.NOT_FOUND).json({ error: `Reply "${reply.id}" is not found for proposal "${post_id}".` });
+			return res.status(StatusCodes.NOT_FOUND).json({ error: `Reply "${reply.id}" is not found for Post "${post_id}".` });
 		}
 	} else {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid api action type.' });

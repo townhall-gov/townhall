@@ -49,7 +49,7 @@ const Discussions: FC<IDiscussionsClientProps> = (props) => {
 	}, [props]);
 	return (
 		<>
-			<SEOHead title={`Proposals of Room ${query['room_id']} in House ${query['house_id']}`} />
+			<SEOHead title={`Discussions of Room ${query['room_id']} in House ${query['house_id']}`} />
 			<div>
 				<Room />
 			</div>

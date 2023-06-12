@@ -19,7 +19,7 @@ interface IDiscussionServerProps {
 
 export const getServerSideProps: GetServerSideProps<IDiscussionServerProps> = async ({ query }) => {
 	const { data, error } = await getDiscussion({
-		discussion_id: (query?.discussion_id? Number(query?.discussion_id): 0),
+		discussion_id: Number(query?.discussion_id),
 		house_id: (query?.house_id? String(query?.house_id): ''),
 		room_id: (query?.room_id? String(query?.room_id): '')
 	});

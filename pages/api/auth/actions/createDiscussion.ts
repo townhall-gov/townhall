@@ -8,7 +8,6 @@ import { TNextApiHandler } from '~src/api/types';
 import authServiceInstance from '~src/auth';
 import getTokenFromReq from '~src/auth/utils/getTokenFromReq';
 import messages from '~src/auth/utils/messages';
-import { create } from '~src/onchain-data/utils/apis';
 import { houseCollection, discussionCollection, roomCollection } from '~src/services/firebase/utils';
 import { IDiscussion, IRoom } from '~src/types/schema';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
@@ -29,7 +28,6 @@ const handler: TNextApiHandler<ICreateDiscussionResponse, ICreateDiscussionBody,
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
 	}
 	const { discussion, proposer_address } = req.body;
-	create();
 	if (!discussion || typeof discussion !== 'object') {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Unable to create a discussion, insufficient information for creating a discussion.' });
 	}
