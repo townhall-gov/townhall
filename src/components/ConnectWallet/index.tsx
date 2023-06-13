@@ -37,7 +37,7 @@ const ConnectWallet: FC<IConnectWalletProps> = () => {
 				wallets.map((wallet) => {
 					return (
 						<WalletBtn
-							className='flex-1 border border-solid border-grey_secondary rounded-[23px] min-h-[46px] w-full hover:border-blue_primary'
+							className='flex-1 border border-solid border-blue_primary bg-transparent rounded-[23px] min-h-[46px] w-full hover:bg-blue_primary'
 							key={wallet.title}
 							onClick={() => {
 								dispatch(walletActions.setSelectedWallet(wallet.type));

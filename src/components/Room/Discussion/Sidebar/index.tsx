@@ -3,6 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import classNames from 'classnames';
 import React, { FC } from 'react';
+import RequestHouseCard from './RequestHouseCard';
 
 interface IDiscussionSidebarProps {
     className?: string;
@@ -11,8 +12,8 @@ interface IDiscussionSidebarProps {
 const DiscussionSidebar: FC<IDiscussionSidebarProps> = (props) => {
 	const { className } = props;
 	return (
-		<div className={classNames('flex flex-col gap-y-6 sticky top-6', className)}>
-            Yes
+		<div className={classNames('flex flex-col gap-y-6 sticky top-6 min-w-[350px]', className)}>
+			<RequestHouseCard />
 		</div>
 	);
 };
