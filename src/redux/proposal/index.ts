@@ -20,10 +20,13 @@ const initialState: IProposalStore = {
 	error: null,
 	isAllCommentsVisible: false,
 	isAllRepliesVisible: false,
-	isReplyEditorVisible:false,
-	isReplyVisible:{
-		comment_id:'',
-		isVisible:false
+	isRepliesVisible:{
+		replies_comment_id:'',
+		replies_isVisible:false
+	},
+	isReplyBoxVisible:{
+		replybox_comment_id:'',
+		replybox_isVisible:false
 	},
 	loading: false,
 	proposal: null,
@@ -169,13 +172,22 @@ export const proposalStore = createSlice({
 		setIsAllRepliesVisible: (state, action: PayloadAction<boolean>) => {
 			state.isAllRepliesVisible = action.payload;
 		},
-		setIsReplyVisible: (state, action: PayloadAction<{
-			comment_id: string;
-			isVisible: boolean;
+		setIsRepliesVisible: (state, action: PayloadAction<{
+			replies_comment_id: string;
+			replies_isVisible: boolean;
 		}>) => {
-			const { comment_id,isVisible }=action.payload;
-			state.isReplyVisible.comment_id=comment_id;
-			state.isReplyVisible.isVisible=isVisible;
+			const { replies_comment_id,replies_isVisible }=action.payload;
+			state.isRepliesVisible.replies_comment_id=replies_comment_id;
+			state.isRepliesVisible.replies_isVisible=replies_isVisible;
+			state.isReplyBoxVisible.replybox_comment_id=replies_comment_id;
+		},
+		setIsReplyBoxVisible: (state, action: PayloadAction<{
+			replybox_comment_id: string;
+			replybox_isVisible: boolean;
+		}>) => {
+			const { replybox_comment_id,replybox_isVisible }=action.payload;
+			state.isReplyBoxVisible.replybox_comment_id=replybox_comment_id;
+			state.isReplyBoxVisible.replybox_isVisible=replybox_isVisible;
 		},
 		setLoading: (state, action: PayloadAction<boolean>) => {
 			state.loading = action.payload;
@@ -216,9 +228,6 @@ export const proposalStore = createSlice({
 		},
 		setReplyEditHistory: (state, action: PayloadAction<IHistoryReply[]>) => {
 			state.replyEditHistory = action.payload;
-		},
-		setReplyEditorVisibility: (state, action: PayloadAction<boolean>) => {
-			state.isReplyEditorVisible=action.payload;
 		},
 		setReplyOpen: (state, action: PayloadAction<boolean>) => {
 			state.replyCreation.comment_open = action.payload;

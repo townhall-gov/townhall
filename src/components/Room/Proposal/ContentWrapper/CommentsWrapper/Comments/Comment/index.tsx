@@ -11,7 +11,7 @@ import CommentFooter from './Footer';
 
 import { useRouter } from 'next/router';
 import RepliesWrapper from './RepliesWrapper/index';
-import { useReplyVisibility } from '~src/redux/proposal/selectors';
+import { useReplyBoxVisibility } from '~src/redux/proposal/selectors';
 
 interface ICommentProps {
 	comment: IComment;
@@ -21,8 +21,7 @@ const Comment: FC<ICommentProps> = (props) => {
 	const { comment } = props;
 	const { replies }=comment;
 	const { asPath } = useRouter();
-	const { comment_id } = useReplyVisibility();
-
+	const { replybox_comment_id  } = useReplyBoxVisibility();
 	useEffect(() => {
 		if (typeof window == 'undefined') return;
 		if (window.location.hash) {
@@ -73,7 +72,7 @@ const Comment: FC<ICommentProps> = (props) => {
 						comment={comment}
 					/>
 				</section>
-				{ (comment_id==comment.id) && <RepliesWrapper replies={replies} comment_id={comment_id} />}
+				{ (replybox_comment_id==comment.id) && <RepliesWrapper replies={replies} comment_id={replybox_comment_id} />}
 			</article>
 		</section>
 	);

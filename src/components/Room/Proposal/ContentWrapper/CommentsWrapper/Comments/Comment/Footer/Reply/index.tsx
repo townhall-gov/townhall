@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import React, { FC } from 'react';
 import { useDispatch } from 'react-redux';
 import { proposalActions } from '~src/redux/proposal';
-import { useReplyVisibility } from '~src/redux/proposal/selectors';
+import { useReplyBoxVisibility } from '~src/redux/proposal/selectors';
 import { useProposalSelector } from '~src/redux/selectors';
 import { ReplyIcon } from '~src/ui-components/CustomIcons';
 
@@ -17,7 +17,7 @@ interface ICommentReplyProps {
 const CommentReply:FC<ICommentReplyProps> = (props) => {
 	const { comment_id } = props;
 	const { loading } = useProposalSelector();
-	const { isVisible } =useReplyVisibility();
+	const { replybox_isVisible } =useReplyBoxVisibility();
 	const dispatch=useDispatch();
 	return (
 		<div>
@@ -27,7 +27,7 @@ const CommentReply:FC<ICommentReplyProps> = (props) => {
 					'cursor-not-allowed': loading,
 					'cursor-pointer': !loading
 				})}
-				onClick={() => {dispatch(proposalActions.setIsReplyVisible({ comment_id:comment_id,isVisible:!isVisible }));}}
+				onClick={() => {dispatch(proposalActions.setIsReplyBoxVisible({ replybox_comment_id:comment_id,replybox_isVisible:!replybox_isVisible }));}}
 
 			>
 				<ReplyIcon />

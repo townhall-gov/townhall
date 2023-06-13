@@ -20,7 +20,12 @@ const Reply: FC<ICommentProps> = (props) => {
 	const { user_address, created_at, updated_at, history, id, comment_id } = reply;
 
 	return (
-		<section id={id} className='flex gap-x-[10px] rounded-md p-2 pb-0  border border-solid border-transparent relative'>
+		<section id={id} className='flex gap-x-[10px] rounded-md -ml-2 p-2 pb-0  border border-solid border-transparent relative'>
+			<div>
+				<div className='h-10 w-1'>
+					<div className="h-[100px] bg-[#66A5FF] w-[2px]"></div>
+				</div>
+			</div>
 			<article className='w-10'>
 				<RepliedUserImage />
 			</article>

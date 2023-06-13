@@ -19,9 +19,13 @@ const useUserReaction = (address: string) => {
 	return userReaction?.type;
 };
 
-const useReplyVisibility = () => {
-	const { isReplyVisible } = useProposalSelector();
-	return isReplyVisible;
+const useReplyBoxVisibility = () => {
+	const { isReplyBoxVisible } = useProposalSelector();
+	return isReplyBoxVisible;
+};
+const useRepliesVisibility = () => {
+	const { isRepliesVisible } = useProposalSelector();
+	return isRepliesVisible;
 };
 
 const useReactions = (type: EReaction) => {
@@ -127,5 +131,6 @@ export {
 	useCommentEditHistory,
 	useCommentUserReaction,
 	useCommentReactions,
-	useReplyVisibility
+	useReplyBoxVisibility,
+	useRepliesVisibility
 };

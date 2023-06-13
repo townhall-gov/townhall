@@ -119,10 +119,13 @@ const ReplyOtherActionsDropdown: FC<IReplyOtherActionsDropdownProps> = (props) =
 				trigger={['click']}
 				disabled={loading}
 				menu={{ items, onClick: handleEndpointChange }}
+				overlayClassName='ant-dropdown-menu-border-blue_primary '
+				overlayStyle={{ marginLeft:'5rem' , marginTop:'-2.5rem' }}
+				placement={'bottomLeft'}
 			>
 				<button
 					disabled={loading}
-					className={classNames('outline-none border-none flex items-center justify-center text-blue_primary text-lg leading-none w-[22px] h-[22px] rounded-full bg-transparent hover:bg-[#2E3035]', {
+					className={classNames('outline-none border-none flex items-center justify-center text-blue_primary text-lg leading-none w-[22px] h-[22px] rounded-full bg-transparent ', {
 						'cursor-not-allowed': loading,
 						'cursor-pointer': !loading
 					})}

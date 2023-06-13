@@ -22,8 +22,8 @@ export interface IProposalStore {
     editableReply: IReply | null;
     commentEditHistory: IHistoryComment[];
     replyEditHistory: IHistoryReply[];
-    isReplyEditorVisible:boolean;
-    isReplyVisible:IReplyVisible;
+    isReplyBoxVisible:IReplyBoxVisible;
+    isRepliesVisible:IRepliesVisible;
 }
 
 export type ICommentCreation = {
@@ -32,9 +32,14 @@ export type ICommentCreation = {
     sentiment: ESentiment;
 };
 
-export type IReplyVisible = {
-    comment_id:string;
-    isVisible:boolean
+export type IRepliesVisible = {
+    replies_comment_id:string;
+    replies_isVisible:boolean;
+}
+
+export type IReplyBoxVisible = {
+    replybox_comment_id:string;
+    replybox_isVisible:boolean
 };
 
 export type IVoteCreation = {
