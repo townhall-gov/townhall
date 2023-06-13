@@ -4,7 +4,7 @@
 
 import { IVotingSystemOption } from '~src/redux/room/@types';
 import { ICreatorDetails, IProjectSocial, IStrategy } from '~src/redux/rooms/@types';
-import { EBlockchain, EWallet, ESentiment, EVotingSystem, EReaction, EVotingStrategy, EProposalStatus } from '~src/types/enums';
+import { EBlockchain, EWallet, ESentiment, EVotingSystem, EReaction, EVotingStrategy, EProposalStatus, EPostType } from '~src/types/enums';
 
 interface IUser {
 	address: string;
@@ -90,6 +90,7 @@ interface IProposal {
 	votes_result: IVotesResult;
 	voting_strategies: IStrategy[];
 	status: EProposalStatus;
+	post_link: IPostLink | null;
 }
 
 interface IDiscussion {
@@ -111,6 +112,7 @@ interface IPostLink {
 	house_id: string;
 	room_id: string;
 	post_id: number;
+	post_type: EPostType;
 }
 
 interface IVotesResult {
