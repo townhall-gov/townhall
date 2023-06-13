@@ -18,10 +18,11 @@ import { modalActions } from '~src/redux/modal';
 import { EContentType, EFooterType, ETitleType } from '~src/redux/modal/@types';
 import ReplyEditor from '../ReplyEditor';
 import { useAuthActionsCheck } from '~src/redux/profile/selectors';
-import ConnectWalletBanner from './ConnetWalletBanner';
+
 import { editorActions } from '~src/redux/editor';
 import { IReplyBody, IReplyResponse } from 'pages/api/auth/actions/reply';
 import { IReply } from '~src/types/schema';
+import ConnectWalletBanner from '../../../../CreateComment/ConnectWalletBanner';
 
 interface ICreateProps {
 	comment_id: string,
