@@ -29,53 +29,7 @@ const Vote: FC<IVoteProps> = (props) => {
 				addressMaxLength={10}
 				address={vote.voter_address}
 			/>
-			<p className='text-sm flex items-center justify-center gap-x-2'>
-				{
-					vote.options.length === 0
-						? <span>
-                            N/A
-						</span>: vote.options.length === 1
-							? <span>
-								{
-									vote.options[0].value
-								}
-							</span>: (
-								<>
-									<span>
-										{vote.options[0].value}
-									</span>
-									<Tooltip
-										color='#66A5FF'
-										title={
-											<ul
-												className='m-0 pl-4 list-decimal'
-											>
-												{
-													vote.options.map((option) => {
-														return (
-															<li
-																key={option.value}
-															>
-																{option.value}
-															</li>
-														);
-													})
-												}
-											</ul>
-										}
-									>
-										<span
-											className='text-xs text-grey_primary cursor-pointer'
-										>
-                                            +{vote.options.length - 1}
-										</span>
-									</Tooltip>
-								</>
-							)
-				}
-			</p>
-
-			<div className='flex items-center justify-end'>
+			<div className='flex items-center justify-center'>
 				<Tooltip
 					color='#66A5FF'
 					overlayClassName='min-w-max'
@@ -136,6 +90,51 @@ const Vote: FC<IVoteProps> = (props) => {
 					</p>
 				</Tooltip>
 			</div>
+			<p className='text-sm flex items-center justify-end mr-5 gap-x-2'>
+				{
+					vote.options.length === 0
+						? <span>
+                            N/A
+						</span>: vote.options.length === 1
+							? <span>
+								{
+									vote.options[0].value
+								}
+							</span>: (
+								<>
+									<span>
+										{vote.options[0].value}
+									</span>
+									<Tooltip
+										color='#66A5FF'
+										title={
+											<ul
+												className='m-0 pl-4 list-decimal'
+											>
+												{
+													vote.options.map((option) => {
+														return (
+															<li
+																key={option.value}
+															>
+																{option.value}
+															</li>
+														);
+													})
+												}
+											</ul>
+										}
+									>
+										<span
+											className='text-xs text-grey_primary cursor-pointer'
+										>
+                                            +{vote.options.length - 1}
+										</span>
+									</Tooltip>
+								</>
+							)
+				}
+			</p>
 		</article>
 	);
 };
