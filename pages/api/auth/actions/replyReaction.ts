@@ -55,7 +55,7 @@ const handler: TNextApiHandler<IReplyReactionResponse, IReplyReactionBody, {}> =
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid commentId.' });
 	}
 
-	if (reply_id || reply_id !== 'string') {
+	if (!reply_id || typeof reply_id !== 'string') {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid replyId.' });
 	}
 

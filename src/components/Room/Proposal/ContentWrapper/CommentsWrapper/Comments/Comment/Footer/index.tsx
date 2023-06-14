@@ -8,6 +8,9 @@ import CommentReply from './Reply';
 import CommentOtherActionsDropdown from './Other';
 import { IComment } from '~src/types/schema';
 import Sentiment from './Sentiment';
+import { useDispatch } from 'react-redux';
+import { proposalActions } from '~src/redux/proposal';
+import { useRepliesVisibility } from '~src/redux/proposal/selectors';
 
 interface ICommentFooterProps {
 	comment: IComment;
@@ -15,15 +18,23 @@ interface ICommentFooterProps {
 
 const CommentFooter: FC<ICommentFooterProps> = (props) => {
 	const { comment } = props;
-	if (!comment) return null;
+	const dispatch  =useDispatch();
+	const { replies_isVisible,replies_comment_id  } = useRepliesVisibility();
 	const { sentiment, id, reactions } = comment;
+	if (!comment) return null;
 	return (
-		<footer className='flex items-center gap-x-3'>
-			<Sentiment sentiment={sentiment} />
-			<CommentReactions comment_id={id} reactions={reactions} />
-			<CommentReply />
-			<CommentOtherActionsDropdown comment={comment} />
-		</footer>
+		<>
+			<footer className='flex items-center gap-x-3'>
+				<Sentiment sentiment={sentiment} />
+				<CommentReactions comment_id={id} reactions={reactions} />
+				<CommentReply comment_id={id}/>
+				<CommentOtherActionsDropdown comment={comment} />
+			</footer>
+			<div className="w-76 h-22 font-montserrat font-normal text-sm leading-22 cursor-pointer text-[#66A5FF] flex-none order-0" onClick={() => {dispatch(proposalActions.setIsRepliesVisible({ replies_comment_id:id,replies_isVisible:!replies_isVisible }));}}>
+				{(replies_isVisible && replies_comment_id==id) ? <>{'Hide replies'}</>:<>{'Show replies'}</> }
+			</div>
+		</>
+
 	);
 };
 

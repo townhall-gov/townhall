@@ -3,12 +3,22 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import classNames from 'classnames';
-import React from 'react';
+import React, { FC } from 'react';
+import { useDispatch } from 'react-redux';
+import { proposalActions } from '~src/redux/proposal';
+import { useReplyBoxVisibility } from '~src/redux/proposal/selectors';
 import { useProposalSelector } from '~src/redux/selectors';
 import { ReplyIcon } from '~src/ui-components/CustomIcons';
 
-const CommentReply = () => {
+interface ICommentReplyProps {
+	comment_id: string;
+}
+
+const CommentReply:FC<ICommentReplyProps> = (props) => {
+	const { comment_id } = props;
 	const { loading } = useProposalSelector();
+	const { replybox_isVisible } =useReplyBoxVisibility();
+	const dispatch=useDispatch();
 	return (
 		<div>
 			<button
@@ -17,6 +27,8 @@ const CommentReply = () => {
 					'cursor-not-allowed': loading,
 					'cursor-pointer': !loading
 				})}
+				onClick={() => {dispatch(proposalActions.setIsReplyBoxVisible({ replybox_comment_id:comment_id,replybox_isVisible:!replybox_isVisible }));}}
+
 			>
 				<ReplyIcon />
 				<span>Reply</span>
