@@ -12,6 +12,11 @@ export const timeline = [
 		title: 'Proposals'
 	},
 	{
+		icon: <DiamondIcon className='text-transparent stroke-white' />,
+		stage: EHouseStage.DISCUSSIONS,
+		title: 'Discussions'
+	},
+	{
 		icon: <PlusSignSquareIcon className='text-transparent stroke-white' />,
 		stage: EHouseStage.NEW_PROPOSAL,
 		title: 'New Proposal'
