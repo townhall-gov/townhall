@@ -119,7 +119,7 @@ const PreviewBtn = () => {
 					})
 				}
 			>
-                Publish
+                Save & Preview
 			</Button>
 		</div>
 	);

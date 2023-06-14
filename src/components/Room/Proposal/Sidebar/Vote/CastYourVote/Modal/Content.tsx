@@ -84,7 +84,7 @@ const CastYourVoteModalContent = () => {
 								return (
 									<Option
 										key={index}
-										index={index}
+										index={index + 1}
 										option={option}
 									/>
 								);

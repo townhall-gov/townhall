@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { ERoomStage } from '~src/redux/room/@types';
-import { DiamondIcon, PlusSignSquareIcon, SettingsIcon } from '~src/ui-components/CustomIcons';
+import { DiamondIcon, DiscussionIcon, PlusSignSquareIcon, SettingsIcon } from '~src/ui-components/CustomIcons';
 
 export const timeline = [
 	{
@@ -12,7 +12,7 @@ export const timeline = [
 		title: 'Proposals'
 	},
 	{
-		icon: <DiamondIcon className='text-transparent stroke-white' />,
+		icon: <DiscussionIcon className='text-transparent stroke-white' />,
 		stage: ERoomStage.DISCUSSIONS,
 		title: 'Discussions'
 	},

@@ -14,8 +14,8 @@ const Sidebar: FC<ISidebarProps> = (props) => {
 	const { className } = props;
 	return (
 		<div className={classNames('flex flex-col gap-y-6 sticky top-6 min-w-[350px]', className)}>
-			<Timestamp />
 			<Vote />
+			<Timestamp />
 		</div>
 	);
 };

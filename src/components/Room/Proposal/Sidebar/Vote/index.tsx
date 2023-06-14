@@ -71,18 +71,18 @@ const Vote = () => {
 	}, [user]);
 
 	if (!proposal) return null;
-	const { end_date } = proposal;
+	const { end_date, start_date } = proposal;
 	return (
 		<>
-			{
-				proposal.is_vote_results_hide_before_voting_ends && dayjs().isBefore(dayjs(end_date))?
-					null
-					:<VoteInfo />
-			}
 			{
 				dayjs().isBefore(dayjs(end_date))?
 					<CastYourVote />
 					: null
+			}
+			{
+				(proposal.is_vote_results_hide_before_voting_ends && dayjs().isBefore(dayjs(end_date))) || dayjs().isBefore(dayjs(start_date))?
+					null
+					:<VoteInfo />
 			}
 		</>
 	);
