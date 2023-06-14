@@ -17,7 +17,7 @@ const Description: FC<IDescriptionProps> = (props) => {
 	const discussionCreation = useDiscussionCreation();
 	const dispatch = useDispatch();
 	const timeout = useRef<NodeJS.Timeout>();
-	const { loading } = useRoomSelector();
+	const { loading , isDiscussionPreviewState } = useRoomSelector();
 	return (
 		<div className='flex flex-col'>
 			<h3 className='text-white font-medium text-xl'>Description</h3>
@@ -26,7 +26,7 @@ const Description: FC<IDescriptionProps> = (props) => {
 				className='description'
 				imageNamePrefix={imageNamePrefix}
 				initialValue={''}
-				isDisabled={loading}
+				isDisabled={isDiscussionPreviewState||loading}
 				value={discussionCreation?.description}
 				localStorageKey='discussionCreation'
 				onChange={(v) => {

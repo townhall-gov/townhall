@@ -18,7 +18,7 @@ const Tags: FC<ITagsProps> = (props) => {
 	const discussionCreation = useDiscussionCreation();
 	const tags = discussionCreation?.tags || [] as string[];
 	const dispatch = useDispatch();
-	const { loading } = useRoomSelector();
+	const { loading ,isDiscussionPreviewState } = useRoomSelector();
 
 	const updateTags = (tag: string, isDelete?: boolean) => {
 		let newTags = (tags && Array.isArray(tags))? [...tags]: [];
@@ -49,7 +49,7 @@ const Tags: FC<ITagsProps> = (props) => {
 				}}
 				canDelete
 				canAdd={tags?.length < 5}
-				isDisabled={loading}
+				isDisabled={isDiscussionPreviewState||loading}
 			/>
 		</div>
 	);

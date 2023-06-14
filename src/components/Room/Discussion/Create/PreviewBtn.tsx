@@ -20,7 +20,7 @@ import getErrorMessage from '~src/utils/getErrorMessage';
 
 const PreviewBtn = () => {
 	const dispatch = useDispatch();
-	const { loading } = useRoomSelector();
+	const { loading , isDiscussionPreviewState } = useRoomSelector();
 	const { user } = useProfileSelector();
 	const discussionCreation = useDiscussionCreation();
 	const { connectWallet, isLoggedIn, isRoomJoined, joinRoom } = useAuthActionsCheck();
@@ -109,18 +109,41 @@ const PreviewBtn = () => {
 	};
 	return (
 		<div className='mb-10'>
-			<Button
-				loading={loading}
-				onClick={onPublish}
-				className={
-					classNames('outline-none border h-full border-solid border-[#66A5FF] flex items-center justify-center bg-blue_primary rounded-2xl text-white py-[11px] px-[22px] max-w-[188px] w-full text-base leading-[19px] font-normal tracking-[0.01em]', {
-						'cursor-not-allowed': loading,
-						'cursor-pointer': !loading
-					})
-				}
-			>
+			{
+				isDiscussionPreviewState ? <div className='flex'>
+					<Button
+						onClick={() => dispatch(roomActions.setDiscussionPreviewState(false))}
+						className={
+							classNames('outline-none border-1 h-full border-solid border-[#66A5FF] flex items-center justify-center bg-transparent mr-3 rounded-2xl text-white py-[11px] px-[22px] max-w-[188px] w-full text-base leading-[19px] font-normal tracking-[0.01em]')
+						}
+					>
+                Go back & Edit
+					</Button>
+					<Button
+						loading={loading}
+						onClick={onPublish}
+						className={
+							classNames('outline-none border-1 h-full border-solid border-[#66A5FF] flex items-center justify-center bg-blue_primary rounded-2xl text-white py-[11px] px-[22px] max-w-[188px] w-full text-base leading-[19px] font-normal tracking-[0.01em]', {
+								'cursor-not-allowed': loading,
+								'cursor-pointer': !loading
+							})
+						}
+					>
+                Post
+					</Button>
+				</div> :<Button
+					loading={loading}
+					onClick={() => dispatch(roomActions.setDiscussionPreviewState(true))}
+					className={
+						classNames('outline-none border h-full border-solid border-[#66A5FF] flex items-center justify-center bg-blue_primary rounded-2xl text-white py-[11px] px-[22px] max-w-[188px] w-full text-base leading-[19px] font-normal tracking-[0.01em]', {
+							'cursor-not-allowed': loading,
+							'cursor-pointer': !loading
+						})
+					}
+				>
                 Save & Preview
-			</Button>
+				</Button>
+			}
 		</div>
 	);
 };

@@ -19,6 +19,7 @@ const initialState: IRoomStore = {
 	},
 	discussions: [],
 	error: '',
+	isDiscussionPreviewState:false,
 	loading: false,
 	proposalCreation: {
 		description: '',
@@ -125,6 +126,9 @@ export const roomStore = createSlice({
 					break;
 				}
 			}
+		},
+		setDiscussionPreviewState: (state, action: PayloadAction<boolean>) => {
+			state.isDiscussionPreviewState=action.payload;
 		},
 		setDiscussions: (state, action: PayloadAction<IListingDiscussion[]>) => {
 			const discussions = action.payload;
