@@ -4,8 +4,6 @@
 
 import React, { useEffect } from 'react';
 import { useProfileSelector, useProposalSelector } from '~src/redux/selectors';
-import { Divider } from 'antd';
-import AllVotes from './All';
 import CastYourVote from './CastYourVote';
 import api from '~src/services/api';
 import { IVoteInfoQuery } from 'pages/api/vote';
@@ -14,9 +12,9 @@ import { proposalActions } from '~src/redux/proposal';
 import { useDispatch } from 'react-redux';
 import { IVote } from '~src/types/schema';
 import dayjs from 'dayjs';
-import VotingResult from './Result';
+import VoteInfo from './VoteInfo';
 
-const VoteInfo = () => {
+const Vote = () => {
 	const { proposal, voteCreation } = useProposalSelector();
 	const { user } = useProfileSelector();
 	const dispatch = useDispatch();
@@ -73,34 +71,21 @@ const VoteInfo = () => {
 	}, [user]);
 
 	if (!proposal) return null;
-	const { end_date, start_date, voting_system_options } = proposal;
+	const { end_date, start_date } = proposal;
 	return (
-		<section
-			className='border border-solid border-blue_primary rounded-2xl drop-shadow-[0px_6px_18px_rgba(0,0,0,0.06)] p-6 text-white'
-		>
-			<h2 className='font-bold text-lg leading-[22px] tracking-[0.01em] mb-[15px]'>
-                Vote
-			</h2>
-			<div>
-				{
-					dayjs().isAfter(dayjs(end_date))?
-						<VotingResult />
-						: (
-							<CastYourVote
-								voting_system_options={voting_system_options}
-								start_date={start_date}
-								voteCreation={voteCreation}
-							/>
-						)
-				}
-
-				<Divider
-					className='bg-blue_primary my-6'
-				/>
-				<AllVotes />
-			</div>
-		</section>
+		<>
+			{
+				dayjs().isBefore(dayjs(end_date))?
+					<CastYourVote />
+					: null
+			}
+			{
+				(proposal.is_vote_results_hide_before_voting_ends && dayjs().isBefore(dayjs(end_date))) || dayjs().isBefore(dayjs(start_date))?
+					null
+					:<VoteInfo />
+			}
+		</>
 	);
 };
 
-export default VoteInfo;
+export default Vote;

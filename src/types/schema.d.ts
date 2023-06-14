@@ -4,7 +4,7 @@
 
 import { IVotingSystemOption } from '~src/redux/room/@types';
 import { ICreatorDetails, IProjectSocial, IStrategy } from '~src/redux/rooms/@types';
-import { EBlockchain, EWallet, ESentiment, EVotingSystem, EReaction, EVotingStrategy, EProposalStatus } from '~src/types/enums';
+import { EBlockchain, EWallet, ESentiment, EVotingSystem, EReaction, EVotingStrategy, EProposalStatus, EPostType } from '~src/types/enums';
 
 interface IUser {
 	address: string;
@@ -90,6 +90,29 @@ interface IProposal {
 	votes_result: IVotesResult;
 	voting_strategies: IStrategy[];
 	status: EProposalStatus;
+	post_link: IPostLink | null;
+}
+
+interface IDiscussion {
+	id: number;
+	house_id: string;
+	room_id: string;
+	title: string;
+	description: string;
+    tags: string[];
+	proposer_address: string;
+	created_at: Date;
+	updated_at: Date;
+	reactions: IReaction[];
+	comments: IComment[];
+	post_link: IPostLink | null;
+}
+
+interface IPostLink {
+	house_id: string;
+	room_id: string;
+	post_id: number;
+	post_type: EPostType;
 }
 
 interface IVotesResult {
@@ -134,7 +157,7 @@ interface IComment {
 	created_at: Date;
 	updated_at: Date;
 	deleted_at: Date | null;
-	proposal_id: number;
+	post_id: number;
 	content: string;
 	user_address: string;
 	history: IHistoryComment[];
@@ -149,7 +172,7 @@ interface IReply {
 	created_at: Date;
 	updated_at: Date;
 	deleted_at: Date | null;
-	proposal_id: number;
+	post_id: number;
 	comment_id: string;
 	content: string;
 	user_address: string;
@@ -172,11 +195,11 @@ interface IHistoryReply {
 
 interface ITag {
 	title: string;
-	proposal_id: number;
+	post_id: number;
 }
 
 interface ISentiment {
-	proposal_id: number;
+	post_id: number;
 	user_address: string;
 	sentiment: ESentiment
 }
@@ -201,5 +224,7 @@ export {
 	ISnapshotHeight,
 	IBalanceWithNetwork,
 	IVote,
-	IVotesResult
+	IVotesResult,
+	IDiscussion,
+	IPostLink
 };

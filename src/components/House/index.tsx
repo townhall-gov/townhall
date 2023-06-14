@@ -17,7 +17,7 @@ const House = () => {
 	const currentStage = useHouseCurrentStage();
 	useEffect(() => {
 		const { asPath } = router;
-		if (asPath.endsWith('create')) {
+		if (asPath.endsWith('proposal/create')) {
 			if (currentStage !== EHouseStage.NEW_PROPOSAL) {
 				dispatch(houseActions.setCurrentStage(EHouseStage.NEW_PROPOSAL));
 			}
@@ -28,6 +28,10 @@ const House = () => {
 		} else if (asPath.endsWith('settings')) {
 			if (currentStage !== EHouseStage.SETTINGS) {
 				dispatch(houseActions.setCurrentStage(EHouseStage.SETTINGS));
+			}
+		} else if (asPath.endsWith('discussions') || asPath.endsWith('discussion/create')) {
+			if (currentStage !== EHouseStage.DISCUSSIONS) {
+				dispatch(houseActions.setCurrentStage(EHouseStage.DISCUSSIONS));
 			}
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps

@@ -8,14 +8,15 @@ import { TNextApiHandler } from '~src/api/types';
 import authServiceInstance from '~src/auth';
 import getTokenFromReq from '~src/auth/utils/getTokenFromReq';
 import messages from '~src/auth/utils/messages';
-import { proposalCommentCollection } from '~src/services/firebase/utils';
-import { EReaction } from '~src/types/enums';
+import { discussionCommentCollection, proposalCommentCollection } from '~src/services/firebase/utils';
+import { EPostType, EReaction } from '~src/types/enums';
 import { IReaction } from '~src/types/schema';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
 
 export interface IReplyReactionBody {
     type: EReaction;
-    proposal_id: number;
+    post_id: number;
+	post_type: EPostType;
     room_id: string;
     house_id: string;
     comment_id: string;
@@ -32,7 +33,7 @@ const handler: TNextApiHandler<IReplyReactionResponse, IReplyReactionBody, {}> =
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
 	}
 
-	const { type, proposal_id, room_id, house_id, comment_id, reply_id } = req.body;
+	const { type, post_id, post_type, room_id, house_id, comment_id, reply_id } = req.body;
 
 	if (!house_id || typeof house_id !== 'string') {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid houseId.' });
@@ -42,8 +43,12 @@ const handler: TNextApiHandler<IReplyReactionResponse, IReplyReactionBody, {}> =
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid roomId.' });
 	}
 
-	if ((!proposal_id && proposal_id != 0) || typeof proposal_id !== 'number') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid proposalId.' });
+	if ((!post_id && post_id != 0) || typeof post_id !== 'number') {
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid postId.' });
+	}
+
+	if (![EPostType.DISCUSSION, EPostType.PROPOSAL].includes(post_type)) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid post type.' });
 	}
 
 	if (!comment_id || typeof comment_id !== 'string') {
@@ -70,12 +75,12 @@ const handler: TNextApiHandler<IReplyReactionResponse, IReplyReactionBody, {}> =
 		return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error: 'Invalid address.' });
 	}
 
-	const commentsColRef = proposalCommentCollection(house_id, room_id, proposal_id);
+	const commentsColRef = post_type === EPostType.PROPOSAL? proposalCommentCollection(house_id, room_id, post_id): discussionCommentCollection(house_id, room_id, post_id);
 	const commentDocRef = commentsColRef.doc(String(comment_id));
 	const commentDoc = await commentDocRef.get();
 
 	if (!commentDoc || !commentDoc.exists || !commentDoc.data()) {
-		return res.status(StatusCodes.NOT_FOUND).json({ error: `Comment "${comment_id}" is not found for a Proposal "${proposal_id}" in a Room "${room_id}" and a House "${house_id}".` });
+		return res.status(StatusCodes.NOT_FOUND).json({ error: `Comment "${comment_id}" is not found for a Post "${post_id}" in a Room "${room_id}" and a House "${house_id}".` });
 	}
 
 	if (commentDoc.data()?.is_deleted) {
@@ -87,7 +92,7 @@ const handler: TNextApiHandler<IReplyReactionResponse, IReplyReactionBody, {}> =
 	const replyDoc = await replyDocRef.get();
 
 	if (!replyDoc || !replyDoc.exists || !replyDoc.data()) {
-		return res.status(StatusCodes.NOT_FOUND).json({ error: `Reply "${reply_id}" is not found for a Comment "${comment_id}" of a Proposal "${proposal_id}" in a Room "${room_id}" and a House "${house_id}".` });
+		return res.status(StatusCodes.NOT_FOUND).json({ error: `Reply "${reply_id}" is not found for a Comment "${comment_id}" of a Post "${post_id}" in a Room "${room_id}" and a House "${house_id}".` });
 	}
 
 	if (replyDoc.data()?.is_deleted) {

@@ -3,15 +3,16 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { Progress } from 'antd';
 import React, { FC } from 'react';
-import { useProposalSelector } from '~src/redux/selectors';
+import { IVotesResult } from '~src/types/schema';
 import { getOptionPercentage, getTotalWeight } from '~src/utils/calculation/getStrategyWeight';
 
-interface IVotingResultProps {}
+interface IVotingResultProps {
+	votes_result: IVotesResult;
+}
 
-const VotingResult: FC<IVotingResultProps> = () => {
-	const { proposal } = useProposalSelector();
-	if (!proposal) return null;
-	const { votes_result } = proposal;
+const VotingResult: FC<IVotingResultProps> = (props) => {
+	const { votes_result } = props;
+	if (!votes_result) return null;
 
 	return (
 		<div
@@ -49,7 +50,7 @@ const VotingResult: FC<IVotingResultProps> = () => {
 									</p>
 									<p className='flex items-center gap-x-2'>
 										<span>
-                                            $ {isNaN(optionTotal)? 0: optionTotal}
+											{isNaN(optionTotal)? 0: optionTotal}
 										</span>
 										<span>
 											{isNaN(optionPercentage)? 0: optionPercentage.toFixed(1)}%

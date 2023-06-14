@@ -28,7 +28,7 @@ const Description: FC<IDescriptionProps> = (props) => {
 			<div
 				ref={divRef}
 				className={
-					classNames('html-content font-normal text-white leading-[23px] text-sm tracking-[0.01em] overflow-hidden',
+					classNames('html-content font-normal text-white leading-[23px] text-sm tracking-[0.01em] overflow-y-hidden',
 						{
 							'max-h-[200px]': !showMore,
 							'max-h-none': showMore

@@ -29,13 +29,14 @@ const List: FC<IListProps> = (props) => {
 									deleteTag(tag);
 								}
 							}}
-							closeIcon={<CloseOutlined className={classNames('text-white', {
+							closeIcon={<CloseOutlined className={classNames('text-blue_primary', {
 								'cursor-not-allowed': isDisabled,
 								'cursor-pointer': !isDisabled
 							})} />}
-							className={classNames('text-white border border-solid border-blue_primary py-[1px] m-0 lowercase', `tags-${tag}`)}
+							className={classNames('text-blue_primary border border-solid border-blue_primary font-normal text-xs leading-[20px] py-[1px] px-4 m-0 lowercase rounded-[11px]', `tags-${tag}`)}
+							title={tag}
 						>
-							{tag}
+							{tag.length > 25? tag.slice(0, 22) + '...': tag}
 						</Tag>
 					);
 				})

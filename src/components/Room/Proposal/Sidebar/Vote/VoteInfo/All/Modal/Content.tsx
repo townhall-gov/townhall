@@ -39,7 +39,7 @@ const AllVotesModalContent = () => {
 			className='flex flex-col gap-y-3 py-3'
 		>
 			<Spin
-				className='bg-app_background'
+				className='bg-dark_blue_primary'
 				spinning={loading}
 				indicator={<LoadingOutlined />}
 			>

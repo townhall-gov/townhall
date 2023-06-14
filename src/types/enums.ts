@@ -22,6 +22,11 @@ enum EReaction {
     DISLIKE = '👎🏻',
 }
 
+enum EPostType {
+    DISCUSSION = 'discussion',
+    PROPOSAL = 'proposal'
+}
+
 enum ESentiment {
     COMPLETELY_AGAINST = 'completely_against',
     SLIGHTLY_AGAINST = 'slightly_against',
@@ -64,5 +69,6 @@ export {
 	EAction,
 	EVotingSystem,
 	EVotingStrategy,
-	EProposalStatus
+	EProposalStatus,
+	EPostType
 };
