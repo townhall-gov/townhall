@@ -12,7 +12,7 @@ import { proposalActions } from '~src/redux/proposal';
 import { useCommentReactions, useCommentUserReaction } from '~src/redux/proposal/selectors';
 import { useProfileSelector, useProposalSelector } from '~src/redux/selectors';
 import api from '~src/services/api';
-import { EReaction } from '~src/types/enums';
+import { EPostType, EReaction } from '~src/types/enums';
 import { IReaction } from '~src/types/schema';
 import Reaction from '~src/ui-components/Reaction';
 import getErrorMessage from '~src/utils/getErrorMessage';
@@ -50,7 +50,8 @@ const ReplyReactions: FC<IReplyReactionsProps> = (props) => {
 				const { data, error } = await api.post<IReplyReactionResponse, IReplyReactionBody>('auth/actions/replyReaction', {
 					comment_id: comment_id,
 					house_id: proposal.house_id,
-					proposal_id: proposal.id,
+					post_id: proposal.id,
+					post_type: EPostType.PROPOSAL,
 					reply_id:reply_id,
 					room_id: proposal.room_id,
 					type

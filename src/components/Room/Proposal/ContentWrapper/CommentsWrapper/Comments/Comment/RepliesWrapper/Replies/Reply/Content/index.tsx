@@ -13,7 +13,7 @@ import { EContentType, EFooterType, ETitleType } from '~src/redux/modal/@types';
 import { notificationActions } from '~src/redux/notification';
 import { ENotificationStatus } from '~src/redux/notification/@types';
 import api from '~src/services/api';
-import { EAction } from '~src/types/enums';
+import { EAction, EPostType } from '~src/types/enums';
 import getErrorMessage from '~src/utils/getErrorMessage';
 import { IReplyBody, IReplyResponse } from 'pages/api/auth/actions/reply';
 
@@ -60,7 +60,8 @@ const ReplyContent: FC<IReplyContentProps> = (props) => {
 					action_type: EAction.EDIT,
 					comment_id:reply.comment_id,
 					house_id: proposal.house_id,
-					proposal_id: reply.proposal_id,
+					post_id: reply.post_id,
+					post_type: EPostType.PROPOSAL,
 					reply: editableReply,
 					room_id: proposal.room_id
 				});

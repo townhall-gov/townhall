@@ -12,8 +12,7 @@ import { notificationActions } from '~src/redux/notification';
 import { ENotificationStatus } from '~src/redux/notification/@types';
 import getErrorMessage from '~src/utils/getErrorMessage';
 import api from '~src/services/api';
-import { EAction } from '~src/types/enums';
-import CommentedUserImage from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/Comments/Comment/CommentedUserImage';
+import { EAction, EPostType } from '~src/types/enums';
 import { modalActions } from '~src/redux/modal';
 import { EContentType, EFooterType, ETitleType } from '~src/redux/modal/@types';
 import ReplyEditor from '../ReplyEditor';
@@ -23,6 +22,7 @@ import { editorActions } from '~src/redux/editor';
 import { IReplyBody, IReplyResponse } from 'pages/api/auth/actions/reply';
 import { IReply } from '~src/types/schema';
 import ConnectWalletBanner from '../../../../CreateComment/ConnectWalletBanner';
+import CommentedUserImage from '~src/ui-components/CommentedUserImage';
 
 interface ICreateProps {
 	comment_id: string,
@@ -77,7 +77,8 @@ const CreateReply :FC<ICreateProps>= (props) => {
 					action_type: EAction.ADD,
 					comment_id:comment_id,
 					house_id: proposal.house_id,
-					proposal_id: proposal.id,
+					post_id: proposal.id,
+					post_type: EPostType.PROPOSAL,
 					reply: {
 						// TODO: we are sending redundant data, will improve this later
 						comment_id:comment_id,
@@ -87,7 +88,7 @@ const CreateReply :FC<ICreateProps>= (props) => {
 						history: [],
 						id: '',
 						is_deleted: false,
-						proposal_id: proposal.id,
+						post_id: proposal.id,
 						reactions: [],
 						sentiment: replyCreation.sentiment,
 						updated_at: new Date(),
