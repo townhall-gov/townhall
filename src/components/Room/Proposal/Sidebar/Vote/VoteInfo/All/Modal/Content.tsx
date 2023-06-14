@@ -57,12 +57,12 @@ const AllVotesModalContent = () => {
 						<p
 							className='m-0 flex items-center justify-center'
 						>
-                            Choice
+                            Amount
 						</p>
 						<p
-							className='m-0 flex items-center justify-end'
+							className='m-0 flex items-center justify-center'
 						>
-                            Weight
+                            Vote
 						</p>
 					</article>
 					<Divider className='bg-blue_primary m-0 mb-2' />
