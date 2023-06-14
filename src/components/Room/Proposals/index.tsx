@@ -23,7 +23,7 @@ const Proposals: FC<IProposalsProps> = (props) => {
 						>
 							<Filter />
 						</div>
-						<div className='flex flex-col gap-y-7 h-full max-h-[calc(100vh-194px)] overflow-auto pr-2'>
+						<div className='flex flex-col gap-y-7 h-full pr-2'>
 							{
 								proposals.map((proposal) => {
 									return <ProposalCard key={proposal.id} proposal={proposal} />;

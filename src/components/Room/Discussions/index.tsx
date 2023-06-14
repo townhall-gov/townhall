@@ -27,7 +27,7 @@ const Discussions: FC<IDiscussionsProps> = (props) => {
 			{
 				discussions && Array.isArray(discussions) && discussions.length ?
 					<>
-						<div className='flex flex-col gap-y-7 h-full max-h-[calc(100vh-194px)] overflow-auto pr-2'>
+						<div className='flex flex-col gap-y-7 h-full pr-2'>
 							{
 								discussions.map((discussion) => {
 									return <DiscussionCard key={discussion.id} discussion={discussion} />;
