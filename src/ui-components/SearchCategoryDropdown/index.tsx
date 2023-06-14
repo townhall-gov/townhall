@@ -36,7 +36,7 @@ const SearchCategoryDropdown: React.FC<ISearchCategoryDropdownProps> = () => {
 	return (
 		<Dropdown
 			trigger={['click']}
-			className={classNames('flex justify-center items-center cursor-pointer text-white border border-solid border-blue_primary rounded-2xl h-full max-h-[62px] px-[18px]')}
+			className={classNames('flex justify-center items-center cursor-pointer text-white border-2 border-solid border-blue_primary rounded-2xl h-full max-h-[62px] px-[18px]')}
 			overlayClassName='ant-dropdown-menu-border-blue_primary'
 			menu={{
 				items: items,

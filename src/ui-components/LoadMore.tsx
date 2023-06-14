@@ -6,7 +6,8 @@ import React, { FC } from 'react';
 import { LoadMoreIcon } from './CustomIcons';
 const LoadMore: FC = () => {
 	return (
-		<div id='addressDropdown' className="flex items-center justify-center cursor-pointer w-[164px] px-[12px] py-[16px] border-2 border-solid border-blue_primary rounded-2xl">
+
+		<div id='addressDropdown' className="flex items-center justify-center cursor-pointer w-[164px] h-[56px] px-[12px] py-[16px] border-2 border-solid border-blue_primary rounded-[16px]">
 			<div className='flex items-center justify-start text-white'>
 				<span className='mr-3' >
 					<LoadMoreIcon className='text-transparent stroke-app_background text-2xl border border-black'/>
