@@ -1,10 +1,10 @@
 // Copyright 2019-2025 @polka-labs/townhall authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
-import { CloseOutlined } from '@ant-design/icons';
 import { Tag } from 'antd';
 import classNames from 'classnames';
 import React, { FC } from 'react';
+import { CancelIcon } from '../CustomIcons';
 
 interface IListProps {
     tags: string[];
@@ -29,7 +29,7 @@ const List: FC<IListProps> = (props) => {
 									deleteTag(tag);
 								}
 							}}
-							closeIcon={<CloseOutlined className={classNames('text-white', {
+							closeIcon={<CancelIcon className={classNames('text-transparent  stroke-app_background text-2xl text-white', {
 								'cursor-not-allowed': isDisabled,
 								'cursor-pointer': !isDisabled
 							})} />}
