@@ -95,7 +95,7 @@ const CastYourVoteModalContent = () => {
 			}
 			<div className='mt-5'>
 				<Spin
-					className='bg-[#04152F]'
+					className='bg-dark_blue_primary'
 					spinning={loading}
 					indicator={<LoadingOutlined />}
 				>

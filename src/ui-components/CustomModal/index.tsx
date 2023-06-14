@@ -23,7 +23,7 @@ const CustomModal: FC<ICustomModalProps> = () => {
 			open={open}
 			onCancel={onCancel}
 			title={
-				<div className='flex items-center bg-[#04152F] justify-between gap-x-2'>
+				<div className='flex items-center bg-dark_blue_primary justify-between gap-x-2'>
 					<h3 className='m-0 text-white font-semibold text-2xl leading-[32px] '>
 						<ModalTitle type={titleType} />
 					</h3>

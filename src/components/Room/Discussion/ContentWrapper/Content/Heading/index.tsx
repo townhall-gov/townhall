@@ -19,7 +19,7 @@ const Heading: FC<IHeadingProps> = (props) => {
 	const { title, tags, address, id } = props;
 	return (
 		<header
-			className='rounded-2xl bg-[#04152F] py-8 px-7 text-white flex flex-col gap-y-[30px]'
+			className='rounded-2xl bg-dark_blue_primary py-8 px-7 text-white flex flex-col gap-y-[30px]'
 		>
 			{
 				title? (
