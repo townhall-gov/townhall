@@ -46,35 +46,43 @@ const AllVotesModalContent = () => {
 				<div
 					className='flex flex-col gap-y-3'
 				>
-					<article
-						className='grid grid-cols-3 gap-x-2 text-base font-medium'
-					>
-						<p
-							className='m-0'
-						>
-                            Voter
-						</p>
-						<p
-							className='m-0 flex items-center justify-center'
-						>
-                            Amount
-						</p>
-						<p
-							className='m-0 flex items-center justify-center'
-						>
-                            Vote
-						</p>
-					</article>
-					<Divider className='bg-blue_primary m-0 mb-2' />
 					{
-						votes.map((vote) => {
-							return (
-								<Vote
-									key={vote.id}
-									vote={vote}
-								/>
-							);
-						})
+						votes.length==0 ? <p
+							className='m-2 text-2xl flex items-center justify-center'
+						>
+						No votes casted
+						</p>:<>
+							<article
+								className='grid grid-cols-3 gap-x-2 text-base font-medium'
+							>
+								<p
+									className='m-0'
+								>
+                            Voter
+								</p>
+								<p
+									className='m-0 flex items-center justify-center'
+								>
+                            Amount
+								</p>
+								<p
+									className='m-0 flex items-center justify-center'
+								>
+                            Vote
+								</p>
+							</article>
+							<Divider className='bg-blue_primary m-0 mb-2' />
+							{
+								votes.map((vote) => {
+									return (
+										<Vote
+											key={vote.id}
+											vote={vote}
+										/>
+									);
+								})
+							}
+						</>
 					}
 				</div>
 			</Spin>
