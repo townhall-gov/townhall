@@ -98,11 +98,11 @@ const Home: FC<IHomeClientProps> = (props) => {
 
 				<section className='grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 justify-between gap-[50px]'>
 					{
-						(category == 'houses' || category == 'all') && houseFiltered && houseFiltered.slice(0,visibleHousesCards).map((house, index) => {
+						(category == 'houses' || category == 'all') && houseFiltered && houseFiltered.slice(0,visibleHousesCards).map((house) => {
 							return (
 								<>
 									<House
-										key={index}
+										key={house.id}
 										house={house}
 									/>
 								</>
@@ -110,11 +110,11 @@ const Home: FC<IHomeClientProps> = (props) => {
 						})
 					}
 					{
-						(category == 'rooms' || category == 'all') && roomFiltered && roomFiltered.slice(0,visibleRoomCards).map((room, index) => {
+						(category == 'rooms' || category == 'all') && roomFiltered && roomFiltered.slice(0,visibleRoomCards).map((room) => {
 							return (
 								<>
 									<Room
-										key={index}
+										key={room.id}
 										room={room}
 									/>
 								</>
