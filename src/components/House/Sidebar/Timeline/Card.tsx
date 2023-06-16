@@ -30,7 +30,7 @@ const TimelineCard: FC<ITimelineCardProps> = (props) => {
 			onClick={() => {
 				const { query } = router;
 				let url = `/${query['house_id']}`;
-				if (stage === EHouseStage.NEW_PROPOSAL) {
+				if ([EHouseStage.NEW_PROPOSAL, EHouseStage.DISCUSSIONS].includes(stage)) {
 					url = `/${query['house_id']}/${query['house_id']}`;
 				}
 				router.push(url + getTimelineUrl(stage));

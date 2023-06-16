@@ -32,6 +32,8 @@ export const getTimelineUrl = (stage: EHouseStage) => {
 	switch(stage) {
 	case EHouseStage.PROPOSALS:
 		return '/proposals';
+	case EHouseStage.DISCUSSIONS:
+		return '/discussions';
 	case EHouseStage.NEW_PROPOSAL:
 		return '/proposal/create';
 	case EHouseStage.SETTINGS:
