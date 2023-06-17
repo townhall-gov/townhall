@@ -11,6 +11,7 @@ import { roomActions } from '~src/redux/room';
 import { ERoomStage } from '~src/redux/room/@types';
 import { useRoomCurrentStage } from '~src/redux/room/selectors';
 import { useRoomSelector } from '~src/redux/selectors';
+import NoRoomFound from '~src/ui-components/NoRoomFound';
 
 const CreateProposalPage = () => {
 	const dispatch = useDispatch();
@@ -27,7 +28,7 @@ const CreateProposalPage = () => {
 	}, []);
 
 	if (!room) {
-		return null;
+		return <NoRoomFound />;
 	}
 
 	return (

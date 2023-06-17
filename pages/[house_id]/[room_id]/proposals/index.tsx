@@ -15,6 +15,7 @@ import { roomActions } from '~src/redux/room';
 import { ERoomStage, IListingProposal } from '~src/redux/room/@types';
 import { useRoomCurrentStage } from '~src/redux/room/selectors';
 import { IRoom } from '~src/types/schema';
+import NoRoomFound from '~src/ui-components/NoRoomFound';
 
 interface IProposalsServerProps {
 	proposals: IListingProposal[] | null;
@@ -73,7 +74,7 @@ const ProposalsPage: FC<IProposalsClientProps> = (props) => {
 	}, [props]);
 
 	if (!room) {
-		return null;
+		return <NoRoomFound />;
 	}
 
 	return (
