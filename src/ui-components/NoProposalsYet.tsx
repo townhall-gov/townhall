@@ -7,11 +7,11 @@ import { NoProposalsIcon } from './CustomIcons';
 const NoProposalsYet = () => {
 	return (
 		<article
-			className='flex flex-col items-center justify-center gap-y-7 rounded-2xl bg-[#04152F] min-h-[458px]'
+			className='flex flex-col items-center justify-center gap-y-7 rounded-2xl bg-dark_blue_primary min-h-[458px]'
 		>
 			<NoProposalsIcon className='text-[251px]' />
 			<h3 className='m-0 text-white font-medium text-2xl leading-[29px] tracking-[0.01em]'>
-                There are no Proposals yet.
+                No Post found.
 			</h3>
 		</article>
 	);

@@ -57,7 +57,7 @@ const WalletAccounts: FC<IWalletAccountsProps> = () => {
 
 	return (
 		<div className='w-full'>
-			<Spin className='bg-app_background' spinning={loading} indicator={<LoadingOutlined />}>
+			<Spin className='bg-dark_blue_primary' spinning={loading} indicator={<LoadingOutlined />}>
 				<div className='flex flex-col gap-y-2'>
 					{error? <>
 						<div className='flex flex-col items-center gap-y-2'>

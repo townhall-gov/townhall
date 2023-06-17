@@ -134,6 +134,7 @@ const PreviewBtn = () => {
 					end_date: end_date,
 					house_id: String(query.house_id),
 					is_vote_results_hide_before_voting_ends: is_vote_results_hide_before_voting_ends,
+					post_link: null,
 					room_id: String(query.room_id),
 					start_date: start_date,
 					tags: tags,

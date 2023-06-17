@@ -8,14 +8,15 @@ import { TNextApiHandler } from '~src/api/types';
 import authServiceInstance from '~src/auth';
 import getTokenFromReq from '~src/auth/utils/getTokenFromReq';
 import messages from '~src/auth/utils/messages';
-import { proposalCollection } from '~src/services/firebase/utils';
-import { EReaction } from '~src/types/enums';
+import { discussionCollection, proposalCollection } from '~src/services/firebase/utils';
+import { EPostType, EReaction } from '~src/types/enums';
 import { IReaction } from '~src/types/schema';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
 
 export interface IReactionBody {
     type: EReaction;
-    proposal_id: number;
+    post_id: number;
+	post_type: EPostType;
     room_id: string;
     house_id: string;
 }
@@ -30,7 +31,7 @@ const handler: TNextApiHandler<IReactionResponse, IReactionBody, {}> = async (re
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
 	}
 
-	const { type, proposal_id, room_id, house_id } = req.body;
+	const { type, post_id, room_id, house_id, post_type } = req.body;
 
 	if (!house_id || typeof house_id !== 'string') {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid houseId.' });
@@ -40,8 +41,12 @@ const handler: TNextApiHandler<IReactionResponse, IReactionBody, {}> = async (re
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid roomId.' });
 	}
 
-	if ((!proposal_id && proposal_id != 0) || typeof proposal_id !== 'number') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid proposalId.' });
+	if ((!post_id && post_id != 0) || typeof post_id !== 'number') {
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid postId.' });
+	}
+
+	if (![EPostType.DISCUSSION, EPostType.PROPOSAL].includes(post_type)) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid post type.' });
 	}
 
 	let user_address: string | null = null;
@@ -60,15 +65,15 @@ const handler: TNextApiHandler<IReactionResponse, IReactionBody, {}> = async (re
 		return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error: 'Invalid address.' });
 	}
 
-	const proposalsColRef = proposalCollection(house_id, room_id);
-	const proposalDocRef = proposalsColRef.doc(String(proposal_id));
-	const proposalDoc = await proposalDocRef.get();
+	const postsColRef = post_type === EPostType.PROPOSAL? proposalCollection(house_id, room_id): discussionCollection(house_id, room_id);
+	const postDocRef = postsColRef.doc(String(post_id));
+	const postDoc = await postDocRef.get();
 
-	if (!proposalDoc || !proposalDoc.exists) {
-		return res.status(StatusCodes.NOT_FOUND).json({ error: `Proposal with id "${proposal_id}" is not found in a Room with id "${room_id}" and a House with id "${house_id}".` });
+	if (!postDoc || !postDoc.exists) {
+		return res.status(StatusCodes.NOT_FOUND).json({ error: `Post "${post_id}" is not found in a Room "${room_id}" and a House "${house_id}".` });
 	}
 
-	const reactionsColRef = proposalDocRef.collection('reactions');
+	const reactionsColRef = postDocRef.collection('reactions');
 	const reactionQuerySnapshot = await reactionsColRef.where('user_address', '==', user_address).get();
 	if (reactionQuerySnapshot && !reactionQuerySnapshot.empty && reactionQuerySnapshot.size > 1) {
 		return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error: `More than one reaction with user address "${user_address}" exists.` });

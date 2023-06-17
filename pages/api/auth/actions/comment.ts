@@ -9,15 +9,16 @@ import authServiceInstance from '~src/auth';
 import getTokenFromReq from '~src/auth/utils/getTokenFromReq';
 import messages from '~src/auth/utils/messages';
 import { firebaseAdmin } from '~src/services/firebase';
-import { proposalCollection } from '~src/services/firebase/utils';
-import { EAction, ESentiment } from '~src/types/enums';
+import { discussionCollection, proposalCollection } from '~src/services/firebase/utils';
+import { EAction, EPostType, ESentiment } from '~src/types/enums';
 import { IComment, IHistoryComment } from '~src/types/schema';
 import convertFirestoreTimestampToDate from '~src/utils/convertFirestoreTimestampToDate';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
 
 export interface ICommentBody {
     comment: IComment;
-    proposal_id: number;
+    post_id: number;
+	post_type: EPostType;
     room_id: string;
     house_id: string;
     action_type: EAction;
@@ -32,7 +33,7 @@ const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req,
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
 	}
 
-	const { proposal_id, room_id, house_id, comment, action_type } = req.body;
+	const { post_id, post_type, room_id, house_id, comment, action_type } = req.body;
 
 	if (!house_id || typeof house_id !== 'string') {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid houseId.' });
@@ -42,12 +43,16 @@ const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req,
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid roomId.' });
 	}
 
-	if ((!proposal_id && proposal_id != 0) || typeof proposal_id !== 'number') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid proposalId.' });
+	if ((!post_id && post_id != 0) || typeof post_id !== 'number') {
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid postId.' });
 	}
 
 	if (!action_type || ![EAction.ADD, EAction.DELETE, EAction.EDIT].includes(action_type)) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid api action type.' });
+	}
+
+	if (!post_type || ![EPostType.DISCUSSION, EPostType.PROPOSAL].includes(post_type)) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid post type.' });
 	}
 
 	if (!comment?.content) {
@@ -78,15 +83,15 @@ const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req,
 		return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error: 'Invalid address.' });
 	}
 
-	const proposalsColRef = proposalCollection(house_id, room_id);
-	const proposalDocRef = proposalsColRef.doc(String(proposal_id));
-	const proposalDoc = await proposalDocRef.get();
+	const postsColRef = post_type === EPostType.PROPOSAL?proposalCollection(house_id, room_id): discussionCollection(house_id, room_id);
+	const postDocRef = postsColRef.doc(String(post_id));
+	const postDoc = await postDocRef.get();
 
-	if (!proposalDoc || !proposalDoc.exists) {
-		return res.status(StatusCodes.NOT_FOUND).json({ error: `Proposal with id "${proposal_id}" is not found in a Room with id "${room_id}" and a House with id "${house_id}".` });
+	if (!postDoc || !postDoc.exists) {
+		return res.status(StatusCodes.NOT_FOUND).json({ error: `Post "${post_id}" is not found in a Room "${room_id}" and a House "${house_id}".` });
 	}
 
-	const commentsColRef = proposalDocRef.collection('comments');
+	const commentsColRef = postDocRef.collection('comments');
 	const newComment: IComment = {
 		...comment
 	};
@@ -99,7 +104,7 @@ const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req,
 		newComment.created_at = now;
 		newComment.updated_at = now;
 		newComment.deleted_at = null;
-		newComment.proposal_id = proposal_id;
+		newComment.post_id = post_id;
 		newComment.user_address = user_address;
 		newComment.history = [];
 		const comment = {
@@ -120,7 +125,7 @@ const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req,
 				is_deleted: true
 			});
 		} else {
-			return res.status(StatusCodes.NOT_FOUND).json({ error: `Comment with id "${comment.id}" is not found for proposal of id "${proposal_id}".` });
+			return res.status(StatusCodes.NOT_FOUND).json({ error: `Comment "${comment.id}" is not found for post "${post_id}".` });
 		}
 	} else if (action_type === EAction.EDIT) {
 		const commentDocRef = commentsColRef.doc(String(comment.id));
@@ -156,7 +161,7 @@ const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req,
 				updated_at: now
 			});
 		} else {
-			return res.status(StatusCodes.NOT_FOUND).json({ error: `Comment with id "${comment.id}" is not found for proposal of id "${proposal_id}".` });
+			return res.status(StatusCodes.NOT_FOUND).json({ error: `Comment "${comment.id}" is not found for post "${post_id}".` });
 		}
 	} else {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid api action type.' });

@@ -3,13 +3,18 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { ERoomStage } from '~src/redux/room/@types';
-import { DiamondIcon, PlusSignSquareIcon, SettingsIcon } from '~src/ui-components/CustomIcons';
+import { DiamondIcon, DiscussionIcon, PlusSignSquareIcon, SettingsIcon } from '~src/ui-components/CustomIcons';
 
 export const timeline = [
 	{
 		icon: <DiamondIcon className='text-transparent stroke-white' />,
 		stage: ERoomStage.PROPOSALS,
 		title: 'Proposals'
+	},
+	{
+		icon: <DiscussionIcon className='text-transparent stroke-white' />,
+		stage: ERoomStage.DISCUSSIONS,
+		title: 'Discussions'
 	},
 	{
 		icon: <PlusSignSquareIcon className='text-transparent stroke-white' />,
@@ -27,6 +32,8 @@ export const getTimelineUrl = (stage: ERoomStage) => {
 	switch(stage) {
 	case ERoomStage.PROPOSALS:
 		return '/proposals';
+	case ERoomStage.DISCUSSIONS:
+		return '/discussions';
 	case ERoomStage.NEW_PROPOSAL:
 		return '/proposal/create';
 	case ERoomStage.SETTINGS:

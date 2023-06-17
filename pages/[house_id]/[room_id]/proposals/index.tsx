@@ -4,29 +4,43 @@
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { getProposals } from 'pages/api/proposals';
+import { getRoom } from 'pages/api/room';
 import React, { FC, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import Room from '~src/components/Room';
+import Proposals from '~src/components/Room/Proposals';
+import RoomAbout from '~src/components/Room/RoomWrapper/RoomAbout';
+import RoomSidebar from '~src/components/Room/Sidebar';
 import SEOHead from '~src/global/SEOHead';
 import { roomActions } from '~src/redux/room';
-import { IListingProposal } from '~src/redux/room/@types';
+import { ERoomStage, IListingProposal } from '~src/redux/room/@types';
+import { useRoomCurrentStage } from '~src/redux/room/selectors';
+import { IRoom } from '~src/types/schema';
 
 interface IProposalsServerProps {
 	proposals: IListingProposal[] | null;
+	room: IRoom | null;
 	error: string | null;
 }
 
 export const getServerSideProps: GetServerSideProps<IProposalsServerProps> = async ({ query }) => {
 	const { filterBy } = query;
+	const house_id = (query?.house_id? String(query?.house_id): '');
+	const room_id = (query?.room_id? String(query?.room_id): '');
 	const { data, error } = await getProposals({
 		filterBy: String(filterBy),
-		house_id: (query?.house_id? String(query?.house_id): ''),
-		room_id: (query?.room_id? String(query?.room_id): '')
+		house_id,
+		room_id
+	});
+
+	const obj = await getRoom({
+		house_id,
+		room_id
 	});
 
 	const props: IProposalsServerProps = {
-		error: (error? error: null),
-		proposals: ((data && Array.isArray(data))? (data || []): [])
+		error: (error || obj.error || null),
+		proposals: ((data && Array.isArray(data))? (data || []): []),
+		room: obj.data || null
 	};
 
 	return {
@@ -36,10 +50,12 @@ export const getServerSideProps: GetServerSideProps<IProposalsServerProps> = asy
 
 interface IProposalsClientProps extends IProposalsServerProps {}
 
-const Proposals: FC<IProposalsClientProps> = (props) => {
+const ProposalsPage: FC<IProposalsClientProps> = (props) => {
 	const dispatch = useDispatch();
 	const router = useRouter();
+	const currentStage = useRoomCurrentStage();
 	const { query } = router;
+	const { proposals, room } = props;
 
 	useEffect(() => {
 		if (props.error) {
@@ -47,17 +63,38 @@ const Proposals: FC<IProposalsClientProps> = (props) => {
 		} else if (props.proposals && Array.isArray(props.proposals)) {
 			dispatch(roomActions.setProposals(props.proposals));
 		}
+		if (props.room) {
+			dispatch(roomActions.setRoom(props.room));
+		}
+		if (currentStage !== ERoomStage.PROPOSALS) {
+			dispatch(roomActions.setCurrentStage(ERoomStage.PROPOSALS));
+		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props]);
+
+	if (!room) {
+		return null;
+	}
 
 	return (
 		<>
 			<SEOHead title={`Proposals of Room ${query['room_id']} in House ${query['house_id']}`} />
-			<div>
-				<Room />
-			</div>
+			<section className='flex gap-x-7'>
+				<RoomSidebar />
+				<div className='flex-1 flex flex-col gap-y-[21px]'>
+					<section
+						className='flex gap-x-[17.5px]'
+					>
+						<RoomAbout
+							description={room.description}
+							socials={room.socials}
+						/>
+					</section>
+					<Proposals proposals={proposals} />
+				</div>
+			</section>
 		</>
 	);
 };
 
-export default Proposals;
+export default ProposalsPage;

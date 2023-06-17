@@ -14,6 +14,11 @@ const useProposalCreation = () => {
 	return room.proposalCreation;
 };
 
+const useDiscussionCreation = () => {
+	const room = useRoomSelector();
+	return room.discussionCreation;
+};
+
 const useRoomSettings = () => {
 	const room = useRoomSelector();
 	return room.roomSettings;
@@ -21,6 +26,7 @@ const useRoomSettings = () => {
 
 export {
 	useProposalCreation,
+	useDiscussionCreation,
 	useRoomCurrentStage,
 	useRoomSettings
 };

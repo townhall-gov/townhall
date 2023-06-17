@@ -8,13 +8,11 @@ import { IComment } from '~src/types/schema';
 import CommentEditor from '../../../CommentEditor';
 import { useDispatch } from 'react-redux';
 import { proposalActions } from '~src/redux/proposal';
-import { modalActions } from '~src/redux/modal';
-import { EContentType, EFooterType, ETitleType } from '~src/redux/modal/@types';
 import { ICommentResponse, ICommentBody } from 'pages/api/auth/actions/comment';
 import { notificationActions } from '~src/redux/notification';
 import { ENotificationStatus } from '~src/redux/notification/@types';
 import api from '~src/services/api';
-import { EAction } from '~src/types/enums';
+import { EAction, EPostType } from '~src/types/enums';
 import getErrorMessage from '~src/utils/getErrorMessage';
 
 interface ICommentContentProps {
@@ -29,19 +27,8 @@ const CommentContent: FC<ICommentContentProps> = (props) => {
 	const dispatch = useDispatch();
 
 	const { user } = useProfileSelector();
-	if (!user || !user.address) {
-		return null;
-	}
-	if (!comment) return null;
 
-	const onSentiment = async () => {
-		dispatch(modalActions.setModal({
-			contentType: EContentType.COMMENT_SENTIMENT,
-			footerType: EFooterType.COMMENT_SENTIMENT,
-			open: true,
-			titleType: ETitleType.NONE
-		}));
-	};
+	if (!comment) return null;
 
 	const onComment = async () => {
 		if (loading) return;
@@ -60,7 +47,8 @@ const CommentContent: FC<ICommentContentProps> = (props) => {
 					action_type: EAction.EDIT,
 					comment: editableComment,
 					house_id: proposal.house_id,
-					proposal_id: proposal.id,
+					post_id: proposal.id,
+					post_type: EPostType.PROPOSAL,
 					room_id: proposal.room_id
 				});
 				if (error) {
@@ -125,7 +113,6 @@ const CommentContent: FC<ICommentContentProps> = (props) => {
 								clearTimeout(timeout.current);
 							}, 1000);
 						}}
-						onSentiment={onSentiment}
 						onComment={onComment}
 						onCancel={() => {
 							dispatch(proposalActions.resetEditableComment());

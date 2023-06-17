@@ -4,29 +4,24 @@
 
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
-import Room from '~src/components/Room';
+import React from 'react';
 import SEOHead from '~src/global/SEOHead';
 
-export const getServerSideProps: GetServerSideProps<any> = async () => {
+export const getServerSideProps: GetServerSideProps<{}> = async ({ query }) => {
 	return {
-		props: {}
+		props: {},
+		redirect: {
+			destination: `/${query['house_id']}/${query['room_id']}/proposals`
+		}
 	};
 };
 
 const SingleRoom = () => {
 	const router = useRouter();
 	const { query } = router;
-	useEffect(() => {
-		router.push(`/${query['house_id']}/${query['room_id']}/proposals`);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
 	return (
 		<>
 			<SEOHead title={`House ${query['house_id']} room.`} />
-			<div>
-				<Room />
-			</div>
 		</>
 	);
 };

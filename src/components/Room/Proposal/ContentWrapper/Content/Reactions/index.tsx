@@ -4,7 +4,7 @@
 import React from 'react';
 import Reaction from '../../../../../../ui-components/Reaction';
 import Divider from '~src/components/Room/Proposals/Divider';
-import { EReaction } from '~src/types/enums';
+import { EPostType, EReaction } from '~src/types/enums';
 import { IReactionResponse, IReactionBody } from 'pages/api/auth/actions/reaction';
 import { useDispatch } from 'react-redux';
 import { notificationActions } from '~src/redux/notification';
@@ -41,7 +41,8 @@ const Reactions = () => {
 				dispatch(proposalActions.setLoading(true));
 				const { data, error } = await api.post<IReactionResponse, IReactionBody>('auth/actions/reaction', {
 					house_id: proposal.house_id,
-					proposal_id: proposal.id,
+					post_id: proposal.id,
+					post_type: EPostType.PROPOSAL,
 					room_id: proposal.room_id,
 					type
 				});

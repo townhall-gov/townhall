@@ -15,14 +15,12 @@ const Houses: FC<IHousesProps> = () => {
 	return (
 		<section className='grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 justify-between gap-[50px]'>
 			{
-				houses.map((house, index) => {
+				houses.map((house) => {
 					return (
-						<>
-							<House
-								key={index}
-								house={house}
-							/>
-						</>
+						<House
+							key={house.id}
+							house={house}
+						/>
 					);
 				})
 			}

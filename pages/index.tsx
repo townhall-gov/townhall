@@ -89,7 +89,7 @@ const Home: FC<IHomeClientProps> = (props) => {
 				<div className='flex gap-x-[18.5px]'>
 					<div className='w-full max-w-[538px] flex items-center relative'>
 						<SearchIcon className='text-transparent stroke-app_background text-2xl absolute ml-[18px] mr-4' />
-						<Input value={useSearchTerm()} onChange={(value: string) => dispatch(homeActions.setSearchQuery(value))} type='text' placeholder='Search' className='placeholder:text-grey_tertiary font-normal text-xl leading-[24px] pl-12 rounded-2xl max-h-[62px]'></Input>
+						<Input value={useSearchTerm()} onChange={(value: string) => dispatch(homeActions.setSearchQuery(value))} type='text' placeholder='Search' className='placeholder:text-grey_tertiary font-normal text-xl leading-[24px] pl-12 rounded-[16px] border-2 border-solid  max-h-[62px]'></Input>
 					</div>
 					<div>
 						<SearchCategoryDropdown />
@@ -98,11 +98,11 @@ const Home: FC<IHomeClientProps> = (props) => {
 
 				<section className='grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 justify-between gap-[50px]'>
 					{
-						(category == 'houses' || category == 'all') && houseFiltered && houseFiltered.slice(0,visibleHousesCards).map((house, index) => {
+						(category == 'houses' || category == 'all') && houseFiltered && houseFiltered.slice(0,visibleHousesCards).map((house) => {
 							return (
 								<>
 									<House
-										key={index}
+										key={house.id}
 										house={house}
 									/>
 								</>
@@ -110,11 +110,11 @@ const Home: FC<IHomeClientProps> = (props) => {
 						})
 					}
 					{
-						(category == 'rooms' || category == 'all') && roomFiltered && roomFiltered.slice(0,visibleRoomCards).map((room, index) => {
+						(category == 'rooms' || category == 'all') && roomFiltered && roomFiltered.slice(0,visibleRoomCards).map((room) => {
 							return (
 								<>
 									<Room
-										key={index}
+										key={room.id}
 										room={room}
 									/>
 								</>
