@@ -23,24 +23,23 @@ interface IProposalsServerProps {
 }
 
 export const getServerSideProps: GetServerSideProps<IProposalsServerProps> = async ({ query }) => {
-	const { filterBy } = query;
 	const house_id = (query?.house_id? String(query?.house_id): '');
 	const room_id = (query?.room_id? String(query?.room_id): '');
-	const { data, error } = await getProposals({
-		filterBy: String(filterBy),
+
+	const { data: proposals, error: proposalsError } = await getProposals({
 		house_id,
 		room_id
 	});
 
-	const obj = await getRoom({
+	const { data: room, error: roomError } = await getRoom({
 		house_id,
 		room_id
 	});
 
 	const props: IProposalsServerProps = {
-		error: (error || obj.error || null),
-		proposals: ((data && Array.isArray(data))? (data || []): []),
-		room: obj.data || null
+		error: (proposalsError || roomError || null),
+		proposals: ((proposals && Array.isArray(proposals))? (proposals || []): []),
+		room: room || null
 	};
 
 	return {
@@ -60,7 +59,8 @@ const ProposalsPage: FC<IProposalsClientProps> = (props) => {
 	useEffect(() => {
 		if (props.error) {
 			dispatch(roomActions.setError(props.error));
-		} else if (props.proposals && Array.isArray(props.proposals)) {
+		}
+		if (props.proposals && Array.isArray(props.proposals)) {
 			dispatch(roomActions.setProposals(props.proposals));
 		}
 		if (props.room) {
