@@ -88,11 +88,7 @@ const DiscussionsPage: FC<IDiscussionsClientProps> = (props) => {
 							socials={room.socials}
 						/>
 					</section>
-					{
-						discussions && Array.isArray(discussions) && discussions.length > 0 && (
-							<Discussions discussions={discussions} />
-						)
-					}
+					<Discussions discussions={discussions} />
 				</div>
 			</section>
 		</>

@@ -90,11 +90,7 @@ const ProposalsPage: FC<IProposalsClientProps> = (props) => {
 							socials={room.socials}
 						/>
 					</section>
-					{
-						proposals && Array.isArray(proposals) && proposals.length > 0 && (
-							<Proposals proposals={proposals} />
-						)
-					}
+					<Proposals proposals={proposals} />
 				</div>
 			</section>
 		</>

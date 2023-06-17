@@ -8,10 +8,15 @@ import { getProposals } from 'pages/api/proposals';
 import { getRoom } from 'pages/api/room';
 import React, { FC, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import House from '~src/components/House';
+import HouseAbout from '~src/components/House/HouseWrapper/HouseAbout';
+import HouseRooms from '~src/components/House/HouseWrapper/HouseRooms';
+import HouseSidebar from '~src/components/House/Sidebar';
+import Proposals from '~src/components/Room/Proposals';
 import SEOHead from '~src/global/SEOHead';
 import { houseActions } from '~src/redux/house';
-import { IListingProposal } from '~src/redux/house/@types';
+import { EHouseStage, IListingProposal } from '~src/redux/house/@types';
+import { useHouseCurrentStage } from '~src/redux/house/selectors';
+import { useHouseSelector } from '~src/redux/selectors';
 import { IRoom } from '~src/types/schema';
 
 interface IProposalsServerProps {
@@ -56,10 +61,13 @@ export const getServerSideProps: GetServerSideProps<IProposalsServerProps> = asy
 
 interface IProposalsClientProps extends IProposalsServerProps {}
 
-const Proposals: FC<IProposalsClientProps> = (props) => {
+const HouseProposalsPage: FC<IProposalsClientProps> = (props) => {
 	const dispatch = useDispatch();
 	const router = useRouter();
 	const { query } = router;
+	const { houseRooms, proposals } = props;
+	const { house } = useHouseSelector();
+	const currentStage = useHouseCurrentStage();
 
 	useEffect(() => {
 		if (props.error) {
@@ -78,14 +86,39 @@ const Proposals: FC<IProposalsClientProps> = (props) => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props]);
 
+	useEffect(() => {
+		if (currentStage !== EHouseStage.PROPOSALS) {
+			dispatch(houseActions.setCurrentStage(EHouseStage.PROPOSALS));
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	if (!house) {
+		return null;
+	}
+
 	return (
 		<>
 			<SEOHead title={`Proposals of Room ${query['house_id']} in House ${query['house_id']}`} />
-			<div>
-				<House />
-			</div>
+			<section className='flex gap-x-[18px]'>
+				<HouseSidebar />
+				<div className='flex-1 flex flex-col gap-y-[21px]'>
+					<section
+						className='flex gap-x-[17.5px]'
+					>
+						<HouseAbout
+							description={house.description}
+						/>
+						<HouseRooms
+							houseRooms={houseRooms}
+							house_id={house.id}
+						/>
+					</section>
+					<Proposals proposals={proposals} />
+				</div>
+			</section>
 		</>
 	);
 };
 
-export default Proposals;
+export default HouseProposalsPage;

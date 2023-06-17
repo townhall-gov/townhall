@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 interface IDiscussionsProps {
-	discussions: IListingDiscussion[];
+	discussions: IListingDiscussion[] | null;
 }
 
 const Discussions: FC<IDiscussionsProps> = (props) => {

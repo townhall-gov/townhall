@@ -8,7 +8,7 @@ import Filter from './Filter';
 import NoProposalsYet from '~src/ui-components/NoProposalsYet';
 
 interface IProposalsProps {
-	proposals: IListingProposal[];
+	proposals: IListingProposal[] | null;
 }
 
 const Proposals: FC<IProposalsProps> = (props) => {
