@@ -79,26 +79,24 @@ const ProposalsPage: FC<IProposalsClientProps> = (props) => {
 	return (
 		<>
 			<SEOHead title={`Proposals of Room ${query['room_id']} in House ${query['house_id']}`} />
-			<div>
-				<section className='flex gap-x-7'>
-					<RoomSidebar />
-					<div className='flex-1 flex flex-col gap-y-[21px]'>
-						<section
-							className='flex gap-x-[17.5px]'
-						>
-							<RoomAbout
-								description={room.description}
-								socials={room.socials}
-							/>
-						</section>
-						{
-							proposals && Array.isArray(proposals) && proposals.length > 0 && (
-								<Proposals proposals={proposals} />
-							)
-						}
-					</div>
-				</section>
-			</div>
+			<section className='flex gap-x-7'>
+				<RoomSidebar />
+				<div className='flex-1 flex flex-col gap-y-[21px]'>
+					<section
+						className='flex gap-x-[17.5px]'
+					>
+						<RoomAbout
+							description={room.description}
+							socials={room.socials}
+						/>
+					</section>
+					{
+						proposals && Array.isArray(proposals) && proposals.length > 0 && (
+							<Proposals proposals={proposals} />
+						)
+					}
+				</div>
+			</section>
 		</>
 	);
 };

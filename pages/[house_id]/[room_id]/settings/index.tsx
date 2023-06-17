@@ -33,12 +33,10 @@ const SettingsPage = () => {
 	return (
 		<>
 			<SEOHead title={`Settings of Room ${query['room_id']} in House ${query['house_id']}`} />
-			<div>
-				<section className='flex gap-x-7'>
-					<RoomSidebar />
-					<RoomSettings />
-				</section>
-			</div>
+			<section className='flex gap-x-7'>
+				<RoomSidebar />
+				<RoomSettings />
+			</section>
 		</>
 	);
 };

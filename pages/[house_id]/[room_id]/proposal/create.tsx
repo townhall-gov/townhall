@@ -20,8 +20,8 @@ const CreateProposalPage = () => {
 	const { query } = router;
 
 	useEffect(() => {
-		if (currentStage !== ERoomStage.SETTINGS) {
-			dispatch(roomActions.setCurrentStage(ERoomStage.SETTINGS));
+		if (currentStage !== ERoomStage.NEW_PROPOSAL) {
+			dispatch(roomActions.setCurrentStage(ERoomStage.NEW_PROPOSAL));
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -33,14 +33,10 @@ const CreateProposalPage = () => {
 	return (
 		<>
 			<SEOHead title={`Create a Proposal in Room ${query['room_id']} of House ${query['house_id']}`} />
-			<div>
-				<section className='flex gap-x-7'>
-					<RoomSidebar />
-					<div className='flex-1 flex flex-col gap-y-[21px]'>
-						<CreateProposal />
-					</div>
-				</section>
-			</div>
+			<section className='flex gap-x-7'>
+				<RoomSidebar />
+				<CreateProposal />
+			</section>
 		</>
 	);
 };

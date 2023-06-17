@@ -70,8 +70,6 @@ const DiscussionsPage: FC<IDiscussionsClientProps> = (props) => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props]);
 
-	console.log(room);
-
 	if (!room) {
 		return null;
 	}
@@ -79,26 +77,24 @@ const DiscussionsPage: FC<IDiscussionsClientProps> = (props) => {
 	return (
 		<>
 			<SEOHead title={`Discussions of Room ${query['room_id']} in House ${query['house_id']}`} />
-			<div>
-				<section className='flex gap-x-7'>
-					<RoomSidebar />
-					<div className='flex-1 flex flex-col gap-y-[21px]'>
-						<section
-							className='flex gap-x-[17.5px]'
-						>
-							<RoomAbout
-								description={room.description}
-								socials={room.socials}
-							/>
-						</section>
-						{
-							discussions && Array.isArray(discussions) && discussions.length > 0 && (
-								<Discussions discussions={discussions} />
-							)
-						}
-					</div>
-				</section>
-			</div>
+			<section className='flex gap-x-7'>
+				<RoomSidebar />
+				<div className='flex-1 flex flex-col gap-y-[21px]'>
+					<section
+						className='flex gap-x-[17.5px]'
+					>
+						<RoomAbout
+							description={room.description}
+							socials={room.socials}
+						/>
+					</section>
+					{
+						discussions && Array.isArray(discussions) && discussions.length > 0 && (
+							<Discussions discussions={discussions} />
+						)
+					}
+				</div>
+			</section>
 		</>
 	);
 };
