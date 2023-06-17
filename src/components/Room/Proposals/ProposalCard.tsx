@@ -31,7 +31,7 @@ const ProposalCard: FC<IProposalCardProps> = (props) => {
 				}
 			}}
 			href={`/${house_id}/${room_id}/proposal/${id}`}
-			className='bg-[#04152F] rounded-2xl py-5 px-[18.5px] text-white'
+			className='bg-dark_blue_primary rounded-2xl py-5 px-[18.5px] text-white'
 		>
 			<section className='flex flex-col m-0'>
 				<article className='flex flex-col gap-y-[15px]'>

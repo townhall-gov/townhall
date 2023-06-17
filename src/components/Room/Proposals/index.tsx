@@ -8,22 +8,22 @@ import Filter from './Filter';
 import NoProposalsYet from '~src/ui-components/NoProposalsYet';
 
 interface IProposalsProps {
-	proposals: IListingProposal[];
+	proposals: IListingProposal[] | null;
 }
 
 const Proposals: FC<IProposalsProps> = (props) => {
 	const { proposals } = props;
 	return (
 		<section className='flex flex-col h-full'>
+			<div
+				className='flex items-center justify-end mb-[8.5px]'
+			>
+				<Filter />
+			</div>
 			{
 				proposals && Array.isArray(proposals) && proposals.length ?
 					<>
-						<div
-							className='flex items-center justify-end mb-[8.5px]'
-						>
-							<Filter />
-						</div>
-						<div className='flex flex-col gap-y-7 h-full max-h-[calc(100vh-194px)] overflow-auto pr-2'>
+						<div className='flex flex-col gap-y-7 h-full pr-2'>
 							{
 								proposals.map((proposal) => {
 									return <ProposalCard key={proposal.id} proposal={proposal} />;

@@ -10,6 +10,7 @@ import ProposalWrapper from '~src/components/Room/Proposal';
 import SEOHead from '~src/global/SEOHead';
 import { proposalActions } from '~src/redux/proposal';
 import { IProposal } from '~src/types/schema';
+import BackButton from '~src/ui-components/BackButton';
 
 interface IProposalServerProps {
 	proposal: IProposal | null;
@@ -19,7 +20,7 @@ interface IProposalServerProps {
 export const getServerSideProps: GetServerSideProps<IProposalServerProps> = async ({ query }) => {
 	const { data, error } = await getProposal({
 		house_id: (query?.house_id? String(query?.house_id): ''),
-		proposal_id: (query?.proposal_id? Number(query?.proposal_id): 0),
+		proposal_id: Number(query?.proposal_id),
 		room_id: (query?.room_id? String(query?.room_id): '')
 	});
 
@@ -52,7 +53,8 @@ const Proposal: FC<IProposalClientProps> = (props) => {
 	return (
 		<>
 			<SEOHead title={`This is a Proposal in Room ${query['room_id']} of House ${query['house_id']}.`} />
-			<div>
+			<div className='flex flex-col gap-y-[20.27px] items-start'>
+				<BackButton />
 				<ProposalWrapper />
 			</div>
 		</>

@@ -4,12 +4,14 @@
 
 import React, { FC, useEffect } from 'react';
 import { IComment } from '~src/types/schema';
-import CommentedUserImage from './CommentedUserImage';
+import CommentedUserImage from '~src/ui-components/CommentedUserImage';
 import CommentHeader from './Header';
 import CommentContent from './Content';
 import CommentFooter from './Footer';
-import RepliesWrapper from './RepliesWrapper';
+
 import { useRouter } from 'next/router';
+import RepliesWrapper from './RepliesWrapper/index';
+import { useReplyBoxVisibility } from '~src/redux/proposal/selectors';
 
 interface ICommentProps {
 	comment: IComment;
@@ -17,8 +19,9 @@ interface ICommentProps {
 
 const Comment: FC<ICommentProps> = (props) => {
 	const { comment } = props;
+	const { replies }=comment;
 	const { asPath } = useRouter();
-
+	const { replybox_comment_id  } = useReplyBoxVisibility();
 	useEffect(() => {
 		if (typeof window == 'undefined') return;
 		if (window.location.hash) {
@@ -69,7 +72,7 @@ const Comment: FC<ICommentProps> = (props) => {
 						comment={comment}
 					/>
 				</section>
-				<RepliesWrapper />
+				{ (replybox_comment_id==comment.id) && <RepliesWrapper replies={replies} comment_id={replybox_comment_id} />}
 			</article>
 		</section>
 	);

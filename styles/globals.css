@@ -5,6 +5,7 @@
 :root {
     --app_background: #22252D;
     --blue_primary: #66A5FF;
+    --dark_blue_primary: #04152F;
     --purple_primary: #7E2FDD;
     --grey_light: #A0A6AE;
     --grey_primary: #94A2AF;
@@ -77,7 +78,7 @@ p {
 
 /* MODAL CSS */
 .ant-modal-content {
-    background-color: #04152F !important;
+    background-color: var(--dark_blue_primary) !important;
     color: white !important;
     box-shadow: 2px 1px 16px rgba(102, 165, 255, 0.85) !important; 
     border-radius: 16px;

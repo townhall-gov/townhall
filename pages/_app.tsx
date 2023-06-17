@@ -4,12 +4,13 @@
 
 import { Montserrat } from 'next/font/google';
 import AppLayout from '~src/components/AppLayout';
-import '~styles/globals.css';
 import type { AppProps } from 'next/app';
 import Image from 'next/image';
 import NextNProgress from 'nextjs-progressbar';
+import { antdTheme } from '~styles/antdTheme';
 
 export const montserrat = Montserrat({
+	adjustFontFallback: false,
 	display: 'swap',
 	style: ['italic', 'normal'],
 	subsets: ['latin'],
@@ -17,7 +18,6 @@ export const montserrat = Montserrat({
 	weight: ['200', '300', '400', '500', '600', '700']
 });
 
-import 'antd/dist/reset.css';
 import { ConfigProvider } from 'antd';
 import classNames from 'classnames';
 import { FC, useEffect, useState } from 'react';
@@ -25,6 +25,9 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { useStore } from 'react-redux';
 import { wrapper } from '~src/redux/store';
 import { useRouter } from 'next/router';
+
+import 'antd/dist/reset.css';
+import '~styles/globals.css';
 
 const App: FC<AppProps> = ({ Component, pageProps }) => {
 	const store: any = useStore();
@@ -46,7 +49,7 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
 	</div>;
 	return <>
 		<PersistGate persistor={store.__persistor}>
-			<ConfigProvider>
+			<ConfigProvider theme={antdTheme}>
 				<>
 					{ showSplashScreen && <SplashLoader /> }
 					<main

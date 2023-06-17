@@ -3,7 +3,8 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { useRouter } from 'next/router';
 import React from 'react';
-import House from '~src/components/House';
+import HouseSettings from '~src/components/House/Settings';
+import HouseSidebar from '~src/components/House/Sidebar';
 import SEOHead from '~src/global/SEOHead';
 
 const Settings = () => {
@@ -12,9 +13,12 @@ const Settings = () => {
 	return (
 		<>
 			<SEOHead title={`Settings of House ${query['house_id']}.`} />
-			<div>
-				<House />
-			</div>
+			<section className='flex gap-x-[18px]'>
+				<HouseSidebar />
+				<div className='flex-1 flex flex-col gap-y-[21px]'>
+					<HouseSettings />
+				</div>
+			</section>
 		</>
 	);
 };

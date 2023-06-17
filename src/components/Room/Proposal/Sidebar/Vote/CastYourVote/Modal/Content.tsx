@@ -14,6 +14,7 @@ import { IBalanceWithNetwork } from '~src/types/schema';
 import Address from '~src/ui-components/Address';
 import formatTokenAmount from '~src/utils/formatTokenAmount';
 import { chainProperties } from '~src/utils/networkConstants';
+import Option from '../Option';
 
 const CastYourVoteModalContent = () => {
 	const { voteCreation, proposal, loading } = useProposalSelector();
@@ -64,90 +65,102 @@ const CastYourVoteModalContent = () => {
 			dispatch(proposalActions.setLoading(false));
 		})();
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [voteCreation.options, user]);
+	}, [user]);
 
 	return (
 		<section
-			className='flex flex-col gap-y-3 py-3'
+			className='flex flex-col py-2'
 		>
 			<h4
-				className='flex items-center justify-between text-base font-medium'
+				className='text-grey_primary font-normal text-sm leading-[21px] m-0'
 			>
-				<span
-					className='text-grey_primary'
-				>
-                    Choices
-				</span>
-				<span>
-					{voteCreation.options.map((option) => (option.value)).join(', ')}
-				</span>
+				Choose your vote
 			</h4>
-			<Spin
-				className='bg-app_background'
-				spinning={loading}
-				indicator={<LoadingOutlined />}
-			>
-				<article
-					className='flex flex-col gap-y-2'
-				>
-					<h4
-						className='text-grey_primary text-base font-medium m-0 grid grid-cols-3 gap-2'
-					>
-						<span>Network</span>
-						<span className='pl-2'>Snapshot</span>
-						<span className='pl-2'>Balance</span>
-					</h4>
-					<ul
-						className='m-0 list-decimal pl-4'
-					>
+			{
+				proposal && proposal.voting_system_options && proposal.voting_system_options.length && Array.isArray(proposal.voting_system_options)?
+					<div className='flex flex-col gap-y-3 mt-[7px]'>
 						{
-
-							proposal?.snapshot_heights.map((snapshot_height, index) => {
-								const balance = voteCreation.balances.find((balance) => balance.network === snapshot_height.blockchain)?.balance;
-								const balanceFormatted = formatTokenAmount(balance || 0, snapshot_height.blockchain);
+							proposal?.voting_system_options.map((option, index) => {
 								return (
-									<li
-										className='list-decimal'
-										key={snapshot_height.height + index}
-									>
-										<p
-											className='grid grid-cols-3 gap-2 m-0 text-sm'
-										>
-											<span>
-												{snapshot_height.blockchain}
-											</span>
-											<span>
-												# {snapshot_height.height}
-											</span>
-											<span>
-												$ {Number(balanceFormatted).toFixed(2)} {chainProperties[snapshot_height.blockchain].tokenSymbol}
-											</span>
-										</p>
-									</li>
+									<Option
+										key={index}
+										index={index + 1}
+										option={option}
+									/>
 								);
 							})
 						}
-					</ul>
-					{
-						isAllZero && user?.address && (
-							<div
-								className='flex flex-col gap-y-2 mt-5'
-							>
-								<p
-									className='text-sm text-red-500'
+					</div>
+					: null
+			}
+			<div className='mt-5'>
+				<Spin
+					className='bg-dark_blue_primary'
+					spinning={loading}
+					indicator={<LoadingOutlined />}
+				>
+					<article
+						className='flex flex-col gap-y-2'
+					>
+						<h4
+							className='text-grey_primary text-base font-medium m-0 grid grid-cols-3 gap-2'
+						>
+							<span>Network</span>
+							<span className='pl-2'>Snapshot</span>
+							<span className='pl-2'>Balance</span>
+						</h4>
+						<ul
+							className='m-0 list-decimal pl-4'
+						>
+							{
+
+								proposal?.snapshot_heights.map((snapshot_height, index) => {
+									const balance = voteCreation.balances.find((balance) => balance.network === snapshot_height.blockchain)?.balance;
+									const balanceFormatted = formatTokenAmount(balance || 0, snapshot_height.blockchain);
+									return (
+										<li
+											className='list-decimal'
+											key={snapshot_height.height + index}
+										>
+											<p
+												className='grid grid-cols-3 gap-2 m-0 text-sm'
+											>
+												<span>
+													{snapshot_height.blockchain}
+												</span>
+												<span>
+													# {snapshot_height.height}
+												</span>
+												<span>
+													$ {Number(balanceFormatted).toFixed(2)} {chainProperties[snapshot_height.blockchain].tokenSymbol}
+												</span>
+											</p>
+										</li>
+									);
+								})
+							}
+						</ul>
+						{
+							isAllZero && user?.address && (
+								<div
+									className='flex flex-col gap-y-2 mt-5'
 								>
-									Insufficient balance, you can not vote from this account, please logged in with another account.
-								</p>
-								<Address
-									ethIdenticonSize={20}
-									identiconSize={20}
-									address={user?.address}
-								/>
-							</div>
-						)
-					}
-				</article>
-			</Spin>
+									<p
+										className='text-sm text-red-500'
+									>
+										Insufficient balance, you can not vote from this account, please logged in with another account.
+									</p>
+									<Address
+										ethIdenticonSize={20}
+										identiconSize={20}
+										address={user?.address}
+									/>
+								</div>
+							)
+						}
+					</article>
+				</Spin>
+			</div>
 		</section>
 	);
 };
