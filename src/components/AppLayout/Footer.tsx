@@ -14,43 +14,42 @@ interface IFooterProps {
 
 const Footer: FC<IFooterProps> = () => {
 	return (
-		<AntdFooter className='bg-black rounded-t-2xl grid grid-cols-3 gap-x-5 lg:py-[44.5px] lg:px-[183px]'>
+		<AntdFooter className='bg-black rounded-t-[40px] grid grid-cols-4 px-[25px] gap-x-5py-10'>
 			<article className='col-span-1 flex flex-col gap-y-[14px]'>
 				<h6 className='m-0 p-0 text-base font-normal leading-[20px] text-grey_primary'>Get the latest Townhall updates</h6>
-				<div className='flex items-center relative border border-solid border-grey_primary rounded-2xl max-w-[292px] px-2'>
+				<div className='flex items-center relative border border-solid border-grey_primary rounded-2xl max-w-[292px] pr-2'>
 					<input
 						className='flex-1 flex items-center justify-center m-0 p-0 border-none min-h-[40px] bg-transparent rounded-l-2xl px-2 py-[10px] outline-none text-grey_primary placeholder:text-grey_primary'
 						placeholder='Your Email'
 					/>
 					<RightCircleOutlined className='text-grey_primary text-xl' />
 				</div>
-				<span className='text-white text-xs leading-[15px] tracking-[0.02em] font-normal'>&#169; 2023 Townhall</span>
 			</article>
-			<ul className='col-span-1 m-0 p-0 grid grid-cols-2 gap-x-2 text-grey_primary list-none'>
-				<li className='col-span-1 m-0 p-0 flex items-center'>
-					<Link className='text-grey_primary text-base leading-[20px] font-light' href='/about'>About</Link>
-				</li>
-				<li className='col-span-1 m-0 p-0 flex items-center'>
-					<Link className='text-grey_primary text-base leading-[20px] font-light' href='/contact-us'>Contact Us</Link>
-				</li>
-			</ul>
-			<article>
-				<button className='outline-none border border-solid rounded-[16px] cursor-pointer border-blue_primary text-blue_primary text-base leading-[20px] font-normal px-[18px] py-2 bg-transparent'>
-					Request a House for your Blockchain
-				</button>
-				<div className='flex flex-col mt-[18px]'>
-					<p className='m-0 p-0 text-grey_primary leading-[22px] text-lg'>Join Townhall Community</p>
-					<div
-						className='flex items-center gap-x-2'
-					>
-						<a href='https://twitter.com/townhallgov' target='_blank' className='mt-2 flex items-center text-white text-base gap-x-[16.33px]' rel="noreferrer">
-							<TwitterOutlined />
-						</a>
-						<a href='https://github.com/townhall-gov/townhall' target='_blank' className='mt-2 flex items-center text-white text-base gap-x-[16.33px]' rel="noreferrer">
-							<GithubOutlined />
-						</a>
-					</div>
+			<article className='col-span-1 flex justify-center'>
+				<ul className='m-0 p-0 flex flex-col justify-between gap-x-2 text-white list-none'>
+					<li className='m-0 p-0 flex items-center'>
+						<Link className='text-white text-base leading-[20px] font-light' href='/about'>About</Link>
+					</li>
+					<li className='m-0 p-0 flex items-center'>
+						<Link className='text-white text-base leading-[20px] font-light' href='/contact-us'>Contact Us</Link>
+					</li>
+				</ul>
+			</article>
+			<article className='col-span-1 flex flex-col '>
+				<p className='m-0 p-0 text-grey_primary leading-[22px] text-lg'>Join Townhall Community</p>
+				<div
+					className='flex items-center gap-x-2'
+				>
+					<a href='https://twitter.com/townhallgov' target='_blank' className='mt-2 flex items-center text-white text-base gap-x-[16.33px]' rel="noreferrer">
+						<TwitterOutlined />
+					</a>
+					<a href='https://github.com/townhall-gov/townhall' target='_blank' className='mt-2 flex items-center text-white text-base gap-x-[16.33px]' rel="noreferrer">
+						<GithubOutlined />
+					</a>
 				</div>
+			</article>
+			<article className='col-span-1'>
+				<span className='text-white text-xs leading-[15px] tracking-[0.02em] font-normal'>&#169; 2023 Polkassembly</span>
 			</article>
 		</AntdFooter>
 	);

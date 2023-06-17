@@ -3,14 +3,14 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React from 'react';
 import SEOHead from '~src/global/SEOHead';
-import WorkingOnItBanner from '~src/ui-components/WorkingOnItBanner';
+import ComingSoon from '~src/ui-components/ComingSoon';
 
 const About = () => {
 	return (
 		<>
 			<SEOHead title='About Us' />
 			<div className='h-full'>
-				<WorkingOnItBanner />
+				<ComingSoon />
 			</div>
 		</>
 	);
