@@ -18,10 +18,11 @@ import getErrorMessage from '~src/utils/getErrorMessage';
 
 interface IHouseDropdownProps {
     className?: string;
+	onClick?: () => void;
 }
 
 const HouseDropdown: FC<IHouseDropdownProps> = (props) => {
-	const { className } = props;
+	const { className, onClick } = props;
 	const [houseItems, setHouseItems] = useState<ItemType[]>([]);
 	const { houses } = useHousesSelector();
 	const dispatch = useDispatch();
@@ -67,6 +68,7 @@ const HouseDropdown: FC<IHouseDropdownProps> = (props) => {
 			menu={{
 				items: houseItems,
 				onClick: (e) => {
+					onClick && onClick();
 					const house = houses.find((house) => house.id === e.key);
 					dispatch(roomsActions.setRoomCreation_House(house));
 				}

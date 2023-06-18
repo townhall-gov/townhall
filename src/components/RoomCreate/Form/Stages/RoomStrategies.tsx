@@ -105,7 +105,7 @@ const RoomStrategies: FC<IRoomStrategiesProps> = (props) => {
 								</p>
 								:
 								<p className='m-0 flex justify-between text-grey_light text-base leading-none'>
-									<div>Select voting strategy</div>
+									<span>Select voting strategy</span>
 									<DownOutlined/>
 								</p>
 						}
@@ -152,7 +152,7 @@ const RoomStrategies: FC<IRoomStrategiesProps> = (props) => {
 										<DownOutlined/>
 									</p>
 									: <p className='m-0 flex justify-between items-center text-grey_light text-base leading-none'>
-										<div>Select network for voting strategy</div>
+										<span>Select network for voting strategy</span>
 										<DownOutlined/>
 									</p>
 								: <p className='text-red_primary flex justify-between items-center text-white font-medium text-base leading-none'>

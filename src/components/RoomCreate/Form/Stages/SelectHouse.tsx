@@ -3,6 +3,8 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React from 'react';
 import HouseDropdown from '~src/ui-components/HouseDropdown';
+import Error from '../Error';
+import { removeError } from '~src/redux/rooms/validation';
 
 const SelectHouse = () => {
 	return (
@@ -11,7 +13,8 @@ const SelectHouse = () => {
                 A House is Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..
 			</p>
 			<div className='my-[28px]'>
-				<HouseDropdown />
+				<HouseDropdown onClick={() => removeError('select_house')} />
+				<Error id='select_house' />
 			</div>
 			<div className='flex flex-col gap-y-2'>
 				<h5 className='m-0 p-0 font-semibold text-lg leading-[23px] text-white'>

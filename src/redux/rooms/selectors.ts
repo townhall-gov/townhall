@@ -5,6 +5,7 @@
 import { useRoomsSelector } from '~src/redux/selectors';
 import { ERoomCreationStage } from './@types';
 import roomCreationValidation from './validation';
+import { timeline } from '~src/components/RoomCreate/utils';
 
 const useRoomCreationCurrentStage = () => {
 	const rooms = useRoomsSelector();
@@ -13,7 +14,25 @@ const useRoomCreationCurrentStage = () => {
 
 const useRoomCreationStageComplete = (stage: ERoomCreationStage) => {
 	const roomCreation = useRoomCreation();
-	return roomCreationValidation?.[stage]?.(roomCreation);
+	const error = roomCreationValidation?.[stage]?.(roomCreation);
+	return (error? (Object.values(error).length === 0 ? true : false): false);
+};
+
+const useIsAllRoomCreationStageCompleteBeforeThisStage = (stage: ERoomCreationStage) => {
+	let isError = false;
+	const roomCreation = useRoomCreation();
+	for(let i = 0; i < timeline.length; i++) {
+		const item = timeline[i];
+		if (item.stage === stage) {
+			break;
+		}
+		const errors = roomCreationValidation?.[item.stage]?.(roomCreation);
+		if (Object.values(errors).length > 0) {
+			isError = true;
+			break;
+		}
+	}
+	return !isError;
 };
 
 const useRoomCreation = () => {
@@ -48,5 +67,6 @@ export {
 	useRoomCreation_RoomDetails,
 	useRoomCreation_CreatorDetails,
 	useRoomCreation_RoomSocials,
-	useRoomCreation
+	useRoomCreation,
+	useIsAllRoomCreationStageCompleteBeforeThisStage
 };

@@ -7,7 +7,7 @@ import { getNextCreationStage } from '../utils';
 import { useDispatch } from 'react-redux';
 import { roomsActions } from '~src/redux/rooms';
 import { ERoomCreationStage } from '~src/redux/rooms/@types';
-import roomCreationValidation from '~src/redux/rooms/validation';
+import roomCreationValidation, { addError } from '~src/redux/rooms/validation';
 import { notificationActions } from '~src/redux/notification';
 import { ENotificationStatus } from '~src/redux/notification/@types';
 import api from '~src/services/api';
@@ -87,6 +87,21 @@ const StageChangeBtn = () => {
 			connectWallet();
 			return;
 		}
+		const arr = Object.values(ERoomCreationStage);
+		for(let i = 0; i < arr.length; i++) {
+			const stage = arr[i];
+			const error = roomCreationValidation?.[stage]?.(roomCreation);
+			const errors = Object.entries(error);
+			if (errors.length > 0) {
+				errors.forEach(([key, value]) => {
+					addError(key, value);
+				});
+				return;
+			}
+			if (stage === roomCreationCurrentStage) {
+				break;
+			}
+		}
 		if (nextCreationStage) {
 			dispatch(roomsActions.setRoomCreationStage(nextCreationStage.stage));
 		} else {
@@ -98,87 +113,70 @@ const StageChangeBtn = () => {
 				}));
 				return;
 			}
-			let isError = false;
-			Object.values(ERoomCreationStage).some((stage) => {
-				const error = roomCreationValidation?.[stage]?.(roomCreation);
-				if (error) {
-					isError = true;
-					dispatch(notificationActions.send({
-						message: error,
-						status: ENotificationStatus.ERROR,
-						title: 'Validation Error'
-					}));
-					dispatch(roomsActions.setRoomCreationStage(stage));
-					return true;
-				}
-				return false;
-			});
-			if (!isError) {
-				(async () => {
-					const { creator_details, room_details, room_socials, select_house, room_strategies } = roomCreation;
-					try {
-						dispatch(roomsActions.setLoading(true));
-						const { data, error } = await api.post<ICreateRoomResponse, ICreateRoomBody>('auth/actions/createRoom', {
-							room: {
-								contract_address: room_details?.contract_address || '',
-								creator_details: creator_details!,
-								decimals: dappInfo.decimals,
-								description: room_details?.description || '',
-								house_id: select_house?.id || '',
-								id: room_details?.name || '',
-								logo: room_details?.logo || '',
-								socials: room_socials || [],
-								symbol: dappInfo.symbol,
-								title: room_details?.title || '',
-								voting_strategies: room_strategies || []
-							}
-						});
-						if (error) {
-							dispatch(roomsActions.setError(getErrorMessage(error)));
-							dispatch(notificationActions.send({
-								message: getErrorMessage(error),
-								status: ENotificationStatus.ERROR,
-								title: 'Failed'
-							}));
-						} else if (!data) {
-							const error = 'Something went wrong, unable to leave the room.';
-							dispatch(roomsActions.setError(error));
-							dispatch(notificationActions.send({
-								message: error,
-								status: ENotificationStatus.ERROR,
-								title: 'Failed'
-							}));
-						} else {
-							dispatch(notificationActions.send({
-								message: 'Room created successfully.',
-								status: ENotificationStatus.SUCCESS,
-								title: 'Success'
-							}));
-							const room = data.createdRoom;
-							// GO to newly created room page
-							dispatch(roomActions.setRoom(room));
-							dispatch(profileActions.addJoinedRoom({
-								houseId: room.house_id,
-								joinedRoom: {
-									...data.joinedRoom,
-									...room
-								}
-							}));
-							dispatch(roomsActions.setLoading(false));
-							dispatch(roomsActions.setRoomCreationReset());
-							router.push(`/${room.house_id}/${room.id}/proposals`);
+			(async () => {
+				const { creator_details, room_details, room_socials, select_house, room_strategies } = roomCreation;
+				try {
+					dispatch(roomsActions.setLoading(true));
+					const { data, error } = await api.post<ICreateRoomResponse, ICreateRoomBody>('auth/actions/createRoom', {
+						room: {
+							contract_address: room_details?.contract_address || '',
+							creator_details: creator_details!,
+							decimals: dappInfo.decimals,
+							description: room_details?.description || '',
+							house_id: select_house?.id || '',
+							id: room_details?.name || '',
+							logo: room_details?.logo || '',
+							socials: room_socials || [],
+							symbol: dappInfo.symbol,
+							title: room_details?.title || '',
+							voting_strategies: room_strategies || []
 						}
-						dispatch(roomsActions.setLoading(false));
-					} catch (error) {
-						dispatch(roomsActions.setLoading(false));
+					});
+					if (error) {
+						dispatch(roomsActions.setError(getErrorMessage(error)));
 						dispatch(notificationActions.send({
 							message: getErrorMessage(error),
 							status: ENotificationStatus.ERROR,
 							title: 'Failed'
 						}));
+					} else if (!data) {
+						const error = 'Something went wrong, unable to leave the room.';
+						dispatch(roomsActions.setError(error));
+						dispatch(notificationActions.send({
+							message: error,
+							status: ENotificationStatus.ERROR,
+							title: 'Failed'
+						}));
+					} else {
+						dispatch(notificationActions.send({
+							message: 'Room created successfully.',
+							status: ENotificationStatus.SUCCESS,
+							title: 'Success'
+						}));
+						const room = data.createdRoom;
+						// GO to newly created room page
+						dispatch(roomActions.setRoom(room));
+						dispatch(profileActions.addJoinedRoom({
+							houseId: room.house_id,
+							joinedRoom: {
+								...data.joinedRoom,
+								...room
+							}
+						}));
+						dispatch(roomsActions.setLoading(false));
+						dispatch(roomsActions.setRoomCreationReset());
+						router.push(`/${room.house_id}/${room.id}/proposals`);
 					}
-				})();
-			}
+					dispatch(roomsActions.setLoading(false));
+				} catch (error) {
+					dispatch(roomsActions.setLoading(false));
+					dispatch(notificationActions.send({
+						message: getErrorMessage(error),
+						status: ENotificationStatus.ERROR,
+						title: 'Failed'
+					}));
+				}
+			})();
 		}
 	};
 

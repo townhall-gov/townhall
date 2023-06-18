@@ -35,6 +35,14 @@ type IRoomDetailsFieldPayload = {
     }
 }[keyof IRoomDetails];
 
+type TRoomCreatorDetails = Omit<ICreatorDetails, 'address'>
+type IRoomCreatorDetailsFieldPayload = {
+    [K in keyof TRoomCreatorDetails]: {
+      key: K;
+      value: TRoomCreatorDetails[K];
+    }
+}[keyof TRoomCreatorDetails];
+
 export const roomsStore = createSlice({
 	extraReducers: (builder) => {
 		builder.addCase(HYDRATE, (state, action) => {
@@ -83,20 +91,35 @@ export const roomsStore = createSlice({
 				};
 			}
 		},
-		setRoomCreation_CreatorDetails: (state, action: PayloadAction<Omit<ICreatorDetails, 'address'> | null>) => {
-			const creator_details = action.payload;
-			if (state.roomCreation) {
-				state.roomCreation.creator_details = creator_details;
-			} else {
-				state.roomCreation = {
-					creator_details: creator_details,
-					currentStage: ERoomCreationStage.CREATOR_DETAILS,
-					getting_started: null,
-					room_details: null,
-					room_socials: null,
-					room_strategies: [],
-					select_house: null
-				};
+		setRoomCreation_CreatorDetails: (state, action: PayloadAction<IRoomCreatorDetailsFieldPayload>) => {
+			const obj = action.payload;
+			if (obj) {
+				const { key, value } = obj;
+				if (state.roomCreation) {
+					state.roomCreation.creator_details = {
+						email: '',
+						name: '',
+						phone: '',
+						...state.roomCreation.creator_details,
+						[key]: value
+					};
+				} else {
+					state.roomCreation = {
+						creator_details: {
+							email: '',
+							name: '',
+							phone: '',
+							// eslint-disable-next-line sort-keys
+							[key]: value
+						},
+						currentStage: ERoomCreationStage.CREATOR_DETAILS,
+						getting_started: null,
+						room_details: null,
+						room_socials: null,
+						room_strategies: [],
+						select_house: null
+					};
+				}
 			}
 		},
 		setRoomCreation_House: (state, action: PayloadAction<IHouse | undefined>) => {
