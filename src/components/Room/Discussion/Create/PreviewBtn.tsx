@@ -91,7 +91,7 @@ const PreviewBtn = () => {
 						status: ENotificationStatus.SUCCESS,
 						title: 'Success!'
 					}));
-					dispatch(roomActions.resetProposalCreation());
+					dispatch(roomActions.resetDiscussionCreation());
 					router.push(`/${query.house_id}/${query.room_id}/discussion/${data.createdDiscussion.id}`);
 				}
 			}

@@ -77,8 +77,16 @@ export const roomStore = createSlice({
 	initialState,
 	name: 'room',
 	reducers: {
-		resetProposalCreation: (state) => {
+		resetDiscussionCreation: (state) => {
 			localStorage.removeItem('discussionCreation');
+			state.discussionCreation = {
+				description: '',
+				tags: [],
+				title: ''
+			};
+		},
+		resetProposalCreation: (state) => {
+			localStorage.removeItem('proposalCreation');
 			state.proposalCreation = {
 				description: '',
 				discussion: '',

@@ -102,10 +102,14 @@ const HouseProposalsPage: FC<IProposalsClientProps> = (props) => {
 						<HouseAbout
 							description={house.description}
 						/>
-						<HouseRooms
-							houseRooms={houseRooms}
-							house_id={house.id}
-						/>
+						{
+							houseRooms && Array.isArray(houseRooms) && houseRooms.length > 0 && (
+								<HouseRooms
+									houseRooms={houseRooms}
+									house_id={house.id}
+								/>
+							)
+						}
 					</section>
 					<Proposals proposals={proposals} />
 				</div>
