@@ -155,6 +155,7 @@ const AutoFillingPostLinkData = () => {
 					height={225}
 					value=''
 					localStorageKey={key}
+					spinClassName='bg-dark_blue_primary'
 					onChange={(v) => {
 						clearTimeout(timeout.current);
 						timeout.current = setTimeout(() => {

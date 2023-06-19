@@ -206,6 +206,7 @@ export const getProposal: TGetProposalFn = async (params) => {
 				id: data.id,
 				is_vote_results_hide_before_voting_ends: data.is_vote_results_hide_before_voting_ends || false,
 				post_link: data.post_link || null,
+				post_link_data: data.post_link_data || null,
 				proposer_address: data.proposer_address,
 				reactions: reactions,
 				room_id: data.room_id,

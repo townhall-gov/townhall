@@ -2,6 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+import { IPostLinkData } from 'pages/api/auth/data/post-link-data';
 import { IVotingSystemOption } from '~src/redux/room/@types';
 import { ICreatorDetails, IProjectSocial, IStrategy } from '~src/redux/rooms/@types';
 import { EBlockchain, EWallet, ESentiment, EVotingSystem, EReaction, EVotingStrategy, EProposalStatus, EPostType } from '~src/types/enums';
@@ -91,6 +92,7 @@ interface IProposal {
 	voting_strategies: IStrategy[];
 	status: EProposalStatus;
 	post_link: IPostLink | null;
+	post_link_data: IPostLinkData | null;
 }
 
 interface IDiscussion {
@@ -106,6 +108,7 @@ interface IDiscussion {
 	reactions: IReaction[];
 	comments: IComment[];
 	post_link: IPostLink | null;
+	post_link_data: IPostLinkData | null;
 }
 
 interface IPostLink {

@@ -63,7 +63,6 @@ export const getDiscussions: TGetDiscussionsFn = async (params) => {
 								created_at: convertFirestoreTimestampToDate(data.created_at),
 								house_id: data.house_id,
 								id: data.id,
-								post_link: null,
 								proposer_address: data.proposer_address,
 								reactions_count,
 								room_id: data.room_id,

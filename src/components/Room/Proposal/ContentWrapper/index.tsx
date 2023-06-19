@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import React, { FC } from 'react';
 import CommentsWrapper from './CommentsWrapper';
 import Content from './Content';
+import PostLink from './PostLink';
 
 interface IContentWrapperProps {
     className?: string;
@@ -13,8 +14,9 @@ interface IContentWrapperProps {
 const ContentWrapper: FC<IContentWrapperProps> = (props) => {
 	const { className } = props;
 	return (
-		<div className={classNames('flex flex-col gap-y-12', className)}>
+		<div className={classNames('flex flex-col gap-y-9', className)}>
 			<Content />
+			<PostLink />
 			<CommentsWrapper />
 		</div>
 	);

@@ -17,7 +17,7 @@ export interface IRoomStore {
     discussions: IListingDiscussion[];
 }
 
-export interface IListingProposal extends Omit<IProposal, 'discussion' | 'description' | 'updated_at' | 'preparation_period' | 'comments' | 'reactions' | 'is_vote_results_hide_before_voting_ends' | 'voting_system' | 'timestamp' | 'snapshot_heights' | 'voting_system_options' | 'voting_strategies' | 'post_link'> {
+export interface IListingProposal extends Omit<IProposal, 'discussion' | 'description' | 'updated_at' | 'preparation_period' | 'comments' | 'reactions' | 'is_vote_results_hide_before_voting_ends' | 'voting_system' | 'timestamp' | 'snapshot_heights' | 'voting_system_options' | 'voting_strategies' | 'post_link' | 'post_link_data'> {
     comments_count: number;
     reactions_count: {
         [EReaction.LIKE]: number;
@@ -25,7 +25,7 @@ export interface IListingProposal extends Omit<IProposal, 'discussion' | 'descri
     };
 }
 
-export interface IListingDiscussion extends Omit<IDiscussion, 'description' | 'updated_at' | 'comments' | 'reactions' > {
+export interface IListingDiscussion extends Omit<IDiscussion, 'description' | 'updated_at' | 'comments' | 'reactions' | 'post_link' | 'post_link_data'> {
     comments_count: number;
     reactions_count: {
         [EReaction.LIKE]: number;

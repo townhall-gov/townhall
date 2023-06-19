@@ -224,6 +224,12 @@ const PreviewingPostLinkData = () => {
 				...data.updatedPost
 			}));
 			dispatch(proposalActions.resetPostLinkCreation_Field());
+			dispatch(modalActions.setModal({
+				contentType: EContentType.NONE,
+				footerType: EFooterType.NONE,
+				open: false,
+				titleType: ETitleType.NONE
+			}));
 		} else {
 			dispatch(notificationActions.send({
 				message: getErrorMessage(error) || 'Something went wrong, unable to link a proposal with discussion.',
