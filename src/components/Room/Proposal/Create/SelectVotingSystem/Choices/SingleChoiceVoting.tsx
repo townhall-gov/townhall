@@ -16,7 +16,7 @@ interface ISingleChoiceVotingProps {
 
 const SingleChoiceVoting:FC<ISingleChoiceVotingProps> = (props) => {
 	const { className } = props;
-	const { loading } = useRoomSelector();
+	const { loading,isPropsalPreviewState } = useRoomSelector();
 	const { voting_system_options } = useProposalCreation();
 	const dispatch = useDispatch();
 	const [inputWidthindex, setInputWidthindex] = useState<number[]>([]);
@@ -33,7 +33,7 @@ const SingleChoiceVoting:FC<ISingleChoiceVotingProps> = (props) => {
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-	const isDisabled = voting_system_options.some((option) => !option.value) || loading;
+	const isDisabled = voting_system_options.some((option: { value: any; }) => !option.value) || loading ;
 	return (
 		<div
 			className='flex flex-col gap-y-2'
@@ -48,7 +48,7 @@ const SingleChoiceVoting:FC<ISingleChoiceVotingProps> = (props) => {
 						>
 							<span className='text-grey_light py-1'>Choice {i + 1}</span>
 							<input
-								disabled={loading}
+								disabled={loading||isPropsalPreviewState}
 								onChange={(e) => {
 									dispatch(roomActions.setProposalCreation_Field({
 										key: 'voting_system_options',
@@ -80,12 +80,12 @@ const SingleChoiceVoting:FC<ISingleChoiceVotingProps> = (props) => {
 								})
 							}));}}>
 								{
-									option.value  && <CancelIcon className='text-transparent  stroke-app_background text-2xl'/>
+									option.value && !isPropsalPreviewState  && <CancelIcon className='text-transparent  stroke-app_background text-2xl'/>
 								}
 							</div>}
 						</div>
 						<button
-							disabled={isDisabled}
+							disabled={isDisabled||isPropsalPreviewState}
 							className={
 								classNames('w-10 h-10 -mr-10 flex items-center justify-center border border-solid border-blue_primary outline-none bg-transparent text-blue_primary rounded-full', {
 									'cursor-not-allowed': isDisabled,

@@ -19,6 +19,8 @@ const initialState: IRoomStore = {
 	},
 	discussions: [],
 	error: '',
+	isDiscussionPreviewState:false,
+	isPropsalPreviewState:false,
 	loading: false,
 	proposalCreation: {
 		description: '',
@@ -134,6 +136,9 @@ export const roomStore = createSlice({
 				}
 			}
 		},
+		setDiscussionPreviewState: (state, action: PayloadAction<boolean>) => {
+			state.isDiscussionPreviewState=action.payload;
+		},
 		setDiscussions: (state, action: PayloadAction<IListingDiscussion[]>) => {
 			const discussions = action.payload;
 			if (discussions && Array.isArray(discussions)) {
@@ -193,6 +198,9 @@ export const roomStore = createSlice({
 			if (proposals && Array.isArray(proposals)) {
 				state.proposals = proposals;
 			}
+		},
+		setPropsalPreviewState: (state, action: PayloadAction<boolean>) => {
+			state.isPropsalPreviewState=action.payload;
 		},
 		setRoom: (state, action: PayloadAction<IRoom |null>) => {
 			const room = action.payload;

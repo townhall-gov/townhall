@@ -12,7 +12,7 @@ import Input from '~src/ui-components/Input';
 const Title = () => {
 	const proposalCreation = useProposalCreation();
 	const dispatch = useDispatch();
-	const { loading } = useRoomSelector();
+	const { loading, isPropsalPreviewState } = useRoomSelector();
 	return (
 		<div className='flex flex-col'>
 			<h3 className='text-white font-medium text-xl'>Title</h3>
@@ -28,7 +28,7 @@ const Title = () => {
 				type='text'
 				value={proposalCreation?.title}
 				placeholder='Title'
-				isDisabled={loading}
+				isDisabled={isPropsalPreviewState||loading}
 			/>
 		</div>
 	);

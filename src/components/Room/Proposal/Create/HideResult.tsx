@@ -11,11 +11,11 @@ interface IHideResultProps {}
 
 const HideResult: FC<IHideResultProps> = () => {
 	const dispatch = useDispatch();
-	const { loading } = useRoomSelector();
+	const { loading,isPropsalPreviewState } = useRoomSelector();
 	return (
 		<div className='flex items-center gap-x-2'>
 			<Checkbox
-				disabled={loading}
+				disabled={isPropsalPreviewState||loading}
 				onChange={(e) => {
 					dispatch(roomActions.setProposalCreation_Field({
 						key: 'is_vote_results_hide_before_voting_ends',

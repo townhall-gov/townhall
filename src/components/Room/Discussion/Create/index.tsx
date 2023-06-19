@@ -5,20 +5,22 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { useProfileIsRoomJoined } from '~src/redux/profile/selectors';
 import Title from './Title';
-import Description from './Description';
 import Tags from './Tags';
 import PreviewBtn from './PreviewBtn';
+import DescriptionBox from './DescriptionBox';
+import { useDiscussionCreation } from '~src/redux/room/selectors';
 
 const CreateDiscussion = () => {
 	const { query } = useRouter();
 	const isRoomJoined = useProfileIsRoomJoined(String(query.house_id || ''), String(query.room_id || ''));
+	const discussionCreation = useDiscussionCreation();
 	return (
 		<section className='flex flex-col gap-y-8 h-full flex-1'>
 			{
 				isRoomJoined?
 					<>
 						<Title />
-						<Description imageNamePrefix={`house_${query.house_id}_room_${query?.room_id}_discussion`} />
+						<DescriptionBox imageNamePrefix={`house_${query.house_id}_room_${query?.room_id}_discussion`} value={discussionCreation?.description}/>
 						<Tags />
 						<PreviewBtn />
 					</>
