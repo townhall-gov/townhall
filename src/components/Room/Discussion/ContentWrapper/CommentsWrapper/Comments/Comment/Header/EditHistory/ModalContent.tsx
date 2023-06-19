@@ -4,7 +4,7 @@
 import dayjs from 'dayjs';
 import React from 'react';
 import ReactHTMLParser from 'react-html-parser';
-import { useCommentEditHistory } from '~src/redux/proposal/selectors';
+import { useCommentEditHistory } from '~src/redux/discussion/selectors';
 import getRelativeCreatedAt from '~src/utils/getRelativeCreatedAt';
 
 const EditHistoryModalContent = () => {

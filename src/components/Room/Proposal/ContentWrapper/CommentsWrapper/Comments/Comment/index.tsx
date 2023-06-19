@@ -20,6 +20,7 @@ const Comment: FC<ICommentProps> = (props) => {
 	const { comment } = props;
 	const { replies } = comment;
 	const { asPath } = useRouter();
+
 	useEffect(() => {
 		if (typeof window == 'undefined') return;
 		if (window.location.hash) {

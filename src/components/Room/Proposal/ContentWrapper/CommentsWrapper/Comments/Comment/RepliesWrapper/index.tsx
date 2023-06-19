@@ -18,7 +18,6 @@ const RepliesWrapper :FC<IRepliesWrapperProps>= (props) => {
 	const { replies, comment_id } = props;
 	const { replyBox_comment_id, replyBox_isVisible } = useReplyBoxVisibility();
 	const [isRepliesVisible, setIsRepliesVisible] = useState(true);
-	console.log(comment_id);
 	return (
 		<section className='mt-3'>
 			{

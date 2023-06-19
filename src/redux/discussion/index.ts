@@ -5,7 +5,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 import { ICommentCreation, IDiscussionStore } from './@types';
-import { IComment, IDiscussion, IHistoryComment, IReaction } from '~src/types/schema';
+import { IComment, IDiscussion, IHistoryComment, IHistoryReply, IReaction, IReply } from '~src/types/schema';
 import { EAction, ESentiment } from '~src/types/enums';
 
 const initialState: IDiscussionStore = {
@@ -17,9 +17,25 @@ const initialState: IDiscussionStore = {
 	commentEditHistory: [],
 	discussion: null,
 	editableComment: null,
+	editableReply: null,
 	error: null,
 	isAllCommentsVisible: false,
-	loading: false
+	isAllRepliesVisible: false,
+	isRepliesVisible:{
+		replies_comment_id:'',
+		replies_isVisible:false
+	},
+	isReplyBoxVisible:{
+		replyBox_comment_id:'',
+		replyBox_isVisible:false
+	},
+	loading: false,
+	replyCreation: {
+		comment_open:false,
+		content: '',
+		sentiment: ESentiment.NEUTRAL
+	},
+	replyEditHistory: []
 };
 
 type ICommentCreationFieldPayload = {
@@ -54,8 +70,30 @@ export const discussionStore = createSlice({
 			};
 		},
 		resetEditableComment: (state) => {
-			localStorage.removeItem('commentEdit');
+			const discussion = state.discussion;
+			const comment = state.editableComment;
+			const key = `house_${discussion?.house_id}_room_${discussion?.room_id}_discussion_${discussion?.id}_comment_${comment?.id}`;
+			localStorage.removeItem(key);
 			state.editableComment = null;
+		},
+		resetEditableReply: (state) => {
+			const discussion = state.discussion;
+			const reply = state.editableReply;
+			const key = `house_${discussion?.house_id}_room_${discussion?.room_id}_discussion_${discussion?.id}_comment_${reply?.comment_id}_reply_${reply?.id}`;
+			localStorage.removeItem(key);
+			state.editableReply = null;
+		},
+		resetReplyCreation: (state) => {
+			const discussion = state.discussion;
+			const replyBoxVisible = state.isReplyBoxVisible;
+			if (discussion && replyBoxVisible) {
+				localStorage.removeItem(`house_${discussion?.house_id}_room_${discussion?.room_id}_discussion_${discussion?.id}_comment_${replyBoxVisible.replyBox_comment_id}_reply`);
+			}
+			state.replyCreation = {
+				comment_open: false,
+				content: '',
+				sentiment: ESentiment.NEUTRAL
+			};
 		},
 		setCommentCreation_Field: (state, action: PayloadAction<ICommentCreationFieldPayload>) => {
 			const obj = action.payload;
@@ -111,11 +149,34 @@ export const discussionStore = createSlice({
 		setEditableComment: (state, action: PayloadAction<IComment | null>) => {
 			state.editableComment = action.payload;
 		},
+		setEditableReply: (state, action: PayloadAction<IReply | null>) => {
+			state.editableReply = action.payload;
+		},
 		setError: (state, action: PayloadAction<string | null>) => {
 			state.error = action.payload;
 		},
 		setIsAllCommentsVisible: (state, action: PayloadAction<boolean>) => {
 			state.isAllCommentsVisible = action.payload;
+		},
+		setIsAllRepliesVisible: (state, action: PayloadAction<boolean>) => {
+			state.isAllRepliesVisible = action.payload;
+		},
+		setIsRepliesVisible: (state, action: PayloadAction<{
+			replies_comment_id: string;
+			replies_isVisible: boolean;
+		}>) => {
+			const { replies_comment_id,replies_isVisible } = action.payload;
+			state.isRepliesVisible.replies_comment_id=replies_comment_id;
+			state.isRepliesVisible.replies_isVisible=replies_isVisible;
+			state.isReplyBoxVisible.replyBox_comment_id=replies_comment_id;
+		},
+		setIsReplyBoxVisible: (state, action: PayloadAction<{
+			replyBox_comment_id: string;
+			replyBox_isVisible: boolean;
+		}>) => {
+			const { replyBox_comment_id,replyBox_isVisible }=action.payload;
+			state.isReplyBoxVisible.replyBox_comment_id=replyBox_comment_id;
+			state.isReplyBoxVisible.replyBox_isVisible=replyBox_isVisible;
 		},
 		setLoading: (state, action: PayloadAction<boolean>) => {
 			state.loading = action.payload;
@@ -135,6 +196,56 @@ export const discussionStore = createSlice({
 					}
 				} else {
 					state.discussion.reactions.push(reaction);
+				}
+			}
+		},
+		setReplyCreation_Field: (state, action: PayloadAction<ICommentCreationFieldPayload>) => {
+			const obj = action.payload;
+			if (obj) {
+				const { key, value } = obj;
+				switch(key) {
+				case 'content':
+					state.replyCreation.content = value;
+					break;
+				case 'sentiment':
+					state.replyCreation.sentiment = value;
+				}
+			}
+		},
+		setReplyEditHistory: (state, action: PayloadAction<IHistoryReply[]>) => {
+			state.replyEditHistory = action.payload;
+		},
+		setReplyOpen: (state, action: PayloadAction<boolean>) => {
+			state.replyCreation.comment_open = action.payload;
+		},
+		setReplyReaction: (state, action: PayloadAction<{
+			reaction: IReaction;
+			isDeleted: boolean;
+			reply_id:string;
+			comment_id:string;
+		}>) => {
+			const { reaction, isDeleted , comment_id,reply_id } = action.payload;
+			let repliesArr = state?.discussion?.comments.find((comment) => comment.id === comment_id)?.replies;
+			if (repliesArr && Array.isArray(repliesArr)) {
+				const reply = repliesArr.find((c) => c.id === reply_id);
+				if (reply && reply.reactions && Array.isArray(reply.reactions)) {
+					repliesArr = repliesArr.map((reply) => {
+						if (reply.id === reply_id) {
+							const index = reply.reactions.findIndex((r) => r.id === reaction.id);
+							if (index > -1) {
+								if (isDeleted) {
+									reply.reactions.splice(index, 1);
+								} else {
+									reply.reactions[index] = reaction;
+								}
+							} else {
+								reply.reactions.push(reaction);
+							}
+						}
+						return {
+							...reply
+						};
+					});
 				}
 			}
 		},
@@ -167,6 +278,40 @@ export const discussionStore = createSlice({
 						}
 						window.history.replaceState(null, null!, url + '#' + comment.id);
 						state.discussion.comments.unshift(comment);
+					}
+				}
+			}
+		},
+		updateReplies: (state, action: PayloadAction<{
+			reply: IReply;
+			action_type: EAction;
+		}>) => {
+			const { reply, action_type } = action.payload;
+			const repliesArr = state?.discussion?.comments.find((comment) => comment.id === reply.comment_id)?.replies;
+			if (repliesArr && Array.isArray(repliesArr)) {
+				const index = repliesArr.findIndex((r) => r.id === reply.id);
+				if (index > -1) {
+					if (action_type === EAction.DELETE) {
+						repliesArr.splice(index, 1);
+					} else if (action_type === EAction.EDIT) {
+						let url = window.location.href;
+						const matches = window.location.href.match(/discussion\/\w+#.*/);
+						if (matches && matches.length > 0) {
+							url = window.location.href?.replace(/#.*/, '');
+						}
+						window.history.replaceState(null, null!, url + '#' + reply.comment_id + reply.id);
+						repliesArr.splice(index, 1);
+						repliesArr.unshift(reply);
+					}
+				} else {
+					if (action_type === EAction.ADD) {
+						let url = window.location.href;
+						const matches = window.location.href.match(/discussion\/\w+#.*/);
+						if (matches && matches.length > 0) {
+							url = window.location.href?.replace(/#.*/, '');
+						}
+						window.history.replaceState(null, null!,url + '#' + reply.comment_id + reply.id);
+						repliesArr.unshift(reply);
 					}
 				}
 			}
