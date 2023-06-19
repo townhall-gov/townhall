@@ -15,6 +15,7 @@ import Discussions from '~src/components/Room/Discussions';
 import { getRoom } from 'pages/api/room';
 import { IRoom } from '~src/types/schema';
 import { useRoomCurrentStage } from '~src/redux/room/selectors';
+import NoRoomFound from '~src/ui-components/NoRoomFound';
 
 interface IDiscussionsServerProps {
 	discussions: IListingDiscussion[] | null;
@@ -71,7 +72,7 @@ const DiscussionsPage: FC<IDiscussionsClientProps> = (props) => {
 	}, [props]);
 
 	if (!room) {
-		return null;
+		return <NoRoomFound />;
 	}
 
 	return (

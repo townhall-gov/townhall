@@ -8,8 +8,6 @@ import { IReply } from '~src/types/schema';
 import ReplyEditor from '../../../ReplyEditor';
 import { useDispatch } from 'react-redux';
 import { proposalActions } from '~src/redux/proposal';
-import { modalActions } from '~src/redux/modal';
-import { EContentType, EFooterType, ETitleType } from '~src/redux/modal/@types';
 import { notificationActions } from '~src/redux/notification';
 import { ENotificationStatus } from '~src/redux/notification/@types';
 import api from '~src/services/api';
@@ -34,16 +32,7 @@ const ReplyContent: FC<IReplyContentProps> = (props) => {
 	}
 	if (!reply) return null;
 
-	const onSentiment = async () => {
-		dispatch(modalActions.setModal({
-			contentType: EContentType.COMMENT_SENTIMENT,
-			footerType: EFooterType.COMMENT_SENTIMENT,
-			open: true,
-			titleType: ETitleType.NONE
-		}));
-	};
-
-	const onComment = async () => {
+	const onReply = async () => {
 		if (loading) return;
 		if (!user || !user.address) {
 			dispatch(notificationActions.send({
@@ -86,7 +75,7 @@ const ReplyContent: FC<IReplyContentProps> = (props) => {
 						reply: data.reply
 					}));
 					dispatch(notificationActions.send({
-						message: 'Comment edited successfully.',
+						message: 'Reply edited successfully.',
 						status: ENotificationStatus.SUCCESS,
 						title: 'Success!'
 					}));
@@ -127,8 +116,7 @@ const ReplyContent: FC<IReplyContentProps> = (props) => {
 								clearTimeout(timeout.current);
 							}, 1000);
 						}}
-						onSentiment={onSentiment}
-						onComment={onComment}
+						onReply={onReply}
 						onCancel={() => {
 							dispatch(proposalActions.resetEditableComment());
 							localStorage.removeItem(key);

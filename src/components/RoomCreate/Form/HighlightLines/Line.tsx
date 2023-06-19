@@ -4,7 +4,7 @@
 import classNames from 'classnames';
 import React, { FC } from 'react';
 import { ERoomCreationStage } from '~src/redux/rooms/@types';
-import { useRoomCreationStageComplete } from '~src/redux/rooms/selectors';
+import { useIsAllRoomCreationStageCompleteBeforeThisStage, useRoomCreationStageComplete } from '~src/redux/rooms/selectors';
 
 interface ILineProps {
     icon: JSX.Element;
@@ -14,11 +14,13 @@ interface ILineProps {
 
 const Line: FC<ILineProps> = (props) => {
 	const { stage } = props;
-	const error = useRoomCreationStageComplete(stage);
+	const allRoomCreationStageCompleteBeforeThisStage = useIsAllRoomCreationStageCompleteBeforeThisStage(stage);
+	const currentRoomCreationStageComplete = useRoomCreationStageComplete(stage);
+	const isComplete = allRoomCreationStageCompleteBeforeThisStage && currentRoomCreationStageComplete;
 	return (
 		<div className={classNames('flex-1 rounded-md h-[3px]', {
-			'bg-[rgba(102,165,255,0.32)]': error,
-			'bg-blue_primary': !error
+			'bg-[rgba(102,165,255,0.32)]': !isComplete,
+			'bg-blue_primary': isComplete
 		})}>
 		</div>
 	);

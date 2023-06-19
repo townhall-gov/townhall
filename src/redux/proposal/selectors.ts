@@ -23,6 +23,7 @@ const useReplyBoxVisibility = () => {
 	const { isReplyBoxVisible } = useProposalSelector();
 	return isReplyBoxVisible;
 };
+
 const useRepliesVisibility = () => {
 	const { isRepliesVisible } = useProposalSelector();
 	return isRepliesVisible;
@@ -69,6 +70,7 @@ const useCommentCreation = () => {
 	const proposal = useProposalSelector();
 	return proposal.commentCreation;
 };
+
 const useReplyCreation = () => {
 	const proposal = useProposalSelector();
 	return proposal.replyCreation;
@@ -92,6 +94,7 @@ const useSelectedComments = (select: number) => {
 		};
 	}
 };
+
 const useSelectedReplies = (select: number,replies:IReply[]|null) => {
 	const { proposal, isAllRepliesVisible } = useProposalSelector();
 	if(!proposal || !replies || !Array.isArray(replies))
@@ -116,10 +119,12 @@ const useCommentEditHistory = () => {
 	const { commentEditHistory } = useProposalSelector();
 	return [...commentEditHistory];
 };
+
 const useReplyEditHistory = () => {
 	const { replyEditHistory } = useProposalSelector();
 	return [...replyEditHistory];
 };
+
 export {
 	useCommentCreation,
 	useUserReaction,

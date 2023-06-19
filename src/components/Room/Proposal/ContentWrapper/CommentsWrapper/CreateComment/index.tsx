@@ -176,7 +176,7 @@ const CreateComment = () => {
 								value: v
 							}));
 							clearTimeout(timeout.current);
-						}, 1000);
+						}, 100);
 					}}
 					initialValue=''
 					value={commentCreation?.content}

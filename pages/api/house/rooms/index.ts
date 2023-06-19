@@ -16,7 +16,7 @@ interface IGetHouseRoomsFnParams {
     house_id: string;
 }
 
-export type TGetHouseRoomsFn = (params: IGetHouseRoomsFnParams) => Promise<TApiResponse<IHouseRoomsResponse>>;
+export type TGetHouseRoomsFn = (params: IGetHouseRoomsFnParams) => Promise<TApiResponse<IHouseRoom[]>>;
 export const getHouseRooms: TGetHouseRoomsFn = async (params) => {
 	try {
 		const { house_id } = params;
@@ -60,9 +60,6 @@ export const getHouseRooms: TGetHouseRoomsFn = async (params) => {
 	}
 };
 
-export interface IHouseRoomsResponse {
-    houseRooms: IHouseRoom[];
-}
 export interface IHouseRoom {
     id: string;
     logo: string;
@@ -72,7 +69,7 @@ export interface IHouseRoomsBody {}
 export interface IHouseRoomsQuery {
     house_id: string;
 }
-const handler: TNextApiHandler<IHouseRoomsResponse, IHouseRoomsBody, IHouseRoomsQuery> = async (req, res) => {
+const handler: TNextApiHandler<IHouseRoom[], IHouseRoomsBody, IHouseRoomsQuery> = async (req, res) => {
 	if (req.method !== 'GET') {
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, GET required.' });
 	}

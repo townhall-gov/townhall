@@ -4,7 +4,7 @@
 
 import React, { FC } from 'react';
 import { ERoomCreationStage } from '~src/redux/rooms/@types';
-import { useRoomCreationCurrentStage } from '~src/redux/rooms/selectors';
+import { useIsAllRoomCreationStageCompleteBeforeThisStage, useRoomCreationCurrentStage } from '~src/redux/rooms/selectors';
 
 import { useDispatch } from 'react-redux';
 import { roomsActions } from '~src/redux/rooms';
@@ -18,11 +18,13 @@ interface ITimelineCardProps {
 const TimelineCard: FC<ITimelineCardProps> = (props) => {
 	const { icon, stage, title } = props;
 	const roomCreationCurrentStage = useRoomCreationCurrentStage();
+	const isComplete = useIsAllRoomCreationStageCompleteBeforeThisStage(stage);
 	const dispatch = useDispatch();
 	return (
 		<TimelineCardBtn
 			icon={icon}
 			title={title}
+			disabled={!isComplete}
 			isActiveStage={roomCreationCurrentStage === stage}
 			onClick={() => {
 				dispatch(roomsActions.setRoomCreationStage(stage));

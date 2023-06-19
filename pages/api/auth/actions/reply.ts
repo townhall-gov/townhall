@@ -128,9 +128,9 @@ const handler: TNextApiHandler<IReplyResponse, IReplyBody, {}> = async (req, res
 		const replyDoc = await replyDocRef.get();
 		if (replyDoc && replyDoc.exists) {
 			newReply.deleted_at = now;
-			// Marked it as deleted, so that we can not show it in the UI, and we can use this comment for further reference.
+			// Marked it as deleted, so that we can not show it in the UI, and we can use this reply for further reference.
 			newReply.is_deleted = true;
-			await commentDocRef.update({
+			await replyDocRef.update({
 				deleted_at: now,
 				is_deleted: true
 			});

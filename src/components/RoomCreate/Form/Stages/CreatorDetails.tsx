@@ -6,6 +6,25 @@ import Input from '../../../../ui-components/Input';
 import { useRoomCreation_CreatorDetails } from '~src/redux/rooms/selectors';
 import { useDispatch } from 'react-redux';
 import { roomsActions } from '~src/redux/rooms';
+import { ICreatorDetails } from '~src/redux/rooms/@types';
+import Error from '../Error';
+import { removeError } from '~src/redux/rooms/validation';
+
+type RoomCreatorDetailsKeys = keyof Omit<ICreatorDetails, 'address'>;
+type RoomCreatorDetailsKeyArray = Array<RoomCreatorDetailsKeys>;
+const roomCreatorDetailsKeyArray: RoomCreatorDetailsKeyArray = ['name', 'email', 'phone'];
+
+const getPlaceholder = (key: RoomCreatorDetailsKeys) => {
+	switch(key) {
+	case 'name':
+		return 'Your Name';
+	case 'email':
+		return 'Your E-mail id';
+	case 'phone':
+		return 'Your Contact/Telegram';
+	}
+	return '';
+};
 
 const CreatorDetails = () => {
 	const creatorDetails = useRoomCreation_CreatorDetails();
@@ -16,42 +35,28 @@ const CreatorDetails = () => {
 				Fill in your details.
 			</p>
 			<div className='flex flex-col mt-[28px] gap-y-5'>
-				<Input
-					value={creatorDetails?.name || ''}
-					onChange={(v) => {
-						dispatch(roomsActions.setRoomCreation_CreatorDetails({
-							email: creatorDetails?.email || '',
-							name: v,
-							phone: creatorDetails?.phone || ''
-						}));
-					}}
-					type='text'
-					placeholder='Your Name'
-				/>
-				<Input
-					value={creatorDetails?.email || ''}
-					onChange={(v) => {
-						dispatch(roomsActions.setRoomCreation_CreatorDetails({
-							email: v,
-							name: creatorDetails?.name || '',
-							phone: creatorDetails?.phone || ''
-						}));
-					}}
-					type='email'
-					placeholder='Your E-mail id'
-				/>
-				<Input
-					value={creatorDetails?.phone || ''}
-					onChange={(v) => {
-						dispatch(roomsActions.setRoomCreation_CreatorDetails({
-							email: creatorDetails?.email || '',
-							name: creatorDetails?.name || '',
-							phone: v
-						}));
-					}}
-					type='tel'
-					placeholder='Your Contact/Telegram'
-				/>
+				{
+					roomCreatorDetailsKeyArray.map((key) => {
+						const id = `creator_details_${key}`;
+						return (
+							<article key={key}>
+								<Input
+									value={creatorDetails?.[key] || ''}
+									onChange={(v) => {
+										removeError(id);
+										dispatch(roomsActions.setRoomCreation_CreatorDetails({
+											key: key,
+											value: v
+										}));
+									}}
+									type='text'
+									placeholder={getPlaceholder(key)}
+								/>
+								<Error id={id} />
+							</article>
+						);
+					})
+				}
 			</div>
 		</article>
 	);

@@ -10,6 +10,7 @@ import HouseRoomsModalContent from '~src/components/House/HouseWrapper/Modal';
 import EditHistoryModalContent from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/Comments/Comment/Header/EditHistory/ModalContent';
 import SentimentModalContent from '~src/components/Room/Proposal/ContentWrapper/CommentsWrapper/CreateComment/Sentiment/Content';
 import DiscussionSentimentModalContent from '~src/components/Room/Discussion/ContentWrapper/CommentsWrapper/CreateComment/Sentiment/Content';
+import DiscussionEditHistoryModalContent from '~src/components/Room/Discussion/ContentWrapper/CommentsWrapper/Comments/Comment/Header/EditHistory/ModalContent';
 import AllVotesModalContent from '~src/components/Room/Proposal/Sidebar/Vote/VoteInfo/All/Modal/Content';
 import CastYourVoteModalContent from '~src/components/Room/Proposal/Sidebar/Vote/CastYourVote/Modal/Content';
 import { EContentType } from '~src/redux/modal/@types';
@@ -34,6 +35,8 @@ const ModalContent: FC<IModalContentProps> = (props) => {
 		return <DiscussionSentimentModalContent />;
 	case EContentType.COMMENT_EDIT_HISTORY:
 		return <EditHistoryModalContent />;
+	case EContentType.DISCUSSION_COMMENT_EDIT_HISTORY:
+		return <DiscussionEditHistoryModalContent />;
 	case EContentType.CAST_YOUR_VOTE:
 		return <CastYourVoteModalContent />;
 	case EContentType.ALL_VOTES:

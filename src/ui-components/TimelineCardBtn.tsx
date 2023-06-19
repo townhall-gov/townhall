@@ -9,10 +9,11 @@ interface ITimelineCardBtnProps {
     onClick: () => void;
     icon: JSX.Element;
     title: string;
+	disabled?: boolean;
 }
 
 const TimelineCardBtn: FC<ITimelineCardBtnProps> = (props) => {
-	const { icon, title, onClick, isActiveStage } = props;
+	const { icon, title, onClick, isActiveStage, disabled } = props;
 	return (
 		<article className='flex items-center gap-x-[6px] w-[188px]'>
 			{
@@ -22,8 +23,12 @@ const TimelineCardBtn: FC<ITimelineCardBtnProps> = (props) => {
 					: null
 			}
 			<button
+				disabled={disabled}
 				onClick={onClick}
-				className={classNames('outline-none bg-transparent cursor-pointer flex items-center justify-center gap-x-2 rounded-2xl border border-solid border-blue_primary py-[11px] text-white text-base leading-[20px] font-normal flex-1 h-[40px]')}>
+				className={classNames('outline-none bg-transparent flex items-center justify-center gap-x-2 rounded-2xl border border-solid border-blue_primary py-[11px] text-white text-base leading-[20px] font-normal flex-1 h-[40px]', {
+					'cursor-not-allowed': disabled,
+					'cursor-pointer': !disabled
+				})}>
 				<span className='flex items-center justify-center text-xl leading-none'>
 					{icon}
 				</span>

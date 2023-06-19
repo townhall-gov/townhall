@@ -9,6 +9,8 @@ import Input from '../../../../ui-components/Input';
 import { roomsActions } from '~src/redux/rooms';
 import { ESocial } from '~src/redux/rooms/@types';
 import SocialIcon from '~src/ui-components/SocialIcon';
+import Error from '../Error';
+import { removeError } from '~src/redux/rooms/validation';
 
 const RoomSocials = () => {
 	const projectSocials = useRoomCreation_RoomSocials();
@@ -48,6 +50,8 @@ const RoomSocials = () => {
 						return (
 							<SocialInput
 								onChange={(v) => {
+									removeError('room_socials');
+									removeError(`room_socials_${social}`);
 									setSocials((prev) => {
 										return {
 											...prev,
@@ -62,6 +66,7 @@ const RoomSocials = () => {
 						);
 					})
 				}
+				<Error id={'room_socials'} />
 			</div>
 		</article>
 	);
@@ -77,24 +82,27 @@ const SocialInput: FC<ISocialInputProps> = (props) => {
 	const { onChange, type, value } = props;
 	const dispatch = useDispatch();
 	return (
-		<div className='flex'>
-			<div className='flex items-center justify-center text-white text-[22px] leading-none border border-r-0 border-solid rounded-2xl rounded-r-none border-blue_primary h-full px-[18.5px] py-[21.5px]'>
-				<SocialIcon type={type} />
+		<article>
+			<div className='flex'>
+				<div className='flex items-center justify-center text-white text-[22px] leading-none border border-r-0 border-solid rounded-2xl rounded-r-none border-blue_primary h-full px-[18.5px] py-[21.5px]'>
+					<SocialIcon type={type} />
+				</div>
+				<Input
+					value={value}
+					onChange={(v) => {
+						onChange(v);
+						dispatch(roomsActions.setRoomCreation_RoomSocials({
+							type: type,
+							url: v
+						}));
+					}}
+					type='text'
+					placeholder={`${(type && type.toString)? (type.toString().charAt(0).toUpperCase() + type.toString().slice(1)): ''} Handle`}
+					className='rounded-l-none'
+				/>
 			</div>
-			<Input
-				value={value}
-				onChange={(v) => {
-					onChange(v);
-					dispatch(roomsActions.setRoomCreation_RoomSocials({
-						type: type,
-						url: v
-					}));
-				}}
-				type='text'
-				placeholder={`${(type && type.toString)? (type.toString().charAt(0).toUpperCase() + type.toString().slice(1)): ''} Handle`}
-				className='rounded-l-none'
-			/>
-		</div>
+			<Error id={`room_socials_${type}`} />
+		</article>
 	);
 };
 

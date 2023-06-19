@@ -3,9 +3,9 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React, { FC } from 'react';
 import { useDispatch } from 'react-redux';
+import { discussionActions } from '~src/redux/discussion';
 import { modalActions } from '~src/redux/modal';
 import { EContentType, EFooterType, ETitleType } from '~src/redux/modal/@types';
-import { proposalActions } from '~src/redux/proposal';
 import { IHistoryComment } from '~src/types/schema';
 
 interface IEditHistoryProps {
@@ -19,12 +19,12 @@ const EditHistory: FC<IEditHistoryProps> = (props) => {
 		<button
 			onClick={() => {
 				dispatch(modalActions.setModal({
-					contentType: EContentType.COMMENT_EDIT_HISTORY,
-					footerType: EFooterType.COMMENT_EDIT_HISTORY,
+					contentType: EContentType.DISCUSSION_COMMENT_EDIT_HISTORY,
+					footerType: EFooterType.DISCUSSION_COMMENT_EDIT_HISTORY,
 					open: true,
-					titleType: ETitleType.COMMENT_EDIT_HISTORY
+					titleType: ETitleType.DISCUSSION_COMMENT_EDIT_HISTORY
 				}));
-				dispatch(proposalActions.setCommentEditHistory(history));
+				dispatch(discussionActions.setCommentEditHistory(history));
 			}}
 			className='text-xs leading-[15px] text-grey_light bg-transparent flex items-center justify-center border-none outline-none cursor-pointer underline underline-offset-[3px]'
 		>

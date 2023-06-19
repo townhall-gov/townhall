@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { IReaction } from '~src/types/schema';
+import { IReaction, IReply } from '~src/types/schema';
 import { useDiscussionSelector } from '../selectors';
 import { EReaction } from '~src/types/enums';
 
@@ -17,6 +17,11 @@ const useUserReaction = (address: string) => {
 		});
 	}
 	return userReaction?.type;
+};
+
+const useReplyBoxVisibility = () => {
+	const { isReplyBoxVisible } = useDiscussionSelector();
+	return isReplyBoxVisible;
 };
 
 const useReactions = (type: EReaction) => {
@@ -61,6 +66,11 @@ const useCommentCreation = () => {
 	return discussion.commentCreation;
 };
 
+const useReplyCreation = () => {
+	const discussion = useDiscussionSelector();
+	return discussion.replyCreation;
+};
+
 const useSelectedComments = (select: number) => {
 	const { discussion, isAllCommentsVisible } = useDiscussionSelector();
 	if (!discussion || !discussion.comments || !Array.isArray(discussion.comments)) return {
@@ -80,9 +90,34 @@ const useSelectedComments = (select: number) => {
 	}
 };
 
+const useSelectedReplies = (select: number,replies: IReply[] | null) => {
+	const { discussion, isAllRepliesVisible } = useDiscussionSelector();
+	if(!discussion || !replies || !Array.isArray(replies))
+		return{
+			replies:[],
+			total:0
+		};
+	if (isAllRepliesVisible) {
+		return {
+			selectedReplies: replies,
+			total: replies?.length
+		};
+	} else {
+		return {
+			selectedReplies: replies?.slice(0,select),
+			total: replies?.length
+		};
+	}
+};
+
 const useCommentEditHistory = () => {
 	const { commentEditHistory } = useDiscussionSelector();
 	return [...commentEditHistory];
+};
+
+const useReplyEditHistory = () => {
+	const { replyEditHistory } = useDiscussionSelector();
+	return [...replyEditHistory];
 };
 
 export {
@@ -92,5 +127,9 @@ export {
 	useSelectedComments,
 	useCommentEditHistory,
 	useCommentUserReaction,
-	useCommentReactions
+	useCommentReactions,
+	useReplyBoxVisibility,
+	useReplyEditHistory,
+	useReplyCreation,
+	useSelectedReplies
 };
