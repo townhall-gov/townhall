@@ -30,14 +30,14 @@ const useFilteredRooms = () => {
 	const { searchQuery } = useHomeSelector();
 	if (rooms && Array.isArray(rooms) && rooms.length > 0) {
 		if (!searchQuery) {
-			return rooms.filter(room => room.id!=room.house_id);
+			return rooms;
 		}
 
 		const filteredRooms = rooms.filter(room => {
 			const lowercaseSearchValue = searchQuery.toLowerCase();
 			const lowercaseHouseName = room.title.toLowerCase();
 
-			return lowercaseHouseName.includes(lowercaseSearchValue) && room.id!=room.house_id;
+			return lowercaseHouseName.includes(lowercaseSearchValue);
 		});
 
 		return filteredRooms;
