@@ -26,7 +26,7 @@ import { signApiData } from '~src/utils/sign';
 
 const PreviewBtn = () => {
 	const dispatch = useDispatch();
-	const { loading, room } = useRoomSelector();
+	const { loading, room , isPropsalPreviewState } = useRoomSelector();
 	const { user } = useProfileSelector();
 	const selectedHouse = useSelectedHouse(room?.house_id || '');
 	const proposalCreation = useProposalCreation();
@@ -207,18 +207,41 @@ const PreviewBtn = () => {
 	};
 	return (
 		<div className='mb-10'>
-			<Button
-				loading={loading}
-				onClick={onPublish}
-				className={
-					classNames('outline-none border h-full border-solid border-[#66A5FF] flex items-center justify-center bg-blue_primary rounded-2xl text-white py-[11px] px-[22px] max-w-[188px] w-full text-base leading-[19px] font-normal tracking-[0.01em]', {
-						'cursor-not-allowed': loading,
-						'cursor-pointer': !loading
-					})
-				}
-			>
+			{
+				isPropsalPreviewState ? <div className='flex'>
+					<Button
+						onClick={() => dispatch(roomActions.setPropsalPreviewState(false))}
+						className={
+							classNames('outline-none border-1 h-full border-solid border-[#66A5FF] flex items-center justify-center bg-transparent mr-3 rounded-2xl text-white py-[11px] px-[22px] max-w-[188px] w-full text-base leading-[19px] font-normal tracking-[0.01em]')
+						}
+					>
+                Go back & Edit
+					</Button>
+					<Button
+						loading={loading}
+						onClick={onPublish}
+						className={
+							classNames('outline-none border-1 h-full border-solid border-[#66A5FF] flex items-center justify-center bg-blue_primary rounded-2xl text-white py-[11px] px-[22px] max-w-[188px] w-full text-base leading-[19px] font-normal tracking-[0.01em]', {
+								'cursor-not-allowed': loading,
+								'cursor-pointer': !loading
+							})
+						}
+					>
                 Publish
-			</Button>
+					</Button>
+				</div> :<Button
+					loading={loading}
+					onClick={() => dispatch(roomActions.setPropsalPreviewState(true))}
+					className={
+						classNames('outline-none border h-full border-solid border-[#66A5FF] flex items-center justify-center bg-blue_primary rounded-2xl text-white py-[11px] px-[22px] max-w-[188px] w-full text-base leading-[19px] font-normal tracking-[0.01em]', {
+							'cursor-not-allowed': loading,
+							'cursor-pointer': !loading
+						})
+					}
+				>
+                Save & Preview
+				</Button>
+			}
 		</div>
 	);
 };

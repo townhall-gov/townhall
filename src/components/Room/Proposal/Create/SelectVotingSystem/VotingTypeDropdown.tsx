@@ -27,20 +27,20 @@ const isVotingSystemDisabled = (votingSystem: EVotingSystem) => {
 const VotingTypeDropdown: FC<IVotingTypeDropdownProps> = (props) => {
 	const { className } = props;
 	const dispatch = useDispatch();
-	const { loading } = useRoomSelector();
+	const { loading , isPropsalPreviewState } = useRoomSelector();
 	const [votingSystem, setVotingSystem] = useState<EVotingSystem>(EVotingSystem.SINGLE_CHOICE_VOTING);
 	return (
 		<div>
 			<h4 className='text-grey_light'>Type</h4>
 			<Dropdown
-				disabled={loading}
+				disabled={loading||isPropsalPreviewState}
 				trigger={['click']}
 				className={classNames('cursor-pointer px-[18.5px] py-[21.5px] border border-solid border-blue_primary rounded-2xl voting_system_type', className)}
 				overlayClassName='ant-dropdown-menu-border-blue_primary'
 				menu={{
 					items: Object.values(EVotingSystem).map((votingSystem) => {
 						return {
-							disabled: isVotingSystemDisabled(votingSystem),
+							disabled: isVotingSystemDisabled(votingSystem)||isPropsalPreviewState,
 							key: votingSystem,
 							label: (
 								<p
@@ -67,7 +67,7 @@ const VotingTypeDropdown: FC<IVotingTypeDropdownProps> = (props) => {
 				<p id='votingTypeDropdown' className="flex justify-between items-center text-white font-medium text-base leading-none">
 					<>
 						{getVotingSystemTitle(votingSystem)}
-						<span className='flex items-center justify-center text-white'>
+						<span className={`flex ${isPropsalPreviewState?'hidden':''}  items-center justify-center text-white`}>
 							<DownOutlined />
 						</span>
 					</>

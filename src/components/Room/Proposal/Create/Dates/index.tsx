@@ -6,11 +6,11 @@ import StartEndDate from './StartEndDate';
 import { useRoomSelector } from '~src/redux/selectors';
 
 const Dates = () => {
-	const { loading } = useRoomSelector();
+	const { loading,isPropsalPreviewState } = useRoomSelector();
 	return (
 		<div className='flex flex-col'>
 			<StartEndDate
-				isDisabled={loading}
+				isDisabled={loading||isPropsalPreviewState}
 			/>
 		</div>
 	);

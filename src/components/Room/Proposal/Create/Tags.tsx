@@ -18,7 +18,7 @@ const Tags: FC<ITagsProps> = (props) => {
 	const proposalCreation = useProposalCreation();
 	const tags = proposalCreation?.tags || [] as string[];
 	const dispatch = useDispatch();
-	const { loading } = useRoomSelector();
+	const { loading,isPropsalPreviewState } = useRoomSelector();
 
 	const updateTags = (tag: string, isDelete?: boolean) => {
 		let newTags = (tags && Array.isArray(tags))? [...tags]: [];
@@ -49,7 +49,7 @@ const Tags: FC<ITagsProps> = (props) => {
 				}}
 				canDelete
 				canAdd={tags?.length < 5}
-				isDisabled={loading}
+				isDisabled={isPropsalPreviewState||loading}
 			/>
 		</div>
 	);

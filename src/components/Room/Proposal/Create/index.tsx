@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React from 'react';
 import Title from './Title';
-import Description from './Description';
+import Description from './DescriptionBox';
 import Tags from './Tags';
 import Dates from './Dates';
 import HideResult from './HideResult';
@@ -12,6 +12,7 @@ import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import { Skeleton } from 'antd';
 import SelectVotingSystem from './SelectVotingSystem';
+import { useProposalCreation } from '~src/redux/room/selectors';
 
 const PreviewBtn = dynamic(() => import('./PreviewBtn'), {
 	loading: () => <Skeleton.Avatar active size='large' shape='circle' /> ,
@@ -21,13 +22,14 @@ const PreviewBtn = dynamic(() => import('./PreviewBtn'), {
 const CreateProposal = () => {
 	const { query } = useRouter();
 	const isRoomJoined = useProfileIsRoomJoined(String(query.house_id || ''), String(query.room_id || ''));
+	const proposalCreation = useProposalCreation();
 	return (
 		<section className='flex flex-col gap-y-8 h-full'>
 			{
 				isRoomJoined?
 					<>
 						<Title />
-						<Description imageNamePrefix={`house_${query.house_id}_room_${query?.room_id}_proposal`} />
+						<Description imageNamePrefix={`house_${query.house_id}_room_${query?.room_id}_proposal`} value={ proposalCreation?.description } />
 						<SelectVotingSystem />
 						<Tags />
 						<Dates />
