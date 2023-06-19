@@ -6,6 +6,8 @@ import Icon from '@ant-design/icons';
 import React from 'react';
 import type { CustomIconComponentProps } from '@ant-design/icons/lib/components/Icon';
 
+import FolderLinksSVG from '~assets/icons/folder-links.svg';
+import PostLinkSVG from '~assets/icons/post-link.svg';
 import DiscussionSVG from '~assets/icons/discussion.svg';
 import HexWarningSVG from '~assets/icons/hex-warning.svg';
 import ConnectWalletSVG from '~assets/icons/connect-wallet.svg';
@@ -124,6 +126,14 @@ export const TelegramIcon = (props: Partial<CustomIconComponentProps>) => (
 
 export const TwitterIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={TwitterSVG} {...props} />
+);
+
+export const FolderLinksIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={FolderLinksSVG} {...props} />
+);
+
+export const PostLinkIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={PostLinkSVG} {...props} />
 );
 
 export const DiscussionIcon = (props: Partial<CustomIconComponentProps>) => (

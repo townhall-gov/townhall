@@ -14,6 +14,7 @@ import { editorActions } from '~src/redux/editor';
 
 interface ITextEditorProps {
     className?: string;
+	spinClassName?: string;
     height?: number | string;
     initialValue: string;
     value?: string;
@@ -24,7 +25,7 @@ interface ITextEditorProps {
 }
 
 const TextEditor: FC<ITextEditorProps> = (props) => {
-	const { className, height, onChange, localStorageKey, value, isDisabled, imageNamePrefix } = props;
+	const { className, spinClassName, height, onChange, localStorageKey, value, isDisabled, imageNamePrefix } = props;
 	const initialValue = useRef(props.initialValue || (localStorageKey? (localStorage.getItem(localStorageKey) || ''): ''));
 	const [spin, setSpin] = useState(true);
 	const ref = useRef<Editor>(null!);
@@ -56,7 +57,7 @@ const TextEditor: FC<ITextEditorProps> = (props) => {
 		<div style={{
 			minHeight: `${height || 300}px`
 		}} className={classNames('flex-1 w-full', className)}>
-			<Spin className='bg-app_background' spinning={spin} indicator={<LoadingOutlined />}>
+			<Spin className={classNames('bg-app_background', spinClassName)} spinning={spin} indicator={<LoadingOutlined />}>
 				<Editor
 					ref={ref}
 					disabled={isDisabled}

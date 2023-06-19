@@ -17,6 +17,7 @@ import { houseActions } from '~src/redux/house';
 import { EHouseStage, IListingProposal } from '~src/redux/house/@types';
 import { useHouseCurrentStage } from '~src/redux/house/selectors';
 import { IHouse } from '~src/types/schema';
+import BackButton from '~src/ui-components/BackButton';
 
 interface IProposalsServerProps {
 	proposals: IListingProposal[] | null;
@@ -93,6 +94,7 @@ const HouseProposalsPage: FC<IProposalsClientProps> = (props) => {
 	return (
 		<>
 			<SEOHead title={`Proposals of Room ${query['house_id']} in House ${query['house_id']}`} />
+			<BackButton className='mb-3' />
 			<section className='flex gap-x-[18px]'>
 				<HouseSidebar />
 				<div className='flex-1 flex flex-col gap-y-[21px]'>

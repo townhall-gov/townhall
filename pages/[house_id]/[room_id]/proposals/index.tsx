@@ -15,6 +15,7 @@ import { roomActions } from '~src/redux/room';
 import { ERoomStage, IListingProposal } from '~src/redux/room/@types';
 import { useRoomCurrentStage } from '~src/redux/room/selectors';
 import { IRoom } from '~src/types/schema';
+import BackButton from '~src/ui-components/BackButton';
 import NoRoomFound from '~src/ui-components/NoRoomFound';
 
 interface IProposalsServerProps {
@@ -80,6 +81,7 @@ const ProposalsPage: FC<IProposalsClientProps> = (props) => {
 	return (
 		<>
 			<SEOHead title={`Proposals of Room ${query['room_id']} in House ${query['house_id']}`} />
+			<BackButton className='mb-3' />
 			<section className='flex gap-x-7'>
 				<RoomSidebar />
 				<div className='flex-1 flex flex-col gap-y-[21px]'>

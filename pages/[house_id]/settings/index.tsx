@@ -6,6 +6,7 @@ import React from 'react';
 import HouseSettings from '~src/components/House/Settings';
 import HouseSidebar from '~src/components/House/Sidebar';
 import SEOHead from '~src/global/SEOHead';
+import BackButton from '~src/ui-components/BackButton';
 
 const Settings = () => {
 	const router = useRouter();
@@ -13,6 +14,7 @@ const Settings = () => {
 	return (
 		<>
 			<SEOHead title={`Settings of House ${query['house_id']}.`} />
+			<BackButton className='mb-3' />
 			<section className='flex gap-x-[18px]'>
 				<HouseSidebar />
 				<div className='flex-1 flex flex-col gap-y-[21px]'>

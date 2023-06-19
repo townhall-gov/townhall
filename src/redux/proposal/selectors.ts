@@ -125,6 +125,16 @@ const useReplyEditHistory = () => {
 	return [...replyEditHistory];
 };
 
+const usePostLink = () => {
+	const { proposal } = useProposalSelector();
+	return proposal?.post_link;
+};
+
+const usePostLinkCreation = () => {
+	const { postLinkCreation } = useProposalSelector();
+	return postLinkCreation;
+};
+
 export {
 	useCommentCreation,
 	useUserReaction,
@@ -137,5 +147,7 @@ export {
 	useCommentUserReaction,
 	useCommentReactions,
 	useReplyBoxVisibility,
-	useRepliesVisibility
+	useRepliesVisibility,
+	usePostLink,
+	usePostLinkCreation
 };

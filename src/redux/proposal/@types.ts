@@ -3,9 +3,10 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { ESentiment } from '~src/types/enums';
-import { IBalanceWithNetwork, IHistoryComment, IHistoryReply, IReply, IVote } from '~src/types/schema';
+import { IBalanceWithNetwork, IHistoryComment, IHistoryReply, IPostLink, IReply, IVote } from '~src/types/schema';
 import { IComment, IProposal } from '~src/types/schema';
 import { IVotingSystemOption } from '../room/@types';
+import { IPostLinkData } from 'pages/api/auth/data/post-link-data';
 
 export interface IProposalStore {
     loading: boolean;
@@ -15,7 +16,8 @@ export interface IProposalStore {
     vote: IVote | null;
     votes: IVote[];
     commentCreation: ICommentCreation;
-    replyCreation:ICommentCreation;
+    replyCreation: ICommentCreation;
+    postLinkCreation: IPostLinkCreation;
     isAllCommentsVisible: boolean;
     isAllRepliesVisible:boolean;
     editableComment: IComment | null;
@@ -25,6 +27,19 @@ export interface IProposalStore {
     isReplyBoxVisible:IReplyBoxVisible;
     isRepliesVisible:IRepliesVisible;
 }
+
+export enum EPostLinkCreationAction {
+    FETCHING_POST_LINK_DATA = 'FETCHING_POST_LINK',
+    AUTO_FILLING_POST_LINK_DATA = 'AUTO_FILLING_POST_LINK_DATA',
+    PREVIEWING_POST_LINK_DATA = 'PREVIEWING_POST_LINK_DATA',
+}
+
+export type IPostLinkCreation = {
+    action: EPostLinkCreationAction;
+    url: string;
+    postLink: IPostLink | null;
+    postLinkData: IPostLinkData | null;
+};
 
 export type ICommentCreation = {
     content: string;

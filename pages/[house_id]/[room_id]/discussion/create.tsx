@@ -13,6 +13,7 @@ import { roomActions } from '~src/redux/room';
 import { ERoomStage } from '~src/redux/room/@types';
 import { useRoomCurrentStage } from '~src/redux/room/selectors';
 import { IRoom } from '~src/types/schema';
+import BackButton from '~src/ui-components/BackButton';
 import NoRoomFound from '~src/ui-components/NoRoomFound';
 
 interface ICreateDiscussionPageServerProps {
@@ -67,6 +68,7 @@ const CreateDiscussionPage: FC<ICreateDiscussionPageClientProps> = (props) => {
 	return (
 		<>
 			<SEOHead title={`Create a Discussion in Room ${query['room_id']} of House ${query['house_id']}`} />
+			<BackButton className='mb-3' />
 			<section className='flex gap-x-7'>
 				<RoomSidebar />
 				<CreateDiscussion />
