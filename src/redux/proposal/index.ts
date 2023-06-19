@@ -10,7 +10,7 @@ import { EAction, ESentiment } from '~src/types/enums';
 
 const initialState: IProposalStore = {
 	commentCreation: {
-		comment_open:false,
+		comment_open: false,
 		content: '',
 		sentiment: ESentiment.NEUTRAL
 	},
@@ -25,8 +25,8 @@ const initialState: IProposalStore = {
 		replies_isVisible:false
 	},
 	isReplyBoxVisible:{
-		replybox_comment_id:'',
-		replybox_isVisible:false
+		replyBox_comment_id:'',
+		replyBox_isVisible:false
 	},
 	loading: false,
 	proposal: null,
@@ -83,21 +83,27 @@ export const proposalStore = createSlice({
 			};
 		},
 		resetEditableComment: (state) => {
-			localStorage.removeItem('commentEdit');
+			const proposal = state.proposal;
+			const comment = state.editableComment;
+			const key = `house_${proposal?.house_id}_room_${proposal?.room_id}_proposal_${proposal?.id}_comment_${comment?.id}`;
+			localStorage.removeItem(key);
 			state.editableComment = null;
 		},
 		resetEditableReply: (state) => {
-			localStorage.removeItem('replyEdit');
+			const proposal = state.proposal;
+			const reply = state.editableReply;
+			const key = `house_${proposal?.house_id}_room_${proposal?.room_id}_proposal_${proposal?.id}_comment_${reply?.comment_id}_reply_${reply?.id}`;
+			localStorage.removeItem(key);
 			state.editableReply = null;
 		},
-		resetReplyCreation: (state,action: PayloadAction<String>) => {
+		resetReplyCreation: (state) => {
 			const proposal = state.proposal;
-			const comment_id =action.payload;
-			if (proposal) {
-				localStorage.removeItem(`house_${proposal?.house_id}_room_${proposal?.room_id}_proposal_${proposal?.id}_comment_${comment_id}_reply`);
+			const replyBoxVisible = state.isReplyBoxVisible;
+			if (proposal && replyBoxVisible) {
+				localStorage.removeItem(`house_${proposal?.house_id}_room_${proposal?.room_id}_proposal_${proposal?.id}_comment_${replyBoxVisible.replyBox_comment_id}_reply`);
 			}
-			state.commentCreation = {
-				comment_open:false,
+			state.replyCreation = {
+				comment_open: false,
 				content: '',
 				sentiment: ESentiment.NEUTRAL
 			};
@@ -176,18 +182,18 @@ export const proposalStore = createSlice({
 			replies_comment_id: string;
 			replies_isVisible: boolean;
 		}>) => {
-			const { replies_comment_id,replies_isVisible }=action.payload;
+			const { replies_comment_id,replies_isVisible } = action.payload;
 			state.isRepliesVisible.replies_comment_id=replies_comment_id;
 			state.isRepliesVisible.replies_isVisible=replies_isVisible;
-			state.isReplyBoxVisible.replybox_comment_id=replies_comment_id;
+			state.isReplyBoxVisible.replyBox_comment_id=replies_comment_id;
 		},
 		setIsReplyBoxVisible: (state, action: PayloadAction<{
-			replybox_comment_id: string;
-			replybox_isVisible: boolean;
+			replyBox_comment_id: string;
+			replyBox_isVisible: boolean;
 		}>) => {
-			const { replybox_comment_id,replybox_isVisible }=action.payload;
-			state.isReplyBoxVisible.replybox_comment_id=replybox_comment_id;
-			state.isReplyBoxVisible.replybox_isVisible=replybox_isVisible;
+			const { replyBox_comment_id,replyBox_isVisible }=action.payload;
+			state.isReplyBoxVisible.replyBox_comment_id=replyBox_comment_id;
+			state.isReplyBoxVisible.replyBox_isVisible=replyBox_isVisible;
 		},
 		setLoading: (state, action: PayloadAction<boolean>) => {
 			state.loading = action.payload;

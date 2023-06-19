@@ -10,8 +10,8 @@ import { useDispatch } from 'react-redux';
 import { notificationActions } from '~src/redux/notification';
 import { ENotificationStatus } from '~src/redux/notification/@types';
 import { useAuthActionsCheck } from '~src/redux/profile/selectors';
-import { proposalActions } from '~src/redux/proposal';
-import { useProposalSelector } from '~src/redux/selectors';
+import { discussionActions } from '~src/redux/discussion';
+import { useDiscussionSelector } from '~src/redux/selectors';
 import api from '~src/services/api';
 import { EAction, EPostType } from '~src/types/enums';
 import { IReply } from '~src/types/schema';
@@ -27,27 +27,27 @@ const ReplyOtherActionsDropdown: FC<IReplyOtherActionsDropdownProps> = (props) =
 	const { reply } = props;
 	const router = useRouter();
 	const { isLoggedIn, isRoomJoined, connectWallet, joinRoom } = useAuthActionsCheck();
-	const { loading, proposal } = useProposalSelector();
+	const { loading, discussion } = useDiscussionSelector();
 	const dispatch = useDispatch();
 	const items = useReplyOtherActionItems(reply?.user_address);
 
-	if (!reply || !proposal) return null;
+	if (!reply || !discussion) return null;
 
 	const onDelete = async () => {
 		if (loading) return;
 		try {
-			dispatch(proposalActions.setLoading(true));
+			dispatch(discussionActions.setLoading(true));
 			const { data, error } = await api.post<IReplyResponse, IReplyBody>('auth/actions/reply', {
 				action_type: EAction.DELETE,
 				comment_id: reply.comment_id,
-				house_id: proposal.house_id,
-				post_id: proposal.id,
-				post_type: EPostType.PROPOSAL,
+				house_id: discussion.house_id,
+				post_id: discussion.id,
+				post_type: EPostType.DISCUSSION,
 				reply: reply,
-				room_id: proposal.room_id
+				room_id: discussion.room_id
 			});
 			if (error) {
-				dispatch(proposalActions.setError(getErrorMessage(error)));
+				dispatch(discussionActions.setError(getErrorMessage(error)));
 				dispatch(notificationActions.send({
 					message: getErrorMessage(error),
 					status: ENotificationStatus.ERROR,
@@ -55,14 +55,14 @@ const ReplyOtherActionsDropdown: FC<IReplyOtherActionsDropdownProps> = (props) =
 				}));
 			} else if (!data || !data.reply) {
 				const error = 'Something went wrong, unable to delete a reply.';
-				dispatch(proposalActions.setError(error));
+				dispatch(discussionActions.setError(error));
 				dispatch(notificationActions.send({
 					message: error,
 					status: ENotificationStatus.ERROR,
 					title: 'Failed!'
 				}));
 			} else {
-				dispatch(proposalActions.updateReplies({
+				dispatch(discussionActions.updateReplies({
 					action_type: EAction.DELETE,
 					reply: data.reply
 				}));
@@ -72,14 +72,14 @@ const ReplyOtherActionsDropdown: FC<IReplyOtherActionsDropdownProps> = (props) =
 					title: 'Success!'
 				}));
 			}
-			dispatch(proposalActions.setLoading(false));
+			dispatch(discussionActions.setLoading(false));
 		} catch (error) {
 			dispatch(notificationActions.send({
 				message: getErrorMessage(error),
 				status: ENotificationStatus.ERROR,
 				title: 'Failed!'
 			}));
-			dispatch(proposalActions.setLoading(false));
+			dispatch(discussionActions.setLoading(false));
 		}
 	};
 
@@ -99,7 +99,7 @@ const ReplyOtherActionsDropdown: FC<IReplyOtherActionsDropdownProps> = (props) =
 		case 'copy-link': {
 			const origin = window.location.origin;
 			const query = router.query;
-			const url = `${origin}/${query.house_id}/${query.room_id}/proposal/${query.proposal_id}#${reply.comment_id}`;
+			const url = `${origin}/${query.house_id}/${query.room_id}/discussion/${query.discussion_id}#${reply.comment_id}`;
 			navigator.clipboard.writeText(url);
 		}
 			break;
@@ -108,7 +108,7 @@ const ReplyOtherActionsDropdown: FC<IReplyOtherActionsDropdownProps> = (props) =
 		}
 			break;
 		case 'edit': {
-			dispatch(proposalActions.setEditableReply(reply));
+			dispatch(discussionActions.setEditableReply(reply));
 		}
 		}
 	};

@@ -17,7 +17,6 @@ import { modalActions } from '~src/redux/modal';
 import { EContentType, EFooterType, ETitleType } from '~src/redux/modal/@types';
 import CommentEditor from '../CommentEditor';
 import { useAuthActionsCheck } from '~src/redux/profile/selectors';
-import ConnectWalletBanner from './ConnectWalletBanner';
 import { editorActions } from '~src/redux/editor';
 import { discussionActions } from '~src/redux/discussion';
 import { useCommentCreation } from '~src/redux/discussion/selectors';
@@ -39,7 +38,7 @@ const CreateComment = () => {
 
 	const { user } = useProfileSelector();
 	if (!user || !user.address) {
-		return <ConnectWalletBanner connectWallet={connectWallet} />;
+		return null;
 	}
 
 	const onSentiment = async () => {
@@ -178,7 +177,7 @@ const CreateComment = () => {
 								value: v
 							}));
 							clearTimeout(timeout.current);
-						}, 1000);
+						}, 0);
 					}}
 					initialValue=''
 					value={commentCreation?.content}
