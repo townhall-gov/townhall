@@ -45,6 +45,7 @@ const PreviewBtn = () => {
 					description,
 					house_id: String(query.house_id),
 					post_link: null,
+					post_link_data: null,
 					room_id: String(query.room_id),
 					tags: tags,
 					title: title
@@ -75,7 +76,6 @@ const PreviewBtn = () => {
 						created_at: createdDiscussion.created_at,
 						house_id: createdDiscussion.house_id,
 						id: createdDiscussion.id,
-						post_link: createdDiscussion.post_link,
 						proposer_address: createdDiscussion.proposer_address,
 						reactions_count: {
 							'👍🏻': 0,
