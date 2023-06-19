@@ -13,6 +13,7 @@ import AllVotesModalTitle from '~src/components/Room/Proposal/Sidebar/Vote/VoteI
 import CastYourVoteModalTitle from '~src/components/Room/Proposal/Sidebar/Vote/CastYourVote/Modal/Title';
 import { ETitleType } from '~src/redux/modal/@types';
 import { useWalletSelector } from '~src/redux/selectors';
+import PostLinkModalTitle from '~src/components/Room/Proposal/Sidebar/PostLink/Modal/Title';
 
 interface IModalTitleProps {
     type?: ETitleType;
@@ -36,6 +37,8 @@ const ModalTitle: FC<IModalTitleProps> = (props) => {
 		return <CastYourVoteModalTitle />;
 	case ETitleType.ALL_VOTES:
 		return <AllVotesModalTitle />;
+	case ETitleType.POST_LINK_MODAL:
+		return <PostLinkModalTitle />;
 	default:
 		return <></>;
 	}

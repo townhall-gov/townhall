@@ -13,11 +13,13 @@ import { EAction, EPostType } from '~src/types/enums';
 import { IDiscussion, IPostLink, IProposal } from '~src/types/schema';
 import convertFirestoreTimestampToDate from '~src/utils/convertFirestoreTimestampToDate';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
+import { IPostLinkData } from '../data/post-link-data';
 
 export interface IPostLinkBody {
     post_id: number;
 	post_type: EPostType;
 	post_link: IPostLink;
+	post_link_data: IPostLinkData;
     room_id: string;
     house_id: string;
     action_type: EAction;
@@ -35,7 +37,7 @@ const handler: TNextApiHandler<IPostLinkResponse, IPostLinkBody, {}> = async (re
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
 	}
 
-	const { post_id, post_type, room_id, house_id, post_link, action_type } = req.body;
+	const { post_id, post_type, room_id, house_id, post_link, action_type, post_link_data } = req.body;
 
 	if (!house_id || typeof house_id !== 'string') {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid houseId.' });
@@ -63,6 +65,10 @@ const handler: TNextApiHandler<IPostLinkResponse, IPostLinkBody, {}> = async (re
 
 	if ([EAction.EDIT, EAction.DELETE].includes(action_type) && (post_link?.post_id != 0)) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Post link post id is invalid.' });
+	}
+
+	if (post_type === post_link.post_type) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Unable to link the post, you are linking similar type of post.' });
 	}
 
 	let user_address: string | null = null;
@@ -99,11 +105,21 @@ const handler: TNextApiHandler<IPostLinkResponse, IPostLinkBody, {}> = async (re
 		return res.status(StatusCodes.NOT_FOUND).json({ error: `Link Post "${post_link.post_id}" is not found in a Room "${post_link.room_id}" and a House "${post_link.house_id}".` });
 	}
 
+	if (user_address !== data.proposer_address || user_address !== linkPostData.proposer_address) {
+		return res.status(StatusCodes.FORBIDDEN).json({ error: 'You are not allowed to link the post.' });
+	}
+
 	const updatedPost: {
 		post_link: IPostLink | null;
 		updated_at: Date;
+		title: string;
+		description: string;
+		tags: string[];
 	} = {
+		description: post_link_data.description,
 		post_link: data.post_link,
+		tags: post_link_data.tags,
+		title: post_link_data.title,
 		updated_at: convertFirestoreTimestampToDate(data.updated_at)
 	};
 
@@ -124,6 +140,9 @@ const handler: TNextApiHandler<IPostLinkResponse, IPostLinkBody, {}> = async (re
 	if (action_type === EAction.ADD) {
 		updatedPost.updated_at = now;
 		updatedPost.post_link = post_link;
+		updatedPost.description = post_link_data.description;
+		updatedPost.tags = post_link_data.tags;
+		updatedPost.title = post_link_data.title;
 
 		if (data.post_link) {
 			return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error: `Post "${post_id}" is already linked with "${data?.post_link?.post_id}".` });
@@ -142,6 +161,9 @@ const handler: TNextApiHandler<IPostLinkResponse, IPostLinkBody, {}> = async (re
 		if (data?.post_link?.post_id === post_link.post_id && data?.post_link?.post_type === post_link.post_type && data?.post_link?.house_id === post_link.house_id && data?.post_link?.room_id === post_link.room_id) {
 			updatedPost.updated_at = now;
 			updatedPost.post_link = null;
+			updatedPost.description = data.description;
+			updatedPost.tags = data.tags;
+			updatedPost.title = data.title;
 			await postDocRef.update(updatedPost);
 
 			updatedLinkedPost.updated_at = now;
@@ -161,6 +183,9 @@ const handler: TNextApiHandler<IPostLinkResponse, IPostLinkBody, {}> = async (re
 		} else {
 			updatedPost.updated_at = now;
 			updatedPost.post_link = post_link;
+			updatedPost.description = post_link_data.description;
+			updatedPost.tags = post_link_data.tags;
+			updatedPost.title = post_link_data.title;
 			await postDocRef.update(updatedPost);
 
 			updatedLinkedPost.updated_at = now;

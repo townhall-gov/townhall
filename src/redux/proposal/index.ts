@@ -4,7 +4,7 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
-import { ICommentCreation, IProposalStore, IVoteCreation } from './@types';
+import { EPostLinkCreationAction, ICommentCreation, IPostLinkCreation, IProposalStore, IVoteCreation } from './@types';
 import { IComment, IHistoryComment, IHistoryReply, IProposal, IReaction, IReply, IVote } from '~src/types/schema';
 import { EAction, ESentiment } from '~src/types/enums';
 
@@ -29,6 +29,12 @@ const initialState: IProposalStore = {
 		replyBox_isVisible:false
 	},
 	loading: false,
+	postLinkCreation: {
+		action: EPostLinkCreationAction.FETCHING_POST_LINK_DATA,
+		postLink: null,
+		postLinkData: null,
+		url: ''
+	},
 	proposal: null,
 	replyCreation:{
 		comment_open:false,
@@ -43,6 +49,13 @@ const initialState: IProposalStore = {
 	},
 	votes: []
 };
+
+type IPostLinkCreationFieldPayload = {
+    [K in keyof IPostLinkCreation]: {
+      key: K;
+      value: IPostLinkCreation[K];
+    }
+}[keyof IPostLinkCreation];
 
 type ICommentCreationFieldPayload = {
     [K in keyof ICommentCreation]: {
@@ -95,6 +108,14 @@ export const proposalStore = createSlice({
 			const key = `house_${proposal?.house_id}_room_${proposal?.room_id}_proposal_${proposal?.id}_comment_${reply?.comment_id}_reply_${reply?.id}`;
 			localStorage.removeItem(key);
 			state.editableReply = null;
+		},
+		resetPostLinkCreation_Field: (state) => {
+			state.postLinkCreation = {
+				action: EPostLinkCreationAction.FETCHING_POST_LINK_DATA,
+				postLink: null,
+				postLinkData: null,
+				url: ''
+			};
 		},
 		resetReplyCreation: (state) => {
 			const proposal = state.proposal;
@@ -197,6 +218,25 @@ export const proposalStore = createSlice({
 		},
 		setLoading: (state, action: PayloadAction<boolean>) => {
 			state.loading = action.payload;
+		},
+		setPostLinkCreation_Field: (state, action: PayloadAction<IPostLinkCreationFieldPayload>) => {
+			const obj = action.payload;
+			if (obj) {
+				const { key, value } = obj;
+				switch(key) {
+				case 'action':
+					state.postLinkCreation.action = value;
+					break;
+				case 'postLink':
+					state.postLinkCreation.postLink = value;
+					break;
+				case 'postLinkData':
+					state.postLinkCreation.postLinkData = value;
+					break;
+				case 'url':
+					state.postLinkCreation.url = value;
+				}
+			}
 		},
 		setProposal: (state, action: PayloadAction<IProposal>) => {
 			state.proposal = action.payload;

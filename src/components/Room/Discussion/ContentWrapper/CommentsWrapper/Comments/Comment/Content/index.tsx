@@ -110,7 +110,7 @@ const CommentContent: FC<ICommentContentProps> = (props) => {
 									content: v
 								}));
 								clearTimeout(timeout.current);
-							}, 1000);
+							}, 0);
 						}}
 						onComment={onComment}
 						onCancel={() => {

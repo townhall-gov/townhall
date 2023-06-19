@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import React, { FC } from 'react';
 import Timestamp from './Timestamp';
 import Vote from './Vote';
+import PostLinking from './PostLink';
 
 interface ISidebarProps {
     className?: string;
@@ -14,6 +15,7 @@ const Sidebar: FC<ISidebarProps> = (props) => {
 	const { className } = props;
 	return (
 		<div className={classNames('flex flex-col gap-y-6 sticky top-6 min-w-[350px]', className)}>
+			<PostLinking />
 			<Vote />
 			<Timestamp />
 		</div>
