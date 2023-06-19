@@ -11,6 +11,7 @@ import { roomActions } from '~src/redux/room';
 import { ERoomStage } from '~src/redux/room/@types';
 import { useRoomCurrentStage } from '~src/redux/room/selectors';
 import { useRoomSelector } from '~src/redux/selectors';
+import BackButton from '~src/ui-components/BackButton';
 import NoRoomFound from '~src/ui-components/NoRoomFound';
 
 const SettingsPage = () => {
@@ -34,6 +35,7 @@ const SettingsPage = () => {
 	return (
 		<>
 			<SEOHead title={`Settings of Room ${query['room_id']} in House ${query['house_id']}`} />
+			<BackButton className='mb-3' />
 			<section className='flex gap-x-7'>
 				<RoomSidebar />
 				<RoomSettings />
