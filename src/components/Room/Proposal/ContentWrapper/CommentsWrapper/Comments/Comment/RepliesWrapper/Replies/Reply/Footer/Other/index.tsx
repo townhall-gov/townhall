@@ -32,7 +32,6 @@ const ReplyOtherActionsDropdown: FC<IReplyOtherActionsDropdownProps> = (props) =
 	const items = useReplyOtherActionItems(reply?.user_address);
 
 	if (!reply || !proposal) return null;
-	// const { id: reply_id } = reply;
 
 	const onDelete = async () => {
 		if (loading) return;
@@ -40,7 +39,7 @@ const ReplyOtherActionsDropdown: FC<IReplyOtherActionsDropdownProps> = (props) =
 			dispatch(proposalActions.setLoading(true));
 			const { data, error } = await api.post<IReplyResponse, IReplyBody>('auth/actions/reply', {
 				action_type: EAction.DELETE,
-				comment_id:reply.comment_id,
+				comment_id: reply.comment_id,
 				house_id: proposal.house_id,
 				post_id: proposal.id,
 				post_type: EPostType.PROPOSAL,
@@ -68,7 +67,7 @@ const ReplyOtherActionsDropdown: FC<IReplyOtherActionsDropdownProps> = (props) =
 					reply: data.reply
 				}));
 				dispatch(notificationActions.send({
-					message: 'Comment deleted successfully.',
+					message: 'Reply deleted successfully.',
 					status: ENotificationStatus.SUCCESS,
 					title: 'Success!'
 				}));

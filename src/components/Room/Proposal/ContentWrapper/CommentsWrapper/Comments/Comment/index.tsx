@@ -11,7 +11,6 @@ import CommentFooter from './Footer';
 
 import { useRouter } from 'next/router';
 import RepliesWrapper from './RepliesWrapper/index';
-import { useReplyBoxVisibility } from '~src/redux/proposal/selectors';
 
 interface ICommentProps {
 	comment: IComment;
@@ -19,9 +18,8 @@ interface ICommentProps {
 
 const Comment: FC<ICommentProps> = (props) => {
 	const { comment } = props;
-	const { replies }=comment;
+	const { replies } = comment;
 	const { asPath } = useRouter();
-	const { replybox_comment_id  } = useReplyBoxVisibility();
 	useEffect(() => {
 		if (typeof window == 'undefined') return;
 		if (window.location.hash) {
@@ -57,7 +55,7 @@ const Comment: FC<ICommentProps> = (props) => {
 			<article className='w-10'>
 				<CommentedUserImage />
 			</article>
-			<article id={`${id}-content`} className='flex-1 flex flex-col border-0 border-b border-solid border-blue_primary pb-5'>
+			<article id={`${id}-content`} className='flex-1 flex flex-col border-0 border-b border-solid border-blue_primary'>
 				<section className='flex flex-col gap-y-2'>
 					<CommentHeader
 						created_at={created_at}
@@ -72,7 +70,7 @@ const Comment: FC<ICommentProps> = (props) => {
 						comment={comment}
 					/>
 				</section>
-				{ (replybox_comment_id==comment.id) && <RepliesWrapper replies={replies} comment_id={replybox_comment_id} />}
+				<RepliesWrapper replies={replies} comment_id={comment.id} />
 			</article>
 		</section>
 	);

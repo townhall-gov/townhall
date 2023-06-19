@@ -8,8 +8,7 @@ import TextEditor from '~src/ui-components/TextEditor';
 
 interface ICommentEditorProps {
     loading: boolean;
-    onComment: () => Promise<void>;
-    onSentiment: () => Promise<void>;
+    onReply: () => Promise<void>;
     value: string;
     initialValue: string;
     onChange: (v: string) => void;
@@ -19,9 +18,9 @@ interface ICommentEditorProps {
 }
 
 const ReplyEditor: FC<ICommentEditorProps> = (props) => {
-	const { loading, onComment, onSentiment, onChange, value, initialValue, localStorageKey, onCancel, imageNamePrefix } = props;
+	const { loading, onReply, onChange, value, initialValue, localStorageKey, onCancel, imageNamePrefix } = props;
 	return (
-		<div className=' flex flex-col gap-y-[13px]'>
+		<article className=' flex flex-col gap-y-[13px]'>
 			<TextEditor
 				imageNamePrefix={imageNamePrefix}
 				initialValue={initialValue}
@@ -46,28 +45,17 @@ const ReplyEditor: FC<ICommentEditorProps> = (props) => {
 				<Button
 					loading={loading}
 					disabled={loading}
-					onClick={onSentiment}
+					onClick={onReply}
 					className={classNames('border border-solid border-blue_primary text-white py-1 px-6 rounded-md text-base font-medium bg-blue_primary flex items-center justify-center', {
 						'cursor-not-allowed': loading,
 						'cursor-pointer': !loading
 					})}
 				>
-                    Sentiment
-				</Button>
-				<Button
-					loading={loading}
-					disabled={loading}
-					onClick={onComment}
-					className={classNames('border border-solid border-blue_primary text-white py-1 px-6 rounded-md text-base font-medium bg-blue_primary flex items-center justify-center', {
-						'cursor-not-allowed': loading,
-						'cursor-pointer': !loading
-					})}
-				>
-                    Comment
+                    Reply
 				</Button>
 			</div>
 
-		</div>
+		</article>
 	);
 };
 

@@ -6,7 +6,6 @@ import React, { FC } from 'react';
 import ReplyReactions from './Reactions';
 import ReplyOtherActionsDropdown from './Other';
 import { IReply } from '~src/types/schema';
-import Sentiment from './Sentiment';
 
 interface ICommentFooterProps {
 	reply: IReply;
@@ -15,11 +14,9 @@ interface ICommentFooterProps {
 const ReplyFooter: FC<ICommentFooterProps> = (props) => {
 	const { reply } = props;
 	if (!reply) return null;
-	const { sentiment, id, reactions } = reply;
-	console.log( sentiment, id, reactions);
+	const { id, reactions } = reply;
 	return (
 		<footer className='flex items-center gap-x-3'>
-			<Sentiment sentiment={sentiment} />
 			<ReplyReactions reply_id={id} reactions={reactions} comment_id={reply.comment_id}  />
 			<ReplyOtherActionsDropdown reply={reply} />
 		</footer>

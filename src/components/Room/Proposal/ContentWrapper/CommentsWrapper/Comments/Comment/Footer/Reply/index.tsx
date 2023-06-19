@@ -17,8 +17,8 @@ interface ICommentReplyProps {
 const CommentReply:FC<ICommentReplyProps> = (props) => {
 	const { comment_id } = props;
 	const { loading } = useProposalSelector();
-	const { replybox_isVisible } =useReplyBoxVisibility();
-	const dispatch=useDispatch();
+	const { replyBox_isVisible } = useReplyBoxVisibility();
+	const dispatch = useDispatch();
 	return (
 		<div>
 			<button
@@ -27,7 +27,14 @@ const CommentReply:FC<ICommentReplyProps> = (props) => {
 					'cursor-not-allowed': loading,
 					'cursor-pointer': !loading
 				})}
-				onClick={() => {dispatch(proposalActions.setIsReplyBoxVisible({ replybox_comment_id:comment_id,replybox_isVisible:!replybox_isVisible }));}}
+				onClick={() => {
+					dispatch(
+						proposalActions.setIsReplyBoxVisible({
+							replyBox_comment_id: comment_id,
+							replyBox_isVisible: !replyBox_isVisible
+						})
+					);
+				}}
 
 			>
 				<ReplyIcon />

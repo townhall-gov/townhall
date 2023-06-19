@@ -38,8 +38,8 @@ export type IRepliesVisible = {
 }
 
 export type IReplyBoxVisible = {
-    replybox_comment_id:string;
-    replybox_isVisible:boolean
+    replyBox_comment_id:string;
+    replyBox_isVisible:boolean
 };
 
 export type IVoteCreation = {

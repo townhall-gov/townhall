@@ -4,7 +4,6 @@
 
 import React, { FC, useRef, useState } from 'react';
 import { useProfileSelector, useProposalSelector } from '~src/redux/selectors';
-import Address from '~src/ui-components/Address';
 import { useDispatch } from 'react-redux';
 import { proposalActions } from '~src/redux/proposal';
 import { useReplyCreation } from '~src/redux/proposal/selectors';
@@ -13,54 +12,31 @@ import { ENotificationStatus } from '~src/redux/notification/@types';
 import getErrorMessage from '~src/utils/getErrorMessage';
 import api from '~src/services/api';
 import { EAction, EPostType } from '~src/types/enums';
-import { modalActions } from '~src/redux/modal';
-import { EContentType, EFooterType, ETitleType } from '~src/redux/modal/@types';
 import ReplyEditor from '../ReplyEditor';
 import { useAuthActionsCheck } from '~src/redux/profile/selectors';
 
 import { editorActions } from '~src/redux/editor';
 import { IReplyBody, IReplyResponse } from 'pages/api/auth/actions/reply';
-import { IReply } from '~src/types/schema';
-import ConnectWalletBanner from '../../../../CreateComment/ConnectWalletBanner';
-import CommentedUserImage from '~src/ui-components/CommentedUserImage';
 
 interface ICreateProps {
-	comment_id: string,
-	replies: IReply[]|null;
+	comment_id: string;
 }
 
-const CreateReply :FC<ICreateProps>= (props) => {
+const CreateReply: FC<ICreateProps> = (props) => {
 	const { comment_id } = props;
 	const replyCreation = useReplyCreation();
 	const dispatch = useDispatch();
 	const timeout = useRef<NodeJS.Timeout>();
-	const { proposal  } = useProposalSelector();
+	const { proposal } = useProposalSelector();
 	const [loading, setLoading] = useState(false);
 	const { isLoggedIn, isRoomJoined, connectWallet, joinRoom } = useAuthActionsCheck();
+
 	const { user } = useProfileSelector();
 	if (!user || !user.address) {
-		return <ConnectWalletBanner connectWallet={connectWallet} />;
+		return null;
 	}
 
-	const onSentiment = async () => {
-		if (loading) return;
-		if (!isLoggedIn) {
-			connectWallet();
-			return;
-		}
-		if (!isRoomJoined) {
-			joinRoom();
-			return;
-		}
-		dispatch(modalActions.setModal({
-			contentType: EContentType.COMMENT_SENTIMENT,
-			footerType: EFooterType.COMMENT_SENTIMENT,
-			open: true,
-			titleType: ETitleType.NONE
-		}));
-	};
-
-	const onComment = async () => {
+	const onReply = async () => {
 		if (loading) return;
 		if (!isLoggedIn) {
 			connectWallet();
@@ -75,13 +51,13 @@ const CreateReply :FC<ICreateProps>= (props) => {
 				setLoading(true);
 				const { data, error } = await api.post<IReplyResponse, IReplyBody>('auth/actions/reply', {
 					action_type: EAction.ADD,
-					comment_id:comment_id,
+					comment_id: comment_id,
 					house_id: proposal.house_id,
 					post_id: proposal.id,
 					post_type: EPostType.PROPOSAL,
 					reply: {
 						// TODO: we are sending redundant data, will improve this later
-						comment_id:comment_id,
+						comment_id: comment_id,
 						content: replyCreation.content,
 						created_at: new Date(),
 						deleted_at: null,
@@ -121,8 +97,8 @@ const CreateReply :FC<ICreateProps>= (props) => {
 						status: ENotificationStatus.SUCCESS,
 						title: 'Success!'
 					}));
-					dispatch(proposalActions.setIsRepliesVisible({ replies_comment_id:comment_id,replies_isVisible:true }));
-					dispatch(proposalActions.setIsReplyBoxVisible({ replybox_comment_id:comment_id,replybox_isVisible:false }));
+					dispatch(proposalActions.resetReplyCreation());
+					dispatch(proposalActions.setIsReplyBoxVisible({ replyBox_comment_id: '',replyBox_isVisible:false }));
 				}
 				setLoading(false);
 				dispatch(editorActions.setIsClean(true));
@@ -141,54 +117,34 @@ const CreateReply :FC<ICreateProps>= (props) => {
 
 	const key = `house_${proposal?.house_id}_room_${proposal?.room_id}_proposal_${proposal?.id}_comment_${comment_id}_reply`;
 	return (
-		<section className='flex gap-x-[10px] p-2 min-h-[321px]'>
-			<div className='w-10'>
-				<CommentedUserImage />
-			</div>
-			<div className='flex-1 flex flex-col gap-y-[13px]'>
-				<div className='flex items-center gap-x-2 m-0 text-base text-white font-medium leading-[20px] tracking-[0.01em]'>
-					<span>By</span>
-					{
-						user.username?
-							<span>{user.username}</span>
-							: (
-								<Address
-									identiconSize={20}
-									ethIdenticonSize={20}
-									address={user.address}
-								/>
-							)
-					}
-				</div>
-				<ReplyEditor
-					imageNamePrefix={key}
-					localStorageKey={key}
-					onSentiment={onSentiment}
-					onComment={onComment}
-					onCancel={() => {
+		<article className='flex gap-x-[10px] pb-3'>
+			<ReplyEditor
+				imageNamePrefix={key}
+				localStorageKey={key}
+				onReply={onReply}
+				onCancel={() => {
+					dispatch(proposalActions.setReplyCreation_Field({
+						key: 'content',
+						value: ''
+					}));
+					localStorage.removeItem(key);
+					dispatch(editorActions.setIsClean(true));
+				}}
+				loading={loading}
+				onChange={(v) => {
+					clearTimeout(timeout.current);
+					timeout.current = setTimeout(() => {
 						dispatch(proposalActions.setReplyCreation_Field({
 							key: 'content',
-							value: ''
+							value: v
 						}));
-						localStorage.removeItem(key);
-						dispatch(editorActions.setIsClean(true));
-					}}
-					loading={loading}
-					onChange={(v) => {
 						clearTimeout(timeout.current);
-						timeout.current = setTimeout(() => {
-							dispatch(proposalActions.setReplyCreation_Field({
-								key: 'content',
-								value: v
-							}));
-							clearTimeout(timeout.current);
-						}, 1000);
-					}}
-					initialValue=''
-					value={replyCreation?.content}
-				/>
-			</div>
-		</section>
+					}, 100);
+				}}
+				initialValue=''
+				value={replyCreation?.content}
+			/>
+		</article>
 	);
 };
 

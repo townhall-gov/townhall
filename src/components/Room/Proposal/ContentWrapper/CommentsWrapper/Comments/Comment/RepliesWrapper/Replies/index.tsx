@@ -7,13 +7,12 @@ import Reply from './Reply';
 
 interface IReplyProps {
 	replies: IReply[];
-	isAllRepliesVisible: boolean;
 }
 
 const Replies: FC<IReplyProps> = (props) => {
 	const { replies } = props;
 	return (
-		<section className='text-white mt-5 flex flex-col gap-y-6'>
+		<section className='mt-[14px] pb-3 flex flex-col gap-y-6'>
 			{
 				replies.map((reply, index) => {
 					return (
