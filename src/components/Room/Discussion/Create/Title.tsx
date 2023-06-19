@@ -12,7 +12,7 @@ import Input from '~src/ui-components/Input';
 const Title = () => {
 	const discussionCreation = useDiscussionCreation();
 	const dispatch = useDispatch();
-	const { loading } = useRoomSelector();
+	const { loading,isDiscussionPreviewState } = useRoomSelector();
 	return (
 		<div className='flex flex-col'>
 			<h3 className='text-white font-medium text-xl'>Title</h3>
@@ -28,7 +28,7 @@ const Title = () => {
 				type='text'
 				value={discussionCreation?.title}
 				placeholder='Title'
-				isDisabled={loading}
+				isDisabled={isDiscussionPreviewState||loading}
 			/>
 		</div>
 	);

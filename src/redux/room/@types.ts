@@ -15,6 +15,7 @@ export interface IRoomStore {
     currentStage: ERoomStage;
     proposals: IListingProposal[];
     discussions: IListingDiscussion[];
+    isDiscussionPreviewState:boolean;
 }
 
 export interface IListingProposal extends Omit<IProposal, 'discussion' | 'description' | 'updated_at' | 'preparation_period' | 'comments' | 'reactions' | 'is_vote_results_hide_before_voting_ends' | 'voting_system' | 'timestamp' | 'snapshot_heights' | 'voting_system_options' | 'voting_strategies' | 'post_link'> {
