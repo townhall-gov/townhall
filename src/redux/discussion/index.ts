@@ -25,11 +25,8 @@ const initialState: IDiscussionStore = {
 		replies_comment_id:'',
 		replies_isVisible:false
 	},
-	isReplyBoxVisible:{
-		replyBox_comment_id:'',
-		replyBox_isVisible:false
-	},
 	loading: false,
+	replyComment: null,
 	replyCreation: {
 		comment_open:false,
 		content: '',
@@ -85,9 +82,9 @@ export const discussionStore = createSlice({
 		},
 		resetReplyCreation: (state) => {
 			const discussion = state.discussion;
-			const replyBoxVisible = state.isReplyBoxVisible;
-			if (discussion && replyBoxVisible) {
-				localStorage.removeItem(`house_${discussion?.house_id}_room_${discussion?.room_id}_discussion_${discussion?.id}_comment_${replyBoxVisible.replyBox_comment_id}_reply`);
+			const replyComment = state.replyComment;
+			if (discussion && replyComment) {
+				localStorage.removeItem(`house_${discussion?.house_id}_room_${discussion?.room_id}_discussion_${discussion?.id}_comment_${replyComment.id}_reply`);
 			}
 			state.replyCreation = {
 				comment_open: false,
@@ -168,15 +165,7 @@ export const discussionStore = createSlice({
 			const { replies_comment_id,replies_isVisible } = action.payload;
 			state.isRepliesVisible.replies_comment_id=replies_comment_id;
 			state.isRepliesVisible.replies_isVisible=replies_isVisible;
-			state.isReplyBoxVisible.replyBox_comment_id=replies_comment_id;
-		},
-		setIsReplyBoxVisible: (state, action: PayloadAction<{
-			replyBox_comment_id: string;
-			replyBox_isVisible: boolean;
-		}>) => {
-			const { replyBox_comment_id,replyBox_isVisible }=action.payload;
-			state.isReplyBoxVisible.replyBox_comment_id=replyBox_comment_id;
-			state.isReplyBoxVisible.replyBox_isVisible=replyBox_isVisible;
+			state.replyComment = null;
 		},
 		setLoading: (state, action: PayloadAction<boolean>) => {
 			state.loading = action.payload;
@@ -198,6 +187,10 @@ export const discussionStore = createSlice({
 					state.discussion.reactions.push(reaction);
 				}
 			}
+		},
+		setReplyComment: (state, action: PayloadAction<IComment | null>) => {
+			const replyComment = action.payload;
+			state.replyComment = replyComment;
 		},
 		setReplyCreation_Field: (state, action: PayloadAction<ICommentCreationFieldPayload>) => {
 			const obj = action.payload;

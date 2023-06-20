@@ -21,9 +21,14 @@ interface IGetProposalFnParams {
     proposal_id: number;
 }
 
-type TGetCommentsFn = (commentsQuerySnapshot: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>) => Promise<IComment[]>;
+type TGetCommentsFn = (commentsQuerySnapshot: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>, commentInfo: {
+	post_type: EPostType;
+	room_id: string;
+	house_id: string;
+}) => Promise<IComment[]>;
 
-const getComments: TGetCommentsFn = async (commentsQuerySnapshot) => {
+export const getComments: TGetCommentsFn = async (commentsQuerySnapshot, commentInfo) => {
+	const { house_id, post_type, room_id } = commentInfo;
 	const comments: IComment[] = [];
 	const commentsPromise = commentsQuerySnapshot.docs.map(async (doc) => {
 		if (doc && doc.exists) {
@@ -85,10 +90,13 @@ const getComments: TGetCommentsFn = async (commentsQuerySnapshot) => {
 								created_at: convertFirestoreTimestampToDate(data.created_at),
 								deleted_at: convertFirestoreTimestampToDate(data.deleted_at),
 								history: history,
+								house_id: data.house_id || house_id,
 								id: data.id,
 								is_deleted: data.is_deleted || false,
 								post_id: data.post_id,
+								post_type: data.post_type || post_type,
 								reactions: reactions,
+								room_id: data.room_id || room_id,
 								sentiment: data.sentiment || ESentiment.NEUTRAL,
 								updated_at: convertFirestoreTimestampToDate(data.updated_at),
 								user_address: data.user_address
@@ -112,11 +120,14 @@ const getComments: TGetCommentsFn = async (commentsQuerySnapshot) => {
 					created_at: convertFirestoreTimestampToDate(data.created_at),
 					deleted_at: convertFirestoreTimestampToDate(data.deleted_at),
 					history: history,
+					house_id: data.house_id || house_id,
 					id: data.id,
 					is_deleted: data.is_deleted || false,
 					post_id: data.post_id,
+					post_type: data.post_type || post_type,
 					reactions: reactions,
 					replies,
+					room_id: data.room_id || room_id,
 					sentiment: data.sentiment || ESentiment.NEUTRAL,
 					updated_at: convertFirestoreTimestampToDate(data.updated_at),
 					user_address: data.user_address
@@ -182,14 +193,22 @@ export const getProposal: TGetProposalFn = async (params) => {
 
 			// Get comments
 			const commentsQuerySnapshot = await proposalDocRef.collection('comments').orderBy('created_at', 'asc').get();
-			let comments = await getComments(commentsQuerySnapshot);
+			let comments = await getComments(commentsQuerySnapshot, {
+				house_id: house_id,
+				post_type: EPostType.PROPOSAL,
+				room_id: room_id
+			});
 
 			if (data.post_link) {
 				const { house_id, room_id, post_id, post_type } = data.post_link;
 				const postColRef = (post_type === EPostType.DISCUSSION? discussionCollection(house_id, room_id): proposalCollection(house_id, room_id));
 				const postDocRef = postColRef.doc(String(post_id));
 				const commentsQuerySnapshot = await postDocRef.collection('comments').orderBy('created_at', 'asc').get();
-				const postLinkComments = await getComments(commentsQuerySnapshot);
+				const postLinkComments = await getComments(commentsQuerySnapshot, {
+					house_id: house_id,
+					post_type: post_type,
+					room_id: room_id
+				});
 				comments = [...comments, ...postLinkComments].sort((a, b) => {
 					return b.created_at.getTime() - a.created_at.getTime();
 				});

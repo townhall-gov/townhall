@@ -24,10 +24,6 @@ const initialState: IProposalStore = {
 		replies_comment_id:'',
 		replies_isVisible:false
 	},
-	isReplyBoxVisible:{
-		replyBox_comment_id:'',
-		replyBox_isVisible:false
-	},
 	loading: false,
 	postLinkCreation: {
 		action: EPostLinkCreationAction.FETCHING_POST_LINK_DATA,
@@ -36,6 +32,7 @@ const initialState: IProposalStore = {
 		url: ''
 	},
 	proposal: null,
+	replyComment: null,
 	replyCreation:{
 		comment_open:false,
 		content: '',
@@ -119,9 +116,9 @@ export const proposalStore = createSlice({
 		},
 		resetReplyCreation: (state) => {
 			const proposal = state.proposal;
-			const replyBoxVisible = state.isReplyBoxVisible;
-			if (proposal && replyBoxVisible) {
-				localStorage.removeItem(`house_${proposal?.house_id}_room_${proposal?.room_id}_proposal_${proposal?.id}_comment_${replyBoxVisible.replyBox_comment_id}_reply`);
+			const replyComment = state.replyComment;
+			if (proposal && replyComment) {
+				localStorage.removeItem(`house_${proposal?.house_id}_room_${proposal?.room_id}_proposal_${proposal?.id}_comment_${replyComment.id}_reply`);
 			}
 			state.replyCreation = {
 				comment_open: false,
@@ -206,15 +203,7 @@ export const proposalStore = createSlice({
 			const { replies_comment_id,replies_isVisible } = action.payload;
 			state.isRepliesVisible.replies_comment_id=replies_comment_id;
 			state.isRepliesVisible.replies_isVisible=replies_isVisible;
-			state.isReplyBoxVisible.replyBox_comment_id=replies_comment_id;
-		},
-		setIsReplyBoxVisible: (state, action: PayloadAction<{
-			replyBox_comment_id: string;
-			replyBox_isVisible: boolean;
-		}>) => {
-			const { replyBox_comment_id,replyBox_isVisible }=action.payload;
-			state.isReplyBoxVisible.replyBox_comment_id=replyBox_comment_id;
-			state.isReplyBoxVisible.replyBox_isVisible=replyBox_isVisible;
+			state.replyComment = null;
 		},
 		setLoading: (state, action: PayloadAction<boolean>) => {
 			state.loading = action.payload;
@@ -258,6 +247,10 @@ export const proposalStore = createSlice({
 					state.proposal.reactions.push(reaction);
 				}
 			}
+		},
+		setReplyComment: (state, action: PayloadAction<IComment | null>) => {
+			const replyComment = action.payload;
+			state.replyComment = replyComment;
 		},
 		setReplyCreation_Field: (state, action: PayloadAction<ICommentCreationFieldPayload>) => {
 			const obj = action.payload;

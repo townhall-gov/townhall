@@ -24,7 +24,7 @@ export interface IProposalStore {
     editableReply: IReply | null;
     commentEditHistory: IHistoryComment[];
     replyEditHistory: IHistoryReply[];
-    isReplyBoxVisible:IReplyBoxVisible;
+    replyComment: IComment | null;
     isRepliesVisible:IRepliesVisible;
 }
 

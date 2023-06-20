@@ -13,7 +13,7 @@ import { useAuthActionsCheck } from '~src/redux/profile/selectors';
 import { proposalActions } from '~src/redux/proposal';
 import { useProposalSelector } from '~src/redux/selectors';
 import api from '~src/services/api';
-import { EAction, EPostType } from '~src/types/enums';
+import { EAction } from '~src/types/enums';
 import { IReply } from '~src/types/schema';
 import getErrorMessage from '~src/utils/getErrorMessage';
 import useReplyOtherActionItems from './utils';
@@ -40,11 +40,11 @@ const ReplyOtherActionsDropdown: FC<IReplyOtherActionsDropdownProps> = (props) =
 			const { data, error } = await api.post<IReplyResponse, IReplyBody>('auth/actions/reply', {
 				action_type: EAction.DELETE,
 				comment_id: reply.comment_id,
-				house_id: proposal.house_id,
-				post_id: proposal.id,
-				post_type: EPostType.PROPOSAL,
+				house_id: reply.house_id,
+				post_id: reply.post_id,
+				post_type: reply.post_type,
 				reply: reply,
-				room_id: proposal.room_id
+				room_id: reply.room_id
 			});
 			if (error) {
 				dispatch(proposalActions.setError(getErrorMessage(error)));

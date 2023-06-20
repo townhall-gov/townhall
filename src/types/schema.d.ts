@@ -161,6 +161,9 @@ interface IComment {
 	updated_at: Date;
 	deleted_at: Date | null;
 	post_id: number;
+	post_type: EPostType;
+	room_id: string;
+	house_id: string;
 	content: string;
 	user_address: string;
 	history: IHistoryComment[];
@@ -175,8 +178,11 @@ interface IReply {
 	created_at: Date;
 	updated_at: Date;
 	deleted_at: Date | null;
-	post_id: number;
 	comment_id: string;
+	post_id: number;
+	post_type: EPostType;
+	room_id: string;
+	house_id: string;
 	content: string;
 	user_address: string;
 	history: IHistoryReply[];

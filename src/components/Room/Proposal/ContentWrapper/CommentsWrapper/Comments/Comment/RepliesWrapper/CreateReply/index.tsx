@@ -11,19 +11,20 @@ import { notificationActions } from '~src/redux/notification';
 import { ENotificationStatus } from '~src/redux/notification/@types';
 import getErrorMessage from '~src/utils/getErrorMessage';
 import api from '~src/services/api';
-import { EAction, EPostType } from '~src/types/enums';
+import { EAction } from '~src/types/enums';
 import ReplyEditor from '../ReplyEditor';
 import { useAuthActionsCheck } from '~src/redux/profile/selectors';
 
 import { editorActions } from '~src/redux/editor';
 import { IReplyBody, IReplyResponse } from 'pages/api/auth/actions/reply';
+import { IComment } from '~src/types/schema';
 
 interface ICreateProps {
-	comment_id: string;
+	comment: IComment;
 }
 
 const CreateReply: FC<ICreateProps> = (props) => {
-	const { comment_id } = props;
+	const { comment } = props;
 	const replyCreation = useReplyCreation();
 	const dispatch = useDispatch();
 	const timeout = useRef<NodeJS.Timeout>();
@@ -51,21 +52,24 @@ const CreateReply: FC<ICreateProps> = (props) => {
 				setLoading(true);
 				const { data, error } = await api.post<IReplyResponse, IReplyBody>('auth/actions/reply', {
 					action_type: EAction.ADD,
-					comment_id: comment_id,
-					house_id: proposal.house_id,
-					post_id: proposal.id,
-					post_type: EPostType.PROPOSAL,
+					comment_id: comment.id,
+					house_id: comment.house_id,
+					post_id: comment.post_id,
+					post_type: comment.post_type,
 					reply: {
 						// TODO: we are sending redundant data, will improve this later
-						comment_id: comment_id,
+						comment_id: comment.id,
 						content: replyCreation.content,
 						created_at: new Date(),
 						deleted_at: null,
 						history: [],
+						house_id: comment.house_id,
 						id: '',
 						is_deleted: false,
 						post_id: proposal.id,
+						post_type: comment.post_type,
 						reactions: [],
+						room_id: comment.room_id,
 						sentiment: replyCreation.sentiment,
 						updated_at: new Date(),
 						user_address: user.address
@@ -98,7 +102,7 @@ const CreateReply: FC<ICreateProps> = (props) => {
 						title: 'Success!'
 					}));
 					dispatch(proposalActions.resetReplyCreation());
-					dispatch(proposalActions.setIsReplyBoxVisible({ replyBox_comment_id: '',replyBox_isVisible:false }));
+					dispatch(proposalActions.setReplyComment(null));
 				}
 				setLoading(false);
 				dispatch(editorActions.setIsClean(true));
@@ -115,7 +119,7 @@ const CreateReply: FC<ICreateProps> = (props) => {
 		}
 	};
 
-	const key = `house_${proposal?.house_id}_room_${proposal?.room_id}_proposal_${proposal?.id}_comment_${comment_id}_reply`;
+	const key = `house_${proposal?.house_id}_room_${proposal?.room_id}_proposal_${proposal?.id}_comment_${comment.id}_reply`;
 	return (
 		<article className='flex gap-x-[10px] pb-3'>
 			<ReplyEditor
@@ -128,6 +132,9 @@ const CreateReply: FC<ICreateProps> = (props) => {
 						value: ''
 					}));
 					localStorage.removeItem(key);
+					dispatch(
+						proposalActions.setReplyComment(null)
+					);
 					dispatch(editorActions.setIsClean(true));
 				}}
 				loading={loading}

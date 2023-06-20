@@ -6,18 +6,17 @@ import classNames from 'classnames';
 import React, { FC } from 'react';
 import { useDispatch } from 'react-redux';
 import { discussionActions } from '~src/redux/discussion';
-import { useReplyBoxVisibility } from '~src/redux/discussion/selectors';
 import { useProposalSelector } from '~src/redux/selectors';
+import { IComment } from '~src/types/schema';
 import { ReplyIcon } from '~src/ui-components/CustomIcons';
 
 interface ICommentReplyProps {
-	comment_id: string;
+	comment: IComment;
 }
 
 const CommentReply: FC<ICommentReplyProps> = (props) => {
-	const { comment_id } = props;
+	const { comment } = props;
 	const { loading } = useProposalSelector();
-	const { replyBox_isVisible } = useReplyBoxVisibility();
 	const dispatch = useDispatch();
 	return (
 		<div>
@@ -29,10 +28,7 @@ const CommentReply: FC<ICommentReplyProps> = (props) => {
 				})}
 				onClick={() => {
 					dispatch(
-						discussionActions.setIsReplyBoxVisible({
-							replyBox_comment_id: comment_id,
-							replyBox_isVisible: !replyBox_isVisible
-						})
+						discussionActions.setReplyComment(comment)
 					);
 				}}
 			>
