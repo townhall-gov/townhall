@@ -2,12 +2,16 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React from 'react';
+import { RequestHouseCardIcon } from '~src/ui-components/CustomIcons';
 
 const RequestHouseCard = () => {
 	return (
 		<section
-			className='border border-solid border-blue_primary rounded-2xl drop-shadow-[0px_6px_18px_rgba(0,0,0,0.06)] p-6 text-white flex flex-col gap-y-3 items-center'
+			className='border border-solid border-blue_primary rounded-2xl drop-shadow-[0px_6px_18px_rgba(0,0,0,0.06)] p-6 text-white flex flex-col gap-y-3 items-center '
 		>
+			<div className='w-[163px] h-[183.08px]'>
+				<RequestHouseCardIcon className='text-[213px]'/>
+			</div>
 			<h2 className='m-0 p-0 flex flex-col font-medium text-[18px] leading-[22px] tracking-[0.01em] items-center'>
 				<span>
                     Simplify decision making
