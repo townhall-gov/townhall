@@ -27,20 +27,37 @@ const useFilteredHouses = () => {
 };
 const useFilteredRooms = () => {
 	const { rooms } = useHomeSelector();
+	const category=useCategory();
+	console.log(rooms);
 	const { searchQuery } = useHomeSelector();
 	if (rooms && Array.isArray(rooms) && rooms.length > 0) {
-		if (!searchQuery) {
+		if (!searchQuery && category!='all') {
 			return rooms;
 		}
-
+		if (!searchQuery && category=='all') {
+			const sameRoomandHouse = rooms.filter(room => {
+				if(room.id!=room.house_id)
+					return room;
+			});
+			return sameRoomandHouse;
+		}
 		const filteredRooms = rooms.filter(room => {
 			const lowercaseSearchValue = searchQuery.toLowerCase();
 			const lowercaseHouseName = room.title.toLowerCase();
 
 			return lowercaseHouseName.includes(lowercaseSearchValue);
 		});
+		if (category!='all') {
+			return filteredRooms;
+		}
+		if (category=='all') {
+			const sameRoomandHouse = filteredRooms.filter(room => {
+				if(room.id!=room.house_id)
+					return room;
+			});
+			return sameRoomandHouse;
+		}
 
-		return filteredRooms;
 	}
 
 	return [];

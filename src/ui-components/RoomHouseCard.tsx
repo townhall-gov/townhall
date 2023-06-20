@@ -10,7 +10,6 @@ import React, { FC, ReactNode, useRef } from 'react';
 import { CropFreeIcon, HouseIcon } from './CustomIcons';
 import DefaultNameImage from './DefaultNameImage';
 import { useHousesSelector } from '~src/redux/selectors';
-import { useCategory } from '~src/redux/home/selector';
 
 interface IRoomHouseCardProps {
     isJoined: boolean;
@@ -26,18 +25,10 @@ interface IRoomHouseCardProps {
 }
 
 const RoomHouseCard: FC<IRoomHouseCardProps> = (props) => {
-	const { isDisabled, isJoined, logo, totalLabel, onClick, name, link, onLinkClick, house_id,room_id } = props;
-	console.log(props);
+	const { isDisabled, isJoined, logo, totalLabel, onClick, name, link, onLinkClick, house_id } = props;
 	const joinBtnRef = useRef<HTMLButtonElement>(null!);
 	const { houses } = useHousesSelector();
-	const category = useCategory();
 	const roomHouse = houses.find((house) => house.id === house_id);
-	if (room_id) {
-		if(room_id==house_id && category=='all')
-		{
-			return null;
-		}
-	}
 	return (
 		<div >
 			<article
