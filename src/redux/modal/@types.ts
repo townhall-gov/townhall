@@ -19,8 +19,7 @@ export enum ETitleType {
     CAST_YOUR_VOTE = 'cast-your-vote',
     ALL_VOTES = 'all-votes',
     HOUSE_ROOMS = 'house-rooms',
-    POST_LINK_MODAL = 'post-link-modal',
-    JOINED_ROOMS = 'joined-rooms'
+    POST_LINK_MODAL = 'post-link-modal'
 }
 
 export enum EFooterType {
