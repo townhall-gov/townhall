@@ -132,7 +132,7 @@ const CastYourVoteModalContent = () => {
 													# {snapshot_height.height}
 												</span>
 												<span>
-													$ {Number(balanceFormatted).toFixed(2)} {chainProperties[snapshot_height.blockchain].tokenSymbol}
+													{Number(balanceFormatted).toFixed(2)} {chainProperties[snapshot_height.blockchain].tokenSymbol}
 												</span>
 											</p>
 										</li>
