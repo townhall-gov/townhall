@@ -27,7 +27,6 @@ interface IProposalsProps {
 const Proposals: FC<IProposalsProps> = (props) => {
 	const { house_id, room_id, className } = props;
 	const [proposals, setProposals] = useState<IListingProposal[]>([]);
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [proposalsCount, setProposalsCount] = useState(0);
 	const [page, setPage] = useState(1);
 	const [loading, setLoading] = useState(false);
@@ -73,13 +72,13 @@ const Proposals: FC<IProposalsProps> = (props) => {
 	return (
 		<section className={classNames('flex flex-col h-full', className)}>
 			<div
-				className='flex items-center justify-end mb-[8.5px]'
+				className='flex items-center justify-end'
 			>
 				<Spin wrapperClassName='rounded-2xl' className='rounded-2xl w-[125px]' spinning={loading} indicator={<LoadingOutlined />}>
 					<Filter loading={loading} option={option} setOption={setOption} />
 				</Spin>
 			</div>
-			<section>
+			<section className='mt-[8.5px]'>
 				{
 					proposals && Array.isArray(proposals) && proposals.length ?
 						<>
@@ -92,6 +91,7 @@ const Proposals: FC<IProposalsProps> = (props) => {
 							</div>
 							<article className='flex items-center justify-end'>
 								<Pagination
+									disabled={loading}
 									className='text-white'
 									defaultCurrent={1}
 									current={page}
