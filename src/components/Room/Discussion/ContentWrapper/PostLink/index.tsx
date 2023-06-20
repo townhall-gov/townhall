@@ -3,6 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 /* eslint-disable @next/next/no-img-element */
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import ReactHTMLParser from 'react-html-parser';
 import { useDiscussionSelector, useHousesSelector } from '~src/redux/selectors';
@@ -11,6 +12,7 @@ const PostLink = () => {
 	const { discussion } = useDiscussionSelector();
 	const { houses } = useHousesSelector();
 	const [image, setImage] = useState('');
+	const router = useRouter();
 	useEffect(() => {
 		if (houses && Array.isArray(houses)) {
 			const house = houses.find((house) => house.id === discussion?.post_link?.house_id);
@@ -20,9 +22,12 @@ const PostLink = () => {
 		}
 	}, [houses, discussion]);
 	if (!discussion || !discussion.post_link || !discussion.post_link_data) return null;
-	const { description, title } = discussion.post_link_data;
+	const { post_link_data, post_link } = discussion;
+	const { description, title } = post_link_data;
 	return (
-		<section>
+		<section onClick={() => {
+			router.push(`/${post_link.house_id}/${post_link.room_id}/proposal/${post_link.post_id}`);
+		}} className='cursor-pointer'>
 			<h3 className='m-0 text-white tracking-[0.01em] font-medium text-xl leading-[24px]'>
                 Linked Proposal
 			</h3>

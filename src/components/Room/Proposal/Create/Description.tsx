@@ -18,6 +18,7 @@ const Description: FC<IDescriptionProps> = (props) => {
 	const dispatch = useDispatch();
 	const timeout = useRef<NodeJS.Timeout>();
 	const { loading } = useRoomSelector();
+
 	return (
 		<div className='flex flex-col'>
 			<h3 className='text-white font-medium text-xl'>Description</h3>
@@ -25,7 +26,7 @@ const Description: FC<IDescriptionProps> = (props) => {
 				// Description class is for error validation highlighting
 				className='description'
 				imageNamePrefix={imageNamePrefix}
-				initialValue={''}
+				initialValue={proposalDescription?.postLinkData?.description || ''}
 				isDisabled={loading}
 				value={proposalDescription?.description}
 				localStorageKey='proposalCreation'

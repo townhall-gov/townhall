@@ -50,8 +50,13 @@ const TextEditor: FC<ITextEditorProps> = (props) => {
 			ref.current.editor?.setContent('');
 			dispatch(editorActions.setIsClean(false));
 		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isClean]);
+
+	useEffect(() => {
+		ref.current.editor?.setContent(props.initialValue);
+		initialValue.current = props.initialValue;
+	}, [props.initialValue]);
 
 	return (
 		<div style={{

@@ -12,6 +12,7 @@ import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import { Skeleton } from 'antd';
 import SelectVotingSystem from './SelectVotingSystem';
+import PostLink from './PostLink';
 
 const PreviewBtn = dynamic(() => import('./PreviewBtn'), {
 	loading: () => <Skeleton.Avatar active size='large' shape='circle' /> ,
@@ -26,6 +27,7 @@ const CreateProposal = () => {
 			{
 				isRoomJoined?
 					<>
+						<PostLink />
 						<Title />
 						<Description imageNamePrefix={`house_${query.house_id}_room_${query?.room_id}_proposal`} />
 						<SelectVotingSystem />

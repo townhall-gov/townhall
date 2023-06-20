@@ -55,7 +55,7 @@ const Comment: FC<ICommentProps> = (props) => {
 			<article className='w-10'>
 				<CommentedUserImage />
 			</article>
-			<article id={`${id}-content`} className='flex-1 flex flex-col border-0 border-b border-solid border-blue_primary'>
+			<article id={`${id}-content`} className='flex-1 flex flex-col border-0 border-b border-solid border-blue_primary w-full'>
 				<section className='flex flex-col gap-y-2'>
 					<CommentHeader
 						created_at={created_at}

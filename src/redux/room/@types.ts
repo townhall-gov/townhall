@@ -2,8 +2,9 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+import { IPostLinkData } from 'pages/api/auth/data/post-link-data';
 import { EReaction, EVotingSystem } from '~src/types/enums';
-import { IDiscussion, IProposal, IRoom } from '~src/types/schema';
+import { IDiscussion, IPostLink, IProposal, IRoom } from '~src/types/schema';
 
 export interface IRoomStore {
     loading: boolean;
@@ -34,6 +35,9 @@ export interface IListingDiscussion extends Omit<IDiscussion, 'description' | 'u
 }
 
 export type IProposalCreation = {
+    url: string;
+    postLink: IPostLink | null;
+    postLinkData: IPostLinkData | null;
     title: string;
     description: string;
     tags: string[];

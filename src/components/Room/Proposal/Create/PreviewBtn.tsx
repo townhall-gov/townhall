@@ -125,7 +125,7 @@ const PreviewBtn = () => {
 					return;
 				}
 			}
-			const { description, end_date, is_vote_results_hide_before_voting_ends, start_date, tags, title, discussion, voting_system, voting_system_options } = proposalCreation;
+			const { description, end_date, is_vote_results_hide_before_voting_ends, start_date, tags, title, discussion, voting_system, voting_system_options, postLink, postLinkData } = proposalCreation;
 			const { query } = router;
 			if (start_date && end_date && voting_system && voting_system_options && query.house_id && query.room_id) {
 				const proposal: TProposalPayload = {
@@ -134,8 +134,8 @@ const PreviewBtn = () => {
 					end_date: end_date,
 					house_id: String(query.house_id),
 					is_vote_results_hide_before_voting_ends: is_vote_results_hide_before_voting_ends,
-					post_link: null,
-					post_link_data: null,
+					post_link: postLink,
+					post_link_data: postLinkData,
 					room_id: String(query.room_id),
 					start_date: start_date,
 					tags: tags,

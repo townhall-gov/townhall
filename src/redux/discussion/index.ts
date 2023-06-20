@@ -287,23 +287,11 @@ export const discussionStore = createSlice({
 					if (action_type === EAction.DELETE) {
 						repliesArr.splice(index, 1);
 					} else if (action_type === EAction.EDIT) {
-						let url = window.location.href;
-						const matches = window.location.href.match(/discussion\/\w+#.*/);
-						if (matches && matches.length > 0) {
-							url = window.location.href?.replace(/#.*/, '');
-						}
-						window.history.replaceState(null, null!, url + '#' + reply.comment_id + reply.id);
 						repliesArr.splice(index, 1);
 						repliesArr.unshift(reply);
 					}
 				} else {
 					if (action_type === EAction.ADD) {
-						let url = window.location.href;
-						const matches = window.location.href.match(/discussion\/\w+#.*/);
-						if (matches && matches.length > 0) {
-							url = window.location.href?.replace(/#.*/, '');
-						}
-						window.history.replaceState(null, null!,url + '#' + reply.comment_id + reply.id);
 						repliesArr.unshift(reply);
 					}
 				}
