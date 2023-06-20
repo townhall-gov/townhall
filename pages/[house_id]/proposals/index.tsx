@@ -19,6 +19,7 @@ import { EHouseStage, IListingProposal } from '~src/redux/house/@types';
 import { useHouseCurrentStage } from '~src/redux/house/selectors';
 import { IHouse } from '~src/types/schema';
 import BackButton from '~src/ui-components/BackButton';
+import { LISTING_LIMIT } from '~src/utils/proposalListingLimit';
 
 interface IProposalsServerProps {
 	proposals: IListingProposal[] | null;
@@ -34,6 +35,8 @@ export const getServerSideProps: GetServerSideProps<IProposalsServerProps> = asy
 
 	const { data: proposals, error: proposalsError } = await getProposals({
 		house_id,
+		limit: LISTING_LIMIT,
+		page: 1,
 		room_id
 	});
 

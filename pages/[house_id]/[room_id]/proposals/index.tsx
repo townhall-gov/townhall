@@ -18,6 +18,7 @@ import { useRoomCurrentStage } from '~src/redux/room/selectors';
 import { IRoom } from '~src/types/schema';
 import BackButton from '~src/ui-components/BackButton';
 import NoRoomFound from '~src/ui-components/NoRoomFound';
+import { LISTING_LIMIT } from '~src/utils/proposalListingLimit';
 
 interface IProposalsServerProps {
 	proposals: IListingProposal[] | null;
@@ -32,6 +33,8 @@ export const getServerSideProps: GetServerSideProps<IProposalsServerProps> = asy
 
 	const { data: proposals, error: proposalsError } = await getProposals({
 		house_id,
+		limit: LISTING_LIMIT,
+		page: 1,
 		room_id
 	});
 

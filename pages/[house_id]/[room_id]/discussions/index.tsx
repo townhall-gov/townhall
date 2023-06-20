@@ -17,9 +17,12 @@ import { IRoom } from '~src/types/schema';
 import { useRoomCurrentStage } from '~src/redux/room/selectors';
 import NoRoomFound from '~src/ui-components/NoRoomFound';
 import BackButton from '~src/ui-components/BackButton';
+import { getDiscussionsCount } from 'pages/api/discussions/count';
+import { LISTING_LIMIT } from '~src/utils/proposalListingLimit';
 
 interface IDiscussionsServerProps {
 	discussions: IListingDiscussion[] | null;
+	discussionsCount: number | null;
 	error: string | null;
 	room: IRoom | null;
 }
@@ -29,18 +32,26 @@ export const getServerSideProps: GetServerSideProps<IDiscussionsServerProps> = a
 	const room_id = (query?.room_id? String(query?.room_id): '');
 	const { data, error } = await getDiscussions({
 		house_id,
+		limit: LISTING_LIMIT ,
+		page: 1,
 		room_id
 	});
 
-	const obj = await getRoom({
+	const { data: discussionsCount, error: discussionsCountError } = await getDiscussionsCount({
+		house_id,
+		room_id
+	});
+
+	const { data: room, error: roomError } = await getRoom({
 		house_id,
 		room_id
 	});
 
 	const props: IDiscussionsServerProps = {
 		discussions: ((data && Array.isArray(data))? (data || []): []),
-		error: (error || obj.error || null),
-		room: obj.data || null
+		discussionsCount: discussionsCount || null,
+		error: (error || roomError || discussionsCountError || null),
+		room: room || null
 	};
 
 	return {
@@ -55,7 +66,7 @@ const DiscussionsPage: FC<IDiscussionsClientProps> = (props) => {
 	const router = useRouter();
 	const currentStage = useRoomCurrentStage();
 	const { query } = router;
-	const { discussions, room } = props;
+	const { discussions, room, discussionsCount } = props;
 
 	useEffect(() => {
 		if (props.error) {
@@ -91,7 +102,7 @@ const DiscussionsPage: FC<IDiscussionsClientProps> = (props) => {
 							socials={room.socials}
 						/>
 					</section>
-					<Discussions discussions={discussions} />
+					<Discussions house_id={room.house_id} room_id={room.id} discussionsCount={discussionsCount || 0} discussions={discussions} />
 				</div>
 			</section>
 		</>

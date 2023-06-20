@@ -13,24 +13,46 @@ import { IDiscussion } from '~src/types/schema';
 import apiErrorWithStatusCode from '~src/utils/apiErrorWithStatusCode';
 import convertFirestoreTimestampToDate from '~src/utils/convertFirestoreTimestampToDate';
 import getErrorMessage from '~src/utils/getErrorMessage';
+import { LISTING_LIMIT } from '~src/utils/proposalListingLimit';
 
 interface IGetDiscussionsFnParams {
     house_id: string;
     room_id: string;
+	page?: number;
+	limit?: number;
 }
 
 export type TGetDiscussionsFn = (params: IGetDiscussionsFnParams) => Promise<TApiResponse<IListingDiscussion[]>>;
 export const getDiscussions: TGetDiscussionsFn = async (params) => {
 	try {
-		const { house_id, room_id } = params;
+		const { house_id, room_id, page, limit } = params;
 		if (!house_id) {
 			throw apiErrorWithStatusCode('Invalid houseId.', StatusCodes.BAD_REQUEST);
 		}
 		if (!room_id) {
 			throw apiErrorWithStatusCode('Invalid roomId.', StatusCodes.BAD_REQUEST);
 		}
+		if (page) {
+			const numPage = Number(page);
+			if (isNaN(numPage) || numPage < 0) {
+				throw apiErrorWithStatusCode('Invalid page.', StatusCodes.BAD_REQUEST);
+			}
+		}
+		if (limit) {
+			const numLimit = Number(limit);
+			if (isNaN(numLimit) || numLimit < 0) {
+				throw apiErrorWithStatusCode('Invalid limit.', StatusCodes.BAD_REQUEST);
+			}
+		}
 		const discussions: IListingDiscussion[] = [];
-		const discussionsSnapshot = await discussionCollection(house_id, room_id).orderBy('created_at', 'desc').get();
+		let discussionsQuery = discussionCollection(house_id, room_id).orderBy('created_at', 'desc');
+
+		if (page) {
+			const numPage = Number(page);
+			const numLimit = (isNaN(Number(limit))? LISTING_LIMIT: Number(limit));
+			discussionsQuery = discussionsQuery.limit(numLimit).offset((numPage - 1) * numLimit);
+		}
+		const discussionsSnapshot = await discussionsQuery.get();
 		if (discussionsSnapshot.size > 0) {
 			const discussionsPromise = discussionsSnapshot.docs.map(async (doc) => {
 				if (doc && doc.exists) {
@@ -98,17 +120,19 @@ export interface IDiscussionsBody {}
 export interface IDiscussionsQuery {
     house_id: string;
     room_id: string;
+	page?: number;
+	limit?: number;
 }
 const handler: TNextApiHandler<IListingDiscussion[], IDiscussionsBody, IDiscussionsQuery> = async (req, res) => {
 	if (req.method !== 'GET') {
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, GET required.' });
 	}
-	const { house_id, room_id } = req.query;
+	const { house_id, room_id, page, limit } = req.query;
 	const {
 		data: discussions,
 		error,
 		status
-	} = await getDiscussions({ house_id, room_id });
+	} = await getDiscussions({ house_id, limit, page, room_id });
 
 	if (discussions && !error && (status === 200)) {
 		res.status(StatusCodes.OK).json(discussions);
