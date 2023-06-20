@@ -9,18 +9,8 @@ const useFilteredHouses = () => {
 	const { searchQuery } = useHomeSelector();
 
 	if (houses && Array.isArray(houses) && houses.length > 0) {
-		if (!searchQuery) {
-			return houses;
-		}
-
-		const filteredHouses = houses.filter(house => {
-			const lowercaseSearchValue = searchQuery.toLowerCase();
-			const lowercaseHouseName = house.title.toLowerCase();
-
-			return lowercaseHouseName.includes(lowercaseSearchValue);
-		});
-
-		return filteredHouses;
+		const lowercaseSearchValue = (searchQuery || '').toLowerCase();
+		return houses.filter((house) => (house.title || '').toLowerCase().includes(lowercaseSearchValue));
 	}
 
 	return [];
@@ -29,35 +19,10 @@ const useFilteredRooms = () => {
 	const { rooms } = useHomeSelector();
 	const category = useCategory();
 	const { searchQuery } = useHomeSelector();
+
 	if (rooms && Array.isArray(rooms) && rooms.length > 0) {
-		if (!searchQuery && category!='all') {
-			return rooms;
-		}
-		else if(!searchQuery && category=='all') {
-			const sameRoomandHouse = rooms.filter(room => {
-				if(room.id!=room.house_id)
-					return room;
-			});
-			return sameRoomandHouse;
-		}
-		const filteredRooms = rooms.filter(room => {
-			const lowercaseSearchValue = searchQuery.toLowerCase();
-			const lowercaseHouseName = room.title.toLowerCase();
-
-			return lowercaseHouseName.includes(lowercaseSearchValue);
-		});
-		if (searchQuery && category!='all')
-		{
-			return filteredRooms;
-		}
-		else{
-			const sameRoomandHouse = filteredRooms.filter(room => {
-				if(room.id!=room.house_id)
-					return room;
-			});
-			return sameRoomandHouse;
-		}
-
+		const lowercaseSearchValue = (searchQuery || '').toLowerCase();
+		return rooms.filter((room) => (category === 'all'? room.id !== room.house_id: true) && (room.title || '').toLowerCase().includes(lowercaseSearchValue));
 	}
 
 	return [];
@@ -74,11 +39,11 @@ const useSearchTerm = () => {
 };
 
 const useVisibleHouseCards = () => {
-	const { visibleHouseCards  } = useHomeSelector();
+	const { visibleHouseCards } = useHomeSelector();
 	return visibleHouseCards ;
 };
 const useVisibleRoomCards = () => {
-	const { visibleRoomCards  } = useHomeSelector();
+	const { visibleRoomCards } = useHomeSelector();
 	return visibleRoomCards ;
 };
 
