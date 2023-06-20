@@ -27,13 +27,13 @@ const useFilteredHouses = () => {
 };
 const useFilteredRooms = () => {
 	const { rooms } = useHomeSelector();
-	const category=useCategory();
+	const category = useCategory();
 	const { searchQuery } = useHomeSelector();
 	if (rooms && Array.isArray(rooms) && rooms.length > 0) {
 		if (!searchQuery && category!='all') {
 			return rooms;
 		}
-		if (!searchQuery && category=='all') {
+		else if(!searchQuery && category=='all') {
 			const sameRoomandHouse = rooms.filter(room => {
 				if(room.id!=room.house_id)
 					return room;
@@ -46,10 +46,11 @@ const useFilteredRooms = () => {
 
 			return lowercaseHouseName.includes(lowercaseSearchValue);
 		});
-		if (category!='all') {
+		if (searchQuery && category!='all')
+		{
 			return filteredRooms;
 		}
-		if (category=='all') {
+		else{
 			const sameRoomandHouse = filteredRooms.filter(room => {
 				if(room.id!=room.house_id)
 					return room;
