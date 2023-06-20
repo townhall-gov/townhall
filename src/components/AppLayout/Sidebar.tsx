@@ -4,10 +4,11 @@
 import Link from 'next/link';
 import React from 'react';
 import { HomeIcon, HolidayVillageIcon, ZoomInAreaIcon } from '~src/ui-components/CustomIcons';
+import JoinedRoom from './JoinedRooms';
 
 const Sidebar = () => {
 	return (
-		<aside className='min-h-full min-w-[93px] w-[93px] rounded-xl bg-blue_primary shadow-[-3px_4px_7px_#0E2D59] max-h-[calc(100vh-242px)] sticky top-[108px]'>
+		<aside className='min-h-full min-w-[93px] w-[93px] rounded-xl flex flex-col justify-between bg-blue_primary shadow-[-3px_4px_7px_#0E2D59] max-h-100vh sticky top-[108px]'>
 			<article className='flex flex-col'>
 				<Link href='/' className='border-none outline-none bg-transparent flex flex-col gap-y-1 items-center justify-center cursor-pointer py-4 px-5 hover:bg-white rounded-t-xl'>
 					<HomeIcon className='text-transparent stroke-app_background text-2xl' />
@@ -26,6 +27,9 @@ const Sidebar = () => {
 						Houses
 					</span>
 				</Link>
+			</article>
+			<article>
+				<JoinedRoom/>
 			</article>
 		</aside>
 	);

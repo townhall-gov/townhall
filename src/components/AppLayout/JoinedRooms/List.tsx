@@ -13,15 +13,14 @@ interface IJoinedRoomListProps {
 }
 const JoinedRoomList: FC<IJoinedRoomListProps> = (props) => {
 	const { joinedRooms } = props;
-	const totalShowing = 6;
+	const totalShowing = 3;
 	return (
-		<div className='m-0 p-0 leading-none flex items-center gap-x-2'>
+		<div className='m-0 p-0 mb-2 leading-none flex items-center gap-x-4 flex-col'>
 			{
 				joinedRooms.slice(0, totalShowing).map((joinedRoom, index) => {
 					if (!joinedRoom || !joinedRoom.id) return null;
 					return (
-						<article title={joinedRoom.id} key={index} className='flex items-center justify-center text-[45px]'>
-
+						<article title={joinedRoom.id} key={index} className='flex items-center m-2 justify-center text-[45px]'>
 							{
 								joinedRoom.logo?
 									<Image preview={false} width={45} height={45} className='rounded-full' src={joinedRoom.logo} alt='room logo' />
