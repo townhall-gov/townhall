@@ -70,7 +70,7 @@ const Vote: FC<IVoteProps> = (props) => {
 													</p>
 													<p className='flex items-center gap-x-1'>
 														<span>
-                                                        ${total.toString()}
+															{total.toString()}
 														</span>
 														<span>
 															{chainProperties?.[network]?.tokenSymbol}
@@ -86,11 +86,11 @@ const Vote: FC<IVoteProps> = (props) => {
 					}
 				>
 					<p className='text-sm'>
-                    $ {getTotalWeight(proposal.voting_strategies, vote.balances)}
+						{getTotalWeight(proposal.voting_strategies, vote.balances)}
 					</p>
 				</Tooltip>
 			</div>
-			<p className='text-sm flex items-center justify-end mr-5 gap-x-2'>
+			<p className='text-sm flex items-center justify-center gap-x-2'>
 				{
 					vote.options.length === 0
 						? <span>
