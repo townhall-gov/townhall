@@ -70,7 +70,7 @@ const Vote: FC<IVoteProps> = (props) => {
 													</p>
 													<p className='flex items-center gap-x-1'>
 														<span>
-                                                        ${total.toString()}
+															{total.toString()}
 														</span>
 														<span>
 															{chainProperties?.[network]?.tokenSymbol}
@@ -86,7 +86,7 @@ const Vote: FC<IVoteProps> = (props) => {
 					}
 				>
 					<p className='text-sm'>
-                    $ {getTotalWeight(proposal.voting_strategies, vote.balances)}
+						{getTotalWeight(proposal.voting_strategies, vote.balances)}
 					</p>
 				</Tooltip>
 			</div>
