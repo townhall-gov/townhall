@@ -5,10 +5,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 import { ERoomStage, IDiscussionCreation, IListingDiscussion, IProposalCreation, IRoomSettings, IRoomStore, IVotingSystemOption } from './@types';
-import { IRoom } from '~src/types/schema';
+import { IPostLink, IRoom } from '~src/types/schema';
 import { IListingProposal } from './@types';
 import { EVotingSystem } from '~src/types/enums';
 import { MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM } from '~src/global/min_token';
+import { IPostLinkData } from 'pages/api/auth/data/post-link-data';
 
 const initialState: IRoomStore = {
 	currentStage: ERoomStage.PROPOSALS,
@@ -25,9 +26,12 @@ const initialState: IRoomStore = {
 		discussion: '',
 		end_date: null,
 		is_vote_results_hide_before_voting_ends: false,
+		postLink: null,
+		postLinkData: null,
 		start_date: null,
 		tags: [],
 		title: '',
+		url: '',
 		voting_system: EVotingSystem.SINGLE_CHOICE_VOTING,
 		voting_system_options: [
 			{
@@ -92,9 +96,12 @@ export const roomStore = createSlice({
 				discussion: '',
 				end_date: null,
 				is_vote_results_hide_before_voting_ends: false,
+				postLink: null,
+				postLinkData: null,
 				start_date: null,
 				tags: [],
 				title: '',
+				url: '',
 				voting_system: EVotingSystem.SINGLE_CHOICE_VOTING,
 				voting_system_options: [
 					{
@@ -182,6 +189,15 @@ export const roomStore = createSlice({
 					break;
 				case 'voting_system_options':
 					state.proposalCreation[key] = value as IVotingSystemOption[];
+					break;
+				case 'url':
+					state.proposalCreation[key] = value as string;
+					break;
+				case 'postLink':
+					state.proposalCreation[key] = value as IPostLink;
+					break;
+				case 'postLinkData':
+					state.proposalCreation[key] = value as IPostLinkData;
 					break;
 				default:
 					break;

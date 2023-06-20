@@ -96,10 +96,10 @@ const ReplyContent: FC<IReplyContentProps> = (props) => {
 	};
 	const key = `house_${discussion?.house_id}_room_${discussion?.room_id}_discussion_${discussion?.id}_comment_${reply.comment_id}_reply_${reply.id}`;
 	return (
-		<section>
+		<section className='overflow-auto'>
 			{
 				editableReply?.id !== reply?.id?
-					<div className='html-content text-white font-normal text-sm leading-[23px] tracking-[0.01em]'>
+					<div className='html-content text-white font-normal text-sm leading-[23px] tracking-[0.01em] break-words'>
 						{ReactHTMLParser(reply.content)}
 					</div>
 					:<ReplyEditor

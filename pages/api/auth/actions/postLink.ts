@@ -24,7 +24,7 @@ export interface IPostLinkBody {
     action_type: EAction;
 }
 
-type TUpdatedPost = {
+export type TUpdatedPost = {
 	post_link: IPostLink | null;
 	updated_at: Date;
 	post_link_data: IPostLinkData | null;

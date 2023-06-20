@@ -80,7 +80,7 @@ const proposalCreationValidation = {
 			error = 'Title is required.';
 		} else if (title.length < 5) {
 			error = 'Title should be at least 5 characters long.';
-		} else if (title.length > 100) {
+		} else if (title.length > 264) {
 			error = 'Title should be less than 100 characters long.';
 		}
 		return error;

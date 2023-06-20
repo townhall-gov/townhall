@@ -10,10 +10,11 @@ import getTokenFromReq from '~src/auth/utils/getTokenFromReq';
 import messages from '~src/auth/utils/messages';
 import { height } from '~src/onchain-data';
 import { create } from '~src/onchain-data/utils/apis';
-import { houseCollection, proposalCollection, roomCollection } from '~src/services/firebase/utils';
-import { EProposalStatus } from '~src/types/enums';
-import { IProposal, IRoom, ISnapshotHeight, IVotesResult } from '~src/types/schema';
+import { discussionCollection, houseCollection, proposalCollection, roomCollection } from '~src/services/firebase/utils';
+import { EPostType, EProposalStatus } from '~src/types/enums';
+import { IDiscussion, IProposal, IRoom, ISnapshotHeight, IVotesResult } from '~src/types/schema';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
+import { TUpdatedPost } from './postLink';
 
 export type TProposalPayload = Omit<IProposal, 'proposer_address' | 'created_at' | 'updated_at' | 'id' | 'timestamp' | 'reactions' | 'comments' | 'snapshot_heights' | 'start_date' | 'end_date' | 'votes_result' | 'voting_strategies' | 'status'> & {
 	start_date: string;
@@ -165,6 +166,38 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 			};
 		}, {} as IVotesResult)
 	};
+
+	if (proposal.post_link && proposal.post_link_data) {
+		const { post_link } = proposal;
+		const updatedLinkedPost: TUpdatedPost = {
+			post_link: {
+				house_id,
+				post_id: newID,
+				post_type: EPostType.PROPOSAL,
+				room_id
+			},
+			post_link_data: {
+				description: newProposal.description,
+				tags: newProposal.tags,
+				title: newProposal.title
+			},
+			updated_at: now
+		};
+
+		const linkPostsColRef = discussionCollection(post_link.house_id, post_link.room_id);
+		const linkPostDocRef = linkPostsColRef.doc(String(post_link.post_id));
+		const linkPostDoc = await linkPostDocRef.get();
+		const linkPostData = linkPostDoc.data() as IDiscussion;
+		if (!linkPostDoc.exists || !linkPostData) {
+			return res.status(StatusCodes.BAD_REQUEST).json({ error: `Post with id ${post_link.post_id} does not exist in a Room with id ${post_link.room_id} and a House with id ${post_link.house_id}.` });
+		}
+
+		if (linkPostData.post_link || linkPostData.post_link_data) {
+			return res.status(StatusCodes.BAD_REQUEST).json({ error: `Post with id ${post_link.post_id} already has a post link.` });
+		}
+
+		linkPostDocRef.set(updatedLinkedPost, { merge: true }).then(() => {});
+	}
 
 	await proposalDocRef.set({
 		...newProposal,

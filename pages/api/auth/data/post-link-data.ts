@@ -64,6 +64,10 @@ export const getPostLinkData: TGetPostLinkDataFn = async (params) => {
 			throw apiErrorWithStatusCode('You are not the proposer of this post.', StatusCodes.FORBIDDEN);
 		}
 
+		if (post.post_link || post.post_link_data) {
+			throw apiErrorWithStatusCode('Post already linked.', StatusCodes.BAD_REQUEST);
+		}
+
 		postLinkData.description = post.description;
 		postLinkData.tags = post.tags;
 		postLinkData.title = post.title;
