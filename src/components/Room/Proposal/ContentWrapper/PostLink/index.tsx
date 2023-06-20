@@ -33,7 +33,7 @@ const PostLink = () => {
 						: null
 				}
 				<div>
-					<h4 className='m-0 text-lg font-medium leading-[22px] tracking-[0.01em] text-white'>{title}</h4>
+					<h4 className='m-0 text-lg font-medium leading-[22px] tracking-[0.01em] text-white max-h-[22px] overflow-hidden'>{title}</h4>
 					<div className='html-content text-white font-normal text-sm leading-[23px] tracking-[0.01em] max-h-[23px] overflow-hidden'>
 						{ReactHTMLParser(description)}
 					</div>

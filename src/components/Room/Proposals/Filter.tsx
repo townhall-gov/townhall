@@ -4,11 +4,13 @@
 import { DownOutlined } from '@ant-design/icons';
 import { Dropdown } from 'antd';
 import classNames from 'classnames';
-import { useRouter } from 'next/router';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 
 interface IFilterProps {
     className?: string;
+	setOption: React.Dispatch<React.SetStateAction<string>>;
+	option: string;
+	loading?: boolean;
 }
 
 interface IFilterOptionLabelProps {
@@ -25,9 +27,7 @@ const FilterOptionLabel: FC<IFilterOptionLabelProps> = (props) => {
 };
 
 const Filter: FC<IFilterProps> = (props) => {
-	const { className } = props;
-	const [option, setOption] = useState('all');
-	const router = useRouter();
+	const { className, setOption, option, loading } = props;
 	const items = [
 		{
 			key: 'all',
@@ -46,27 +46,15 @@ const Filter: FC<IFilterProps> = (props) => {
 			label: <FilterOptionLabel title={'Closed'} />
 		}
 	];
-	useEffect(() => {
-		if (router.query.filterBy) {
-			setOption(router.query.filterBy as string);
-		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
 	return (
 		<Dropdown
+			disabled={loading}
 			trigger={['click']}
-			className={classNames('cursor-pointer px-[15.5px] py-[7.5px] border border-solid border-blue_primary rounded-2xl max-w-[125px] w-full', className)}
+			className={classNames('cursor-pointer px-[15.5px] py-[7.5px] border border-solid border-blue_primary rounded-2xl min-w-[125px] w-full', className)}
 			overlayClassName='ant-dropdown-menu-border-blue_primary'
 			menu={{
 				items: items,
 				onClick: (e) => {
-					router.replace({
-						pathname:'',
-						query: {
-							...router.query,
-							filterBy: e.key
-						}
-					});
 					setOption(e.key);
 				}
 			}}
