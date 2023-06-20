@@ -11,18 +11,18 @@ import { proposalActions } from '~src/redux/proposal';
 import { useCommentReactions, useCommentUserReaction } from '~src/redux/proposal/selectors';
 import { useProfileSelector, useProposalSelector } from '~src/redux/selectors';
 import api from '~src/services/api';
-import { EPostType, EReaction } from '~src/types/enums';
-import { IReaction } from '~src/types/schema';
+import { EReaction } from '~src/types/enums';
+import { IComment } from '~src/types/schema';
 import Reaction from '~src/ui-components/Reaction';
 import getErrorMessage from '~src/utils/getErrorMessage';
 
 interface ICommentReactionsProps {
-	reactions: IReaction[];
-	comment_id: string;
+	comment: IComment;
 }
 
 const CommentReactions: FC<ICommentReactionsProps> = (props) => {
-	const { reactions, comment_id } = props;
+	const { comment } = props;
+	const { reactions, house_id, id, room_id, post_type, post_id } = comment;
 	const dispatch = useDispatch();
 	const { loading, proposal } = useProposalSelector();
 	const { user } = useProfileSelector();
@@ -46,11 +46,11 @@ const CommentReactions: FC<ICommentReactionsProps> = (props) => {
 			if (proposal) {
 				dispatch(proposalActions.setLoading(true));
 				const { data, error } = await api.post<ICommentReactionResponse, ICommentReactionBody>('auth/actions/commentReaction', {
-					comment_id: comment_id,
-					house_id: proposal.house_id,
-					post_id: proposal.id,
-					post_type: EPostType.PROPOSAL,
-					room_id: proposal.room_id,
+					comment_id: id,
+					house_id: house_id,
+					post_id: post_id,
+					post_type: post_type,
+					room_id: room_id,
 					type
 				});
 				if (error) {
@@ -77,7 +77,7 @@ const CommentReactions: FC<ICommentReactionsProps> = (props) => {
 					}
 					dispatch(proposalActions.setCommentReaction({
 						...data,
-						comment_id: comment_id
+						comment_id: id
 					}));
 					dispatch(notificationActions.send({
 						message: message,

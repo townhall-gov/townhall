@@ -358,6 +358,9 @@ li.ant-picker-time-panel-cell-disabled .ant-picker-time-panel-cell-inner {
 .html-content td {
     padding: 3px 6px;
 }
+.html-content a {
+    color: var(--blue_primary) !important;
+}
 /* TINYMCE content render */
 
 /* Input Upload */

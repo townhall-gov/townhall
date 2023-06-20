@@ -7,8 +7,8 @@ import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
-import { proposalCollection, roomCollection } from '~src/services/firebase/utils';
-import { EProposalStatus, ESentiment } from '~src/types/enums';
+import { discussionCollection, proposalCollection, roomCollection } from '~src/services/firebase/utils';
+import { EPostType, EProposalStatus, ESentiment } from '~src/types/enums';
 import { IComment, IProposal, IReaction, IReply, IRoom } from '~src/types/schema';
 import apiErrorWithStatusCode from '~src/utils/apiErrorWithStatusCode';
 import convertFirestoreTimestampToDate from '~src/utils/convertFirestoreTimestampToDate';
@@ -20,6 +20,132 @@ interface IGetProposalFnParams {
     room_id: string;
     proposal_id: number;
 }
+
+type TGetCommentsFn = (commentsQuerySnapshot: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>, commentInfo: {
+	post_type: EPostType;
+	room_id: string;
+	house_id: string;
+}) => Promise<IComment[]>;
+
+export const getComments: TGetCommentsFn = async (commentsQuerySnapshot, commentInfo) => {
+	const { house_id, post_type, room_id } = commentInfo;
+	const comments: IComment[] = [];
+	const commentsPromise = commentsQuerySnapshot.docs.map(async (doc) => {
+		if (doc && doc.exists) {
+			const data  = doc.data() as IComment;
+			// only take comment which is not deleted
+			if (data && data.user_address && data.id && !data.is_deleted) {
+				// need to create history array manually because we need to transform the created_at date
+				const history = (data.history || []).map((historyItem) => {
+					return {
+						content: historyItem.content,
+						created_at: convertFirestoreTimestampToDate(historyItem.created_at),
+						sentiment: historyItem.sentiment || ESentiment.NEUTRAL
+					};
+				});
+				// Get comment reactions
+				const reactions: IReaction[] = [];
+				const reactionsQuerySnapshot = await doc.ref.collection('reactions').get();
+				reactionsQuerySnapshot.docs.forEach((doc) => {
+					if (doc && doc.exists) {
+						const data  = doc.data() as IReaction;
+						if (data && data.user_address && data.id && data.type) {
+							reactions.push(data);
+						}
+					}
+				});
+
+				// Get comment Replies
+				const replies: IReply[] = [];
+				const repliesQuerySnapshot = await doc.ref.collection('replies').orderBy('updated_at', 'desc').get();
+				const repliesPromise = repliesQuerySnapshot.docs.map(async (doc) => {
+					if (doc && doc.exists) {
+						const data = doc.data() as IReply;
+						// only take reply which is not deleted
+						if (data && data.user_address && data.id && !data.is_deleted) {
+							// need to create history array manually because we need to transform the created_at date
+							const history = (data.history || []).map((historyItem) => {
+								return {
+									content: historyItem.content,
+									created_at: convertFirestoreTimestampToDate(historyItem.created_at),
+									sentiment: historyItem.sentiment || ESentiment.NEUTRAL
+								};
+							});
+							// Get reply reactions
+							const reactions: IReaction[] = [];
+							const reactionsQuerySnapshot = await doc.ref.collection('reactions').get();
+							reactionsQuerySnapshot.docs.forEach((doc) => {
+								if (doc && doc.exists) {
+									const data  = doc.data() as IReaction;
+									if (data && data.user_address && data.id && data.type) {
+										reactions.push(data);
+									}
+								}
+							});
+
+							// Construct reply
+							const reply: IReply = {
+								comment_id: data.comment_id,
+								content: data.content,
+								created_at: convertFirestoreTimestampToDate(data.created_at),
+								deleted_at: convertFirestoreTimestampToDate(data.deleted_at),
+								history: history,
+								house_id: data.house_id || house_id,
+								id: data.id,
+								is_deleted: data.is_deleted || false,
+								post_id: data.post_id,
+								post_type: data.post_type || post_type,
+								reactions: reactions,
+								room_id: data.room_id || room_id,
+								sentiment: data.sentiment || ESentiment.NEUTRAL,
+								updated_at: convertFirestoreTimestampToDate(data.updated_at),
+								user_address: data.user_address
+							};
+							return reply;
+						}
+					}
+				});
+				// Wait for all replies to be resolved
+				const repliesPromiseSettledResult = await Promise.allSettled(repliesPromise);
+				repliesPromiseSettledResult.forEach((result) => {
+					// Only push reply if it is resolved and has value
+					if (result && result.status === 'fulfilled' && result.value) {
+						replies.push(result.value);
+					}
+				});
+
+				// Construct comment
+				const comment: IComment = {
+					content: data.content,
+					created_at: convertFirestoreTimestampToDate(data.created_at),
+					deleted_at: convertFirestoreTimestampToDate(data.deleted_at),
+					history: history,
+					house_id: data.house_id || house_id,
+					id: data.id,
+					is_deleted: data.is_deleted || false,
+					post_id: data.post_id,
+					post_type: data.post_type || post_type,
+					reactions: reactions,
+					replies,
+					room_id: data.room_id || room_id,
+					sentiment: data.sentiment || ESentiment.NEUTRAL,
+					updated_at: convertFirestoreTimestampToDate(data.updated_at),
+					user_address: data.user_address
+				};
+				return comment;
+			}
+		}
+	});
+	// Wait for all comments to be resolved
+	const commentsPromiseSettledResult = await Promise.allSettled(commentsPromise);
+	commentsPromiseSettledResult.forEach((result) => {
+		// Only push comment if it is resolved and has value
+		if (result && result.status === 'fulfilled' && result.value) {
+			comments.push(result.value);
+		}
+	});
+	return comments;
+};
 
 export type TGetProposalFn = (params: IGetProposalFnParams) => Promise<TApiResponse<IProposal>>;
 export const getProposal: TGetProposalFn = async (params) => {
@@ -64,117 +190,30 @@ export const getProposal: TGetProposalFn = async (params) => {
 					}
 				}
 			});
+
 			// Get comments
-			const comments: IComment[] = [];
-			const commentsQuerySnapshot = await proposalDocRef.collection('comments').orderBy('updated_at', 'desc').get();
-			const commentsPromise = commentsQuerySnapshot.docs.map(async (doc) => {
-				if (doc && doc.exists) {
-					const data  = doc.data() as IComment;
-					// only take comment which is not deleted
-					if (data && data.user_address && data.id && !data.is_deleted) {
-						// need to create history array manually because we need to transform the created_at date
-						const history = (data.history || []).map((historyItem) => {
-							return {
-								content: historyItem.content,
-								created_at: convertFirestoreTimestampToDate(historyItem.created_at),
-								sentiment: historyItem.sentiment || ESentiment.NEUTRAL
-							};
-						});
-						// Get comment reactions
-						const reactions: IReaction[] = [];
-						const reactionsQuerySnapshot = await doc.ref.collection('reactions').get();
-						reactionsQuerySnapshot.docs.forEach((doc) => {
-							if (doc && doc.exists) {
-								const data  = doc.data() as IReaction;
-								if (data && data.user_address && data.id && data.type) {
-									reactions.push(data);
-								}
-							}
-						});
-
-						// Get comment Replies
-						const replies: IReply[] = [];
-						const repliesQuerySnapshot = await doc.ref.collection('replies').orderBy('updated_at', 'desc').get();
-						const repliesPromise = repliesQuerySnapshot.docs.map(async (doc) => {
-							if (doc && doc.exists) {
-								const data = doc.data() as IReply;
-								// only take reply which is not deleted
-								if (data && data.user_address && data.id && !data.is_deleted) {
-									// need to create history array manually because we need to transform the created_at date
-									const history = (data.history || []).map((historyItem) => {
-										return {
-											content: historyItem.content,
-											created_at: convertFirestoreTimestampToDate(historyItem.created_at),
-											sentiment: historyItem.sentiment || ESentiment.NEUTRAL
-										};
-									});
-									// Get reply reactions
-									const reactions: IReaction[] = [];
-									const reactionsQuerySnapshot = await doc.ref.collection('reactions').get();
-									reactionsQuerySnapshot.docs.forEach((doc) => {
-										if (doc && doc.exists) {
-											const data  = doc.data() as IReaction;
-											if (data && data.user_address && data.id && data.type) {
-												reactions.push(data);
-											}
-										}
-									});
-
-									// Construct reply
-									const reply: IReply = {
-										comment_id: data.comment_id,
-										content: data.content,
-										created_at: convertFirestoreTimestampToDate(data.created_at),
-										deleted_at: convertFirestoreTimestampToDate(data.deleted_at),
-										history: history,
-										id: data.id,
-										is_deleted: data.is_deleted || false,
-										post_id: data.post_id,
-										reactions: reactions,
-										sentiment: data.sentiment || ESentiment.NEUTRAL,
-										updated_at: convertFirestoreTimestampToDate(data.updated_at),
-										user_address: data.user_address
-									};
-									return reply;
-								}
-							}
-						});
-						// Wait for all replies to be resolved
-						const repliesPromiseSettledResult = await Promise.allSettled(repliesPromise);
-						repliesPromiseSettledResult.forEach((result) => {
-							// Only push reply if it is resolved and has value
-							if (result && result.status === 'fulfilled' && result.value) {
-								replies.push(result.value);
-							}
-						});
-
-						// Construct comment
-						const comment: IComment = {
-							content: data.content,
-							created_at: convertFirestoreTimestampToDate(data.created_at),
-							deleted_at: convertFirestoreTimestampToDate(data.deleted_at),
-							history: history,
-							id: data.id,
-							is_deleted: data.is_deleted || false,
-							post_id: data.post_id || proposal_id,
-							reactions: reactions,
-							replies,
-							sentiment: data.sentiment || ESentiment.NEUTRAL,
-							updated_at: convertFirestoreTimestampToDate(data.updated_at),
-							user_address: data.user_address
-						};
-						return comment;
-					}
-				}
+			const commentsQuerySnapshot = await proposalDocRef.collection('comments').orderBy('created_at', 'asc').get();
+			let comments = await getComments(commentsQuerySnapshot, {
+				house_id: house_id,
+				post_type: EPostType.PROPOSAL,
+				room_id: room_id
 			});
-			// Wait for all comments to be resolved
-			const commentsPromiseSettledResult = await Promise.allSettled(commentsPromise);
-			commentsPromiseSettledResult.forEach((result) => {
-				// Only push comment if it is resolved and has value
-				if (result && result.status === 'fulfilled' && result.value) {
-					comments.push(result.value);
-				}
-			});
+
+			if (data.post_link) {
+				const { house_id, room_id, post_id, post_type } = data.post_link;
+				const postColRef = (post_type === EPostType.DISCUSSION? discussionCollection(house_id, room_id): proposalCollection(house_id, room_id));
+				const postDocRef = postColRef.doc(String(post_id));
+				const commentsQuerySnapshot = await postDocRef.collection('comments').orderBy('created_at', 'asc').get();
+				const postLinkComments = await getComments(commentsQuerySnapshot, {
+					house_id: house_id,
+					post_type: post_type,
+					room_id: room_id
+				});
+				comments = [...comments, ...postLinkComments].sort((a, b) => {
+					return b.created_at.getTime() - a.created_at.getTime();
+				});
+			}
+
 			const isClosed = dayjs().isAfter(convertFirestoreTimestampToDate(data.end_date));
 			const isActive = dayjs().isBetween(convertFirestoreTimestampToDate(data.start_date), convertFirestoreTimestampToDate(data.end_date));
 			const isPending = dayjs().isBefore(convertFirestoreTimestampToDate(data.start_date));

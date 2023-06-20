@@ -12,7 +12,7 @@ import { ICommentResponse, ICommentBody } from 'pages/api/auth/actions/comment';
 import { notificationActions } from '~src/redux/notification';
 import { ENotificationStatus } from '~src/redux/notification/@types';
 import api from '~src/services/api';
-import { EAction, EPostType } from '~src/types/enums';
+import { EAction } from '~src/types/enums';
 import getErrorMessage from '~src/utils/getErrorMessage';
 
 interface ICommentContentProps {
@@ -46,10 +46,10 @@ const CommentContent: FC<ICommentContentProps> = (props) => {
 				const { data, error } = await api.post<ICommentResponse, ICommentBody>('auth/actions/comment', {
 					action_type: EAction.EDIT,
 					comment: editableComment,
-					house_id: proposal.house_id,
-					post_id: proposal.id,
-					post_type: EPostType.PROPOSAL,
-					room_id: proposal.room_id
+					house_id: comment.house_id,
+					post_id: comment.post_id,
+					post_type: comment.post_type,
+					room_id: comment.room_id
 				});
 				if (error) {
 					dispatch(proposalActions.setError(getErrorMessage(error)));

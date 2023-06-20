@@ -5,7 +5,7 @@
 import { ESentiment } from '~src/types/enums';
 import { IHistoryComment, IHistoryReply, IReply } from '~src/types/schema';
 import { IComment, IDiscussion } from '~src/types/schema';
-import { IReplyBoxVisible, IRepliesVisible } from '../proposal/@types';
+import { IRepliesVisible } from '../proposal/@types';
 
 export interface IDiscussionStore {
     loading: boolean;
@@ -19,7 +19,7 @@ export interface IDiscussionStore {
     editableReply: IReply | null;
     commentEditHistory: IHistoryComment[];
     replyEditHistory: IHistoryReply[];
-    isReplyBoxVisible:IReplyBoxVisible;
+    replyComment: IComment | null;
     isRepliesVisible:IRepliesVisible;
 }
 

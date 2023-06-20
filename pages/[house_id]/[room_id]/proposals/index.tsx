@@ -4,6 +4,7 @@
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { getProposals } from 'pages/api/proposals';
+import { getProposalsCount } from 'pages/api/proposals/count';
 import { getRoom } from 'pages/api/room';
 import React, { FC, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
@@ -20,6 +21,7 @@ import NoRoomFound from '~src/ui-components/NoRoomFound';
 
 interface IProposalsServerProps {
 	proposals: IListingProposal[] | null;
+	proposalsCount: number | null;
 	room: IRoom | null;
 	error: string | null;
 }
@@ -33,14 +35,20 @@ export const getServerSideProps: GetServerSideProps<IProposalsServerProps> = asy
 		room_id
 	});
 
+	const { data: proposalsCount, error: proposalsCountError } = await getProposalsCount({
+		house_id,
+		room_id
+	});
+
 	const { data: room, error: roomError } = await getRoom({
 		house_id,
 		room_id
 	});
 
 	const props: IProposalsServerProps = {
-		error: (proposalsError || roomError || null),
+		error: (proposalsError || roomError || proposalsCountError || null),
 		proposals: ((proposals && Array.isArray(proposals))? (proposals || []): []),
+		proposalsCount: proposalsCount || null,
 		room: room || null
 	};
 
@@ -56,7 +64,7 @@ const ProposalsPage: FC<IProposalsClientProps> = (props) => {
 	const router = useRouter();
 	const currentStage = useRoomCurrentStage();
 	const { query } = router;
-	const { proposals, room } = props;
+	const { proposals, room, proposalsCount } = props;
 
 	useEffect(() => {
 		if (props.error) {
@@ -93,7 +101,7 @@ const ProposalsPage: FC<IProposalsClientProps> = (props) => {
 							socials={room.socials}
 						/>
 					</section>
-					<Proposals proposals={proposals} />
+					<Proposals house_id={room.house_id} room_id={room.id} proposalsCount={proposalsCount || 0} proposals={proposals} />
 				</div>
 			</section>
 		</>

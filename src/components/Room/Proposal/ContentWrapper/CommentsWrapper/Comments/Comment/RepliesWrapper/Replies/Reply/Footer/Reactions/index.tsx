@@ -12,19 +12,18 @@ import { proposalActions } from '~src/redux/proposal';
 import { useCommentReactions, useCommentUserReaction } from '~src/redux/proposal/selectors';
 import { useProfileSelector, useProposalSelector } from '~src/redux/selectors';
 import api from '~src/services/api';
-import { EPostType, EReaction } from '~src/types/enums';
-import { IReaction } from '~src/types/schema';
+import { EReaction } from '~src/types/enums';
+import { IReply } from '~src/types/schema';
 import Reaction from '~src/ui-components/Reaction';
 import getErrorMessage from '~src/utils/getErrorMessage';
 
 interface IReplyReactionsProps {
-	reactions: IReaction[];
-	reply_id: string;
-	comment_id:string;
+	reply: IReply;
 }
 
 const ReplyReactions: FC<IReplyReactionsProps> = (props) => {
-	const { reactions, reply_id,comment_id } = props;
+	const { reply } = props;
+	const { reactions } = reply;
 	const dispatch = useDispatch();
 	const { loading, proposal } = useProposalSelector();
 	const { user } = useProfileSelector();
@@ -48,12 +47,12 @@ const ReplyReactions: FC<IReplyReactionsProps> = (props) => {
 			if (proposal) {
 				dispatch(proposalActions.setLoading(true));
 				const { data, error } = await api.post<IReplyReactionResponse, IReplyReactionBody>('auth/actions/replyReaction', {
-					comment_id: comment_id,
-					house_id: proposal.house_id,
-					post_id: proposal.id,
-					post_type: EPostType.PROPOSAL,
-					reply_id:reply_id,
-					room_id: proposal.room_id,
+					comment_id: reply.comment_id,
+					house_id: reply.house_id,
+					post_id: reply.post_id,
+					post_type: reply.post_type,
+					reply_id: reply.id,
+					room_id: reply.room_id,
 					type
 				});
 				if (error) {
@@ -80,8 +79,8 @@ const ReplyReactions: FC<IReplyReactionsProps> = (props) => {
 					}
 					dispatch(proposalActions.setReplyReaction({
 						...data,
-						comment_id:comment_id,
-						reply_id:reply_id
+						comment_id: reply.comment_id,
+						reply_id: reply.id
 					}));
 					dispatch(notificationActions.send({
 						message: message,

@@ -19,9 +19,9 @@ const useUserReaction = (address: string) => {
 	return userReaction?.type;
 };
 
-const useReplyBoxVisibility = () => {
-	const { isReplyBoxVisible } = useProposalSelector();
-	return isReplyBoxVisible;
+const useReplyComment = () => {
+	const { replyComment } = useProposalSelector();
+	return replyComment;
 };
 
 const useRepliesVisibility = () => {
@@ -146,7 +146,7 @@ export {
 	useCommentEditHistory,
 	useCommentUserReaction,
 	useCommentReactions,
-	useReplyBoxVisibility,
+	useReplyComment,
 	useRepliesVisibility,
 	usePostLink,
 	usePostLinkCreation
