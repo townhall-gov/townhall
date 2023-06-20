@@ -4,7 +4,7 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
-import { ICommentCreation, IDiscussionStore } from './@types';
+import { EEditableDiscussionAction, ICommentCreation, IDiscussionStore, TEditableDiscussion } from './@types';
 import { IComment, IDiscussion, IHistoryComment, IHistoryReply, IReaction, IReply } from '~src/types/schema';
 import { EAction, ESentiment } from '~src/types/enums';
 
@@ -17,6 +17,12 @@ const initialState: IDiscussionStore = {
 	commentEditHistory: [],
 	discussion: null,
 	editableComment: null,
+	editableDiscussion: {
+		action: EEditableDiscussionAction.EDIT_DISCUSSION,
+		description: '',
+		tags: [],
+		title: ''
+	},
 	editableReply: null,
 	error: null,
 	isAllCommentsVisible: false,
@@ -41,6 +47,13 @@ type ICommentCreationFieldPayload = {
       value: ICommentCreation[K];
     }
 }[keyof ICommentCreation];
+
+type TEditableDiscussionFieldPayload = {
+    [K in keyof TEditableDiscussion]: {
+      key: K;
+      value: TEditableDiscussion[K];
+    }
+}[keyof TEditableDiscussion];
 
 export const discussionStore = createSlice({
 	extraReducers: (builder) => {
@@ -72,6 +85,17 @@ export const discussionStore = createSlice({
 			const key = `house_${discussion?.house_id}_room_${discussion?.room_id}_discussion_${discussion?.id}_comment_${comment?.id}`;
 			localStorage.removeItem(key);
 			state.editableComment = null;
+		},
+		resetEditableDiscussion: (state) => {
+			const discussion = state.discussion;
+			const key = `house_${discussion?.house_id}_room_${discussion?.room_id}_discussion_${discussion?.id}`;
+			localStorage.removeItem(key);
+			state.editableDiscussion = {
+				action: EEditableDiscussionAction.EDIT_DISCUSSION,
+				description: '',
+				tags: [],
+				title: ''
+			};
 		},
 		resetEditableReply: (state) => {
 			const discussion = state.discussion;
@@ -145,6 +169,28 @@ export const discussionStore = createSlice({
 		},
 		setEditableComment: (state, action: PayloadAction<IComment | null>) => {
 			state.editableComment = action.payload;
+		},
+		setEditableDiscussion: (state, action: PayloadAction<TEditableDiscussion>) => {
+			state.editableDiscussion = action.payload;
+		},
+		setEditableDiscussion_Field: (state, action: PayloadAction<TEditableDiscussionFieldPayload>) => {
+			const obj = action.payload;
+			if (obj) {
+				const { key, value } = obj;
+				switch(key) {
+				case 'action':
+					state.editableDiscussion.action = value;
+					break;
+				case 'description':
+					state.editableDiscussion.description = value;
+					break;
+				case 'title':
+					state.editableDiscussion.title = value;
+					break;
+				case 'tags':
+					state.editableDiscussion.tags = value;
+				}
+			}
 		},
 		setEditableReply: (state, action: PayloadAction<IReply | null>) => {
 			state.editableReply = action.payload;

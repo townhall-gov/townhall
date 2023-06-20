@@ -120,6 +120,11 @@ const useReplyEditHistory = () => {
 	return [...replyEditHistory];
 };
 
+const useEditableDiscussion = () => {
+	const { editableDiscussion } = useDiscussionSelector();
+	return editableDiscussion;
+};
+
 export {
 	useCommentCreation,
 	useUserReaction,
@@ -131,5 +136,6 @@ export {
 	useReplyComment,
 	useReplyEditHistory,
 	useReplyCreation,
-	useSelectedReplies
+	useSelectedReplies,
+	useEditableDiscussion
 };

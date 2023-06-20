@@ -32,7 +32,7 @@ const CastYourVote: FC<ICastYourVoteProps> = () => {
 					: (
 						<>
 
-							<h3 className='m-0 font-extrabold text-[18px] leading-[22px] text-white'>Make a discussion!</h3>
+							<h3 className='m-0 font-extrabold text-[18px] leading-[22px] text-white'>Make a Decision!</h3>
 							<button
 								className={
 									classNames('bg-blue_primary outline-none border border-solid border-blue_primary py-[6.5px] text-white font-bold text-base leading-[20px] rounded-2xl flex-1 w-full cursor-pointer')

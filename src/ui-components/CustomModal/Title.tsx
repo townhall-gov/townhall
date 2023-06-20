@@ -14,6 +14,7 @@ import CastYourVoteModalTitle from '~src/components/Room/Proposal/Sidebar/Vote/C
 import { ETitleType } from '~src/redux/modal/@types';
 import { useWalletSelector } from '~src/redux/selectors';
 import PostLinkModalTitle from '~src/components/Room/Proposal/Sidebar/PostLink/Modal/Title';
+import DiscussionEditModalTitle from '~src/components/Room/Discussion/ContentWrapper/Content/Heading/Edit/Modal/Title';
 
 interface IModalTitleProps {
     type?: ETitleType;
@@ -39,6 +40,8 @@ const ModalTitle: FC<IModalTitleProps> = (props) => {
 		return <AllVotesModalTitle />;
 	case ETitleType.POST_LINK_MODAL:
 		return <PostLinkModalTitle />;
+	case ETitleType.DISCUSSION_EDIT_MODAL:
+		return <DiscussionEditModalTitle />;
 	default:
 		return <></>;
 	}

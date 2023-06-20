@@ -17,6 +17,7 @@ export interface IDiscussionStore {
     isAllRepliesVisible:boolean;
     editableComment: IComment | null;
     editableReply: IReply | null;
+    editableDiscussion: TEditableDiscussion;
     commentEditHistory: IHistoryComment[];
     replyEditHistory: IHistoryReply[];
     replyComment: IComment | null;
@@ -27,4 +28,16 @@ export type ICommentCreation = {
     content: string;
     comment_open: boolean;
     sentiment: ESentiment;
+};
+
+export enum EEditableDiscussionAction {
+    EDIT_DISCUSSION = 'EDIT_DISCUSSION',
+    PREVIEWING_DISCUSSION = 'PREVIEWING_DISCUSSION',
+}
+
+export type TEditableDiscussion = {
+    action: EEditableDiscussionAction;
+    title: string;
+    description: string;
+    tags: string[];
 };
