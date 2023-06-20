@@ -13,6 +13,7 @@ import { IDiscussionsQuery } from 'pages/api/discussions';
 import { LISTING_LIMIT } from '~src/utils/proposalListingLimit';
 import { IDiscussionsCountQuery } from 'pages/api/discussions/count';
 import NoProposalsYet from '~src/ui-components/NoProposalsYet';
+import { PlusSignSquareIcon } from '~src/ui-components/CustomIcons';
 
 interface IDiscussionsProps {
 	discussions: IListingDiscussion[] | null;
@@ -69,12 +70,13 @@ const Discussions: FC<IDiscussionsProps> = (props) => {
 				onClick={() => {
 					router.push(`/${query['house_id']}/${query['room_id']}/discussion/create`);
 				}}
-				className={classNames('outline-none border border-solid border-blue_primary bg-blue_primary hover:bg-transparent rounded-2xl text-white flex flex-col items-center justify-center px-5 py-2 font-medium text-base ml-auto mb-4', {
+				className={classNames('outline-none border border-solid border-blue_primary bg-blue_primary hover:bg-transparent rounded-2xl text-white flex gap-x-1 items-center justify-center px-5 py-2 font-medium text-base ml-auto mb-4', {
 					'cursor-not-allowed': loading,
 					'cursor-pointer': !loading
 				})}
 			>
-				Create Discussion
+				<PlusSignSquareIcon className='text-2xl text-transparent stroke-white' />
+				<span>Create Discussion</span>
 			</button>
 			<section className='mt-[8.5px]'>
 				{
