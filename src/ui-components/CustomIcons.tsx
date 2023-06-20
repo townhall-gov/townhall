@@ -28,6 +28,7 @@ import DeadlineSVG from '~assets/icons/deadline.svg';
 import SortByDownSVG from '~assets/icons/sort-by-down.svg';
 import SettingsSVG from '~assets/icons/settings.svg';
 import TownhallLogoWithNameSVG from '~assets/logo/townhall-with-name.svg';
+import RequestHouseSVG from '~assets/logo/request-house.svg';
 import MetamaskSVG from '~assets/wallet/metamask-icon.svg';
 import PolkadotJsSVG from '~assets/wallet/polkadotjs-icon.svg';
 
@@ -218,6 +219,10 @@ export const SettingsIcon = (props: Partial<CustomIconComponentProps>) => (
 
 export const TownhallLogoWithNameIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={TownhallLogoWithNameSVG} {...props} />
+);
+
+export const RequestHouseCardIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={RequestHouseSVG} {...props} />
 );
 
 export const MetamaskIcon = (props: Partial<CustomIconComponentProps>) => (
