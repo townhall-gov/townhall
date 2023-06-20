@@ -28,7 +28,6 @@ const useFilteredHouses = () => {
 const useFilteredRooms = () => {
 	const { rooms } = useHomeSelector();
 	const category=useCategory();
-	console.log(rooms);
 	const { searchQuery } = useHomeSelector();
 	if (rooms && Array.isArray(rooms) && rooms.length > 0) {
 		if (!searchQuery && category!='all') {
