@@ -9,8 +9,6 @@ type TEvmProviderMap = {
 };
 
 const evmProviderMap: TEvmProviderMap = {
-	acala: [],
-	astar: [],
 	moonbase: [],
 	moonbeam: [],
 	moonriver: []

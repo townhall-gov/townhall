@@ -4,7 +4,7 @@
 import { ApiPromise } from '@polkadot/api';
 import { getBlockApi } from '../../apis/query/block';
 
-async function getBalanceFromOneApi(api: ApiPromise, address: string, blockHashOrHeight: string |  number): Promise<{
+async function getBalanceFromOneApi(api: ApiPromise, address: string, blockHashOrHeight?: string |  number): Promise<{
     free: any,
     reserved: any,
 }> {
@@ -12,15 +12,19 @@ async function getBalanceFromOneApi(api: ApiPromise, address: string, blockHashO
 
 	if (blockApi.query.system?.account) {
 		const account = await blockApi.query.system.account(address);
-		return (account.toJSON() as any)?.data;
+		const data = (account.toHuman() as any)?.data;
+		Object.keys(data).forEach((key) => {
+			data[key] = String(data[key]).replace(/,/g, '');
+		});
+		return data;
 	}
 
 	if (blockApi.query.balances) {
 		const free = await blockApi.query.balances.freeBalance(address);
 		const reserved = await blockApi.query.balances.reservedBalance(address);
 		return {
-			free: free.toJSON(),
-			reserved: reserved.toJSON()
+			free: free.toHuman(),
+			reserved: reserved.toHuman()
 		};
 	}
 
@@ -30,7 +34,7 @@ async function getBalanceFromOneApi(api: ApiPromise, address: string, blockHashO
 	};
 }
 
-async function getFinalizedBalanceFromApis(apis: ApiPromise[], address: string, blockHashOrHeight: string | number) {
+async function getFinalizedBalanceFromApis(apis: ApiPromise[], address: string, blockHashOrHeight?: string | number) {
 	const promises: Promise<{
         free: any,
         reserved: any,

@@ -1,26 +1,26 @@
 // Copyright 2019-2025 @polka-labs/townhall authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
-type TChains = {
+export type TChains = {
+	astar: 'astar',
+	acala: 'acala'
 	kusama: 'kusama',
 	polkadot: 'polkadot'
 };
-type TEvmChains = {
+export type TEvmChains = {
 	moonbeam: 'moonbeam',
 	moonriver: 'moonriver',
 	moonbase: 'moonbase',
-	astar: 'astar',
-	acala: 'acala'
 };
 
 const chains: TChains = {
+	acala: 'acala',
+	astar: 'astar',
 	kusama: 'kusama',
 	polkadot: 'polkadot'
 };
 
 const evmChains: TEvmChains = {
-	acala: 'acala',
-	astar: 'astar',
 	moonbase: 'moonbase',
 	moonbeam: 'moonbeam',
 	moonriver: 'moonriver'
@@ -37,8 +37,8 @@ type TChainBlockTimeMap = {
 const chainBlockTime: TChainBlockTimeMap = {
 	[chains.kusama]: sixSecond,
 	[chains.polkadot]: sixSecond,
-	[evmChains.acala]: twelveSecond,
-	[evmChains.astar]: twelveSecond,
+	[chains.acala]: twelveSecond,
+	[chains.astar]: twelveSecond,
 	[evmChains.moonriver]: twelveSecond,
 	[evmChains.moonbeam]: twelveSecond,
 	[evmChains.moonbase]: twelveSecond

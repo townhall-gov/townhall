@@ -4,7 +4,7 @@
 import { ApiPromise } from '@polkadot/api';
 import { isHex } from '@polkadot/util';
 
-async function getBlockApi(api: ApiPromise, blockHashOrHeight: string | number) {
+async function getBlockApi(api: ApiPromise, blockHashOrHeight?: string | number) {
 	if (!blockHashOrHeight) {
 		return api;
 	}
