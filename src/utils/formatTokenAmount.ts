@@ -8,7 +8,7 @@ import { chainProperties } from '~src/onchain-data/networkConstants';
 
 const formatTokenAmount = (amount: string | number, network: string) => {
 	const chain = chainProperties[network as keyof typeof chainProperties];
-	if (!chain) return amount;
+	if (!chain) return String(amount);
 	const decimals = chain.decimals;
 	if (chain.isEVM) {
 		const units = Web3.utils.unitMap as any;
