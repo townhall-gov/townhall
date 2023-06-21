@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Image } from 'antd';
 import { IJoinedRoom } from '~src/types/schema';
 import ModalTrigger from './ModalTrigger';
@@ -13,7 +13,21 @@ interface IJoinedRoomListProps {
 }
 const JoinedRoomList: FC<IJoinedRoomListProps> = (props) => {
 	const { joinedRooms } = props;
-	const totalShowing = 3;
+	const [totalShowing, setTotalShowing] = useState(2);
+	useEffect(() => {
+		const updateTotalShowing = () => {
+			if (window.innerWidth < 770) {
+				setTotalShowing(4);
+			}
+			if (window.innerWidth > 770) {
+				setTotalShowing(2);
+			}
+		};
+		window.addEventListener('resize', updateTotalShowing);
+		return () => {
+			window.removeEventListener('resize', updateTotalShowing);
+		};
+	}, [totalShowing]);
 	return (
 		<div className='m-0 p-0 mb-2 leading-none flex items-center gap-x-4 flex-col'>
 			{
