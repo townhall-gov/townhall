@@ -4,11 +4,11 @@
 
 import { Tooltip } from 'antd';
 import React, { FC } from 'react';
+import { chainProperties } from '~src/onchain-data/networkConstants';
 import { useProposalSelector } from '~src/redux/selectors';
 import { IVote } from '~src/types/schema';
 import Address from '~src/ui-components/Address';
 import { getStrategyWeight, getTotalWeight } from '~src/utils/calculation/getStrategyWeight';
-import { chainProperties } from '~src/utils/networkConstants';
 
 interface IVoteProps {
     vote: IVote;
@@ -73,7 +73,7 @@ const Vote: FC<IVoteProps> = (props) => {
 															{total.toString()}
 														</span>
 														<span>
-															{chainProperties?.[network]?.tokenSymbol}
+															{chainProperties?.[network as keyof typeof chainProperties]?.symbol}
 														</span>
 													</p>
 												</div>

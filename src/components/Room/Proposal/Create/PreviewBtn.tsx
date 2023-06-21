@@ -36,7 +36,7 @@ const PreviewBtn = () => {
 	useEffect(() => {
 		(async () => {
 			setCanCreateProposal(false);
-			if (user?.address && selectedHouse && selectedHouse.blockchain && room && room?.contract_address) {
+			if (user?.address && selectedHouse && selectedHouse.blockchain && room) {
 				try {
 					const { data, error } = await api.post<ICurrentBalanceResponse, ICurrentBalanceBody>('chain/data/currentBalance', {
 						address: user?.address,
@@ -49,7 +49,7 @@ const PreviewBtn = () => {
 							status: ENotificationStatus.ERROR,
 							title: 'Error!'
 						}));
-					} else if (!data || !data.balance || !data.decimals || !data.symbol) {
+					} else if (!data || (data.balance === undefined || data.balance === null || data.balance === '') || !data.decimals || !data.symbol) {
 						dispatch(notificationActions.send({
 							message: 'This token is not supported.',
 							status: ENotificationStatus.ERROR,

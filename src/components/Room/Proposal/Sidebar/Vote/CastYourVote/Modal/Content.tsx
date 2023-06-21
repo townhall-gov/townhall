@@ -13,8 +13,8 @@ import api from '~src/services/api';
 import { IBalanceWithNetwork } from '~src/types/schema';
 import Address from '~src/ui-components/Address';
 import formatTokenAmount from '~src/utils/formatTokenAmount';
-import { chainProperties } from '~src/utils/networkConstants';
 import Option from '../Option';
+import { chainProperties } from '~src/onchain-data/networkConstants';
 
 const CastYourVoteModalContent = () => {
 	const { voteCreation, proposal, loading } = useProposalSelector();
@@ -132,7 +132,7 @@ const CastYourVoteModalContent = () => {
 													# {snapshot_height.height}
 												</span>
 												<span>
-													{Number(balanceFormatted).toFixed(2)} {chainProperties[snapshot_height.blockchain].tokenSymbol}
+													{Number(balanceFormatted).toFixed(2)} {chainProperties[snapshot_height.blockchain].symbol}
 												</span>
 											</p>
 										</li>
