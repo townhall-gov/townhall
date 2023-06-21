@@ -67,7 +67,6 @@ const useProfileJoinedRooms = () => {
 	}
 	return joinedRooms;
 };
-
 const useAuthActionsCheck = () => {
 	const { user } = useProfileSelector();
 	const dispatch = useDispatch();

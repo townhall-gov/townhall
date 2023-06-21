@@ -7,5 +7,6 @@ import { IUser } from '~src/types/schema';
 export interface IProfileStore {
     user: IUser | null;
     joinOrRemoveHouseIds: string[];
+    getTotalCount:number;
     joinOrRemoveRoomIds: string[];
 }
