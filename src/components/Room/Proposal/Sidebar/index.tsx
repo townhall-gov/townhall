@@ -6,6 +6,7 @@ import React, { FC } from 'react';
 import Timestamp from './Timestamp';
 import Vote from './Vote';
 import PostLinking from './PostLink';
+import VotingTimer from './VotingTimer';
 
 interface ISidebarProps {
     className?: string;
@@ -18,6 +19,7 @@ const Sidebar: FC<ISidebarProps> = (props) => {
 			<PostLinking />
 			<Vote />
 			<Timestamp />
+			<VotingTimer/>
 		</div>
 	);
 };
