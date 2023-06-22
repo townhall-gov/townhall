@@ -361,6 +361,9 @@ li.ant-picker-time-panel-cell-disabled .ant-picker-time-panel-cell-inner {
 .html-content a {
     color: var(--blue_primary) !important;
 }
+.tox-notifications-container {
+    display: none !important;
+}
 /* TINYMCE content render */
 
 /* Input Upload */

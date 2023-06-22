@@ -73,7 +73,7 @@ const TextEditor: FC<ITextEditorProps> = (props) => {
 							localStorage.setItem(localStorageKey, v);
 						}
 					}}
-					apiKey={process.env.NEXT_PUBLIC_TINY_MCE_API_KEY}
+					// apiKey={process.env.NEXT_PUBLIC_TINY_MCE_API_KEY}
 					init={{
 						block_unsupported_drop: false,
 						branding: false,
@@ -119,7 +119,7 @@ const TextEditor: FC<ITextEditorProps> = (props) => {
 								xhr.send(formData);
 							});
 						},
-						menubar: 'file edit view insert format tools table tc help',
+						menubar: false,
 						paste_data_images: true,
 						plugins: [
 							'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
@@ -127,10 +127,10 @@ const TextEditor: FC<ITextEditorProps> = (props) => {
 							'insertdatetime', 'media', 'table'
 						],
 						skin: 'oxide-dark',
-						toolbar: 'undo redo | ' +
-							'bold italic backcolor | alignleft aligncenter ' +
-							'alignright alignjustify | bullist numlist outdent indent | ' +
-							'removeformat | table help ',
+						toolbar: 'undo redo preview | ' +
+							'bold italic backcolor | ' +
+							'bullist numlist table | ' +
+							'removeformat link image code',
 						xss_sanitization: true
 					}}
 				/>
