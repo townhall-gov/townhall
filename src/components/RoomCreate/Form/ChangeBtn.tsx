@@ -185,11 +185,11 @@ const StageChangeBtn = () => {
 			<Button
 				loading={loading}
 				onClick={onStageChange}
-				disabled={loading}
+				disabled={loading || !roomCreation.select_house?.is_erc20}
 				className={
 					classNames('w-[200px] bg-blue_primary h-auto text-white py-[11px] px-[22px] rounded-2xl border border-solid border-blue_primary flex items-center justify-center text-base leading-[19px] tracking-[0.01em]', {
-						'cursor-not-allowed': loading,
-						'cursor-pointer': !loading
+						'cursor-not-allowed': !roomCreation.select_house?.is_erc20 || loading,
+						'cursor-pointer': !loading && roomCreation.select_house?.is_erc20
 					})
 				}
 			>
