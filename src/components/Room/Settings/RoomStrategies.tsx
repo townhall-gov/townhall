@@ -6,42 +6,31 @@ import { DownOutlined } from '@ant-design/icons';
 import classNames from 'classnames';
 import React, { FC, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { roomsActions } from '~src/redux/rooms';
+import { roomActions } from '~src/redux/room';
 import { IStrategy } from '~src/redux/rooms/@types';
-import { useRoomCreation_House } from '~src/redux/rooms/selectors';
-import { useRoomsSelector } from '~src/redux/selectors';
+import { useHouseSelector } from '~src/redux/selectors';
 import { EVotingStrategy } from '~src/types/enums';
+import { useRoomSettings } from '~src/redux/room/selectors';
+import { getNetworkTitle, getVotingStrategyTitle, isVotingStrategyDisabled } from '~src/components/RoomCreate/Form/Stages/RoomStrategies';
 
 interface IRoomStrategiesProps {
     className?: string;
+    isDisabled?: boolean;
 }
 
-export const getVotingStrategyTitle = (votingStrategy: EVotingStrategy | string) => {
-	return votingStrategy? votingStrategy.toString().split('_').map((str, i) => i == 0? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase():str).join(' '): '';
-};
-
-export const disabledVotingStrategies = [EVotingStrategy.QUADRATIC_BALANCE_OF];
-
-export const isVotingStrategyDisabled = (votingStrategy: EVotingStrategy) => {
-	return disabledVotingStrategies.includes(votingStrategy);
-};
-
-export const getNetworkTitle = (network?: string) => {
-	return network? network.toString().split('_').map((str, i) => i == 0? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase():str).join(' '): '';
-};
-
 const RoomStrategies: FC<IRoomStrategiesProps> = (props) => {
-	const { className } = props;
-	const house = useRoomCreation_House();
-	const { loading, roomCreation } = useRoomsSelector();
-	const { room_strategies } = roomCreation;
+	const { className, isDisabled } = props;
 	const dispatch = useDispatch();
+	const roomSettings = useRoomSettings();
+	const { room_strategies } = roomSettings;
+	const { house } = useHouseSelector();
 
 	const [strategy, setStrategy] = useState<IStrategy>();
 
 	const isNetworkDisabled = (network: string) => {
 		return house?.blockchain?.toString() === network;
 	};
+
 	return (
 		<article>
 			<section className='flex flex-col gap-y-5'>
@@ -67,9 +56,12 @@ const RoomStrategies: FC<IRoomStrategiesProps> = (props) => {
 				</p>
 				<div className='flex flex-col gap-y-2'>
 					<Dropdown
-						disabled={loading}
+						disabled={isDisabled}
 						trigger={['click']}
-						className={classNames('cursor-pointer px-[18.5px] py-[21.5px] border border-solid border-blue_primary rounded-2xl voting_system_type', className)}
+						className={classNames('px-[18.5px] py-[21.5px] border border-solid border-blue_primary rounded-2xl voting_system_type', className, {
+							'cursor-not-allowed': isDisabled,
+							'cursor-pointer': !isDisabled
+						})}
 						overlayClassName='ant-dropdown-menu-border-blue_primary'
 						menu={{
 							items: Object.values(EVotingStrategy).map((votingStrategy) => {
@@ -112,11 +104,11 @@ const RoomStrategies: FC<IRoomStrategiesProps> = (props) => {
 						}
 					</Dropdown>
 					<Dropdown
-						disabled={loading || !house?.networks}
+						disabled={isDisabled || !house?.networks}
 						trigger={['click']}
 						className={classNames('px-[18.5px] py-[21.5px] border border-solid border-blue_primary rounded-2xl voting_system_type', className, {
-							'cursor-not-allowed': loading || !house?.networks,
-							'cursor-pointer': !(loading || !house?.networks)
+							'cursor-not-allowed': isDisabled || !house?.networks,
+							'cursor-pointer': !(isDisabled || !house?.networks)
 						})}
 						overlayClassName='ant-dropdown-menu-border-blue_primary'
 						menu={{
@@ -166,8 +158,14 @@ const RoomStrategies: FC<IRoomStrategiesProps> = (props) => {
 							disabled={!strategy || !strategy.name || !strategy.network}
 							onClick={() => {
 								if (strategy) {
-									dispatch(roomsActions.setRoomCreation_RoomStrategies(strategy));
-									setStrategy(undefined);
+									const isPresent = room_strategies.find((s) => s.name === strategy.name && s.network === strategy.network);
+									if (!isPresent) {
+										dispatch(roomActions.setRoomSettings_Field({
+											key: 'room_strategies',
+											value: [...room_strategies, strategy]
+										}));
+										setStrategy(undefined);
+									}
 								}
 							}}
 							className={

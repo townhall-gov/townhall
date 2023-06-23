@@ -10,6 +10,7 @@ import { IListingProposal } from './@types';
 import { EVotingSystem } from '~src/types/enums';
 import { MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM } from '~src/global/min_token';
 import { IPostLinkData } from 'pages/api/auth/data/post-link-data';
+import { IStrategy } from '../rooms/@types';
 
 const initialState: IRoomStore = {
 	currentStage: ERoomStage.PROPOSALS,
@@ -42,7 +43,8 @@ const initialState: IRoomStore = {
 	proposals: [],
 	room: null,
 	roomSettings: {
-		min_token_to_create_proposal_in_room: MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM
+		min_token_to_create_proposal_in_room: MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM,
+		room_strategies: []
 	}
 };
 
@@ -214,7 +216,8 @@ export const roomStore = createSlice({
 			const room = action.payload;
 			state.room = room;
 			state.roomSettings = {
-				min_token_to_create_proposal_in_room: (room?.min_token_to_create_proposal_in_room || room?.min_token_to_create_proposal_in_room === 0)? room?.min_token_to_create_proposal_in_room: MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM
+				min_token_to_create_proposal_in_room: (room?.min_token_to_create_proposal_in_room || room?.min_token_to_create_proposal_in_room === 0)? room?.min_token_to_create_proposal_in_room: MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM,
+				room_strategies: room?.voting_strategies || []
 			};
 		},
 		setRoomSettings_Field: (state, action: PayloadAction<IRoomSettingsFieldPayload>) => {
@@ -225,6 +228,9 @@ export const roomStore = createSlice({
 				switch (key) {
 				case 'min_token_to_create_proposal_in_room':
 					state.roomSettings[key] = value as number;
+					break;
+				case 'room_strategies':
+					state.roomSettings[key] = value as IStrategy[];
 					break;
 				default:
 					break;

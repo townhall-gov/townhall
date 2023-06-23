@@ -5,6 +5,7 @@ import React, { useEffect } from 'react';
 import MinTokenToCreateProposal from './MinTokenToCreateProposal';
 import { useProfileSelector, useRoomSelector } from '~src/redux/selectors';
 import SaveBtn from './SaveBtn';
+import RoomStrategies from './RoomStrategies';
 
 const RoomSettings = () => {
 	const { user } = useProfileSelector();
@@ -16,8 +17,11 @@ const RoomSettings = () => {
 		}
 	}, [room?.creator_details?.address, user?.address]);
 	return (
-		<div className='h-full'>
+		<div className='h-full flex flex-col gap-y-5'>
 			<MinTokenToCreateProposal
+				isDisabled={isDisabled}
+			/>
+			<RoomStrategies
 				isDisabled={isDisabled}
 			/>
 

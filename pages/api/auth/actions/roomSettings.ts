@@ -62,14 +62,15 @@ const handler: TNextApiHandler<IRoomSettingsResponse, IRoomSettingsBody, {}> = a
 
 	const data = roomRefDoc.data() as IRoom;
 	if (data.creator_details.address !== address) {
-		return res.status(StatusCodes.FORBIDDEN).json({ error: 'Only creator can update room settings.' });
+		return res.status(StatusCodes.FORBIDDEN).json({ error: 'Room Admin can update room settings.' });
 	}
 
 	if (roomSettings) {
-		const { min_token_to_create_proposal_in_room } = roomSettings;
+		const { min_token_to_create_proposal_in_room, room_strategies } = roomSettings;
 		const room: IRoom = {
 			...data,
-			min_token_to_create_proposal_in_room: (min_token_to_create_proposal_in_room || min_token_to_create_proposal_in_room === 0)? min_token_to_create_proposal_in_room: data.min_token_to_create_proposal_in_room
+			min_token_to_create_proposal_in_room: (min_token_to_create_proposal_in_room || min_token_to_create_proposal_in_room === 0)? min_token_to_create_proposal_in_room: data.min_token_to_create_proposal_in_room,
+			voting_strategies: room_strategies
 		};
 		await roomRef.set(room, { merge: true });
 		return res.status(StatusCodes.OK).json({

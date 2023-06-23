@@ -5,6 +5,7 @@
 import { IPostLinkData } from 'pages/api/auth/data/post-link-data';
 import { EReaction, EVotingSystem } from '~src/types/enums';
 import { IDiscussion, IPostLink, IProposal, IRoom } from '~src/types/schema';
+import { IStrategy } from '../rooms/@types';
 
 export interface IRoomStore {
     loading: boolean;
@@ -57,6 +58,7 @@ export type IDiscussionCreation = {
 
 export type IRoomSettings = {
     min_token_to_create_proposal_in_room: number;
+    room_strategies: IStrategy[];
 };
 
 export interface IVotingSystemOption {

@@ -88,21 +88,19 @@ const SaveBtn: FC<ISaveBtnProps> = (props) => {
 		}
 	};
 	return (
-		<div className='mt-10'>
-			<Button
-				disabled={isDisabled}
-				loading={loading}
-				onClick={onSave}
-				className={
-					classNames('outline-none border h-full border-solid border-[#66A5FF] flex items-center justify-center bg-blue_primary rounded-2xl text-white py-[11px] px-[22px] max-w-[188px] w-full text-base leading-[19px] font-normal tracking-[0.01em]', {
-						'cursor-not-allowed': loading || isDisabled,
-						'cursor-pointer': !loading && !isDisabled
-					})
-				}
-			>
-                Save
-			</Button>
-		</div>
+		<Button
+			disabled={isDisabled}
+			loading={loading}
+			onClick={onSave}
+			className={
+				classNames('outline-none border h-full border-solid border-[#66A5FF] flex items-center justify-center bg-blue_primary rounded-2xl text-white py-[11px] px-[22px] max-w-[188px] w-full text-base leading-[19px] font-normal tracking-[0.01em]', {
+					'cursor-not-allowed': loading || isDisabled,
+					'cursor-pointer': !loading && !isDisabled
+				})
+			}
+		>
+			Save
+		</Button>
 	);
 };
 
