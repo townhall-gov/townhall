@@ -7,6 +7,7 @@ import { Image } from 'antd';
 import { IJoinedRoom } from '~src/types/schema';
 import ModalTrigger from './ModalTrigger';
 import DefaultNameImage from '~src/ui-components/DefaultNameImage';
+import Link from 'next/link';
 
 interface IJoinedRoomListProps {
     joinedRooms: IJoinedRoom[];
@@ -43,7 +44,9 @@ const JoinedRoomList: FC<IJoinedRoomListProps> = (props) => {
 						<article title={joinedRoom.id} key={index} className='flex items-center m-2 justify-center text-[45px]'>
 							{
 								joinedRoom.logo?
-									<Image preview={false} width={45} height={45} className='rounded-full' src={joinedRoom.logo} alt='room logo' />
+									<Link href={`/${joinedRoom.house_id}/${joinedRoom.id}/proposals`} key={index} className='flex items-center justify-center rounded-2xl'>
+										<Image preview={false} width={45} height={45} className='rounded-full' src={joinedRoom.logo} alt='room logo' />
+									</Link>
 									: <DefaultNameImage
 										name={joinedRoom.id}
 										className='w-[45px] h-[45px]'
