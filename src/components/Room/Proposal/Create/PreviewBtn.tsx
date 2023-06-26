@@ -83,14 +83,14 @@ const PreviewBtn = () => {
 			joinRoom();
 			return;
 		}
-		// if (!canCreateProposal) {
-		// 	dispatch(notificationActions.send({
-		// 		message: 'You can\'t create a proposal with less than 10 tokens.',
-		// 		status: ENotificationStatus.ERROR,
-		// 		title: 'Error!'
-		// 	}));
-		// 	return;
-		// }
+		if (!canCreateProposal) {
+			dispatch(notificationActions.send({
+				message: 'You can\'t create a proposal with less than 10 tokens.',
+				status: ENotificationStatus.ERROR,
+				title: 'Error!'
+			}));
+			return;
+		}
 		try {
 			dispatch(roomActions.setLoading(true));
 			removeErrorFieldHighlight('proposal_error', 'border-blue_primary');
