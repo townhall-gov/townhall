@@ -52,7 +52,7 @@ const ProposalResult: FC<IProposalResultProps> = (props) => {
                                             Voted
 										</span>
 										<span>
-											{voted.toString()}
+											{voted.toFixed(2)} VOTE
 										</span>
 									</p>
 								</div>
