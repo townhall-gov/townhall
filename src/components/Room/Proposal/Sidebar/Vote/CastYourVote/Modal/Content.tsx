@@ -2,25 +2,41 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { LoadingOutlined } from '@ant-design/icons';
-import { BN } from '@polkadot/util';
 import { Spin } from 'antd';
-import { IBalanceBody, IBalanceResponse } from 'pages/api/chain/actions/balance';
+import { IBalanceBody, IBalanceResponse, IStrategyWithHeightAndBalance } from 'pages/api/chain/actions/balance';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { proposalActions } from '~src/redux/proposal';
 import { useProfileSelector, useProposalSelector } from '~src/redux/selectors';
 import api from '~src/services/api';
-import { IBalanceWithNetwork } from '~src/types/schema';
 import Address from '~src/ui-components/Address';
-import formatTokenAmount from '~src/utils/formatTokenAmount';
+import { formatToken } from '~src/utils/formatTokenAmount';
 import Option from '../Option';
-import { chainProperties } from '~src/onchain-data/networkConstants';
+import { evmChains } from '~src/onchain-data/networkConstants';
+import BigNumber from 'bignumber.js';
+
+export const NoOptionsSelectedError = 'Please select at least one option';
+
+export const checkIsAllZero = (balances: IStrategyWithHeightAndBalance[]) => {
+	return balances.every((balance) => {
+		const weight = new BigNumber(balance.weight);
+		if (!weight.gt(0)) {
+			return true;
+		}
+		const tokenMetadata = balance.token_metadata[balance.asset_type];
+		if (!tokenMetadata) return true;
+		const value = new BigNumber(formatToken(balance.value, !!evmChains[balance.network as keyof typeof evmChains], tokenMetadata?.decimals));
+		const votes = (value).multipliedBy(weight);
+		const threshold = new BigNumber(balance.threshold);
+		return votes.lt(threshold);
+	});
+};
 
 const CastYourVoteModalContent = () => {
-	const { voteCreation, proposal, loading } = useProposalSelector();
+	const { voteCreation, proposal, loading, error } = useProposalSelector();
 	const { user } = useProfileSelector();
 	const dispatch = useDispatch();
-	const isAllZero = voteCreation.balances.every((balance) => Number(balance.balance) === 0);
+	const isAllZero = checkIsAllZero(voteCreation.balances);
 
 	useEffect(() => {
 		(async () => {
@@ -31,31 +47,14 @@ const CastYourVoteModalContent = () => {
 			}
 
 			const { data, error } = await api.post<IBalanceResponse, IBalanceBody>('chain/actions/balance', {
-				snapshot: proposal.snapshot_heights.map((v) => {
-					return {
-						address: user.address,
-						height: v.height,
-						network: v.blockchain
-					};
-				})
+				address: user.address,
+				voting_strategies_with_height: proposal.voting_strategies_with_height
 			});
 			if (error) {
 				console.log(error);
 			} else if (data) {
-				const balances = data.balances.map((v, i) => {
-					const balance: IBalanceWithNetwork = {
-						balance: 0,
-						network: v.network || proposal?.snapshot_heights[i].blockchain
-					};
-					if (v.value) {
-						if (v.value.free) {
-							balance.balance = new BN(v.value.free).toString();
-						}
-						if (v.value.reserved) {
-							balance.balance = new BN(v.value.reserved).add(new BN(balance.balance)).toString();
-						}
-					}
-					return balance;
+				const balances = data.balances.map((v) => {
+					return v;
 				});
 				dispatch(proposalActions.setVoteCreation_Field({
 					key: 'balances',
@@ -93,6 +92,11 @@ const CastYourVoteModalContent = () => {
 					</div>
 					: null
 			}
+			{
+				error === NoOptionsSelectedError?
+					<p className='text-red_primary m-0 mt-2 text-xs'>{NoOptionsSelectedError}</p>
+					: null
+			}
 			<div className='mt-5'>
 				<Spin
 					className='bg-dark_blue_primary'
@@ -114,25 +118,29 @@ const CastYourVoteModalContent = () => {
 						>
 							{
 
-								proposal?.snapshot_heights.map((snapshot_height, index) => {
-									const balance = voteCreation.balances.find((balance) => balance.network === snapshot_height.blockchain)?.balance;
-									const balanceFormatted = formatTokenAmount(balance || 0, snapshot_height.blockchain);
+								voteCreation.balances.map((balance) => {
+									const token_info = balance.token_metadata[balance.asset_type];
+									if (!token_info) {
+										return null;
+									}
+									let balanceFormatted = new BigNumber(formatToken(balance.value || 0, !!evmChains[balance.network as keyof typeof evmChains], token_info.decimals));
+									balanceFormatted = balanceFormatted.multipliedBy(new BigNumber(balance.weight));
 									return (
 										<li
 											className='list-decimal'
-											key={snapshot_height.height + index}
+											key={balance.id}
 										>
 											<p
 												className='grid grid-cols-3 gap-2 m-0 text-sm'
 											>
 												<span>
-													{snapshot_height.blockchain}
+													{balance.network}
 												</span>
 												<span>
-													# {snapshot_height.height}
+													# {balance.height}
 												</span>
 												<span>
-													{Number(balanceFormatted).toFixed(2)} {chainProperties[snapshot_height.blockchain].symbol}
+													{balanceFormatted.toNumber().toFixed(2)} {token_info.symbol}
 												</span>
 											</p>
 										</li>

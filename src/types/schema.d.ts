@@ -5,7 +5,7 @@
 import { IPostLinkData } from 'pages/api/auth/data/post-link-data';
 import { IVotingSystemOption } from '~src/redux/room/@types';
 import { ICreatorDetails, IProjectSocial, IStrategy } from '~src/redux/rooms/@types';
-import { EBlockchain, EWallet, ESentiment, EVotingSystem, EReaction, EVotingStrategy, EProposalStatus, EPostType } from '~src/types/enums';
+import { EBlockchain, EWallet, ESentiment, EVotingSystem, EReaction, EProposalStatus, EPostType } from '~src/types/enums';
 
 interface IUser {
 	address: string;
@@ -49,6 +49,10 @@ interface IHouse {
 
 interface INetwork {
 	name: string;
+	blockTime: number;
+	decimals: number;
+	symbol: string;
+	isEVM: boolean;
 }
 
 interface IRoom {
@@ -83,16 +87,19 @@ interface IProposal {
 	updated_at: Date;
 	start_date: Date;
 	end_date: Date;
-	snapshot_heights: ISnapshotHeight[];
 	is_vote_results_hide_before_voting_ends: boolean;
 	timestamp: number;
 	reactions: IReaction[];
 	comments: IComment[];
 	votes_result: IVotesResult;
-	voting_strategies: IStrategy[];
+	voting_strategies_with_height: IStrategyWithHeight[];
 	status: EProposalStatus;
 	post_link: IPostLink | null;
 	post_link_data: IPostLinkData | null;
+}
+
+export interface IStrategyWithHeight extends IStrategy {
+	height: number;
 }
 
 interface IDiscussion {
@@ -119,11 +126,7 @@ interface IPostLink {
 }
 
 interface IVotesResult {
-	[key: string]: {
-		name: EVotingStrategy;
-		network: string;
-		amount: number | string;
-	}[];
+	[key: string]: IBalance[];
 }
 
 interface IVote {
@@ -135,12 +138,12 @@ interface IVote {
 	note?: string;
 	created_at: Date;
 	options: IVotingSystemOption[];
-	balances: IBalanceWithNetwork[];
+	balances: IBalance[];
 }
 
-interface IBalanceWithNetwork {
-	network: string;
-	balance: number | string;
+interface IBalance {
+	id: string;
+	value: number | string;
 }
 
 interface ISnapshotHeight {
@@ -231,7 +234,7 @@ export {
 	IReaction,
 	INetwork,
 	ISnapshotHeight,
-	IBalanceWithNetwork,
+	IBalance,
 	IVote,
 	IVotesResult,
 	IDiscussion,

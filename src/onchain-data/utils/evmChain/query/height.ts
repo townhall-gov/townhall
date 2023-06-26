@@ -2,19 +2,18 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import Web3 from 'web3';
-import { chainBlockTime, evmChains } from '../../constants';
-import { getProvidersForEvmChain } from '../apis';
-import { getBlockTimeByHeight } from './blockTime';
+import { getBlockTimeByHeightFromProviders } from './blockTime';
+import { chainProperties, evmChains } from '~src/onchain-data/networkConstants';
 const blockNumberThreshold = 3;
 
-async function getExpected(chain: keyof typeof evmChains, lastHeightTime: {
+async function getExpectedFromProviders(providers: any[], chain: keyof typeof evmChains, lastHeightTime: {
     height: number;
     time: number;
 }, targetTime: number) {
 	const { height, time } = lastHeightTime;
 
 	const gap = Math.abs(targetTime - time);
-	const heightGap = Math.trunc(gap / chainBlockTime[chain]);
+	const heightGap = Math.trunc(gap / chainProperties[chain].blockTime);
 
 	let expectedHeight;
 	if (time > targetTime) {
@@ -23,7 +22,7 @@ async function getExpected(chain: keyof typeof evmChains, lastHeightTime: {
 		expectedHeight = Math.max(height + heightGap, 1);
 	}
 
-	const expectedTime = await getBlockTimeByHeight(chain, expectedHeight);
+	const expectedTime = await getBlockTimeByHeightFromProviders(providers,  expectedHeight);
 	const newGap = Math.abs(expectedTime - targetTime);
 	return newGap < gap
 		? {
@@ -33,7 +32,7 @@ async function getExpected(chain: keyof typeof evmChains, lastHeightTime: {
 		: lastHeightTime;
 }
 
-async function getHeightByTime(chain: keyof typeof evmChains, targetTime: number, lastHeightTime: {
+async function getHeightByTimeFromProviders(providers: any[], chain: keyof typeof evmChains, targetTime: number, lastHeightTime: {
     height: number;
     time: number;
 }): Promise<{
@@ -41,7 +40,7 @@ async function getHeightByTime(chain: keyof typeof evmChains, targetTime: number
     time: number;
 }> {
 	const { height, time } = lastHeightTime;
-	const blockTime = chainBlockTime[chain];
+	const blockTime = chainProperties[chain].blockTime;
 
 	if (targetTime > time) {
 		// Calculate the estimated number of blocks
@@ -61,7 +60,8 @@ async function getHeightByTime(chain: keyof typeof evmChains, targetTime: number
 		return lastHeightTime;
 	}
 
-	const { height: expectedHeight, time: expectedTime } = await getExpected(
+	const { height: expectedHeight, time: expectedTime } = await getExpectedFromProviders(
+		providers,
 		chain,
 		lastHeightTime,
 		targetTime
@@ -70,7 +70,7 @@ async function getHeightByTime(chain: keyof typeof evmChains, targetTime: number
 		return lastHeightTime;
 	}
 
-	return await getHeightByTime(chain, targetTime, {
+	return await getHeightByTimeFromProviders(providers, chain, targetTime, {
 		height: expectedHeight,
 		time: expectedTime
 	});
@@ -86,8 +86,7 @@ async function queryHeightFromOneProvider(provider: any) {
 	return Promise.any(promises);
 }
 
-async function getBlockNumber(network: keyof typeof evmChains) {
-	const providers = getProvidersForEvmChain(network);
+async function getBlockNumberFromProviders(providers: any[]) {
 
 	const promises = [];
 	for (const provider of providers) {
@@ -100,6 +99,6 @@ async function getBlockNumber(network: keyof typeof evmChains) {
 }
 
 export {
-	getBlockNumber,
-	getHeightByTime
+	getHeightByTimeFromProviders,
+	getBlockNumberFromProviders
 };

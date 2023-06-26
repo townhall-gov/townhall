@@ -118,7 +118,8 @@ export const getProposals: TGetProposalsFn = async (params) => {
 								status: status,
 								tags: data.tags || [],
 								title: data.title || '',
-								votes_result: data.votes_result || {}
+								votes_result: data.votes_result || {},
+								voting_strategies_with_height: data.voting_strategies_with_height
 							};
 							return proposal;
 						}
