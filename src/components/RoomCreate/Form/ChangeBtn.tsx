@@ -105,14 +105,14 @@ const StageChangeBtn = () => {
 		if (nextCreationStage) {
 			dispatch(roomsActions.setRoomCreationStage(nextCreationStage.stage));
 		} else {
-			if (!canCreateRoom) {
-				dispatch(notificationActions.send({
-					message: 'You can\'t create a room with less than 10 tokens.',
-					status: ENotificationStatus.ERROR,
-					title: 'Error!'
-				}));
-				return;
-			}
+			// if (!canCreateRoom) {
+			// 	dispatch(notificationActions.send({
+			// 		message: 'You can\'t create a room with less than 10 tokens.',
+			// 		status: ENotificationStatus.ERROR,
+			// 		title: 'Error!'
+			// 	}));
+			// 	return;
+			// }
 			(async () => {
 				const { creator_details, room_details, room_socials, select_house, room_strategies } = roomCreation;
 				try {

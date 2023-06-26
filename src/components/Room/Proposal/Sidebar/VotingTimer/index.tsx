@@ -8,18 +8,17 @@ import dayjs from 'dayjs';
 
 const VotingTimer = () => {
 	const { proposal } = useProposalSelector();
-	const [votingTimer,setvotingTimer] = useState({ countDownVisbility:true,days:0,hours:0,minutes:0,seconds:0 });
-	useEffect(() => {
+	const [ votingTimer,setVotingTimer ] = useState({ countDownVisbility:true,days:0,hours:0,minutes:0,seconds:0 });
+	const countDownUpdation = () => {
 		if(proposal)
 		{
 			const { start_date }=proposal;
-			const end = dayjs(start_date);
+			const end = dayjs( start_date );
 			const updateCountdown = () => {
-				const current = dayjs();
-				const remaining = end.diff(current);
+				const remaining = end.diff(dayjs());
 				if(remaining<=0)
 				{
-					setvotingTimer({ ...votingTimer,countDownVisbility:false });
+					setVotingTimer({ ...votingTimer,countDownVisbility:false });
 				}
 				else {
 					const duration = dayjs.duration(remaining);
@@ -28,7 +27,7 @@ const VotingTimer = () => {
 					const minutes = duration.minutes();
 					const seconds = duration.seconds();
 
-					setvotingTimer(
+					setVotingTimer(
 						{
 							...votingTimer,days:days,hours:hours,minutes:minutes,seconds:seconds
 						}
@@ -36,12 +35,17 @@ const VotingTimer = () => {
 				}
 			};
 			updateCountdown();
-			const countdownInterval = setInterval(updateCountdown, 1000);
-
-			return () => {
-				clearInterval(countdownInterval);
-			};
+			if(votingTimer.countDownVisbility)
+			{
+				const countdownInterval = setInterval(updateCountdown, 1000);
+				return () => {
+					clearInterval(countdownInterval);
+				};
+			}
 		}
+	};
+	useEffect(() => {
+		countDownUpdation();
 	},[proposal]);
 	return (
 		<>
@@ -52,25 +56,25 @@ const VotingTimer = () => {
 					</h2>
 					<div className='flex flex-col text-[#66A5FF] items-center justify-between'>
 						<div className='flex justify-between text-[32px] text-[#66A5FF]'>
-							<div className='flex flex-col justify-center font-bold items-center text-[32px]'>
+							<p className='flex flex-col justify-center font-bold items-center text-[32px]'>
 								{votingTimer.days}
-								<div className='text-[14px] mt-[5px] font-normal'>Days</div>
-							</div>
+								<span className='text-[14px] gap-y-[5px] font-normal'>Days</span>
+							</p>
 							<div className='mx-2'>:</div>
-							<div className='flex flex-col justify-center font-bold items-center text-[32px]'>
+							<p className='flex flex-col justify-center font-bold items-center text-[32px]'>
 								{votingTimer.hours}
-								<div className='text-[14px] mt-[5px] font-normal'>Hours</div>
-							</div>
+								<span className='text-[14px] gap-y-[5px] font-normal'>Hours</span>
+							</p>
 							<div  className='mx-2'>:</div>
-							<div className='flex flex-col justify-center font-bold items-center text-[32px]'>
+							<p className='flex flex-col justify-center font-bold items-center text-[32px]'>
 								{votingTimer.minutes}
-								<div className='text-[14px] mt-[5px] font-normal'>Minutes</div>
-							</div>
+								<span className='text-[14px] gap-y-[5px] font-normal'>Minutes</span>
+							</p>
 							<div  className='mx-2'>:</div>
-							<div className='flex flex-col justify-center font-bold items-center text-[32px]'>
+							<p className='flex flex-col justify-center font-bold items-center text-[32px]'>
 								{votingTimer.seconds}
-								<div className='text-[14px] mt-[5px] font-normal'>Seconds</div>
-							</div>
+								<span className='text-[14px] gap-y-[5px] font-normal'>Seconds</span>
+							</p>
 						</div>
 					</div>
 				</section>
