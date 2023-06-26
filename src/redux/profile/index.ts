@@ -7,7 +7,6 @@ import { IProfileStore } from './@types';
 import { IJoinedHouse, IJoinedRoom, IUser } from '~src/types/schema';
 
 const initialState: IProfileStore = {
-	getTotalCount:0,
 	joinOrRemoveHouseIds: [],
 	joinOrRemoveRoomIds: [],
 	user: null
