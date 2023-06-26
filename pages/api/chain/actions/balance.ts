@@ -5,54 +5,50 @@
 import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TNextApiHandler } from '~src/api/types';
-import { balance } from '~src/onchain-data';
-import { create } from '~src/onchain-data/utils/apis';
+import { getBalanceUsingStrategyWithHeight } from '~src/onchain-data';
+import { IStrategyWithHeight } from '~src/types/schema';
 
 export interface IBalanceBody {
-    snapshot: {
-        address: string;
-        network: string;
-        height: number | string;
-    }[];
+	address: string;
+    voting_strategies_with_height: IStrategyWithHeight[];
 }
 export interface IBalanceQuery {}
-export interface IBalanceConfig {
-    network: string;
-    height: number | string;
-    value: {
-        free: number;
-        reserved: number;
-    };
+export interface IStrategyWithHeightAndBalance extends IStrategyWithHeight {
+    value: string;
 }
 export interface IBalanceResponse {
-    balances: IBalanceConfig[];
+    balances: IStrategyWithHeightAndBalance[];
 }
 
 const handler: TNextApiHandler<IBalanceResponse, IBalanceBody, IBalanceQuery> = async (req, res) => {
 	if (req.method !== 'POST') {
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
 	}
-	const { snapshot } = req.body;
-	create();
+	const { voting_strategies_with_height, address } = req.body;
 
-	if (!snapshot || !Array.isArray(snapshot) || snapshot.length === 0) {
+	if (!address) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Voter Address is not available, unable to find Balance.' });
+	}
+
+	if (!voting_strategies_with_height || !Array.isArray(voting_strategies_with_height) || voting_strategies_with_height.length === 0) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Network, Address, Height is not available, unable to find Balance.' });
 	}
 
-	const balancePromises = snapshot.map(async (v) => {
-		return balance(v.network, v.address, Number(v.height));
+	const balancePromises = voting_strategies_with_height.map(async (v) => {
+		return getBalanceUsingStrategyWithHeight(v, address);
 	});
 
-	const balances: IBalanceConfig[] = [];
+	const balances: IStrategyWithHeightAndBalance[] = [];
 	try {
 		const balancePromiseSettledResults = await Promise.allSettled(balancePromises);
 		balancePromiseSettledResults.forEach((balancePromiseSettledResult, i) => {
 			if (balancePromiseSettledResult.status === 'fulfilled' && balancePromiseSettledResult.value) {
 				balances.push({
-					height: snapshot[i].height,
-					network: snapshot[i].network,
+					...voting_strategies_with_height[i],
 					value: balancePromiseSettledResult.value
 				});
+			} else {
+				console.log('Error in getting balance:-', balancePromiseSettledResult, voting_strategies_with_height[i]);
 			}
 		});
 	} catch (error) {

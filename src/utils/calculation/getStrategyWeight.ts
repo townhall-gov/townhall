@@ -2,72 +2,38 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { IStrategy } from '~src/redux/rooms/@types';
 import { EVotingStrategy } from '~src/types/enums';
-import { IBalanceWithNetwork, IVotesResult } from '~src/types/schema';
-import formatTokenAmount from '../formatTokenAmount';
-import { BN } from '@polkadot/util';
+import BigNumber from 'bignumber.js';
+import { IStrategyWithHeightAndBalance } from 'pages/api/chain/actions/balance';
 
-const getOptionPercentage = (votes_result: IVotesResult, value: string) => {
-	const results = votes_result[value];
-	if (results && Array.isArray(results) && results.length > 0) {
-		const balances =  results.map((result) => {
-			return formatTokenAmount(result.amount, result.network);
-		});
-		const singleOptionTotal = balances.reduce((acc, curr) => {
-			return acc + Number(curr);
-		}, 0);
-		const total =  Object.entries(votes_result).reduce((acc, [, value]) => {
-			const balances = value.map((result) => {
-				return formatTokenAmount(result.amount, result.network);
-			});
-			const total = balances.reduce((acc, curr) => {
-				return acc + Number(curr);
-			}, 0);
-			return acc + total;
-		}, 0);
-		return (singleOptionTotal / total) * 100;
-	} else {
-		return 0;
-	}
-};
-
-const getTotalWeight = (strategies: IStrategy[], balances: IBalanceWithNetwork[]) => {
-	let total = new BN(0);
-
-	strategies.forEach((strategy) => {
-		total = total.add(getStrategyWeight(strategy, balances));
-	});
-
-	return total.toString();
-};
-
-const getStrategyWeight = (strategy: IStrategy, balances: IBalanceWithNetwork[]) => {
-	let total = new BN(0);
-	const { name, network } = strategy;
-	const balance = balances.find((balance) => balance.network === network);
-	if (balance) {
+const getStrategyWeight = (strategy: IStrategyWithHeightAndBalance) => {
+	let total = new BigNumber(0);
+	const { name, value } = strategy;
+	const decimals = strategy.token_metadata[strategy.asset_type]?.decimals || null;
+	if (value) {
 		switch(name){
 		case EVotingStrategy.BALANCE_OF:
-			total = getBalanceOfStrategyWeight(balance);
+			total = getBalanceOfStrategyWeight(value);
+			break;
+		case EVotingStrategy.QUADRATIC_BALANCE_OF:
+			total = getQuadraticBalanceOfStrategyWeight(decimals, value);
 		}
 	}
 	return total;
 };
 
-const getBalanceOfStrategyWeight = (balance: IBalanceWithNetwork) => {
-	const balanceAmount = formatTokenAmount(balance.balance, balance.network);
-	const len = balanceAmount.length;
-	const i = balanceAmount.indexOf('.');
-	if (i === -1) {
-		return new BN(balanceAmount);
-	}
-	const result = new BN(balanceAmount.replace('.', '')).div(new BN(10).pow(new BN(len - 1 - i)));
-	return result;
+const getBalanceOfStrategyWeight = (value: string) => {
+	return new BigNumber(value);
+};
+
+const getQuadraticBalanceOfStrategyWeight = (decimals: number | null, value: string) => {
+	const val = new BigNumber(value);
+	if (!decimals) return val;
+	let num = val.div(Math.pow(10, decimals));
+	num = num.sqrt();
+	return num.times(Math.pow(10, decimals));
 };
 
 export {
-	getStrategyWeight,
-	getTotalWeight,
-	getOptionPercentage
+	getStrategyWeight
 };

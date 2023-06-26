@@ -6,33 +6,21 @@ import React, { useEffect, useState } from 'react';
 import AllVotes from './All';
 import { useProposalSelector } from '~src/redux/selectors';
 import VotingResult from './Result';
-import { getTotalWeight } from '~src/utils/calculation/getStrategyWeight';
+import BigNumber from 'bignumber.js';
 
 const VoteInfo = () => {
 	const { proposal } = useProposalSelector();
-	const [total, setTotal] = useState(0);
+	const [voted, setVoted] = useState(new BigNumber(0));
 
 	useEffect(() => {
 		if (proposal?.votes_result) {
-			let total = 0;
+			let voted = new BigNumber(0);
 			Object.entries(proposal?.votes_result).forEach(([, value]) => {
-				const optionTotal = Number(getTotalWeight(
-					value.map(({ name, network }) => {
-						return {
-							name: name,
-							network: network
-						};
-					}),
-					value.map(({ network, amount }) => {
-						return {
-							balance: amount,
-							network: network
-						};
-					})
-				));
-				total += optionTotal;
+				value.forEach(({ value }) => {
+					voted = voted.plus(value);
+				});
 			});
-			setTotal(total);
+			setVoted(voted);
 		}
 	}, [proposal?.votes_result]);
 
@@ -46,13 +34,16 @@ const VoteInfo = () => {
                 Vote
 			</h2>
 			<>
-				<VotingResult votes_result={votes_result} />
+				<VotingResult
+					voted={voted}
+					votes_result={votes_result}
+				/>
 				<Divider
 					className='bg-blue_primary my-6'
 				/>
 				<div className='my-6 flex items-center justify-between gap-x-2 text-[#90A0B7] font-medium text-sm leading-[22px]'>
 					<span>Voted</span>
-					<span className='font-medium text-xs leading-[22px] text-white'>{total}</span>
+					<span className='font-medium text-xs leading-[22px] text-white'>{voted.toFixed(2)} VOTE</span>
 				</div>
 				<AllVotes />
 			</>

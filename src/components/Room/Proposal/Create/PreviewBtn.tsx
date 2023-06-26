@@ -83,9 +83,9 @@ const PreviewBtn = () => {
 			joinRoom();
 			return;
 		}
-		if (!canCreateProposal) {
+		if (canCreateProposal) {
 			dispatch(notificationActions.send({
-				message: 'You can\'t create a proposal with less than 10 tokens.',
+				message: `You can't create a proposal with less than ${room?.min_token_to_create_proposal_in_room || MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM} tokens.`,
 				status: ENotificationStatus.ERROR,
 				title: 'Error!'
 			}));
@@ -140,6 +140,7 @@ const PreviewBtn = () => {
 					start_date: start_date,
 					tags: tags,
 					title: title,
+					voting_strategies_with_height: [],
 					voting_system: voting_system,
 					voting_system_options: voting_system_options.filter((option) => option.value.trim())
 				};
@@ -182,7 +183,8 @@ const PreviewBtn = () => {
 						status: createdProposal.status,
 						tags: createdProposal.tags,
 						title: createdProposal.title,
-						votes_result: createdProposal.votes_result
+						votes_result: createdProposal.votes_result,
+						voting_strategies_with_height: createdProposal.voting_strategies_with_height
 					};
 					dispatch(roomActions.setProposal(proposal));
 					dispatch(notificationActions.send({

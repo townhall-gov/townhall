@@ -2,14 +2,14 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React, { useEffect } from 'react';
-import MinTokenToCreateProposal from './MinTokenToCreateProposal';
+// import MinTokenToCreateProposal from './MinTokenToCreateProposal';
 import { useProfileSelector, useRoomSelector } from '~src/redux/selectors';
 import SaveBtn from './SaveBtn';
-import RoomStrategies from './RoomStrategies';
+import Strategies from './Strategies';
 
 const RoomSettings = () => {
 	const { user } = useProfileSelector();
-	const { room } = useRoomSelector();
+	const { room, loading } = useRoomSelector();
 	const [isDisabled, setIsDisabled] = React.useState(false);
 	useEffect(() => {
 		if (room?.creator_details?.address && user?.address) {
@@ -17,19 +17,19 @@ const RoomSettings = () => {
 		}
 	}, [room?.creator_details?.address, user?.address]);
 	return (
-		<div className='h-full flex flex-col gap-y-5'>
-			<MinTokenToCreateProposal
-				isDisabled={isDisabled}
+		<div className='h-full flex flex-col gap-y-5 w-full'>
+			<Strategies
+				isDisabled={isDisabled || loading}
 			/>
-			<RoomStrategies
+			{/* <MinTokenToCreateProposal
 				isDisabled={isDisabled}
-			/>
+			/> */}
 
 			{
 				!isDisabled?
 					<>
 						<SaveBtn
-							isDisabled={isDisabled}
+							isDisabled={isDisabled || loading}
 						/>
 					</>
 					: null

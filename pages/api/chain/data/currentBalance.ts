@@ -9,7 +9,6 @@ import { getCurrentBalanceByAddress } from '~src/onchain-data/contract/getCurren
 import { getDecimals } from '~src/onchain-data/contract/getDecimals';
 import { getSymbol } from '~src/onchain-data/contract/getSymbol';
 import { chainProperties } from '~src/onchain-data/networkConstants';
-import { create } from '~src/onchain-data/utils/apis';
 import { getBalance } from '~src/onchain-data/utils/chain';
 import { chains, evmChains } from '~src/onchain-data/utils/constants';
 
@@ -30,7 +29,6 @@ const handler: TNextApiHandler<ICurrentBalanceResponse, ICurrentBalanceBody, ICu
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
 	}
 	const { contract, address, network } = req.body;
-	create();
 
 	if (!address) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'User address is not available, unable to find Balance.' });

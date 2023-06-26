@@ -16,6 +16,10 @@ import { useProfileSelector, useProposalSelector } from '~src/redux/selectors';
 import api from '~src/services/api';
 import getErrorMessage from '~src/utils/getErrorMessage';
 import { signApiData } from '~src/utils/sign';
+import { NoOptionsSelectedError, checkIsAllZero } from './Content';
+import BigNumber from 'bignumber.js';
+import { formatToken } from '~src/utils/formatTokenAmount';
+import { evmChains } from '~src/onchain-data/networkConstants';
 
 const CastYourVoteModalFooter = () => {
 	const dispatch = useDispatch();
@@ -23,7 +27,8 @@ const CastYourVoteModalFooter = () => {
 	const { voteCreation, loading, proposal } = useProposalSelector();
 	const { user } = useProfileSelector();
 	if (!proposal) return null;
-	const isAllZero = voteCreation.balances.every((balance) => Number(balance.balance) === 0);
+
+	const isAllZero = checkIsAllZero(voteCreation.balances);
 
 	const onConfirm = async () => {
 		if (loading) return;
@@ -35,11 +40,34 @@ const CastYourVoteModalFooter = () => {
 			joinRoom();
 			return;
 		}
+		if (!voteCreation.options || !Array.isArray(voteCreation.options) || voteCreation.options.length === 0) {
+			dispatch(proposalActions.setError(NoOptionsSelectedError));
+			return;
+		}
 		try {
-			if (isAllZero) return;
+			if (isAllZero || (!voteCreation.balances || !Array.isArray(voteCreation.balances) || voteCreation.balances.length === 0)) return;
 			dispatch(proposalActions.setLoading(true));
 			const vote: TVotePayload = {
-				balances: voteCreation.balances,
+				balances: voteCreation.balances.map((balance) => {
+					let value = new BigNumber(0);
+					const weight = new BigNumber(balance.weight);
+					if (weight.gt(0)) {
+						const tokenMetadata = balance.token_metadata[balance.asset_type];
+						if (tokenMetadata) {
+							value = new BigNumber(formatToken(balance.value, !!evmChains[balance.network as keyof typeof evmChains], tokenMetadata?.decimals));
+							const votes = (value).multipliedBy(weight);
+							const threshold = new BigNumber(balance.threshold);
+							if (votes.gte(threshold)) {
+								//TODO: Strategies, balance_of, quadratic_balance_of
+								value = votes;
+							}
+						}
+					}
+					return {
+						id: balance.id,
+						value: value.toString()
+					};
+				}),
 				house_id: proposal.house_id,
 				options: voteCreation.options,
 				proposal_id: proposal.id,

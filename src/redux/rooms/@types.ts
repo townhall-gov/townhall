@@ -2,6 +2,8 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+import { TAssetType, chainProperties } from '~src/onchain-data/networkConstants';
+import { TTokenMetadata } from '~src/onchain-data/token-meta/getTokensMetadata';
 import { EVotingStrategy } from '~src/types/enums';
 import { IHouse, IRoom } from '~src/types/schema';
 
@@ -40,9 +42,37 @@ export interface IRoomDetails {
     logo: string;
 }
 
+export type TNative = {
+    Native: 'Native';
+}
+
+export type TContract = {
+    Contract: 'Contract';
+}
+
 export interface IStrategy {
+    id: string;
     name: EVotingStrategy;
-    network: string;
+    network: keyof typeof chainProperties;
+    asset_type: TAssetType[keyof TAssetType];
+    threshold: string;
+    weight: string;
+    token_metadata: {
+        [key in TAssetType[keyof TAssetType]]?: (
+            key extends TNative[keyof TNative]
+            ? {
+                decimals: number;
+                symbol: string;
+                name: string;
+            }: key extends TContract[keyof TContract]
+                ? {
+                    decimals: number;
+                    symbol: string;
+                    name: string;
+                    contract_address: string;
+                }: TTokenMetadata
+        );
+    };
 }
 
 export interface ICreatorDetails {

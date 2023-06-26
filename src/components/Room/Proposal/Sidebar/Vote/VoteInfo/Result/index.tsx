@@ -2,16 +2,17 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { Progress } from 'antd';
+import BigNumber from 'bignumber.js';
 import React, { FC } from 'react';
 import { IVotesResult } from '~src/types/schema';
-import { getOptionPercentage, getTotalWeight } from '~src/utils/calculation/getStrategyWeight';
 
 interface IVotingResultProps {
 	votes_result: IVotesResult;
+	voted: BigNumber;
 }
 
 const VotingResult: FC<IVotingResultProps> = (props) => {
-	const { votes_result } = props;
+	const { votes_result, voted } = props;
 	if (!votes_result) return null;
 
 	return (
@@ -23,21 +24,11 @@ const VotingResult: FC<IVotingResultProps> = (props) => {
 			>
 				{
 					Object.entries(votes_result).map(([key, value]) => {
-						const optionTotal = Number(getTotalWeight(
-							value.map(({ name, network }) => {
-								return {
-									name: name,
-									network: network
-								};
-							}),
-							value.map(({ network, amount }) => {
-								return {
-									balance: amount,
-									network: network
-								};
-							})
-						));
-						const optionPercentage = getOptionPercentage(votes_result, key);
+						let total = new BigNumber(0);
+						value.forEach(({ value }) => {
+							total = total.plus(value);
+						});
+						const optionPercentage = total.div(voted).multipliedBy(100).toNumber();
 						return (
 							<li
 								key={key}
@@ -50,7 +41,7 @@ const VotingResult: FC<IVotingResultProps> = (props) => {
 									</p>
 									<p className='flex items-center gap-x-2'>
 										<span>
-											{isNaN(optionTotal)? 0: optionTotal}
+											{total.toFixed(2)} VOTE
 										</span>
 										<span>
 											{isNaN(optionPercentage)? 0: optionPercentage.toFixed(1)}%

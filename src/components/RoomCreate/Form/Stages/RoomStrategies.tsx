@@ -11,6 +11,7 @@ import { IStrategy } from '~src/redux/rooms/@types';
 import { useRoomCreation_House } from '~src/redux/rooms/selectors';
 import { useRoomsSelector } from '~src/redux/selectors';
 import { EVotingStrategy } from '~src/types/enums';
+import { chainProperties } from '~src/onchain-data/networkConstants';
 
 interface IRoomStrategiesProps {
     className?: string;
@@ -20,7 +21,7 @@ export const getVotingStrategyTitle = (votingStrategy: EVotingStrategy | string)
 	return votingStrategy? votingStrategy.toString().split('_').map((str, i) => i == 0? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase():str).join(' '): '';
 };
 
-export const disabledVotingStrategies = [EVotingStrategy.QUADRATIC_BALANCE_OF];
+export const disabledVotingStrategies: EVotingStrategy[] = [];
 
 export const isVotingStrategyDisabled = (votingStrategy: EVotingStrategy) => {
 	return disabledVotingStrategies.includes(votingStrategy);
@@ -48,18 +49,22 @@ const RoomStrategies: FC<IRoomStrategiesProps> = (props) => {
 				<p className='m-0 text-white font-semibold text-lg leading-[23px]'>
                     Strategies
 				</p>
-				<ul className='flex flex-col gap-y-2 list-decimal m-0 pl-5'>
-					{
-						room_strategies.map((strategy, index) => {
-							return <li key={index} className='p-2 text-white m-0 border-0 border-b border-solid border-blue_primary'>
-								<p className='m-0 flex flex-col gap-y-2'>
-									<span>{getVotingStrategyTitle(strategy.name)}</span>
-									<span className='text-grey_light'>{strategy.network}</span>
-								</p>
-							</li>;
-						})
-					}
-				</ul>
+				{
+					(room_strategies && Array.isArray(room_strategies) && room_strategies.length > 0)?
+						<ul className='flex flex-col gap-y-2 list-decimal m-0 pl-5'>
+							{
+								room_strategies.map((strategy, index) => {
+									return <li key={index} className='p-2 text-white m-0 border-0 border-b border-solid border-blue_primary'>
+										<p className='m-0 flex flex-col gap-y-2'>
+											<span>{getVotingStrategyTitle(strategy.name)}</span>
+											<span className='text-grey_light'>{strategy.network}</span>
+										</p>
+									</li>;
+								})
+							}
+						</ul>
+						: <p className='m-0 text-red_primary'>0 room strategies.</p>
+				}
 			</section>
 			<section className='flex flex-col mt-[28px] gap-y-5'>
 				<p className='m-0 text-white font-semibold text-lg leading-[23px]'>
@@ -90,11 +95,12 @@ const RoomStrategies: FC<IRoomStrategiesProps> = (props) => {
 							}),
 							onClick: (e) => {
 								if (isVotingStrategyDisabled(e.key as EVotingStrategy)) return;
-								setStrategy((prev) => ({
-									network: '',
-									...prev,
-									name: e.key as EVotingStrategy
-								}));
+								// setStrategy((prev) => ({
+								// decimals: 0,
+								// network: '',
+								// ...prev,
+								// name: e.key as EVotingStrategy
+								// }));
 							}
 						}}
 					>
@@ -138,8 +144,10 @@ const RoomStrategies: FC<IRoomStrategiesProps> = (props) => {
 							}),
 							onClick: (e) => {
 								if (!e.key || isNetworkDisabled(e.key)) return;
+								const network = house?.networks.find((network) => network.name === e.key);
 								setStrategy((prev) => ({
 									...prev,
+									decimals: network?.decimals || chainProperties?.[e.key as keyof typeof chainProperties]?.decimals || 0,
 									network: e.key as EVotingStrategy
 								} as any));
 							}

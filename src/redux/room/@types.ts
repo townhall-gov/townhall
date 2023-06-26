@@ -6,6 +6,8 @@ import { IPostLinkData } from 'pages/api/auth/data/post-link-data';
 import { EReaction, EVotingSystem } from '~src/types/enums';
 import { IDiscussion, IPostLink, IProposal, IRoom } from '~src/types/schema';
 import { IStrategy } from '../rooms/@types';
+import { TAssetChains } from '~src/onchain-data/networkConstants';
+import { TTokenMetadata } from '~src/onchain-data/token-meta/getTokensMetadata';
 
 export interface IRoomStore {
     loading: boolean;
@@ -17,6 +19,11 @@ export interface IRoomStore {
     currentStage: ERoomStage;
     proposals: IListingProposal[];
     discussions: IListingDiscussion[];
+    tokensMetadata: TTokensMetadata;
+}
+
+export type TTokensMetadata = {
+    [key in TAssetChains[keyof TAssetChains]]?: TTokenMetadata[];
 }
 
 export interface IListingProposal extends Omit<IProposal, 'discussion' | 'description' | 'updated_at' | 'preparation_period' | 'comments' | 'reactions' | 'is_vote_results_hide_before_voting_ends' | 'voting_system' | 'timestamp' | 'snapshot_heights' | 'voting_system_options' | 'voting_strategies' | 'post_link' | 'post_link_data'> {

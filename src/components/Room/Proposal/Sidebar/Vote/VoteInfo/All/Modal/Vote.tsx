@@ -3,12 +3,11 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { Tooltip } from 'antd';
+import BigNumber from 'bignumber.js';
 import React, { FC } from 'react';
-import { chainProperties } from '~src/onchain-data/networkConstants';
 import { useProposalSelector } from '~src/redux/selectors';
 import { IVote } from '~src/types/schema';
 import Address from '~src/ui-components/Address';
-import { getStrategyWeight, getTotalWeight } from '~src/utils/calculation/getStrategyWeight';
 
 interface IVoteProps {
     vote: IVote;
@@ -52,12 +51,14 @@ const Vote: FC<IVoteProps> = (props) => {
 								className='m-0 pl-4 list-decimal'
 							>
 								{
-									proposal.voting_strategies.map((strategy) => {
-										const { name, network } = strategy;
-										const total = getStrategyWeight(strategy, vote.balances);
+									proposal.voting_strategies_with_height.map((strategy) => {
+										const { name, network, id, asset_type } = strategy;
+										const balance = vote.balances.find((item) => item.id === id);
+										const tokenMetadata = strategy.token_metadata[asset_type];
+										if (!balance || !tokenMetadata) return null;
 										return (
 											<li
-												key={name + network}
+												key={id}
 											>
 												<div
 													className='grid grid-cols-3 gap-x-5 text-xs font-normal'
@@ -70,10 +71,10 @@ const Vote: FC<IVoteProps> = (props) => {
 													</p>
 													<p className='flex items-center gap-x-1'>
 														<span>
-															{total.toString()}
+															{new BigNumber(balance?.value).toFixed(2)}
 														</span>
 														<span>
-															{chainProperties?.[network as keyof typeof chainProperties]?.symbol}
+															{tokenMetadata?.symbol}
 														</span>
 													</p>
 												</div>
@@ -86,7 +87,7 @@ const Vote: FC<IVoteProps> = (props) => {
 					}
 				>
 					<p className='text-sm'>
-						{getTotalWeight(proposal.voting_strategies, vote.balances)}
+						{(vote.balances || []).reduce((acc, cur) => acc.plus(cur.value), new BigNumber(0)).toFixed(2)} VOTE
 					</p>
 				</Tooltip>
 			</div>

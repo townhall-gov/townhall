@@ -11,6 +11,8 @@ import { EVotingSystem } from '~src/types/enums';
 import { MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM } from '~src/global/min_token';
 import { IPostLinkData } from 'pages/api/auth/data/post-link-data';
 import { IStrategy } from '../rooms/@types';
+import { assetChains } from '~src/onchain-data/networkConstants';
+import { TTokenMetadata } from '~src/onchain-data/token-meta/getTokensMetadata';
 
 const initialState: IRoomStore = {
 	currentStage: ERoomStage.PROPOSALS,
@@ -45,7 +47,8 @@ const initialState: IRoomStore = {
 	roomSettings: {
 		min_token_to_create_proposal_in_room: MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM,
 		room_strategies: []
-	}
+	},
+	tokensMetadata: {}
 };
 
 // Interesting type here. It's a mapped type that takes the keys of IProposalCreation and returns an object with those keys as the key, and the value is an object with the key and value of the key in IProposalCreation. So it's like:
@@ -220,6 +223,28 @@ export const roomStore = createSlice({
 				room_strategies: room?.voting_strategies || []
 			};
 		},
+		setRoomSettingsStrategiesAdd: (state, action: PayloadAction<IStrategy>) => {
+			const strategy = action.payload;
+			state.roomSettings.room_strategies = [...state.roomSettings.room_strategies, strategy];
+		},
+		setRoomSettingsStrategiesDelete: (state, action: PayloadAction<IStrategy>) => {
+			const strategy = action.payload;
+			const index = state.roomSettings.room_strategies.findIndex((item) => {
+				return item.id === strategy.id;
+			});
+			if (index >= 0) {
+				state.roomSettings.room_strategies.splice(index, 1);
+			}
+		},
+		setRoomSettingsStrategiesEdit: (state, action: PayloadAction<IStrategy>) => {
+			const strategy = action.payload;
+			state.roomSettings.room_strategies = state.roomSettings.room_strategies.map((item) => {
+				if (item.id === strategy.id) {
+					return strategy;
+				}
+				return item;
+			});
+		},
 		setRoomSettings_Field: (state, action: PayloadAction<IRoomSettingsFieldPayload>) => {
 			const obj = action.payload;
 			state.loading = false;
@@ -236,6 +261,16 @@ export const roomStore = createSlice({
 					break;
 				}
 			}
+		},
+		setTokensMetadata: (state, action: PayloadAction<{
+			key: keyof typeof assetChains;
+			value: TTokenMetadata[];
+		}>) => {
+			const obj = action.payload;
+			if (!state.tokensMetadata) {
+				state.tokensMetadata = {};
+			}
+			state.tokensMetadata[obj.key] = obj.value;
 		}
 	}
 });
