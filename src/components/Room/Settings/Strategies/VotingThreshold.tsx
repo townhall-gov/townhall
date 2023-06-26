@@ -8,19 +8,19 @@ import { roomActions } from '~src/redux/room';
 import { IStrategy } from '~src/redux/rooms/@types';
 import Input from '~src/ui-components/Input';
 
-interface IThresholdProps {
+interface IVotingThresholdProps {
 	isDisabled?: boolean;
 	strategy: IStrategy;
     className?: string;
 }
 
-const Threshold: FC<IThresholdProps> = (props) => {
+const VotingThreshold: FC<IVotingThresholdProps> = (props) => {
 	const { isDisabled, strategy, className } = props;
 	const dispatch = useDispatch();
 
 	return (
 		<article className={className}>
-			<h5 className='mb-1'>Threshold</h5>
+			<h5 className='mb-1'>Voting Threshold</h5>
 			<Input
 				placeholder='0'
 				isDisabled={isDisabled}
@@ -37,4 +37,4 @@ const Threshold: FC<IThresholdProps> = (props) => {
 	);
 };
 
-export default Threshold;
+export default VotingThreshold;

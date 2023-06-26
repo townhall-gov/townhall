@@ -57,6 +57,7 @@ export interface IStrategy {
     asset_type: TAssetType[keyof TAssetType];
     threshold: string;
     weight: string;
+    proposal_creation_threshold: string;
     token_metadata: {
         [key in TAssetType[keyof TAssetType]]?: (
             key extends TNative[keyof TNative]

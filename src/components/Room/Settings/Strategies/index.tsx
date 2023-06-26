@@ -15,8 +15,9 @@ import TokenInfo from './TokenInfo';
 import Assets from './Assets';
 import { assetType, chainProperties } from '~src/onchain-data/networkConstants';
 import { v4 } from 'uuid';
-import Threshold from './Threshold';
+import Threshold from './VotingThreshold';
 import VotingWeight from './VotingWeight';
+import ProposalCreationThreshold from './ProposalCreationThreshold';
 
 interface IStrategiesProps {
     className?: string;
@@ -34,11 +35,11 @@ const Strategies: FC<IStrategiesProps> = (props) => {
 			<section className='flex flex-col gap-y-5'>
 				{
 					(room_strategies && Array.isArray(room_strategies) && room_strategies.length > 0)?
-						<ul className='flex flex-col gap-y-5 m-0 mb-5'>
+						<ul className='grid grid-cols-2 gap-10 m-0 mb-5'>
 							{
 								room_strategies.map((strategy, index) => {
 									return (
-										<li key={strategy.id} className='flex flex-col gap-y-4 text-white m-0'>
+										<li key={strategy.id} className='col-span-1 flex flex-col gap-y-4 text-white m-0'>
 											<div className='flex items-center justify-between'>
 												<span className='text-xl font-semibold'>
 													Strategy #{index + 1}
@@ -71,18 +72,18 @@ const Strategies: FC<IStrategiesProps> = (props) => {
 											<TokenInfo
 												strategy={strategy}
 											/>
-											<div className='grid grid-cols-2 gap-x-3'>
-												<Threshold
-													strategy={strategy}
-													isDisabled={isDisabled}
-													className='col-span-1'
-												/>
-												<VotingWeight
-													strategy={strategy}
-													isDisabled={isDisabled}
-													className='col-span-1'
-												/>
-											</div>
+											<Threshold
+												strategy={strategy}
+												isDisabled={isDisabled}
+											/>
+											<VotingWeight
+												strategy={strategy}
+												isDisabled={isDisabled}
+											/>
+											<ProposalCreationThreshold
+												strategy={strategy}
+												isDisabled={isDisabled}
+											/>
 										</li>
 									);
 								})
@@ -100,6 +101,7 @@ const Strategies: FC<IStrategiesProps> = (props) => {
 						id: v4(),
 						name: EVotingStrategy.BALANCE_OF,
 						network: defaultNetwork,
+						proposal_creation_threshold: '',
 						threshold: '',
 						token_metadata: {
 							[assetType.Native]: {
@@ -112,7 +114,7 @@ const Strategies: FC<IStrategiesProps> = (props) => {
 					}));
 				}}
 				className={
-					classNames('border-none outline-none px-8 py-2 text-base bg-blue_primary flex items-center gap-x-2 text-white rounded-xl cursor-pointer')
+					classNames('border-none outline-none px-8 py-2 text-base bg-green_primary flex items-center gap-x-2 text-white rounded-xl cursor-pointer')
 				}
 			>
 				<PlusOutlined />

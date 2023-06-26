@@ -17,20 +17,20 @@ const TokenInfo: FC<ITokenInfoProps> = (props) => {
 		return null;
 	}
 	return (
-		<div className='flex-1 grid grid-cols-2 gap-x-3'>
-			<article className='col-span-1'>
+		<>
+			<article>
 				<h5>Symbol</h5>
 				<p className='px-[18.5px] py-[21.5px] border border-solid border-blue_primary rounded-2xl text-white font-medium text-base leading-none'>
 					{token_metadata.symbol}
 				</p>
 			</article>
-			<article className='col-span-1'>
+			<article>
 				<h5>Decimals</h5>
 				<p className='px-[18.5px] py-[21.5px] border border-solid border-blue_primary rounded-2xl text-white font-medium text-base leading-none'>
 					{token_metadata.decimals}
 				</p>
 			</article>
-		</div>
+		</>
 	);
 };
 

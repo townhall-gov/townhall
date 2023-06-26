@@ -2,11 +2,9 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React, { useEffect } from 'react';
-// import MinTokenToCreateProposal from './MinTokenToCreateProposal';
 import { useProfileSelector, useRoomSelector } from '~src/redux/selectors';
 import SaveBtn from './SaveBtn';
 import Strategies from './Strategies';
-
 const RoomSettings = () => {
 	const { user } = useProfileSelector();
 	const { room, loading } = useRoomSelector();
@@ -21,17 +19,14 @@ const RoomSettings = () => {
 			<Strategies
 				isDisabled={isDisabled || loading}
 			/>
-			{/* <MinTokenToCreateProposal
-				isDisabled={isDisabled}
-			/> */}
 
 			{
 				!isDisabled?
-					<>
+					<div className='flex items-center justify-end'>
 						<SaveBtn
 							isDisabled={isDisabled || loading}
 						/>
-					</>
+					</div>
 					: null
 			}
 		</div>
