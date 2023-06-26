@@ -2,14 +2,14 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { Button } from 'antd';
+import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import { ICreateProposalBody, ICreateProposalResponse, TProposalPayload } from 'pages/api/auth/actions/createProposal';
-import { ICurrentBalanceResponse, ICurrentBalanceBody } from 'pages/api/chain/data/currentBalance';
+import { IBalanceBody, IBalanceResponse } from 'pages/api/chain/actions/balance';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM } from '~src/global/min_token';
-import { useSelectedHouse } from '~src/redux/houses/selectors';
+import { evmChains } from '~src/onchain-data/networkConstants';
 import { notificationActions } from '~src/redux/notification';
 import { ENotificationStatus } from '~src/redux/notification/@types';
 import { useAuthActionsCheck } from '~src/redux/profile/selectors';
@@ -28,7 +28,6 @@ const PreviewBtn = () => {
 	const dispatch = useDispatch();
 	const { loading, room } = useRoomSelector();
 	const { user } = useProfileSelector();
-	const selectedHouse = useSelectedHouse(room?.house_id || '');
 	const proposalCreation = useProposalCreation();
 	const { connectWallet, isLoggedIn, isRoomJoined, joinRoom } = useAuthActionsCheck();
 	const router = useRouter();
@@ -36,30 +35,37 @@ const PreviewBtn = () => {
 	useEffect(() => {
 		(async () => {
 			setCanCreateProposal(false);
-			if (user?.address && selectedHouse && selectedHouse.blockchain && room) {
+			if (user?.address && room?.voting_strategies) {
 				try {
-					const { data, error } = await api.post<ICurrentBalanceResponse, ICurrentBalanceBody>('chain/data/currentBalance', {
+					const { data, error } = await api.post<IBalanceResponse, IBalanceBody>('chain/actions/balance', {
 						address: user?.address,
-						contract: room?.contract_address,
-						network: selectedHouse.blockchain
+						voting_strategies_with_height: room.voting_strategies.map((strategy) => ({
+							...strategy,
+							height: null as any
+						}))
 					});
-					if (error) {
-						dispatch(notificationActions.send({
-							message: getErrorMessage(error),
-							status: ENotificationStatus.ERROR,
-							title: 'Error!'
-						}));
-					} else if (!data || (data.balance === undefined || data.balance === null || data.balance === '') || !data.decimals || !data.symbol) {
-						dispatch(notificationActions.send({
-							message: 'This token is not supported.',
-							status: ENotificationStatus.ERROR,
-							title: 'Error!'
-						}));
-					} else {
-						const token = formatToken(data?.balance || 0, true, Number(data?.decimals || 0));
-						if (token && Number(token) >= Number(room.min_token_to_create_proposal_in_room || MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM)) {
+					if (data && data.balances && Array.isArray(data.balances) && data.balances.length > 0) {
+						const isAllZero = data.balances.every((balance) => {
+							const weight = new BigNumber(balance.weight);
+							if (!weight.gt(0)) {
+								return true;
+							}
+							const tokenMetadata = balance.token_metadata[balance.asset_type];
+							if (!tokenMetadata) return true;
+							const value = new BigNumber(formatToken(balance.value, !!evmChains[balance.network as keyof typeof evmChains], tokenMetadata?.decimals));
+							const votes = (value).multipliedBy(weight);
+							const threshold = new BigNumber(balance.proposal_creation_threshold);
+							return votes.lt(threshold);
+						});
+						if (!isAllZero) {
 							setCanCreateProposal(true);
 						}
+					} else {
+						dispatch(notificationActions.send({
+							message: getErrorMessage(error) || 'Something went wrong.',
+							status: ENotificationStatus.ERROR,
+							title: 'Error!'
+						}));
 					}
 				} catch (error) {
 					dispatch(notificationActions.send({
@@ -71,7 +77,7 @@ const PreviewBtn = () => {
 			}
 		})();
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [user?.address, room?.contract_address, selectedHouse?.blockchain]);
+	}, [user?.address, room?.voting_strategies]);
 
 	const onPublish = async () => {
 		if (loading) return;
@@ -83,9 +89,9 @@ const PreviewBtn = () => {
 			joinRoom();
 			return;
 		}
-		if (canCreateProposal) {
+		if (!canCreateProposal) {
 			dispatch(notificationActions.send({
-				message: `You can't create a proposal with less than ${room?.min_token_to_create_proposal_in_room || MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM} tokens.`,
+				message: 'Can\'t create a proposal with the current token.',
 				status: ENotificationStatus.ERROR,
 				title: 'Error!'
 			}));

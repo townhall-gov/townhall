@@ -65,6 +65,11 @@ const Vote = () => {
 					});
 				}
 				dispatch(proposalActions.setVote(vote));
+			} else {
+				dispatch(proposalActions.setVoteCreation_Field({
+					key: 'options',
+					value: []
+				}));
 			}
 		})();
 	// eslint-disable-next-line react-hooks/exhaustive-deps
