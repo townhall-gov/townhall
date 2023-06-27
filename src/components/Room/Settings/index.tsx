@@ -8,10 +8,12 @@ import Strategies from './Strategies';
 const RoomSettings = () => {
 	const { user } = useProfileSelector();
 	const { room, loading } = useRoomSelector();
-	const [isDisabled, setIsDisabled] = React.useState(false);
+	const [isDisabled, setIsDisabled] = React.useState(true);
 	useEffect(() => {
 		if (room?.creator_details?.address && user?.address) {
 			setIsDisabled(room?.creator_details?.address !== user?.address);
+		} else {
+			setIsDisabled(true);
 		}
 	}, [room?.creator_details?.address, user?.address]);
 	return (
