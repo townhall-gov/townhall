@@ -65,6 +65,7 @@ import GeometricSVG from '~assets/icons/gerometric-shape.svg';
 import LoadMoreSVG from '~assets/icons/loadmore.svg';
 import HouseIconSVG from '~assets/icons/houseicon.svg';
 import CancelIconSVG from '~assets/icons/cancel-square.svg';
+import ToolTipIconSVG from '~assets/icons/tooltip-icon.svg';
 // Comment Related Icons Import End
 
 // Sentiment Icons Start
@@ -272,4 +273,8 @@ export const HouseIcon = (props: Partial<CustomIconComponentProps>) => (
 
 export const CancelIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={CancelIconSVG} {...props} />
+);
+
+export const ToolTipIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={ToolTipIconSVG} {...props} />
 );
