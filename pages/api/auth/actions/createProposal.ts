@@ -110,18 +110,33 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 	}
 
 	// TODO: Multiple strategies can have same network, so we need to filter the unique network.
-	const heightsPromise = roomData.voting_strategies.map(async (strategy) => {
+	const networks: {
+		[key: string]: IStrategyWithHeight[]
+	} = {};
+	roomData.voting_strategies.forEach((strategy) => {
+		if (!networks[strategy.network]) {
+			networks[strategy.network] = [];
+		}
+		networks[strategy.network].push({
+			...strategy,
+			height: 0
+		});
+	});
+
+	const heightsPromise = Object.entries(networks).map(async ([, strategies]) => {
 		const data: any = await Promise.race([
-			getHeightUsingStrategy(strategy, new Date(proposal.start_date).getTime()),
+			getHeightUsingStrategy(strategies[0], new Date(proposal.start_date).getTime()),
 			new Promise((_, reject) =>
 				setTimeout(() => reject(new Error('timeout')), 60 * 1000)
 			)
 		]);
 
-		return {
-			...strategy,
-			height: data.height
-		};
+		return strategies.map((strategy) => {
+			return {
+				...strategy,
+				height: data.height
+			};
+		});
 	});
 
 	const heightsPromiseSettledResult = await Promise.allSettled(heightsPromise);
@@ -130,7 +145,7 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 
 	heightsPromiseSettledResult.forEach((result) => {
 		if (result && result.status === 'fulfilled' && result.value) {
-			voting_strategies_with_height.push(result.value as IStrategyWithHeight);
+			voting_strategies_with_height.push(...(result.value as IStrategyWithHeight[]));
 		}
 	});
 
