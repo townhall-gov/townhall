@@ -43,7 +43,7 @@ const VoteInfo = () => {
 				/>
 				<div className='my-6 flex items-center justify-between gap-x-2 text-[#90A0B7] font-medium text-sm leading-[22px]'>
 					<span>Voted</span>
-					<span className='font-medium text-xs leading-[22px] text-white'>{voted.toFixed(2)} VOTE</span>
+					<span className='font-medium text-xs leading-[22px] text-white'>{voted.toFixed(1)} VOTE</span>
 				</div>
 				<AllVotes />
 			</>

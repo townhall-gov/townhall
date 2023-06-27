@@ -102,7 +102,7 @@ export const signVoteData = async (data: TVotePayload, address: string) => {
 
 		await web3Enable(APPNAME);
 		const injector = await web3FromAddress(address);
-
+		console.log(injector.signer.signRaw);
 		if (injector.signer.signRaw) {
 			const data  = JSON.stringify(getVoteTypeData(dataToSign, false));
 			const result = await injector.signer.signRaw({
@@ -111,8 +111,9 @@ export const signVoteData = async (data: TVotePayload, address: string) => {
 				type: 'payload'
 			});
 			signature = result?.signature;
+		} else {
+			throw new Error('Signer does not support signRaw.');
 		}
-		throw new Error('Signer does not support signRaw.');
 	}
 
 	return {
@@ -154,8 +155,9 @@ export const signProposalData = async (data: TProposalPayload, address: string) 
 				type: 'payload'
 			});
 			signature = result?.signature;
+		} else {
+			throw new Error('Signer does not support signRaw.');
 		}
-		throw new Error('Signer does not support signRaw.');
 	}
 
 	return {

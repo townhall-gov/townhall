@@ -1,22 +1,55 @@
 // Copyright 2019-2025 @polka-labs/townhall authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import dayjs from 'dayjs';
 import classNames from 'classnames';
 import { useDispatch } from 'react-redux';
 import { modalActions } from '~src/redux/modal';
 import { EContentType, EFooterType, ETitleType } from '~src/redux/modal/@types';
 import { useAuthActionsCheck } from '~src/redux/profile/selectors';
-import { useProposalSelector } from '~src/redux/selectors';
+import { useProfileSelector, useProposalSelector } from '~src/redux/selectors';
 import { HexWarningIcon } from '~src/ui-components/CustomIcons';
+import { proposalActions } from '~src/redux/proposal';
+import { IBalanceBody, IBalanceResponse } from 'pages/api/chain/actions/balance';
+import api from '~src/services/api';
 
 interface ICastYourVoteProps {}
 
 const CastYourVote: FC<ICastYourVoteProps> = () => {
 	const { proposal } = useProposalSelector();
 	const dispatch = useDispatch();
+	const { user } = useProfileSelector();
 	const { isLoggedIn, isRoomJoined, connectWallet, joinRoom } = useAuthActionsCheck();
+
+	useEffect(() => {
+		(async () => {
+			dispatch(proposalActions.setLoading(true));
+			if (!proposal || !user) {
+				dispatch(proposalActions.setLoading(false));
+				return;
+			}
+
+			const { data, error } = await api.post<IBalanceResponse, IBalanceBody>('chain/actions/balance', {
+				address: user.address,
+				voting_strategies_with_height: proposal.voting_strategies_with_height
+			});
+			if (error) {
+				console.log(error);
+			} else if (data) {
+				const balances = data.balances.map((v) => {
+					return v;
+				});
+				dispatch(proposalActions.setVoteCreation_Field({
+					key: 'balances',
+					value: balances
+				}));
+			}
+			dispatch(proposalActions.setLoading(false));
+		})();
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [user]);
+
 	if (!proposal) return null;
 	const { start_date } = proposal;
 

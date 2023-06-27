@@ -80,7 +80,7 @@ const RoomSettingsPage: FC<IRoomSettingsClientProps> = (props) => {
 	return (
 		<>
 			<SEOHead title={`Settings of Room ${query['room_id']} in House ${query['house_id']}`} />
-			<BackButton className='mb-3' />
+			<BackButton url={`/${query['house_id']}/proposals`} className='mb-3' />
 			<section className='flex gap-x-7'>
 				<RoomSidebar />
 				<RoomSettings />

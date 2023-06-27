@@ -394,3 +394,9 @@ li.ant-picker-time-panel-cell-disabled .ant-picker-time-panel-cell-inner {
     background-color: var(--blue_primary) !important;
 }
 /* Progress */
+
+.ant-tooltip {
+    box-shadow: 2px 1px 16px rgba(102, 165, 255, 0.85) !important; 
+    border-radius: 8px !important;
+    overflow: hidden;
+}

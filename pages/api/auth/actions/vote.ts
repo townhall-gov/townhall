@@ -128,35 +128,27 @@ const handler: TNextApiHandler<IVoteResponse, IVoteBody, {}> = async (req, res) 
 
 	const votes_result = (proposalDocSnapshot.data()?.votes_result || {}) as IVotesResult;
 	newVote.options.forEach((option) => {
-		if (!votes_result[option.value]) {
-			votes_result[option.value] = vote.balances.map((balance) => {
-				return {
-					id: balance.id,
-					value: balance.value
-				};
-			});
-		}
 		votes_result[option.value] = (votes_result[option.value] || []).map((optionResult) => {
+			let prev = (new BigNumber(optionResult.value || '0'));
 			const balance = vote.balances.find((item) => item.id === optionResult.id);
-			let value = (new BigNumber(optionResult.value));
 			const strategy = proposalData.voting_strategies_with_height.find((item) => item.id === optionResult.id);
 			if (strategy) {
 				let weight = new BigNumber(strategy?.weight || '0');
 				if (weight.eq(0)) {
 					weight = new BigNumber(1);
 				}
-				let result = calculateStrategy({
+				const current = new BigNumber(balance?.value || '0').multipliedBy(weight);
+				const result = calculateStrategy({
 					...strategy,
-					value: balance?.value.toString() || '0'
+					value: current.toString() || '0'
 				});
-				result = result.multipliedBy(weight);
-				value = value.plus(result);
+				prev = prev.plus(result);
 			} else {
-				value = value.plus(balance?.value || '0');
+				prev = prev.plus(balance?.value || '0');
 			}
 			return {
 				...optionResult,
-				value: value.toString()
+				value: prev.toString()
 			};
 		});
 	});

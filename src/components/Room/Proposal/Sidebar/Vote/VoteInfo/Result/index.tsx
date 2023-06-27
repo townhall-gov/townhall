@@ -41,7 +41,7 @@ const VotingResult: FC<IVotingResultProps> = (props) => {
 									</p>
 									<p className='flex items-center gap-x-2'>
 										<span>
-											{total.toFixed(2)} VOTE
+											{total.toFixed(1)} VOTE
 										</span>
 										<span>
 											{isNaN(optionPercentage)? 0: optionPercentage.toFixed(1)}%

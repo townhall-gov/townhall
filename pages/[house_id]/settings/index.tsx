@@ -57,7 +57,7 @@ const HouseSettingsPage: FC<IHouseSettingsClientProps> = (props) => {
 	return (
 		<>
 			<SEOHead title={`Settings of House ${query['house_id']}.`} />
-			<BackButton className='mb-3' />
+			<BackButton url='/houses' className='mb-3' />
 			<section className='flex gap-x-[18px]'>
 				<HouseSidebar />
 				<div className='flex-1 flex flex-col gap-y-[21px]'>

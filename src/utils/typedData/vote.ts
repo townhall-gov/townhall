@@ -70,6 +70,13 @@ export const getVoteTypeData: (votePayload: TVotePayload, isEVM: boolean) => IVo
 			value: '0'
 		};
 		const formattedToken = new BigNumber(formatToken(balance.value, !!evmChains[balance.network as keyof typeof evmChains], tokenMetadata?.decimals));
+		if (formattedToken.lt(new BigNumber(balance.threshold))) {
+			return {
+				chain: balance.network,
+				strategy: balance.name,
+				value: '0'
+			};
+		}
 		return {
 			chain: balance.network,
 			strategy: balance.name,
@@ -80,7 +87,7 @@ export const getVoteTypeData: (votePayload: TVotePayload, isEVM: boolean) => IVo
 		return {
 			balances,
 			house: votePayload.house_id,
-			note: votePayload.note,
+			note: votePayload.note || '',
 			options: votePayload.options,
 			proposal: votePayload.proposal_id,
 			room: votePayload.room_id
@@ -90,7 +97,7 @@ export const getVoteTypeData: (votePayload: TVotePayload, isEVM: boolean) => IVo
 		message: {
 			balances: balances,
 			house: votePayload.house_id,
-			note: votePayload.note,
+			note: votePayload.note || '',
 			options: votePayload.options,
 			proposal: votePayload.proposal_id,
 			room: votePayload.room_id
