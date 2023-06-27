@@ -15,15 +15,13 @@ import { IDiscussion, IProposal, IRoom, IStrategyWithHeight, IVotesResult } from
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
 import { TUpdatedPost } from './postLink';
 
-export type TProposalPayload = Omit<IProposal, 'proposer_address' | 'created_at' | 'updated_at' | 'id' | 'timestamp' | 'reactions' | 'comments' | 'snapshot_heights' | 'start_date' | 'end_date' | 'votes_result' | 'voting_strategies' | 'status'> & {
+export type TProposalPayload = Omit<IProposal, 'proposer_address' | 'created_at' | 'updated_at' | 'id' | 'timestamp' | 'reactions' | 'comments' | 'snapshot_heights' | 'start_date' | 'end_date' | 'votes_result' | 'voting_strategies_with_height' | 'status'> & {
 	start_date: string;
 	end_date: string;
 };
 
 export interface ICreateProposalBody {
-    proposal: TProposalPayload & {
-        timestamp: number;
-    };
+    proposal: TProposalPayload;
     signature: string;
     proposer_address: string;
 }

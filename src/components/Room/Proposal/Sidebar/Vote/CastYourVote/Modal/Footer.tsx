@@ -15,7 +15,7 @@ import { proposalActions } from '~src/redux/proposal';
 import { useProfileSelector, useProposalSelector } from '~src/redux/selectors';
 import api from '~src/services/api';
 import getErrorMessage from '~src/utils/getErrorMessage';
-import { signApiData } from '~src/utils/sign';
+import { signVoteData } from '~src/utils/sign';
 import { NoOptionsSelectedError, checkIsAllZero } from './Content';
 import BigNumber from 'bignumber.js';
 import { formatToken } from '~src/utils/formatTokenAmount';
@@ -47,27 +47,23 @@ const CastYourVoteModalFooter = () => {
 		try {
 			if (isAllZero || (!voteCreation.balances || !Array.isArray(voteCreation.balances) || voteCreation.balances.length === 0)) return;
 			dispatch(proposalActions.setLoading(true));
-			const vote: TVotePayload = {
-				balances: voteCreation.balances.map((balance) => {
-					let value = new BigNumber(0);
-					const weight = new BigNumber(balance.weight);
-					if (weight.gt(0)) {
-						const tokenMetadata = balance.token_metadata[balance.asset_type];
-						if (tokenMetadata) {
-							value = new BigNumber(formatToken(balance.value, !!evmChains[balance.network as keyof typeof evmChains], tokenMetadata?.decimals));
-							const votes = (value).multipliedBy(weight);
-							const threshold = new BigNumber(balance.threshold);
-							if (votes.gte(threshold)) {
-								//TODO: Strategies, balance_of, quadratic_balance_of
-								value = votes;
-							}
-						}
+			const balances = voteCreation.balances.map((balance) => {
+				let value = new BigNumber(0);
+				const tokenMetadata = balance.token_metadata[balance.asset_type];
+				if (tokenMetadata) {
+					const formattedToken = new BigNumber(formatToken(balance.value, !!evmChains[balance.network as keyof typeof evmChains], tokenMetadata?.decimals));
+					const threshold = new BigNumber(balance.threshold);
+					if (formattedToken.gte(threshold)) {
+						value = formattedToken;
 					}
-					return {
-						id: balance.id,
-						value: value.toString()
-					};
-				}),
+				}
+				return {
+					id: balance.id,
+					value: value.toFixed(2)
+				};
+			});
+			const vote: TVotePayload = {
+				balances: balances,
 				house_id: proposal.house_id,
 				options: voteCreation.options,
 				proposal_id: proposal.id,
@@ -77,10 +73,16 @@ const CastYourVoteModalFooter = () => {
 				vote.note = voteCreation.note;
 			}
 
-			const { address, data: voteData, signature } = await signApiData<TVotePayload>(vote, user?.address || '');
+			const { address, signature } = await signVoteData({
+				...vote,
+				balances: voteCreation.balances
+			}, user?.address || '');
 			const { data, error } = await api.post<IVoteResponse, IVoteBody>('auth/actions/vote', {
 				signature: signature,
-				vote: voteData,
+				vote: {
+					...vote,
+					balances
+				},
 				voter_address: address
 			});
 			if (error) {

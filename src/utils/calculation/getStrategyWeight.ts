@@ -6,27 +6,27 @@ import { EVotingStrategy } from '~src/types/enums';
 import BigNumber from 'bignumber.js';
 import { IStrategyWithHeightAndBalance } from 'pages/api/chain/actions/balance';
 
-const getStrategyWeight = (strategy: IStrategyWithHeightAndBalance) => {
+const calculateStrategy = (strategy: IStrategyWithHeightAndBalance) => {
 	let total = new BigNumber(0);
 	const { name, value } = strategy;
 	const decimals = strategy.token_metadata[strategy.asset_type]?.decimals || null;
 	if (value) {
 		switch(name){
 		case EVotingStrategy.BALANCE_OF:
-			total = getBalanceOfStrategyWeight(value);
+			total = calculateBalanceOfStrategy(value);
 			break;
 		case EVotingStrategy.QUADRATIC_BALANCE_OF:
-			total = getQuadraticBalanceOfStrategyWeight(decimals, value);
+			total = calculateQuadraticBalanceOfStrategy(decimals, value);
 		}
 	}
 	return total;
 };
 
-const getBalanceOfStrategyWeight = (value: string) => {
+const calculateBalanceOfStrategy = (value: string) => {
 	return new BigNumber(value);
 };
 
-const getQuadraticBalanceOfStrategyWeight = (decimals: number | null, value: string) => {
+const calculateQuadraticBalanceOfStrategy = (decimals: number | null, value: string) => {
 	const val = new BigNumber(value);
 	if (!decimals) return val;
 	let num = val.div(Math.pow(10, decimals));
@@ -35,5 +35,5 @@ const getQuadraticBalanceOfStrategyWeight = (decimals: number | null, value: str
 };
 
 export {
-	getStrategyWeight
+	calculateStrategy
 };

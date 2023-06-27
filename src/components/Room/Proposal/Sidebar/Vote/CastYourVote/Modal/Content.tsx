@@ -19,16 +19,11 @@ export const NoOptionsSelectedError = 'Please select at least one option';
 
 export const checkIsAllZero = (balances: IStrategyWithHeightAndBalance[]) => {
 	return balances.every((balance) => {
-		const weight = new BigNumber(balance.weight);
-		if (!weight.gt(0)) {
-			return true;
-		}
 		const tokenMetadata = balance.token_metadata[balance.asset_type];
 		if (!tokenMetadata) return true;
 		const value = new BigNumber(formatToken(balance.value, !!evmChains[balance.network as keyof typeof evmChains], tokenMetadata?.decimals));
-		const votes = (value).multipliedBy(weight);
 		const threshold = new BigNumber(balance.threshold);
-		return votes.lt(threshold);
+		return value.lt(threshold);
 	});
 };
 

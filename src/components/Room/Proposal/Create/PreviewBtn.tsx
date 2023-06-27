@@ -22,7 +22,7 @@ import { useProfileSelector } from '~src/redux/selectors';
 import api from '~src/services/api';
 import { formatToken } from '~src/utils/formatTokenAmount';
 import getErrorMessage from '~src/utils/getErrorMessage';
-import { signApiData } from '~src/utils/sign';
+import { signProposalData } from '~src/utils/sign';
 
 const PreviewBtn = () => {
 	const dispatch = useDispatch();
@@ -146,13 +146,12 @@ const PreviewBtn = () => {
 					start_date: start_date,
 					tags: tags,
 					title: title,
-					voting_strategies_with_height: [],
 					voting_system: voting_system,
 					voting_system_options: voting_system_options.filter((option) => option.value.trim())
 				};
-				const { address, data: proposalData, signature } = await signApiData<TProposalPayload>(proposal, user?.address || '');
+				const { address, signature } = await signProposalData(proposal, user?.address || '');
 				const { data, error } = await api.post<ICreateProposalResponse, ICreateProposalBody>('auth/actions/createProposal', {
-					proposal: proposalData,
+					proposal: proposal,
 					proposer_address: address,
 					signature: signature
 				});

@@ -39,12 +39,18 @@ interface IHouse {
 	id: string;
 	title: string;
 	description: string;
-	min_token_to_create_room: number;
+	min_token_to_create_room?: number;
 	logo: string;
 	blockchain: EBlockchain;
 	networks: INetwork[];
 	is_erc20: boolean;
 	total_room: number;
+	admins: IAdmin[];
+}
+
+interface IAdmin {
+	addresses: string[];
+	name: string;
 }
 
 interface INetwork {
@@ -88,7 +94,6 @@ interface IProposal {
 	start_date: Date;
 	end_date: Date;
 	is_vote_results_hide_before_voting_ends: boolean;
-	timestamp: number;
 	reactions: IReaction[];
 	comments: IComment[];
 	votes_result: IVotesResult;
@@ -218,6 +223,7 @@ interface ISentiment {
 
 export {
 	IHouse,
+	IAdmin,
 	IUser,
 	IRoom,
 	IComment,

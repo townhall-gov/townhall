@@ -26,7 +26,7 @@ export interface IListingProposal extends Omit<IProposal, 'discussion' | 'descri
 }
 
 export type IHouseSettings = {
-    min_token_to_create_room: number;
+    min_token_to_create_room?: number;
 };
 
 export enum EHouseStage {

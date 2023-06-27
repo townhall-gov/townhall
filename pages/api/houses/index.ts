@@ -27,6 +27,7 @@ export const getHouses: TGetHousesFn = async () => {
 							const roomAggregateQuerySnapshot = await roomCollection(data.id).count().get();
 							const totalRoom = roomAggregateQuerySnapshot.data().count || 0;
 							const house: IHouse = {
+								admins: data.admins || [],
 								blockchain: data.blockchain,
 								description: data.description || '',
 								id: data.id,
