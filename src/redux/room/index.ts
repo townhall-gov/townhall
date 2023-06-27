@@ -5,10 +5,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 import { ERoomStage, IDiscussionCreation, IListingDiscussion, IProposalCreation, IRoomSettings, IRoomStore, IVotingSystemOption } from './@types';
-import { IRoom } from '~src/types/schema';
+import { IPostLink, IRoom } from '~src/types/schema';
 import { IListingProposal } from './@types';
 import { EVotingSystem } from '~src/types/enums';
 import { MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM } from '~src/global/min_token';
+import { IPostLinkData } from 'pages/api/auth/data/post-link-data';
+import { IStrategy } from '../rooms/@types';
+import { assetChains } from '~src/onchain-data/networkConstants';
+import { TTokenMetadata } from '~src/onchain-data/token-meta/getTokensMetadata';
 
 const initialState: IRoomStore = {
 	currentStage: ERoomStage.PROPOSALS,
@@ -25,9 +29,12 @@ const initialState: IRoomStore = {
 		discussion: '',
 		end_date: null,
 		is_vote_results_hide_before_voting_ends: false,
+		postLink: null,
+		postLinkData: null,
 		start_date: null,
 		tags: [],
 		title: '',
+		url: '',
 		voting_system: EVotingSystem.SINGLE_CHOICE_VOTING,
 		voting_system_options: [
 			{
@@ -38,8 +45,10 @@ const initialState: IRoomStore = {
 	proposals: [],
 	room: null,
 	roomSettings: {
-		min_token_to_create_proposal_in_room: MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM
-	}
+		min_token_to_create_proposal_in_room: MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM,
+		room_strategies: []
+	},
+	tokensMetadata: {}
 };
 
 // Interesting type here. It's a mapped type that takes the keys of IProposalCreation and returns an object with those keys as the key, and the value is an object with the key and value of the key in IProposalCreation. So it's like:
@@ -92,9 +101,12 @@ export const roomStore = createSlice({
 				discussion: '',
 				end_date: null,
 				is_vote_results_hide_before_voting_ends: false,
+				postLink: null,
+				postLinkData: null,
 				start_date: null,
 				tags: [],
 				title: '',
+				url: '',
 				voting_system: EVotingSystem.SINGLE_CHOICE_VOTING,
 				voting_system_options: [
 					{
@@ -183,6 +195,15 @@ export const roomStore = createSlice({
 				case 'voting_system_options':
 					state.proposalCreation[key] = value as IVotingSystemOption[];
 					break;
+				case 'url':
+					state.proposalCreation[key] = value as string;
+					break;
+				case 'postLink':
+					state.proposalCreation[key] = value as IPostLink;
+					break;
+				case 'postLinkData':
+					state.proposalCreation[key] = value as IPostLinkData;
+					break;
 				default:
 					break;
 				}
@@ -198,8 +219,31 @@ export const roomStore = createSlice({
 			const room = action.payload;
 			state.room = room;
 			state.roomSettings = {
-				min_token_to_create_proposal_in_room: (room?.min_token_to_create_proposal_in_room || room?.min_token_to_create_proposal_in_room === 0)? room?.min_token_to_create_proposal_in_room: MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM
+				min_token_to_create_proposal_in_room: (room?.min_token_to_create_proposal_in_room || room?.min_token_to_create_proposal_in_room === 0)? room?.min_token_to_create_proposal_in_room: MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM,
+				room_strategies: room?.voting_strategies || []
 			};
+		},
+		setRoomSettingsStrategiesAdd: (state, action: PayloadAction<IStrategy>) => {
+			const strategy = action.payload;
+			state.roomSettings.room_strategies = [...state.roomSettings.room_strategies, strategy];
+		},
+		setRoomSettingsStrategiesDelete: (state, action: PayloadAction<IStrategy>) => {
+			const strategy = action.payload;
+			const index = state.roomSettings.room_strategies.findIndex((item) => {
+				return item.id === strategy.id;
+			});
+			if (index >= 0) {
+				state.roomSettings.room_strategies.splice(index, 1);
+			}
+		},
+		setRoomSettingsStrategiesEdit: (state, action: PayloadAction<IStrategy>) => {
+			const strategy = action.payload;
+			state.roomSettings.room_strategies = state.roomSettings.room_strategies.map((item) => {
+				if (item.id === strategy.id) {
+					return strategy;
+				}
+				return item;
+			});
 		},
 		setRoomSettings_Field: (state, action: PayloadAction<IRoomSettingsFieldPayload>) => {
 			const obj = action.payload;
@@ -210,10 +254,23 @@ export const roomStore = createSlice({
 				case 'min_token_to_create_proposal_in_room':
 					state.roomSettings[key] = value as number;
 					break;
+				case 'room_strategies':
+					state.roomSettings[key] = value as IStrategy[];
+					break;
 				default:
 					break;
 				}
 			}
+		},
+		setTokensMetadata: (state, action: PayloadAction<{
+			key: keyof typeof assetChains;
+			value: TTokenMetadata[];
+		}>) => {
+			const obj = action.payload;
+			if (!state.tokensMetadata) {
+				state.tokensMetadata = {};
+			}
+			state.tokensMetadata[obj.key] = obj.value;
 		}
 	}
 });

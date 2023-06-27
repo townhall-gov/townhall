@@ -6,6 +6,7 @@ import Tags from '~src/components/Room/Proposals/Tags';
 import Address from '~src/ui-components/Address';
 import Title from '~src/components/Room/Proposal/ContentWrapper/Content/Heading/Title';
 import ProposalHouse from '~src/components/Room/Proposal/ContentWrapper/Content/Heading/ProposalHouse';
+import Edit from './Edit';
 
 interface IHeadingProps {
     title: string;
@@ -37,6 +38,7 @@ const Heading: FC<IHeadingProps> = (props) => {
 						addressMaxLength={10}
 						className='text-grey_tertiary font-medium text-base leading-[20px] tracking-[0.01em]'
 					/>
+					<Edit />
 				</div>
 				<div
 					className='flex items-center gap-x-[11.5px]'

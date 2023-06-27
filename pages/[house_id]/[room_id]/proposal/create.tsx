@@ -70,7 +70,7 @@ const CreateProposalPage: FC<ICreateProposalPageClientProps> = (props) => {
 	return (
 		<>
 			<SEOHead title={`Create a Proposal in Room ${query['room_id']} of House ${query['house_id']}`} />
-			<BackButton className='mb-3' />
+			<BackButton url={`/${query['house_id']}/proposals`} className='mb-3' />
 			<section className='flex gap-x-7'>
 				<RoomSidebar />
 				<CreateProposal />

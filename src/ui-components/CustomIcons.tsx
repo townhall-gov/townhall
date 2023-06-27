@@ -6,6 +6,7 @@ import Icon from '@ant-design/icons';
 import React from 'react';
 import type { CustomIconComponentProps } from '@ant-design/icons/lib/components/Icon';
 
+import PenToolAddSVG from '~assets/icons/pen-tool-add.svg';
 import FolderLinksSVG from '~assets/icons/folder-links.svg';
 import PostLinkSVG from '~assets/icons/post-link.svg';
 import DiscussionSVG from '~assets/icons/discussion.svg';
@@ -28,6 +29,7 @@ import DeadlineSVG from '~assets/icons/deadline.svg';
 import SortByDownSVG from '~assets/icons/sort-by-down.svg';
 import SettingsSVG from '~assets/icons/settings.svg';
 import TownhallLogoWithNameSVG from '~assets/logo/townhall-with-name.svg';
+import RequestHouseSVG from '~assets/logo/request-house.svg';
 import MetamaskSVG from '~assets/wallet/metamask-icon.svg';
 import PolkadotJsSVG from '~assets/wallet/polkadotjs-icon.svg';
 
@@ -128,6 +130,10 @@ export const TwitterIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={TwitterSVG} {...props} />
 );
 
+export const PenToolAddIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={PenToolAddSVG} {...props} />
+);
+
 export const FolderLinksIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={FolderLinksSVG} {...props} />
 );
@@ -218,6 +224,10 @@ export const SettingsIcon = (props: Partial<CustomIconComponentProps>) => (
 
 export const TownhallLogoWithNameIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={TownhallLogoWithNameSVG} {...props} />
+);
+
+export const RequestHouseCardIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={RequestHouseSVG} {...props} />
 );
 
 export const MetamaskIcon = (props: Partial<CustomIconComponentProps>) => (

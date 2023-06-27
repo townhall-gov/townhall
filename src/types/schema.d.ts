@@ -2,9 +2,10 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+import { IPostLinkData } from 'pages/api/auth/data/post-link-data';
 import { IVotingSystemOption } from '~src/redux/room/@types';
 import { ICreatorDetails, IProjectSocial, IStrategy } from '~src/redux/rooms/@types';
-import { EBlockchain, EWallet, ESentiment, EVotingSystem, EReaction, EVotingStrategy, EProposalStatus, EPostType } from '~src/types/enums';
+import { EBlockchain, EWallet, ESentiment, EVotingSystem, EReaction, EProposalStatus, EPostType } from '~src/types/enums';
 
 interface IUser {
 	address: string;
@@ -38,16 +39,26 @@ interface IHouse {
 	id: string;
 	title: string;
 	description: string;
-	min_token_to_create_room: number;
+	min_token_to_create_room?: number;
 	logo: string;
 	blockchain: EBlockchain;
 	networks: INetwork[];
 	is_erc20: boolean;
 	total_room: number;
+	admins: IAdmin[];
+}
+
+interface IAdmin {
+	addresses: string[];
+	name: string;
 }
 
 interface INetwork {
 	name: string;
+	blockTime: number;
+	decimals: number;
+	symbol: string;
+	isEVM: boolean;
 }
 
 interface IRoom {
@@ -82,15 +93,18 @@ interface IProposal {
 	updated_at: Date;
 	start_date: Date;
 	end_date: Date;
-	snapshot_heights: ISnapshotHeight[];
 	is_vote_results_hide_before_voting_ends: boolean;
-	timestamp: number;
 	reactions: IReaction[];
 	comments: IComment[];
 	votes_result: IVotesResult;
-	voting_strategies: IStrategy[];
+	voting_strategies_with_height: IStrategyWithHeight[];
 	status: EProposalStatus;
 	post_link: IPostLink | null;
+	post_link_data: IPostLinkData | null;
+}
+
+export interface IStrategyWithHeight extends IStrategy {
+	height: number;
 }
 
 interface IDiscussion {
@@ -106,6 +120,7 @@ interface IDiscussion {
 	reactions: IReaction[];
 	comments: IComment[];
 	post_link: IPostLink | null;
+	post_link_data: IPostLinkData | null;
 }
 
 interface IPostLink {
@@ -116,11 +131,7 @@ interface IPostLink {
 }
 
 interface IVotesResult {
-	[key: string]: {
-		name: EVotingStrategy;
-		network: string;
-		amount: number | string;
-	}[];
+	[key: string]: IBalance[];
 }
 
 interface IVote {
@@ -132,12 +143,12 @@ interface IVote {
 	note?: string;
 	created_at: Date;
 	options: IVotingSystemOption[];
-	balances: IBalanceWithNetwork[];
+	balances: IBalance[];
 }
 
-interface IBalanceWithNetwork {
-	network: string;
-	balance: number | string;
+interface IBalance {
+	id: string;
+	value: number | string;
 }
 
 interface ISnapshotHeight {
@@ -158,6 +169,9 @@ interface IComment {
 	updated_at: Date;
 	deleted_at: Date | null;
 	post_id: number;
+	post_type: EPostType;
+	room_id: string;
+	house_id: string;
 	content: string;
 	user_address: string;
 	history: IHistoryComment[];
@@ -172,8 +186,11 @@ interface IReply {
 	created_at: Date;
 	updated_at: Date;
 	deleted_at: Date | null;
-	post_id: number;
 	comment_id: string;
+	post_id: number;
+	post_type: EPostType;
+	room_id: string;
+	house_id: string;
 	content: string;
 	user_address: string;
 	history: IHistoryReply[];
@@ -206,6 +223,7 @@ interface ISentiment {
 
 export {
 	IHouse,
+	IAdmin,
 	IUser,
 	IRoom,
 	IComment,
@@ -222,7 +240,7 @@ export {
 	IReaction,
 	INetwork,
 	ISnapshotHeight,
-	IBalanceWithNetwork,
+	IBalance,
 	IVote,
 	IVotesResult,
 	IDiscussion,

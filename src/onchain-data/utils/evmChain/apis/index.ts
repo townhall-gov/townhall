@@ -2,15 +2,13 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import web3 from 'web3';
-import { evmChains } from '../../constants';
+import { chainProperties, evmChains } from '~src/onchain-data/networkConstants';
 
 type TEvmProviderMap = {
 	[k in keyof typeof evmChains]: (any)[];
 };
 
 const evmProviderMap: TEvmProviderMap = {
-	acala: [],
-	astar: [],
 	moonbase: [],
 	moonbeam: [],
 	moonriver: []
@@ -73,8 +71,28 @@ function getProvidersForEvmChain(chain: keyof typeof evmChains) {
 	return evmProviderMap[chain];
 }
 
+async function createAndGetProviders(chain: keyof typeof evmChains) {
+	const chainEndpoints = chainProperties?.[chain]?.endpoints;
+	const providers: NonNullable<(ReturnType<typeof createProvider>)>[]= [];
+	for (const endpoint of chainEndpoints) {
+		if (!endpoint) {
+			continue;
+		}
+		try {
+			const provider = createProvider(endpoint);
+			if (provider) {
+				providers.push(provider);
+			}
+		} catch (error) {
+			// console.log(error);
+		}
+	}
+	return providers;
+}
+
 export {
 	createProviderForEvmChain,
 	getProvidersForEvmChain,
-	cleanEvmChainProviders
+	cleanEvmChainProviders,
+	createAndGetProviders
 };

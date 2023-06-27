@@ -11,6 +11,7 @@ import DiscussionSentimentModalFooter from '~src/components/Room/Discussion/Cont
 import DiscussionEditHistoryModalFooter from '~src/components/Room/Discussion/ContentWrapper/CommentsWrapper/Comments/Comment/Header/EditHistory/ModalFooter';
 import { EFooterType } from '~src/redux/modal/@types';
 import PostLinkModalFooter from '~src/components/Room/Proposal/Sidebar/PostLink/Modal/Footer';
+import DiscussionEditModalFooter from '~src/components/Room/Discussion/ContentWrapper/Content/Heading/Edit/Modal/Footer';
 
 interface IModalFooterProps {
     type?: EFooterType;
@@ -42,6 +43,8 @@ const ModalFooter: FC<IModalFooterProps> = (props) => {
 		return <CastYourVoteModalFooter />;
 	case EFooterType.POST_LINK_MODAL:
 		return <PostLinkModalFooter />;
+	case EFooterType.DISCUSSION_EDIT_MODAL:
+		return <DiscussionEditModalFooter />;
 	default:
 		return <></>;
 	}

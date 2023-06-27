@@ -12,6 +12,7 @@ import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import { Skeleton } from 'antd';
 import SelectVotingSystem from './SelectVotingSystem';
+import PostLink from './PostLink';
 
 const PreviewBtn = dynamic(() => import('./PreviewBtn'), {
 	loading: () => <Skeleton.Avatar active size='large' shape='circle' /> ,
@@ -22,10 +23,11 @@ const CreateProposal = () => {
 	const { query } = useRouter();
 	const isRoomJoined = useProfileIsRoomJoined(String(query.house_id || ''), String(query.room_id || ''));
 	return (
-		<section className='flex flex-col gap-y-8 h-full'>
+		<section className='flex flex-col gap-y-8 h-full w-full'>
 			{
 				isRoomJoined?
 					<>
+						<PostLink />
 						<Title />
 						<Description imageNamePrefix={`house_${query.house_id}_room_${query?.room_id}_proposal`} />
 						<SelectVotingSystem />

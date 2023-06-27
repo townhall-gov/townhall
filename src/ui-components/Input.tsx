@@ -11,12 +11,14 @@ interface IInputProps {
     placeholder?: string;
     className?: string;
 	isDisabled?: boolean;
+	min?: number;
 }
 
 const Input: FC<IInputProps> = (props) => {
-	const { className, onChange, type, value, placeholder, isDisabled } = props;
+	const { className, onChange, type, value, placeholder, isDisabled, min } = props;
 	return (
 		<input
+			min={min}
 			disabled={isDisabled}
 			value={value}
 			onChange={(e) => {

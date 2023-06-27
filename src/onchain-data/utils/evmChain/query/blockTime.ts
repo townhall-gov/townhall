@@ -2,8 +2,6 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import Web3 from 'web3';
-import { evmChains } from '../../constants';
-import { getProvidersForEvmChain } from '../apis';
 
 async function getBlockTimeByHeightFromProvider(provider: any, expectedHeight?: any) {
 	const web3 = new Web3(provider);
@@ -11,8 +9,7 @@ async function getBlockTimeByHeightFromProvider(provider: any, expectedHeight?: 
 	return block? Number(block.timestamp) * 1000: 0;
 }
 
-async function getBlockTimeByHeight(network: keyof typeof evmChains, expectedHeight?: any) {
-	const providers = getProvidersForEvmChain(network);
+async function getBlockTimeByHeightFromProviders(providers: any[], expectedHeight?: any) {
 
 	const promises = [];
 	for (const provider of providers) {
@@ -25,5 +22,5 @@ async function getBlockTimeByHeight(network: keyof typeof evmChains, expectedHei
 }
 
 export {
-	getBlockTimeByHeight
+	getBlockTimeByHeightFromProviders
 };

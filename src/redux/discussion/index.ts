@@ -4,7 +4,7 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
-import { ICommentCreation, IDiscussionStore } from './@types';
+import { EEditableDiscussionAction, ICommentCreation, IDiscussionStore, TEditableDiscussion } from './@types';
 import { IComment, IDiscussion, IHistoryComment, IHistoryReply, IReaction, IReply } from '~src/types/schema';
 import { EAction, ESentiment } from '~src/types/enums';
 
@@ -17,6 +17,12 @@ const initialState: IDiscussionStore = {
 	commentEditHistory: [],
 	discussion: null,
 	editableComment: null,
+	editableDiscussion: {
+		action: EEditableDiscussionAction.EDIT_DISCUSSION,
+		description: '',
+		tags: [],
+		title: ''
+	},
 	editableReply: null,
 	error: null,
 	isAllCommentsVisible: false,
@@ -25,11 +31,8 @@ const initialState: IDiscussionStore = {
 		replies_comment_id:'',
 		replies_isVisible:false
 	},
-	isReplyBoxVisible:{
-		replyBox_comment_id:'',
-		replyBox_isVisible:false
-	},
 	loading: false,
+	replyComment: null,
 	replyCreation: {
 		comment_open:false,
 		content: '',
@@ -44,6 +47,13 @@ type ICommentCreationFieldPayload = {
       value: ICommentCreation[K];
     }
 }[keyof ICommentCreation];
+
+type TEditableDiscussionFieldPayload = {
+    [K in keyof TEditableDiscussion]: {
+      key: K;
+      value: TEditableDiscussion[K];
+    }
+}[keyof TEditableDiscussion];
 
 export const discussionStore = createSlice({
 	extraReducers: (builder) => {
@@ -76,6 +86,17 @@ export const discussionStore = createSlice({
 			localStorage.removeItem(key);
 			state.editableComment = null;
 		},
+		resetEditableDiscussion: (state) => {
+			const discussion = state.discussion;
+			const key = `house_${discussion?.house_id}_room_${discussion?.room_id}_discussion_${discussion?.id}`;
+			localStorage.removeItem(key);
+			state.editableDiscussion = {
+				action: EEditableDiscussionAction.EDIT_DISCUSSION,
+				description: '',
+				tags: [],
+				title: ''
+			};
+		},
 		resetEditableReply: (state) => {
 			const discussion = state.discussion;
 			const reply = state.editableReply;
@@ -85,9 +106,9 @@ export const discussionStore = createSlice({
 		},
 		resetReplyCreation: (state) => {
 			const discussion = state.discussion;
-			const replyBoxVisible = state.isReplyBoxVisible;
-			if (discussion && replyBoxVisible) {
-				localStorage.removeItem(`house_${discussion?.house_id}_room_${discussion?.room_id}_discussion_${discussion?.id}_comment_${replyBoxVisible.replyBox_comment_id}_reply`);
+			const replyComment = state.replyComment;
+			if (discussion && replyComment) {
+				localStorage.removeItem(`house_${discussion?.house_id}_room_${discussion?.room_id}_discussion_${discussion?.id}_comment_${replyComment.id}_reply`);
 			}
 			state.replyCreation = {
 				comment_open: false,
@@ -149,6 +170,28 @@ export const discussionStore = createSlice({
 		setEditableComment: (state, action: PayloadAction<IComment | null>) => {
 			state.editableComment = action.payload;
 		},
+		setEditableDiscussion: (state, action: PayloadAction<TEditableDiscussion>) => {
+			state.editableDiscussion = action.payload;
+		},
+		setEditableDiscussion_Field: (state, action: PayloadAction<TEditableDiscussionFieldPayload>) => {
+			const obj = action.payload;
+			if (obj) {
+				const { key, value } = obj;
+				switch(key) {
+				case 'action':
+					state.editableDiscussion.action = value;
+					break;
+				case 'description':
+					state.editableDiscussion.description = value;
+					break;
+				case 'title':
+					state.editableDiscussion.title = value;
+					break;
+				case 'tags':
+					state.editableDiscussion.tags = value;
+				}
+			}
+		},
 		setEditableReply: (state, action: PayloadAction<IReply | null>) => {
 			state.editableReply = action.payload;
 		},
@@ -168,15 +211,7 @@ export const discussionStore = createSlice({
 			const { replies_comment_id,replies_isVisible } = action.payload;
 			state.isRepliesVisible.replies_comment_id=replies_comment_id;
 			state.isRepliesVisible.replies_isVisible=replies_isVisible;
-			state.isReplyBoxVisible.replyBox_comment_id=replies_comment_id;
-		},
-		setIsReplyBoxVisible: (state, action: PayloadAction<{
-			replyBox_comment_id: string;
-			replyBox_isVisible: boolean;
-		}>) => {
-			const { replyBox_comment_id,replyBox_isVisible }=action.payload;
-			state.isReplyBoxVisible.replyBox_comment_id=replyBox_comment_id;
-			state.isReplyBoxVisible.replyBox_isVisible=replyBox_isVisible;
+			state.replyComment = null;
 		},
 		setLoading: (state, action: PayloadAction<boolean>) => {
 			state.loading = action.payload;
@@ -198,6 +233,10 @@ export const discussionStore = createSlice({
 					state.discussion.reactions.push(reaction);
 				}
 			}
+		},
+		setReplyComment: (state, action: PayloadAction<IComment | null>) => {
+			const replyComment = action.payload;
+			state.replyComment = replyComment;
 		},
 		setReplyCreation_Field: (state, action: PayloadAction<ICommentCreationFieldPayload>) => {
 			const obj = action.payload;
@@ -294,23 +333,11 @@ export const discussionStore = createSlice({
 					if (action_type === EAction.DELETE) {
 						repliesArr.splice(index, 1);
 					} else if (action_type === EAction.EDIT) {
-						let url = window.location.href;
-						const matches = window.location.href.match(/discussion\/\w+#.*/);
-						if (matches && matches.length > 0) {
-							url = window.location.href?.replace(/#.*/, '');
-						}
-						window.history.replaceState(null, null!, url + '#' + reply.comment_id + reply.id);
 						repliesArr.splice(index, 1);
 						repliesArr.unshift(reply);
 					}
 				} else {
 					if (action_type === EAction.ADD) {
-						let url = window.location.href;
-						const matches = window.location.href.match(/discussion\/\w+#.*/);
-						if (matches && matches.length > 0) {
-							url = window.location.href?.replace(/#.*/, '');
-						}
-						window.history.replaceState(null, null!,url + '#' + reply.comment_id + reply.id);
 						repliesArr.unshift(reply);
 					}
 				}

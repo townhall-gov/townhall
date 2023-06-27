@@ -4,25 +4,25 @@
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import React, { FC, useState } from 'react';
 import Replies from './Replies';
-import { useReplyBoxVisibility } from '~src/redux/proposal/selectors';
+import { useReplyComment } from '~src/redux/proposal/selectors';
 
 import { IReply } from '~src/types/schema';
 import CreateReply from './CreateReply';
 
 interface IRepliesWrapperProps {
 	replies: IReply[] | null;
-    comment_id:string;
+    comment_id: string;
 }
 
 const RepliesWrapper :FC<IRepliesWrapperProps>= (props) => {
 	const { replies, comment_id } = props;
-	const { replyBox_comment_id, replyBox_isVisible } = useReplyBoxVisibility();
+	const replyComment = useReplyComment();
 	const [isRepliesVisible, setIsRepliesVisible] = useState(true);
 	return (
 		<section className='mt-3'>
 			{
-				replyBox_isVisible && replyBox_comment_id === comment_id  && (
-					<CreateReply comment_id={comment_id} />
+				replyComment && replyComment.id === comment_id  && (
+					<CreateReply comment={replyComment} />
 				)
 			}
 			<div>

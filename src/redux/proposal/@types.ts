@@ -3,10 +3,11 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { ESentiment } from '~src/types/enums';
-import { IBalanceWithNetwork, IHistoryComment, IHistoryReply, IPostLink, IReply, IVote } from '~src/types/schema';
+import { IHistoryComment, IHistoryReply, IPostLink, IReply, IVote } from '~src/types/schema';
 import { IComment, IProposal } from '~src/types/schema';
 import { IVotingSystemOption } from '../room/@types';
 import { IPostLinkData } from 'pages/api/auth/data/post-link-data';
+import { IStrategyWithHeightAndBalance } from 'pages/api/chain/actions/balance';
 
 export interface IProposalStore {
     loading: boolean;
@@ -24,7 +25,7 @@ export interface IProposalStore {
     editableReply: IReply | null;
     commentEditHistory: IHistoryComment[];
     replyEditHistory: IHistoryReply[];
-    isReplyBoxVisible:IReplyBoxVisible;
+    replyComment: IComment | null;
     isRepliesVisible:IRepliesVisible;
 }
 
@@ -59,6 +60,6 @@ export type IReplyBoxVisible = {
 
 export type IVoteCreation = {
     options: IVotingSystemOption[];
-    balances: IBalanceWithNetwork[];
+    balances: IStrategyWithHeightAndBalance[];
     note?: string;
 };

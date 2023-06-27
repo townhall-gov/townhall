@@ -20,6 +20,7 @@ export enum ETitleType {
     ALL_VOTES = 'all-votes',
     HOUSE_ROOMS = 'house-rooms',
     POST_LINK_MODAL = 'post-link-modal',
+    DISCUSSION_EDIT_MODAL = 'discussion-edit-modal',
 }
 
 export enum EFooterType {
@@ -31,6 +32,7 @@ export enum EFooterType {
     DISCUSSION_COMMENT_EDIT_HISTORY = 'discussion-comment-edit-history',
     CAST_YOUR_VOTE = 'cast-your-vote',
     POST_LINK_MODAL = 'post-link-modal',
+    DISCUSSION_EDIT_MODAL = 'discussion-edit-modal',
 }
 export enum EContentType {
     NONE = 'none',
@@ -45,4 +47,5 @@ export enum EContentType {
     ALL_VOTES = 'all-votes',
     HOUSE_ROOMS = 'house-rooms',
     POST_LINK_MODAL = 'post-link-modal',
+    DISCUSSION_EDIT_MODAL = 'discussion-edit-modal',
 }

@@ -14,10 +14,9 @@ interface ICommentFooterProps {
 const ReplyFooter: FC<ICommentFooterProps> = (props) => {
 	const { reply } = props;
 	if (!reply) return null;
-	const { id, reactions } = reply;
 	return (
 		<footer className='flex items-center gap-x-3'>
-			<ReplyReactions reply_id={id} reactions={reactions} comment_id={reply.comment_id}  />
+			<ReplyReactions reply={reply}  />
 			<ReplyOtherActionsDropdown reply={reply} />
 		</footer>
 	);

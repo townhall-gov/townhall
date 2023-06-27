@@ -14,28 +14,50 @@ import { IProposal } from '~src/types/schema';
 import apiErrorWithStatusCode from '~src/utils/apiErrorWithStatusCode';
 import convertFirestoreTimestampToDate from '~src/utils/convertFirestoreTimestampToDate';
 import getErrorMessage from '~src/utils/getErrorMessage';
+import { LISTING_LIMIT } from '~src/utils/proposalListingLimit';
 
 interface IGetProposalsFnParams {
     house_id: string;
     room_id: string;
-	filterBy?: string;
+	filter_by?: string;
+	page?: number;
+	limit?: number;
 }
 
 export type TGetProposalsFn = (params: IGetProposalsFnParams) => Promise<TApiResponse<IListingProposal[]>>;
 export const getProposals: TGetProposalsFn = async (params) => {
 	try {
-		const { house_id, room_id, filterBy } = params;
+		const { house_id, room_id, filter_by, page, limit } = params;
 		if (!house_id) {
 			throw apiErrorWithStatusCode('Invalid houseId.', StatusCodes.BAD_REQUEST);
 		}
 		if (!room_id) {
 			throw apiErrorWithStatusCode('Invalid roomId.', StatusCodes.BAD_REQUEST);
 		}
-		const proposals: IListingProposal[] = [];
-		let proposalsSnapshot: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData> = await proposalCollection(house_id, room_id).orderBy('created_at', 'desc').get();
-		if (filterBy && [EProposalStatus.ACTIVE.toString(), EProposalStatus.PENDING.toString(), EProposalStatus.CLOSED.toString()].includes(filterBy)) {
-			proposalsSnapshot = await proposalCollection(house_id, room_id).orderBy('created_at', 'desc').where('status', '==', filterBy).get();
+		if (page) {
+			const numPage = Number(page);
+			if (isNaN(numPage) || numPage < 0) {
+				throw apiErrorWithStatusCode('Invalid page.', StatusCodes.BAD_REQUEST);
+			}
 		}
+		if (limit) {
+			const numLimit = Number(limit);
+			if (isNaN(numLimit) || numLimit < 0) {
+				throw apiErrorWithStatusCode('Invalid limit.', StatusCodes.BAD_REQUEST);
+			}
+		}
+		const proposals: IListingProposal[] = [];
+		let proposalsQuery: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> = proposalCollection(house_id, room_id).orderBy('created_at', 'desc');
+		if (filter_by && [EProposalStatus.ACTIVE.toString(), EProposalStatus.PENDING.toString(), EProposalStatus.CLOSED.toString()].includes(filter_by)) {
+			proposalsQuery = proposalCollection(house_id, room_id).orderBy('created_at', 'desc').where('status', '==', filter_by);
+		}
+
+		if (page) {
+			const numPage = Number(page);
+			const numLimit = (isNaN(Number(limit))? LISTING_LIMIT: Number(limit));
+			proposalsQuery = proposalsQuery.limit(numLimit).offset((numPage - 1) * numLimit);
+		}
+		const proposalsSnapshot = await proposalsQuery.get();
 		if (proposalsSnapshot.size > 0) {
 			const proposalsPromise = proposalsSnapshot.docs.map(async (doc) => {
 				if (doc && doc.exists) {
@@ -96,7 +118,8 @@ export const getProposals: TGetProposalsFn = async (params) => {
 								status: status,
 								tags: data.tags || [],
 								title: data.title || '',
-								votes_result: data.votes_result || {}
+								votes_result: data.votes_result || {},
+								voting_strategies_with_height: data.voting_strategies_with_height
 							};
 							return proposal;
 						}
@@ -127,18 +150,20 @@ export interface IProposalsBody {}
 export interface IProposalsQuery {
     house_id: string;
     room_id: string;
-	filterBy?: string;
+	filter_by?: string;
+	page?: number;
+	limit?: number;
 }
 const handler: TNextApiHandler<IListingProposal[], IProposalsBody, IProposalsQuery> = async (req, res) => {
 	if (req.method !== 'GET') {
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, GET required.' });
 	}
-	const { house_id, room_id, filterBy } = req.query;
+	const { house_id, room_id, filter_by, page, limit } = req.query;
 	const {
 		data: proposals,
 		error,
 		status
-	} = await getProposals({ filterBy, house_id, room_id });
+	} = await getProposals({ filter_by, house_id, limit, page, room_id });
 
 	if (proposals && !error && (status === 200)) {
 		res.status(StatusCodes.OK).json(proposals);

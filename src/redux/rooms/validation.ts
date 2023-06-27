@@ -47,6 +47,11 @@ const roomCreationValidation = {
 				}
 				if (!roomCreation.creator_details.phone) {
 					errors['creator_details_phone'] = 'Creator phone is required.';
+				} else {
+					const regex =/^(?:[0-9]\s?){6,14}[0-9]$/;
+					if (!regex.test(roomCreation.creator_details.phone)) {
+						errors['creator_details_phone'] = 'Invalid Phone format.';
+					}
 				}
 			} else {
 				errors['creator_details_name'] = 'Creator name is required.';

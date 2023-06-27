@@ -47,9 +47,7 @@ export const getHouseRooms: TGetHouseRoomsFn = async (params) => {
 		});
 
 		return {
-			data: JSON.parse(JSON.stringify({
-				houseRooms
-			})),
+			data: JSON.parse(JSON.stringify(houseRooms)),
 			status: StatusCodes.OK
 		};
 	} catch (error) {

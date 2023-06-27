@@ -16,13 +16,13 @@ interface ICommentFooterProps {
 const CommentFooter: FC<ICommentFooterProps> = (props) => {
 	const { comment } = props;
 	if (!comment) return null;
-	const { sentiment, id, reactions } = comment;
+	const { sentiment } = comment;
 	return (
 		<>
 			<footer className='flex items-center gap-x-3'>
 				<Sentiment sentiment={sentiment} />
-				<CommentReactions comment_id={id} reactions={reactions} />
-				<CommentReply comment_id={id}/>
+				<CommentReactions comment={comment} />
+				<CommentReply comment={comment}/>
 				<CommentOtherActionsDropdown comment={comment} />
 			</footer>
 		</>

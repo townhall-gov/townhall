@@ -15,6 +15,7 @@ import AllVotesModalContent from '~src/components/Room/Proposal/Sidebar/Vote/Vot
 import CastYourVoteModalContent from '~src/components/Room/Proposal/Sidebar/Vote/CastYourVote/Modal/Content';
 import { EContentType } from '~src/redux/modal/@types';
 import PostLinkModalContent from '~src/components/Room/Proposal/Sidebar/PostLink/Modal/Content';
+import DiscussionEditModalContent from '~src/components/Room/Discussion/ContentWrapper/Content/Heading/Edit/Modal/Content';
 
 interface IModalContentProps {
     type?: EContentType;
@@ -44,6 +45,8 @@ const ModalContent: FC<IModalContentProps> = (props) => {
 		return <AllVotesModalContent />;
 	case EContentType.POST_LINK_MODAL:
 		return <PostLinkModalContent />;
+	case EContentType.DISCUSSION_EDIT_MODAL:
+		return <DiscussionEditModalContent />;
 	default:
 		return <></>;
 	}

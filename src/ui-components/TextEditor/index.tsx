@@ -14,6 +14,7 @@ import { editorActions } from '~src/redux/editor';
 
 interface ITextEditorProps {
     className?: string;
+	spinClassName?: string;
     height?: number | string;
     initialValue: string;
     value?: string;
@@ -24,7 +25,7 @@ interface ITextEditorProps {
 }
 
 const TextEditor: FC<ITextEditorProps> = (props) => {
-	const { className, height, onChange, localStorageKey, value, isDisabled, imageNamePrefix } = props;
+	const { className, spinClassName, height, onChange, localStorageKey, value, isDisabled, imageNamePrefix } = props;
 	const initialValue = useRef(props.initialValue || (localStorageKey? (localStorage.getItem(localStorageKey) || ''): ''));
 	const [spin, setSpin] = useState(true);
 	const ref = useRef<Editor>(null!);
@@ -49,14 +50,19 @@ const TextEditor: FC<ITextEditorProps> = (props) => {
 			ref.current.editor?.setContent('');
 			dispatch(editorActions.setIsClean(false));
 		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isClean]);
+
+	useEffect(() => {
+		ref.current.editor?.setContent(props.initialValue);
+		initialValue.current = props.initialValue;
+	}, [props.initialValue]);
 
 	return (
 		<div style={{
 			minHeight: `${height || 300}px`
 		}} className={classNames('flex-1 w-full', className)}>
-			<Spin className='bg-app_background' spinning={spin} indicator={<LoadingOutlined />}>
+			<Spin className={classNames('bg-app_background', spinClassName)} spinning={spin} indicator={<LoadingOutlined />}>
 				<Editor
 					ref={ref}
 					disabled={isDisabled}
@@ -67,7 +73,7 @@ const TextEditor: FC<ITextEditorProps> = (props) => {
 							localStorage.setItem(localStorageKey, v);
 						}
 					}}
-					apiKey={process.env.NEXT_PUBLIC_TINY_MCE_API_KEY}
+					// apiKey={process.env.NEXT_PUBLIC_TINY_MCE_API_KEY}
 					init={{
 						block_unsupported_drop: false,
 						branding: false,
@@ -113,7 +119,7 @@ const TextEditor: FC<ITextEditorProps> = (props) => {
 								xhr.send(formData);
 							});
 						},
-						menubar: 'file edit view insert format tools table tc help',
+						menubar: false,
 						paste_data_images: true,
 						plugins: [
 							'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
@@ -121,10 +127,10 @@ const TextEditor: FC<ITextEditorProps> = (props) => {
 							'insertdatetime', 'media', 'table'
 						],
 						skin: 'oxide-dark',
-						toolbar: 'undo redo | ' +
-							'bold italic backcolor | alignleft aligncenter ' +
-							'alignright alignjustify | bullist numlist outdent indent | ' +
-							'removeformat | table help ',
+						toolbar: 'undo redo preview | ' +
+							'bold italic backcolor | ' +
+							'bullist numlist table | ' +
+							'removeformat link image code',
 						xss_sanitization: true
 					}}
 				/>

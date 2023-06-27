@@ -88,6 +88,8 @@ p {
 ul.ant-dropdown-menu {
     background: var(--app_background) !important;
     border: 1px solid var(--grey_secondary);
+    max-height: 260px !important;
+    overflow-y: overlay;
 }
 .ant-dropdown-menu-border-blue_primary ul.ant-dropdown-menu {
     border: 1px solid var(--blue_primary);
@@ -358,6 +360,12 @@ li.ant-picker-time-panel-cell-disabled .ant-picker-time-panel-cell-inner {
 .html-content td {
     padding: 3px 6px;
 }
+.html-content a {
+    color: var(--blue_primary) !important;
+}
+.tox-notifications-container {
+    display: none !important;
+}
 /* TINYMCE content render */
 
 /* Input Upload */
@@ -386,3 +394,9 @@ li.ant-picker-time-panel-cell-disabled .ant-picker-time-panel-cell-inner {
     background-color: var(--blue_primary) !important;
 }
 /* Progress */
+
+.ant-tooltip {
+    box-shadow: 2px 1px 16px rgba(102, 165, 255, 0.85) !important; 
+    border-radius: 8px !important;
+    overflow: hidden;
+}

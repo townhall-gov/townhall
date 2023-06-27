@@ -11,7 +11,7 @@ import { proposalActions } from '~src/redux/proposal';
 import { notificationActions } from '~src/redux/notification';
 import { ENotificationStatus } from '~src/redux/notification/@types';
 import api from '~src/services/api';
-import { EAction, EPostType } from '~src/types/enums';
+import { EAction } from '~src/types/enums';
 import getErrorMessage from '~src/utils/getErrorMessage';
 import { IReplyBody, IReplyResponse } from 'pages/api/auth/actions/reply';
 
@@ -47,12 +47,12 @@ const ReplyContent: FC<IReplyContentProps> = (props) => {
 				setLoading(true);
 				const { data, error } = await api.post<IReplyResponse, IReplyBody>('auth/actions/reply', {
 					action_type: EAction.EDIT,
-					comment_id:reply.comment_id,
-					house_id: proposal.house_id,
+					comment_id: reply.comment_id,
+					house_id: reply.house_id,
 					post_id: reply.post_id,
-					post_type: EPostType.PROPOSAL,
+					post_type: reply.post_type,
 					reply: editableReply,
-					room_id: proposal.room_id
+					room_id: reply.room_id
 				});
 				if (error) {
 					dispatch(proposalActions.setError(getErrorMessage(error)));
@@ -96,10 +96,10 @@ const ReplyContent: FC<IReplyContentProps> = (props) => {
 	};
 	const key = `house_${proposal?.house_id}_room_${proposal?.room_id}_proposal_${proposal?.id}_comment_${reply.comment_id}_reply_${reply.id}`;
 	return (
-		<section>
+		<section className='overflow-auto'>
 			{
 				editableReply?.id !== reply?.id?
-					<div className='html-content text-white font-normal text-sm leading-[23px] tracking-[0.01em]'>
+					<div className='html-content text-white font-normal text-sm leading-[23px] tracking-[0.01em] break-words'>
 						{ReactHTMLParser(reply.content)}
 					</div>
 					:<ReplyEditor

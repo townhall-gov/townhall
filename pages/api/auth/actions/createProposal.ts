@@ -8,22 +8,20 @@ import { TNextApiHandler } from '~src/api/types';
 import authServiceInstance from '~src/auth';
 import getTokenFromReq from '~src/auth/utils/getTokenFromReq';
 import messages from '~src/auth/utils/messages';
-import { height } from '~src/onchain-data';
-import { create } from '~src/onchain-data/utils/apis';
-import { houseCollection, proposalCollection, roomCollection } from '~src/services/firebase/utils';
-import { EProposalStatus } from '~src/types/enums';
-import { IProposal, IRoom, ISnapshotHeight, IVotesResult } from '~src/types/schema';
+import { getHeightUsingStrategy } from '~src/onchain-data';
+import { discussionCollection, houseCollection, proposalCollection, roomCollection } from '~src/services/firebase/utils';
+import { EPostType, EProposalStatus } from '~src/types/enums';
+import { IDiscussion, IProposal, IRoom, IStrategyWithHeight, IVotesResult } from '~src/types/schema';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
+import { TUpdatedPost } from './postLink';
 
-export type TProposalPayload = Omit<IProposal, 'proposer_address' | 'created_at' | 'updated_at' | 'id' | 'timestamp' | 'reactions' | 'comments' | 'snapshot_heights' | 'start_date' | 'end_date' | 'votes_result' | 'voting_strategies' | 'status'> & {
+export type TProposalPayload = Omit<IProposal, 'proposer_address' | 'created_at' | 'updated_at' | 'id' | 'timestamp' | 'reactions' | 'comments' | 'snapshot_heights' | 'start_date' | 'end_date' | 'votes_result' | 'voting_strategies_with_height' | 'status'> & {
 	start_date: string;
 	end_date: string;
 };
 
 export interface ICreateProposalBody {
-    proposal: TProposalPayload & {
-        timestamp: number;
-    };
+    proposal: TProposalPayload;
     signature: string;
     proposer_address: string;
 }
@@ -37,7 +35,6 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
 	}
 	const { proposal, proposer_address, signature } = req.body;
-	create();
 	if (!proposal || typeof proposal !== 'object') {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Unable to create a proposal, insufficient information for creating a proposal.' });
 	}
@@ -112,43 +109,57 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: `Proposal with id ${newID} already exists in a Room with id ${room_id} and a House with id ${house_id}.` });
 	}
 
-	const heightsPromise = roomData.voting_strategies.map(async (strategy) => {
-		const { network } = strategy;
+	// TODO: Multiple strategies can have same network, so we need to filter the unique network.
+	const networks: {
+		[key: string]: IStrategyWithHeight[]
+	} = {};
+	roomData.voting_strategies.forEach((strategy) => {
+		if (!networks[strategy.network]) {
+			networks[strategy.network] = [];
+		}
+		networks[strategy.network].push({
+			...strategy,
+			height: 0
+		});
+	});
+
+	const heightsPromise = Object.entries(networks).map(async ([, strategies]) => {
 		const data: any = await Promise.race([
-			height(network, new Date(proposal.start_date).getTime()),
+			getHeightUsingStrategy(strategies[0], new Date(proposal.start_date).getTime()),
 			new Promise((_, reject) =>
 				setTimeout(() => reject(new Error('timeout')), 60 * 1000)
 			)
 		]);
 
-		return {
-			blockchain: network,
-			height: data.height
-		};
+		return strategies.map((strategy) => {
+			return {
+				...strategy,
+				height: data.height
+			};
+		});
 	});
 
 	const heightsPromiseSettledResult = await Promise.allSettled(heightsPromise);
 
-	const snapshot_heights: ISnapshotHeight[] = [];
+	const voting_strategies_with_height: IStrategyWithHeight[] = [];
 
 	heightsPromiseSettledResult.forEach((result) => {
 		if (result && result.status === 'fulfilled' && result.value) {
-			snapshot_heights.push(result.value as ISnapshotHeight);
+			voting_strategies_with_height.push(...(result.value as IStrategyWithHeight[]));
 		}
 	});
 
-	if (snapshot_heights.length === 0) {
+	if (voting_strategies_with_height.length === 0) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: `Unable to get snapshot heights for a Room with id ${room_id} and a House with id ${house_id}.` });
 	}
 
 	const now = new Date();
-	const newProposal: Omit<IProposal, 'comments' | 'reactions' | 'voting_strategies'> = {
+	const newProposal: Omit<IProposal, 'comments' | 'reactions'> = {
 		...proposal,
 		created_at: now,
 		end_date: new Date(proposal.end_date),
 		id: newID,
 		proposer_address: proposer_address,
-		snapshot_heights: snapshot_heights,
 		start_date: new Date(proposal.start_date),
 		status: EProposalStatus.PENDING,
 		updated_at: now,
@@ -157,14 +168,46 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 				...prev,
 				[option.value]: roomData.voting_strategies.map((strategy) => {
 					return {
-						amount: 0,
-						name: strategy.name,
-						network: strategy.network
+						id: strategy.id,
+						value: 0
 					};
 				})
 			};
-		}, {} as IVotesResult)
+		}, {} as IVotesResult),
+		voting_strategies_with_height: voting_strategies_with_height
 	};
+
+	if (proposal.post_link && proposal.post_link_data) {
+		const { post_link } = proposal;
+		const updatedLinkedPost: TUpdatedPost = {
+			post_link: {
+				house_id,
+				post_id: newID,
+				post_type: EPostType.PROPOSAL,
+				room_id
+			},
+			post_link_data: {
+				description: newProposal.description,
+				tags: newProposal.tags,
+				title: newProposal.title
+			},
+			updated_at: now
+		};
+
+		const linkPostsColRef = discussionCollection(post_link.house_id, post_link.room_id);
+		const linkPostDocRef = linkPostsColRef.doc(String(post_link.post_id));
+		const linkPostDoc = await linkPostDocRef.get();
+		const linkPostData = linkPostDoc.data() as IDiscussion;
+		if (!linkPostDoc.exists || !linkPostData) {
+			return res.status(StatusCodes.BAD_REQUEST).json({ error: `Post with id ${post_link.post_id} does not exist in a Room with id ${post_link.room_id} and a House with id ${post_link.house_id}.` });
+		}
+
+		if (linkPostData.post_link || linkPostData.post_link_data) {
+			return res.status(StatusCodes.BAD_REQUEST).json({ error: `Post with id ${post_link.post_id} already has a post link.` });
+		}
+
+		linkPostDocRef.set(updatedLinkedPost, { merge: true }).then(() => {});
+	}
 
 	await proposalDocRef.set({
 		...newProposal,
@@ -176,7 +219,7 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 			...newProposal,
 			comments: [],
 			reactions: [],
-			voting_strategies: roomData.voting_strategies || []
+			voting_strategies_with_height: voting_strategies_with_height || []
 		}
 	});
 };

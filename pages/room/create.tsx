@@ -19,6 +19,12 @@ interface IRoomCreationServerProps {
 interface IRoomCreationClientProps extends IRoomCreationServerProps {}
 
 export const getServerSideProps: GetServerSideProps<IRoomCreationServerProps> = async () => {
+	return {
+		props: {},
+		redirect: {
+			destination: '/'
+		}
+	};
 	const { data: houses, error } = await getHouses();
 	const props: IRoomCreationServerProps = {
 		error: error? error: null,

@@ -21,7 +21,7 @@ import { EAction, EPostType } from '~src/types/enums';
 import { IPostLink } from '~src/types/schema';
 import getErrorMessage from '~src/utils/getErrorMessage';
 
-const getPostLinkFromURL = (url: string): IPostLink | null => {
+export const getPostLinkFromURL = (url: string): IPostLink | null => {
 	let postLink: IPostLink | null = null;
 
 	const pattern = /^https:\/\/(?:www\.)?townhallgov\.com\/(\w+)\/(\w+)\/(discussion|proposal)\/(\d+)$/;
@@ -224,6 +224,12 @@ const PreviewingPostLinkData = () => {
 				...data.updatedPost
 			}));
 			dispatch(proposalActions.resetPostLinkCreation_Field());
+			dispatch(modalActions.setModal({
+				contentType: EContentType.NONE,
+				footerType: EFooterType.NONE,
+				open: false,
+				titleType: ETitleType.NONE
+			}));
 		} else {
 			dispatch(notificationActions.send({
 				message: getErrorMessage(error) || 'Something went wrong, unable to link a proposal with discussion.',

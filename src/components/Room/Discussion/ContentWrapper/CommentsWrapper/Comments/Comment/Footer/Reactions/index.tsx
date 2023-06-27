@@ -11,18 +11,18 @@ import { discussionActions } from '~src/redux/discussion';
 import { useCommentReactions, useCommentUserReaction } from '~src/redux/discussion/selectors';
 import { useProfileSelector, useDiscussionSelector } from '~src/redux/selectors';
 import api from '~src/services/api';
-import { EPostType, EReaction } from '~src/types/enums';
-import { IReaction } from '~src/types/schema';
+import { EReaction } from '~src/types/enums';
+import { IComment } from '~src/types/schema';
 import Reaction from '~src/ui-components/Reaction';
 import getErrorMessage from '~src/utils/getErrorMessage';
 
 interface ICommentReactionsProps {
-	reactions: IReaction[];
-	comment_id: string;
+	comment: IComment;
 }
 
 const CommentReactions: FC<ICommentReactionsProps> = (props) => {
-	const { reactions, comment_id } = props;
+	const { comment } = props;
+	const { reactions } = comment;
 	const dispatch = useDispatch();
 	const { loading, discussion } = useDiscussionSelector();
 	const { user } = useProfileSelector();
@@ -46,11 +46,11 @@ const CommentReactions: FC<ICommentReactionsProps> = (props) => {
 			if (discussion) {
 				dispatch(discussionActions.setLoading(true));
 				const { data, error } = await api.post<ICommentReactionResponse, ICommentReactionBody>('auth/actions/commentReaction', {
-					comment_id: comment_id,
-					house_id: discussion.house_id,
-					post_id: discussion.id,
-					post_type: EPostType.DISCUSSION,
-					room_id: discussion.room_id,
+					comment_id: comment.id,
+					house_id: comment.house_id,
+					post_id: comment.post_id,
+					post_type: comment.post_type,
+					room_id: comment.room_id,
 					type
 				});
 				if (error) {
@@ -77,7 +77,7 @@ const CommentReactions: FC<ICommentReactionsProps> = (props) => {
 					}
 					dispatch(discussionActions.setCommentReaction({
 						...data,
-						comment_id: comment_id
+						comment_id: comment.id
 					}));
 					dispatch(notificationActions.send({
 						message: message,

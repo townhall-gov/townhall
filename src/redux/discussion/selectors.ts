@@ -19,9 +19,9 @@ const useUserReaction = (address: string) => {
 	return userReaction?.type;
 };
 
-const useReplyBoxVisibility = () => {
-	const { isReplyBoxVisible } = useDiscussionSelector();
-	return isReplyBoxVisible;
+const useReplyComment = () => {
+	const { replyComment } = useDiscussionSelector();
+	return replyComment;
 };
 
 const useReactions = (type: EReaction) => {
@@ -120,6 +120,11 @@ const useReplyEditHistory = () => {
 	return [...replyEditHistory];
 };
 
+const useEditableDiscussion = () => {
+	const { editableDiscussion } = useDiscussionSelector();
+	return editableDiscussion;
+};
+
 export {
 	useCommentCreation,
 	useUserReaction,
@@ -128,8 +133,9 @@ export {
 	useCommentEditHistory,
 	useCommentUserReaction,
 	useCommentReactions,
-	useReplyBoxVisibility,
+	useReplyComment,
 	useReplyEditHistory,
 	useReplyCreation,
-	useSelectedReplies
+	useSelectedReplies,
+	useEditableDiscussion
 };
