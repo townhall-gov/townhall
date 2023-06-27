@@ -92,34 +92,38 @@ const Strategies: FC<IStrategiesProps> = (props) => {
 						: null
 				}
 			</section>
-			<button
-				disabled={isDisabled}
-				onClick={() => {
-					const defaultNetwork = 'polkadot';
-					dispatch(roomActions.setRoomSettingsStrategiesAdd({
-						asset_type: assetType.Native,
-						id: v4(),
-						name: EVotingStrategy.BALANCE_OF,
-						network: defaultNetwork,
-						proposal_creation_threshold: '',
-						threshold: '',
-						token_metadata: {
-							[assetType.Native]: {
-								decimals: chainProperties[defaultNetwork].decimals,
-								name: '',
-								symbol: chainProperties[defaultNetwork].symbol
-							}
-						},
-						weight: ''
-					}));
-				}}
-				className={
-					classNames('border-none outline-none px-8 py-2 text-base bg-green_primary flex items-center gap-x-2 text-white rounded-xl cursor-pointer')
-				}
-			>
-				<PlusOutlined />
-				<span>New Strategy</span>
-			</button>
+			{
+				(room_strategies && Array.isArray(room_strategies) && room_strategies.length > 8)?
+					null
+					: <button
+						disabled={isDisabled}
+						onClick={() => {
+							const defaultNetwork = 'polkadot';
+							dispatch(roomActions.setRoomSettingsStrategiesAdd({
+								asset_type: assetType.Native,
+								id: v4(),
+								name: EVotingStrategy.BALANCE_OF,
+								network: defaultNetwork,
+								proposal_creation_threshold: '',
+								threshold: '',
+								token_metadata: {
+									[assetType.Native]: {
+										decimals: chainProperties[defaultNetwork].decimals,
+										name: '',
+										symbol: chainProperties[defaultNetwork].symbol
+									}
+								},
+								weight: ''
+							}));
+						}}
+						className={
+							classNames('border-none outline-none px-8 py-2 text-base bg-green_primary flex items-center gap-x-2 text-white rounded-xl cursor-pointer')
+						}
+					>
+						<PlusOutlined />
+						<span>New Strategy</span>
+					</button>
+			}
 		</article>
 	);
 };

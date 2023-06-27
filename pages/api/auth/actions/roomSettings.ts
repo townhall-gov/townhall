@@ -37,6 +37,10 @@ const handler: TNextApiHandler<IRoomSettingsResponse, IRoomSettingsBody, {}> = a
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid roomId.' });
 	}
 
+	if (roomSettings?.room_strategies && Array.isArray(roomSettings?.room_strategies) && roomSettings?.room_strategies.length > 8) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Strategies must be less than 8 in a Room.' });
+	}
+
 	let address: string | null = null;
 	try {
 		const token = getTokenFromReq(req);
