@@ -39,7 +39,7 @@ const NetworkDropdown: FC<INetworkDropdownProps> = (props) => {
 							key: network.name,
 							label: (
 								<div
-									className={classNames('text-base leading-none py-2 text-white cursor-pointer')}
+									className={classNames('flex items-center text-base leading-none py-2 text-white cursor-pointer')}
 								>
 									<BlockchainIcon className={classNames('text-2xl mr-2', className)} type={ network.name as EBlockchain }/>
 									{getNetworkTitle(network.name)}
