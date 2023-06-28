@@ -39,8 +39,8 @@ const HouseRooms: FC<IHouseRoomsProps> = (props) => {
 							{
 								houseRooms.slice(0, 3)?.map((room, index) => {
 									return (
-										<Link href={`/${house_id}/${room.id}/proposals`} key={index} className='flex items-center justify-center w-16 h-16 bg-white rounded-2xl'>
-											<Image preview={false} alt={room.title} src={room?.logo} width={45} height={45} />
+										<Link href={`/${house_id}/${room.id}/proposals`} key={index} className='flex items-center justify-center w-16 h-16 rounded-2xl'>
+											<Image preview={false} alt={room.title} src={room?.logo} width={45} height={45} className='rounded-full' />
 										</Link>
 									);
 								})
@@ -48,8 +48,8 @@ const HouseRooms: FC<IHouseRoomsProps> = (props) => {
 							{
 								houseRooms.length === 4? (
 									<>
-										<Link href={`/${house_id}/${houseRooms[3].id}/proposals`} className='flex items-center justify-center w-16 h-16 bg-white rounded-2xl'>
-											<Image preview={false} alt={houseRooms[3].title} src={houseRooms[3]?.logo} width={45} height={45} />
+										<Link href={`/${house_id}/${houseRooms[3].id}/proposals`} className='flex items-center justify-center w-16 h-16 rounded-2xl'>
+											<Image preview={false} alt={houseRooms[3].title} src={houseRooms[3]?.logo} width={45} height={45} className='rounded-full' />
 										</Link>
 									</>
 								) : houseRooms.length > 4? (
