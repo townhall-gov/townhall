@@ -102,7 +102,6 @@ export const signVoteData = async (data: TVotePayload, address: string) => {
 
 		await web3Enable(APPNAME);
 		const injector = await web3FromAddress(address);
-		console.log(injector.signer.signRaw);
 		if (injector.signer.signRaw) {
 			const data  = JSON.stringify(getVoteTypeData(dataToSign, false));
 			const result = await injector.signer.signRaw({
