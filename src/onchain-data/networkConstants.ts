@@ -12,8 +12,6 @@ export type TAssetChains = {
 	moonriver: 'moonriver';
 	statemine: 'statemine';
 	centrifuge : 'centrifuge';
-	pendulum : 'pendulum';
-	kilt : 'kilt';
 };
 
 export const assetChains = {
@@ -22,24 +20,20 @@ export const assetChains = {
 	bifrost: 'bifrost',
 	centrifuge : 'centrifuge',
 	karura: 'karura',
-	kilt : 'kilt',
 	moonbase: 'moonbase',
 	moonbeam: 'moonbeam',
 	moonriver: 'moonriver',
-	pendulum : 'pendulum',
 	statemine: 'statemine'
 };
 
 export type TChains = {
 	kusama: 'kusama';
 	polkadot: 'polkadot';
-	centrifuge : 'centrifuge';
 	pendulum : 'pendulum';
 	kilt : 'kilt';
 };
 
 export const chains = {
-	centrifuge : 'centrifuge',
 	kilt : 'kilt',
 	kusama: 'kusama',
 	pendulum : 'pendulum',
@@ -175,7 +169,6 @@ const chainProperties: TChainProperties = {
 		symbol: 'KAR'
 	},
 	kilt:{
-		assets: [assetType.Native, assetType.Assets],
 		blockTime: 12000,
 		chainId: 0,
 		decimals: 15,
@@ -247,7 +240,6 @@ const chainProperties: TChainProperties = {
 		symbol: 'MOVR'
 	},
 	pendulum: {
-		assets: [assetType.Native, assetType.Assets],
 		blockTime: 12000,
 		chainId: 0,
 		decimals: 12,
