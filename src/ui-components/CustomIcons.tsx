@@ -38,6 +38,9 @@ import KusamaSVG from '~assets/blockchain/kusama.svg';
 import MoonbaseSVG from '~assets/blockchain/moonbase.svg';
 import MoonbeamSVG from '~assets/blockchain/moonbeam.svg';
 import MoonriverSVG from '~assets/blockchain/moonriver.svg';
+import StatemineSVG from '~assets/blockchain/statemine.svg';
+import AcalaSVG from '~assets/blockchain/acala.svg';
+import AstarSVG from '~assets/blockchain/astar.svg';
 
 import DiscordSVG from '~assets/socials/discord.svg';
 import GithubSVG from '~assets/socials/github.svg';
@@ -256,6 +259,18 @@ export const MoonbeamIcon = (props: Partial<CustomIconComponentProps>) => (
 
 export const MoonriverIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={MoonriverSVG} {...props} />
+);
+
+export const StatemineIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={StatemineSVG} {...props} />
+);
+
+export const AcalaIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={AcalaSVG} {...props} />
+);
+
+export const AstarIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={AstarSVG} {...props} />
 );
 
 export const SearchIcon = (props: Partial<CustomIconComponentProps>) => (
