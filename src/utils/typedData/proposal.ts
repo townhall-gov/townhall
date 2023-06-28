@@ -7,7 +7,15 @@ import { TProposalPayload } from 'pages/api/auth/actions/createProposal';
 import { IVotingSystemOption } from '~src/redux/room/@types';
 
 interface IProposalTypedData {
+	domain: {
+		name: string;
+		version: string;
+	}
     types: {
+		EIP712Domain: [
+			{ name: 'name', type: 'string' },
+			{ name: 'version', type: 'string' }
+		],
         ProposalPayload: ProposalPayload[];
         VotingSystemOption: VotingSystemOption[];
     };
@@ -52,6 +60,10 @@ export const getProposalTypeData: (proposalPayload: TProposalPayload, isEVM: boo
 		};
 	}
 	const typedData: IProposalTypedData = {
+		domain: {
+			name: 'townhall',
+			version: '0.0.1'
+		},
 		message: {
 			description: proposalPayload.description,
 			'end date': dayjs(proposalPayload.end_date).format('MMMM D, YYYY h:mm A'),
@@ -65,6 +77,10 @@ export const getProposalTypeData: (proposalPayload: TProposalPayload, isEVM: boo
 		},
 		primaryType: 'ProposalPayload',
 		types: {
+			EIP712Domain: [
+				{ name: 'name', type: 'string' },
+				{ name: 'version', type: 'string' }
+			],
 			ProposalPayload: [
 				{ name: 'house', type: 'string' },
 				{ name: 'room', type: 'string' },

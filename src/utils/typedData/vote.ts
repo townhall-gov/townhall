@@ -18,7 +18,15 @@ export interface TVotePayload {
 }
 
 interface IVoteTypedData {
+	domain: {
+		name: string;
+		version: string;
+	}
     types: {
+		EIP712Domain: [
+			{ name: 'name', type: 'string' },
+			{ name: 'version', type: 'string' }
+		],
         VotePayload: VotePayload[];
         VotingSystemOption: VotingSystemOption[];
         Balance: Balance[];
@@ -93,7 +101,12 @@ export const getVoteTypeData: (votePayload: TVotePayload, isEVM: boolean) => IVo
 			room: votePayload.room_id
 		};
 	}
+
 	const typedData: IVoteTypedData = {
+		domain: {
+			name: 'townhall',
+			version: '0.0.1'
+		},
 		message: {
 			balances: balances,
 			house: votePayload.house_id,
@@ -107,7 +120,11 @@ export const getVoteTypeData: (votePayload: TVotePayload, isEVM: boolean) => IVo
 			Balance: [
 				{ name: 'chain', type: 'string' },
 				{ name: 'strategy', type: 'string' },
-				{ name: 'value', type: 'uint256' }
+				{ name: 'value', type: 'string' }
+			],
+			EIP712Domain: [
+				{ name: 'name', type: 'string' },
+				{ name: 'version', type: 'string' }
 			],
 			VotePayload: [
 				{ name: 'proposal', type: 'uint256' },
