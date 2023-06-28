@@ -38,11 +38,12 @@ const NetworkDropdown: FC<INetworkDropdownProps> = (props) => {
 						return {
 							key: network.name,
 							label: (
-								<p
+								<div
 									className={classNames('text-base leading-none py-2 text-white cursor-pointer')}
 								>
+									<BlockchainIcon className={classNames('text-2xl mr-2', className)} type={ network.name as EBlockchain }/>
 									{getNetworkTitle(network.name)}
-								</p>
+								</div>
 							)
 						};
 					}),
@@ -66,13 +67,13 @@ const NetworkDropdown: FC<INetworkDropdownProps> = (props) => {
 			>
 				{
 					strategy?.network?
-						<p id='votingTypeDropdown' className="flex justify-between items-center text-white font-medium text-base leading-none">
-							<div className='flex items-center'>
+						<div id='votingTypeDropdown' className="flex justify-between items-center text-white font-medium text-base leading-none">
+							<span className='flex items-center'>
 								<BlockchainIcon className={classNames('text-2xl mr-2', className)} type={ strategy?.network as EBlockchain }/>
 								{getNetworkTitle(strategy?.network)}
-							</div>
+							</span>
 							<DownOutlined/>
-						</p>
+						</div>
 						: <p className='m-0 flex justify-between items-center text-grey_light text-base leading-none'>
 							<span>Select network for voting strategy</span>
 							<DownOutlined/>

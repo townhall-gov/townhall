@@ -41,6 +41,11 @@ import MoonriverSVG from '~assets/blockchain/moonriver.svg';
 import StatemineSVG from '~assets/blockchain/statemine.svg';
 import AcalaSVG from '~assets/blockchain/acala.svg';
 import AstarSVG from '~assets/blockchain/astar.svg';
+import BifrostSVG from '~assets/blockchain/bifrost.svg';
+import CentrifugeSVG from '~assets/blockchain/centrifuge.svg';
+import KaruraSVG from '~assets/blockchain/karura.svg';
+import KiltSVG from '~assets/blockchain/kilt.svg';
+import PendulumSVG from '~assets/blockchain/pendulum.svg';
 
 import DiscordSVG from '~assets/socials/discord.svg';
 import GithubSVG from '~assets/socials/github.svg';
@@ -271,6 +276,26 @@ export const AcalaIcon = (props: Partial<CustomIconComponentProps>) => (
 
 export const AstarIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={AstarSVG} {...props} />
+);
+
+export const BifrostIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={BifrostSVG} {...props} />
+);
+
+export const CentrifugeIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={CentrifugeSVG} {...props} />
+);
+
+export const KaruraIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={KaruraSVG} {...props} />
+);
+
+export const KiltIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={KiltSVG} {...props} />
+);
+
+export const PendulumIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={PendulumSVG} {...props} />
 );
 
 export const SearchIcon = (props: Partial<CustomIconComponentProps>) => (

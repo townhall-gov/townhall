@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import React, { FC } from 'react';
-import { KusamaIcon, PolkadotIcon, MoonbaseIcon, MoonbeamIcon, MoonriverIcon, StatemineIcon, AcalaIcon, AstarIcon } from './CustomIcons';
+import { KusamaIcon, PolkadotIcon, MoonbaseIcon, MoonbeamIcon, MoonriverIcon, StatemineIcon, AcalaIcon, AstarIcon, CentrifugeIcon, KiltIcon, PendulumIcon, KaruraIcon, BifrostIcon } from './CustomIcons';
 import { EBlockchain } from '~src/types/enums';
 
 interface IBlockchainIconProps {
@@ -29,6 +29,16 @@ const BlockchainIcon: FC<IBlockchainIconProps> = (props) => {
 		return <AcalaIcon className={props.className} />;
 	case EBlockchain.ASTAR:
 		return <AstarIcon className={props.className} />;
+	case EBlockchain.BIFROST:
+		return <BifrostIcon className={props.className} />;
+	case EBlockchain.CENTRIFUGE:
+		return <CentrifugeIcon className={props.className} />;
+	case EBlockchain.KILT:
+		return <KiltIcon className={props.className} />;
+	case EBlockchain.PENDULUM:
+		return <PendulumIcon className={props.className} />;
+	case EBlockchain.KARURA:
+		return <KaruraIcon className={props.className} />;
 	default:
 		return null;
 	}

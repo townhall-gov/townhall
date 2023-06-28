@@ -15,7 +15,12 @@ enum EBlockchain {
     MOONRIVER = 'moonriver',
     ASTAR = 'astar',
     ACALA = 'acala',
-    STATEMINE = 'statemine'
+    STATEMINE = 'statemine',
+    KARURA = 'karura',
+    BIFROST = 'bifrost',
+    PENDULUM = 'pendulum',
+    KILT = 'kilt',
+    CENTRIFUGE = 'centrifuge'
 }
 
 enum EReaction {
