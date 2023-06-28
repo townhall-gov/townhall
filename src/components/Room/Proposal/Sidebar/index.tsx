@@ -6,6 +6,9 @@ import React, { FC } from 'react';
 import Timestamp from './Timestamp';
 import Vote from './Vote';
 import PostLinking from './PostLink';
+import VotingTimer from './VotingTimer';
+import { useProposalSelector } from '~src/redux/selectors';
+import dayjs from 'dayjs';
 
 interface ISidebarProps {
     className?: string;
@@ -13,11 +16,13 @@ interface ISidebarProps {
 
 const Sidebar: FC<ISidebarProps> = (props) => {
 	const { className } = props;
+	const { proposal } = useProposalSelector();
 	return (
-		<div className={classNames('flex flex-col gap-y-6 sticky top-6 ', className)}>
+		<div className={classNames('flex flex-col gap-y-6 sticky top-6 min-w-[350px]', className)}>
 			<PostLinking />
 			<Vote />
 			<Timestamp />
+			{ proposal?.start_date && dayjs( proposal?.start_date )?.isAfter( dayjs() )? <VotingTimer /> : null }
 		</div>
 	);
 };
