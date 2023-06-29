@@ -10,8 +10,9 @@ import { EContentType, EFooterType, ETitleType } from '~src/redux/modal/@types';
 import { useAuthActionsCheck } from '~src/redux/profile/selectors';
 import { useProfileSelector, useProposalSelector } from '~src/redux/selectors';
 import { HexWarningIcon } from '~src/ui-components/CustomIcons';
+import VotingTimer from '../../VotingTimer';
+import { IBalanceResponse, IBalanceBody } from 'pages/api/chain/actions/balance';
 import { proposalActions } from '~src/redux/proposal';
-import { IBalanceBody, IBalanceResponse } from 'pages/api/chain/actions/balance';
 import api from '~src/services/api';
 
 interface ICastYourVoteProps {}
@@ -59,9 +60,7 @@ const CastYourVote: FC<ICastYourVoteProps> = () => {
 		>
 			{
 				dayjs().isBefore(dayjs(start_date))?
-					<p className='m-0 font-medium text-base leading-[21px] text-center text-white'>
-					Voting hasn{"'"}t started yet.
-					</p>
+					<VotingTimer/>
 					: (
 						<>
 
