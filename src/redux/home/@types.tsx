@@ -11,6 +11,8 @@ export interface IHomeStore {
     loading: boolean;
     error: string | null;
     searchQuery: string;
+    isLoadMoreVisible:boolean,
+    visibleAllCards:number,
     visibleHouseCards:number,
     visibleRoomCards:number,
 }
