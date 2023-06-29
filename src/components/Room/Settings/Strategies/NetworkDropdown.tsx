@@ -10,6 +10,8 @@ import { assetType, chainProperties } from '~src/onchain-data/networkConstants';
 import { roomActions } from '~src/redux/room';
 import { IStrategy } from '~src/redux/rooms/@types';
 import { useDispatch } from 'react-redux';
+import BlockchainIcon from '~src/ui-components/BlockchainIcon';
+import { EBlockchain } from '~src/types/enums';
 
 interface INetworkDropdownProps {
     isDisabled?: boolean;
@@ -36,11 +38,12 @@ const NetworkDropdown: FC<INetworkDropdownProps> = (props) => {
 						return {
 							key: network.name,
 							label: (
-								<p
-									className={classNames('text-base leading-none py-2 text-white cursor-pointer')}
+								<div
+									className={classNames('flex items-center text-base leading-none py-2 text-white cursor-pointer')}
 								>
+									<BlockchainIcon className={classNames('text-2xl mr-2', className)} type={ network.name as EBlockchain }/>
 									{getNetworkTitle(network.name)}
-								</p>
+								</div>
 							)
 						};
 					}),
@@ -64,10 +67,13 @@ const NetworkDropdown: FC<INetworkDropdownProps> = (props) => {
 			>
 				{
 					strategy?.network?
-						<p id='votingTypeDropdown' className="flex justify-between items-center text-white font-medium text-base leading-none">
-							{getNetworkTitle(strategy?.network)}
+						<div id='votingTypeDropdown' className="flex justify-between items-center text-white font-medium text-base leading-none">
+							<span className='flex items-center'>
+								<BlockchainIcon className={classNames('text-2xl mr-2', className)} type={ strategy?.network as EBlockchain }/>
+								{getNetworkTitle(strategy?.network)}
+							</span>
 							<DownOutlined/>
-						</p>
+						</div>
 						: <p className='m-0 flex justify-between items-center text-grey_light text-base leading-none'>
 							<span>Select network for voting strategy</span>
 							<DownOutlined/>
