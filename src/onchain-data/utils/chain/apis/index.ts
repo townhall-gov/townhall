@@ -5,6 +5,7 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 import { rejectInTime } from '../utils/rejectInTime';
 import { chains } from '../../constants';
 import { getEndpoints } from '../utils/chainEndpoints';
+import { chainProperties } from '~src/onchain-data/networkConstants';
 
 const nodeTimeoutSeconds = 20;
 
@@ -145,7 +146,7 @@ async function getApis(chain: keyof typeof chains) {
 	return (chainApis[chain] || []).map(({ api }) => api);
 }
 
-async function createAndGetApi(network: keyof typeof chains, endpoint: string, logger = console) {
+async function createAndGetApi(network: keyof typeof chainProperties, endpoint: string, logger = console) {
 	const provider = new WsProvider(endpoint, 100);
 
 	let api;
@@ -158,20 +159,19 @@ async function createAndGetApi(network: keyof typeof chains, endpoint: string, l
 	}
 }
 
-async function createAndGetApiInLimitTime(network: keyof typeof chains, endpoint: string, logger = console) {
+async function createAndGetApiInLimitTime(network: keyof typeof chainProperties, endpoint: string, logger = console) {
 	return Promise.race([
 		createAndGetApi(network, endpoint, logger),
 		rejectInTime(nodeTimeoutSeconds)
 	]) as Promise<ApiPromise>;
 }
 
-async function createAndGetApis(chain: keyof typeof chains) {
-	const chainEndpoints = getEndpoints();
-	const chainEndpointsForChain = chainEndpoints.find((chainInfo) => chainInfo.chain === chain);
+async function createAndGetApis(chain: keyof typeof chainProperties) {
+	const chainEndpoints = chainProperties?.[chain]?.endpoints;
 	const apis: ApiPromise[] = [];
-	if (chainEndpointsForChain) {
+	if (chainEndpoints) {
 		const promises: Promise<ApiPromise>[] = [];
-		for (const endpoint of chainEndpointsForChain.endpoints) {
+		for (const endpoint of chainEndpoints) {
 			if (endpoint) {
 				promises.push(createAndGetApiInLimitTime(chain, endpoint));
 			}

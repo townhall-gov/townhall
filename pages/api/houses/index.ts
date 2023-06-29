@@ -8,7 +8,6 @@ import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
 import { MIN_TOKEN_TO_CREATE_ROOM } from '~src/global/min_token';
 import { houseCollection, roomCollection } from '~src/services/firebase/utils';
-import { EBlockchain } from '~src/types/enums';
 import { IHouse } from '~src/types/schema';
 import getErrorMessage from '~src/utils/getErrorMessage';
 
@@ -23,10 +22,11 @@ export const getHouses: TGetHousesFn = async () => {
 					const data = doc.data() as IHouse;
 					if (data) {
 						// Sanitization
-						if (data.id && data.blockchain && Object.values(EBlockchain).includes(data.blockchain)) {
+						if (data.id && data.blockchain) {
 							const roomAggregateQuerySnapshot = await roomCollection(data.id).count().get();
 							const totalRoom = roomAggregateQuerySnapshot.data().count || 0;
 							const house: IHouse = {
+								admins: data.admins || [],
 								blockchain: data.blockchain,
 								description: data.description || '',
 								id: data.id,

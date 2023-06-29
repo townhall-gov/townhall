@@ -5,7 +5,7 @@ import { ApiPromise } from '@polkadot/api';
 import { AnyNumber } from '@polkadot/types-codec/types';
 import { BlockNumber } from '@polkadot/types/interfaces';
 import { extractBlockTime } from './blockTime';
-import { chainBlockTime } from '../../constants';
+import { chainProperties } from '~src/onchain-data/networkConstants';
 
 const blockNumberThreshold = 3;
 
@@ -24,14 +24,14 @@ async function getBlockTimeByHeightFromApis(apis: ApiPromise[], height?: BlockNu
 	return Promise.any(promises);
 }
 
-async function getExpected(chain: keyof typeof chainBlockTime, apis: ApiPromise[], lastHeightTime: {
+async function getExpected(chain: keyof typeof chainProperties, apis: ApiPromise[], lastHeightTime: {
 	height: number,
 	time: number
 }, targetTime: number) {
 	const { height, time } = lastHeightTime;
 
 	const gap = Math.abs(targetTime - time);
-	const heightGap = Math.trunc(gap / chainBlockTime[chain]);
+	const heightGap = Math.trunc(gap / chainProperties[chain].blockTime);
 
 	let expectedHeight;
 	if (time > targetTime) {
@@ -50,7 +50,7 @@ async function getExpected(chain: keyof typeof chainBlockTime, apis: ApiPromise[
 		: lastHeightTime;
 }
 
-async function getHeightByTime(chain: keyof typeof chainBlockTime, apis: ApiPromise[], targetTime: number, lastHeightTime: {
+async function getHeightByTime(chain: keyof typeof chainProperties, apis: ApiPromise[], targetTime: number, lastHeightTime: {
 	height: number,
 	time: number
 }): Promise<{
@@ -58,7 +58,7 @@ async function getHeightByTime(chain: keyof typeof chainBlockTime, apis: ApiProm
 	time: number
 }> {
 	const { height, time } = lastHeightTime;
-	const blockTime = chainBlockTime[chain];
+	const { blockTime } = chainProperties[chain];
 
 	if (targetTime > time) {
 		// Calculate the estimated number of blocks

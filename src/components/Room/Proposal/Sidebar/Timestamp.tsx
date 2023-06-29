@@ -8,7 +8,7 @@ import { useProposalSelector } from '~src/redux/selectors';
 const Timestamp = () => {
 	const { proposal } = useProposalSelector();
 	if (!proposal) return null;
-	const { snapshot_heights, created_at, start_date, end_date } = proposal;
+	const { voting_strategies_with_height, created_at, start_date, end_date } = proposal;
 	return (
 		<section
 			className='border border-solid border-blue_primary rounded-2xl drop-shadow-[0px_6px_18px_rgba(0,0,0,0.06)] p-6 text-white'
@@ -18,13 +18,13 @@ const Timestamp = () => {
 			</h2>
 			<div className='flex flex-col gap-y-[10px] leading-[22px] font-normal tracking-[0.02em]'>
 				{
-					snapshot_heights?.length?
+					voting_strategies_with_height?.length?
 						<p className='grid grid-cols-2 gap-x-1 m-0 items-center'>
 							<span className='col-span-1 text-sm text-grey_primary'>
                                 Block number
 							</span>
 							<span className='col-span-1 text-end text-xs'>
-                                #{snapshot_heights?.[0]?.height}
+                                #{voting_strategies_with_height?.[0]?.height}
 							</span>
 						</p>
 						: null

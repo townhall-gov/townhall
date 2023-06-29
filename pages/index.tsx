@@ -96,32 +96,34 @@ const Home: FC<IHomeClientProps> = (props) => {
 					</div>
 				</div>
 
-				<section className='grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 justify-between gap-[50px]'>
-					{
-						(category == 'houses' || category == 'all') && houseFiltered && houseFiltered.slice(0,visibleHousesCards).map((house) => {
-							return (
-								<>
-									<House
-										key={house.id}
-										house={house}
-									/>
-								</>
-							);
-						})
-					}
-					{
-						(category == 'rooms' || category == 'all') && roomFiltered && roomFiltered.slice(0,visibleRoomCards).map((room) => {
-							return (
-								<>
-									<Room
-										key={room.id}
-										room={room}
-									/>
-								</>
-							);
-						})
-					}
-				</section>
+				<div>
+					<section className='flex items-center flex-wrap gap-[50px]'>
+						{
+							(category == 'houses' || category == 'all') && houseFiltered && houseFiltered.slice(0,visibleHousesCards).map((house) => {
+								return (
+									<>
+										<House
+											key={house.id}
+											house={house}
+										/>
+									</>
+								);
+							})
+						}
+						{
+							(category == 'rooms' || category == 'all') && roomFiltered && roomFiltered.slice(0,visibleRoomCards).map((room) => {
+								return (
+									<>
+										<Room
+											key={room.id}
+											room={room}
+										/>
+									</>
+								);
+							})
+						}
+					</section>
+				</div>
 				{category === 'all' && (
 					<div className={`flex justify-center items-center mt-[100px] ${(visibleHousesCards+visibleRoomCards) >= (houseFiltered?.length+roomFiltered.length) ? 'hidden' : ''}`} onClick={() => {
 						dispatch(homeActions.setLoadMoreHouses());

@@ -54,7 +54,7 @@ export const houseStore = createSlice({
 			const house = action.payload;
 			state.house = house;
 			state.houseSettings = {
-				min_token_to_create_room: (house?.min_token_to_create_room || house?.min_token_to_create_room === 0)? house?.min_token_to_create_room: MIN_TOKEN_TO_CREATE_ROOM
+				min_token_to_create_room: house?.min_token_to_create_room
 			};
 		},
 		setHouseDefaultRoom: (state, action: PayloadAction<IRoom |null>) => {

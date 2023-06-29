@@ -8,13 +8,14 @@ import React, { FC } from 'react';
 
 interface IBackButtonProps {
 	className?: string;
+	url: string;
 }
 
 const BackButton: FC<IBackButtonProps> = (props) => {
-	const { className } = props;
+	const { className, url } = props;
 	const router = useRouter();
 	return (
-		<button onClick={() => router.back()} className={
+		<button onClick={() => router.push(url)} className={
 			classNames('outline-none border-none text-[#90A0B7] font-normal text-sm leading-[17px] bg-transparent cursor-pointer flex items-center justify-center gap-x-2', className)
 		}>
 			<LeftOutlined className='text-xs' />

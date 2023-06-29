@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { BN } from '@polkadot/util';
+import BigNumber from 'bignumber.js';
 import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TNextApiHandler } from '~src/api/types';
@@ -10,15 +10,14 @@ import authServiceInstance from '~src/auth';
 import getTokenFromReq from '~src/auth/utils/getTokenFromReq';
 import messages from '~src/auth/utils/messages';
 import { houseCollection, proposalCollection, roomCollection, voteCollection } from '~src/services/firebase/utils';
-import { IRoom, IVote, IVotesResult } from '~src/types/schema';
+import { IProposal, IVote, IVotesResult } from '~src/types/schema';
+import { calculateStrategy } from '~src/utils/calculation/getStrategyWeight';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
 
 export type TVotePayload = Omit<IVote, 'created_at' | 'id' | 'voter_address'>;
 
 export interface IVoteBody {
-    vote: TVotePayload & {
-		timestamp: number;
-	};
+    vote: TVotePayload;
 	voter_address: string;
     signature: string;
 }
@@ -90,13 +89,14 @@ const handler: TNextApiHandler<IVoteResponse, IVoteBody, {}> = async (req, res) 
 
 	const proposalDocRef = proposalCollection(house_id, room_id).doc(String(proposal_id));
 	const proposalDocSnapshot = await proposalDocRef.get();
+	const proposalData = proposalDocSnapshot.data() as IProposal;
 	if (!proposalDocSnapshot.exists) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error: `Proposal with id ${proposal_id} does not exist in a Room with id ${room_id} and House with id ${house_id}.` });
 	}
 
-	const isAllZero = vote.balances.every((balance) => Number(balance.balance) === 0);
+	const isAllZero = vote.balances.every((balance) => new BigNumber(balance.value).eq(0));
 	if (isAllZero) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Can not vote, All balances are zero.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Can not vote, All Strategies are not satisfy.' });
 	}
 	const voteColRef = voteCollection(house_id, room_id, String(proposal_id));
 	const voteQuerySnapshot = await voteColRef.where('voter_address', '==', voter_address).limit(0).get();
@@ -106,7 +106,12 @@ const handler: TNextApiHandler<IVoteResponse, IVoteBody, {}> = async (req, res) 
 	const voteDocRef = voteColRef.doc();
 	const now = new Date();
 	const newVote: IVote = {
-		balances: vote.balances,
+		balances: vote.balances.map((balance) => {
+			return {
+				id: balance.id,
+				value: balance.value
+			};
+		}),
 		created_at: now,
 		house_id: house_id,
 		id: voteDocRef.id,
@@ -121,22 +126,29 @@ const handler: TNextApiHandler<IVoteResponse, IVoteBody, {}> = async (req, res) 
 		signature
 	}, { merge: true });
 
-	const roomData = roomDocSnapshot.data() as IRoom;
 	const votes_result = (proposalDocSnapshot.data()?.votes_result || {}) as IVotesResult;
 	newVote.options.forEach((option) => {
-		if (!votes_result[option.value]) {
-			votes_result[option.value] = roomData.voting_strategies.map((strategy) => {
-				return {
-					amount: 0,
-					name: strategy.name,
-					network: strategy.network
-				};
-			});
-		}
 		votes_result[option.value] = (votes_result[option.value] || []).map((optionResult) => {
+			let prev = (new BigNumber(optionResult.value || '0'));
+			const balance = vote.balances.find((item) => item.id === optionResult.id);
+			const strategy = proposalData.voting_strategies_with_height.find((item) => item.id === optionResult.id);
+			if (strategy) {
+				let weight = new BigNumber(strategy?.weight || '0');
+				if (weight.eq(0)) {
+					weight = new BigNumber(1);
+				}
+				const current = new BigNumber(balance?.value || '0').multipliedBy(weight);
+				const result = calculateStrategy({
+					...strategy,
+					value: current.toString() || '0'
+				});
+				prev = prev.plus(result);
+			} else {
+				prev = prev.plus(balance?.value || '0');
+			}
 			return {
 				...optionResult,
-				amount: new BN(optionResult.amount).add(new BN(newVote.balances.find((balance) => balance.network === optionResult.network)?.balance || 0)).toString()
+				value: prev.toString()
 			};
 		});
 	});

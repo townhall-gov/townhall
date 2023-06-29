@@ -22,7 +22,7 @@ const AppLayout: FC<IAppLayoutProps> = (props) => {
 	return (
 		<Layout className='bg-app_background'>
 			<NavHeader />
-			<Layout className='min-h-[calc(100vh-84px)] flex flex-row gap-x-[77.7px] m-0 px-6 py-[52.5px] bg-app_background relative'>
+			<Layout className='min-h-[calc(100vh-84px)] flex flex-row gap-x-[77.7px] m-0 px-[50px] py-[52.5px] bg-app_background relative'>
 				<Sidebar />
 				<Content className='bg-app_background'>
 					<Component {...pageProps} />

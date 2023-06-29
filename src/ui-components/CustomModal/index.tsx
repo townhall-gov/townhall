@@ -32,7 +32,7 @@ const CustomModal: FC<ICustomModalProps> = () => {
 					</button>
 				</div>
 			}
-			className='p-0'
+			className='p-0 min-w-fit'
 			closable={false}
 			footer={<ModalFooter type={footerType} />}
 		>

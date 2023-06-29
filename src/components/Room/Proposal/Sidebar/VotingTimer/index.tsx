@@ -50,32 +50,32 @@ const VotingTimer = () => {
 				Voting Starts in
 					</h2>
 					<div className='flex justify-between text-[32px] text-[#66A5FF] mx-2'>
-						<article className='flex flex-col gap-y-5 items-center'>
-							<p className='font-bold'> {votingTimer.days} </p>
+						<article className='flex flex-col gap-y-1.5 items-center'>
+							<p className='font-bold'> { votingTimer.days } </p>
 							<span className='text-sm font-normal'> Days </span>
 						</article>
-						<article className='flex flex-col gap-y-5'>
+						<article className='flex flex-col gap-y-1.5 items-center'>
 							<p className='font-bold'> : </p>
 							<span className='text-sm font-normal'></span>
 						</article>
-						<article className='flex flex-col gap-y-5 items-center'>
-							<p className='font-bold'> {votingTimer.hours} </p>
+						<article className='flex flex-col gap-y-1.5 items-center'>
+							<p className='font-bold'> { votingTimer.hours } </p>
 							<span className='text-sm font-normal'> Hours </span>
 						</article>
-						<article className='flex flex-col gap-y-5'>
+						<article className='flex flex-col gap-y-1.5 items-center'>
 							<p className='font-bold'> : </p>
 							<span className='text-sm font-normal'></span>
 						</article>
-						<article className='flex flex-col gap-y-5 items-center'>
-							<p className='font-bold'> {votingTimer.minutes} </p>
+						<article className='flex flex-col gap-y-1.5 items-center'>
+							<p className='font-bold'> { votingTimer.minutes } </p>
 							<span className='text-sm font-normal'> Minutes </span>
 						</article>
-						<article className='flex flex-col gap-y-5'>
+						<article className='flex flex-col gap-y-1.5 items-center'>
 							<p className='font-bold'>:</p>
 							<span className='text-sm font-normal'></span>
 						</article>
-						<article className='flex flex-col gap-y-5 items-center'>
-							<p className='font-bold'> {votingTimer.seconds} </p>
+						<article className='flex flex-col gap-y-1.5 items-center'>
+							<p className='font-bold'> { votingTimer.seconds } </p>
 							<span className='text-sm font-normal'> Seconds </span>
 						</article>
 					</div>

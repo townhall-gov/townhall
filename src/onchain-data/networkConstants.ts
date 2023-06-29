@@ -2,22 +2,98 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { TEvmChains, TChains } from './utils/constants';
+export type TAssetChains = {
+	acala: 'acala';
+	astar: 'astar';
+	bifrost: 'bifrost';
+	karura: 'karura';
+	moonbase: 'moonbase';
+	moonbeam: 'moonbeam';
+	moonriver: 'moonriver';
+	statemine: 'statemine';
+	centrifuge : 'centrifuge';
+};
 
-type TChainProperties =  {
-    [key in TChains[keyof TChains] | TEvmChains[keyof TEvmChains]]: {
-        name: key;
-        blockTime: number;
-        endpoints: string[];
-        chainId: number;
-        decimals: number;
-        symbol: string;
-        isEVM: boolean;
-    };
+export const assetChains = {
+	acala: 'acala',
+	astar: 'astar',
+	bifrost: 'bifrost',
+	centrifuge : 'centrifuge',
+	karura: 'karura',
+	moonbase: 'moonbase',
+	moonbeam: 'moonbeam',
+	moonriver: 'moonriver',
+	statemine: 'statemine'
+};
+
+export type TChains = {
+	kusama: 'kusama';
+	polkadot: 'polkadot';
+	pendulum : 'pendulum';
+	kilt : 'kilt';
+};
+
+export const chains = {
+	kilt : 'kilt',
+	kusama: 'kusama',
+	pendulum : 'pendulum',
+	polkadot: 'polkadot'
+};
+
+export type TEvmChains = {
+	moonbeam: 'moonbeam';
+	moonriver: 'moonriver';
+	moonbase: 'moonbase';
+};
+
+export const evmChains = {
+	moonbase: 'moonbase',
+	moonbeam: 'moonbeam',
+	moonriver: 'moonriver'
+};
+
+export type TAssetType = {
+	Native: 'Native';
+	Contract: 'Contract';
+	Assets: 'Assets';
+}
+
+export const assetType = {
+	Assets: 'Assets',
+	Contract: 'Contract',
+	Native: 'Native'
+} as const;
+
+export type TChainProperty = {
+	blockTime: number;
+	endpoints: string[];
+	chainId: number;
+	decimals: number;
+	symbol: string;
+	isEVM: boolean;
+};
+
+export type TChainProperties =  {
+    [key in
+		| TChains[keyof TChains]
+		| TEvmChains[keyof TEvmChains]
+		| TAssetChains[keyof TAssetChains]]: TChainProperty & {
+			name: key;
+		} & (key extends TEvmChains[keyof TEvmChains]
+			? {
+				assets: [TAssetType['Native'], TAssetType['Assets'], TAssetType['Contract']];
+			}
+			: key extends TAssetChains[keyof TAssetChains]
+			? {
+				assets: [TAssetType['Native'], TAssetType['Assets']];
+			}
+			: {}
+		);
 }
 
 const chainProperties: TChainProperties = {
 	acala: {
+		assets: [assetType.Native, assetType.Assets],
 		blockTime: 12000,
 		chainId: 787,
 		decimals: 12,
@@ -33,6 +109,7 @@ const chainProperties: TChainProperties = {
 		symbol: 'ACA'
 	},
 	astar: {
+		assets: [assetType.Native, assetType.Assets],
 		blockTime: 12000,
 		chainId: 592,
 		decimals: 18,
@@ -46,6 +123,63 @@ const chainProperties: TChainProperties = {
 		isEVM: false,
 		name: 'astar',
 		symbol: 'ASTR'
+	},
+	bifrost: {
+		assets: [assetType.Native, assetType.Assets],
+		blockTime: 12000,
+		chainId: 0,
+		decimals: 12,
+		endpoints: [
+			'wss://bifrost-parachain.api.onfinality.io/public-ws',
+			'wss://bifrost-rpc.liebi.com/ws',
+			'wss://bifrost-rpc.dwellir.com'
+		],
+		isEVM: false,
+		name: 'bifrost',
+		symbol: 'BNC'
+	},
+	centrifuge: {
+		assets: [assetType.Native, assetType.Assets],
+		blockTime: 12000,
+		chainId: 0,
+		decimals: 18,
+		endpoints: [
+			'wss://fullnode.centrifuge.io/',
+			'wss://centrifuge-parachain.api.onfinality.io/public-ws'
+		],
+		isEVM: false,
+		name: 'centrifuge',
+		symbol: 'CFG'
+	},
+	karura: {
+		assets: [assetType.Native, assetType.Assets],
+		blockTime: 12000,
+		chainId: 0,
+		decimals: 12,
+		endpoints: [
+			'wss://karura.api.onfinality.io/public-ws',
+			'wss://karura-rpc.dwellir.com',
+			'wss://karura-rpc-3.aca-api.network/ws',
+			'wss://karura-rpc-2.aca-api.network/ws',
+			'wss://karura-rpc-1.aca-api.network/ws',
+			'wss://karura-rpc-0.aca-api.network/ws'
+		],
+		isEVM: false,
+		name: 'karura',
+		symbol: 'KAR'
+	},
+	kilt:{
+		blockTime: 12000,
+		chainId: 0,
+		decimals: 15,
+		endpoints: [
+			'wss://spiritnet.api.onfinality.io/public-ws',
+			'wss://spiritnet.kilt.io/',
+			'wss://kilt-rpc.dwellir.com/'
+		],
+		isEVM: false,
+		name: 'kilt',
+		symbol: 'KILT'
 	},
 	kusama: {
 		blockTime: 6000,
@@ -63,6 +197,7 @@ const chainProperties: TChainProperties = {
 		symbol: 'KSM'
 	},
 	moonbase: {
+		assets: [assetType.Native, assetType.Assets, assetType.Contract],
 		blockTime: 12000,
 		chainId: 1287,
 		decimals: 18,
@@ -77,6 +212,7 @@ const chainProperties: TChainProperties = {
 		symbol: 'DEV'
 	},
 	moonbeam: {
+		assets: [assetType.Native, assetType.Assets, assetType.Contract],
 		blockTime: 12000,
 		chainId: 1284,
 		decimals: 18,
@@ -90,6 +226,7 @@ const chainProperties: TChainProperties = {
 		symbol: 'GLMR'
 	},
 	moonriver: {
+		assets: [assetType.Native, assetType.Assets, assetType.Contract],
 		blockTime: 12000,
 		chainId: 1285,
 		decimals: 18,
@@ -102,10 +239,21 @@ const chainProperties: TChainProperties = {
 		name: 'moonriver',
 		symbol: 'MOVR'
 	},
+	pendulum: {
+		blockTime: 12000,
+		chainId: 0,
+		decimals: 12,
+		endpoints: [
+			'wss://rpc-pendulum.prd.pendulumchain.tech/'
+		],
+		isEVM: false,
+		name: 'pendulum',
+		symbol: 'PEN'
+	},
 	polkadot: {
 		blockTime: 6000,
 		chainId: 0,
-		decimals: 12,
+		decimals: 10,
 		endpoints: [
 			'wss://polkadot.api.onfinality.io/public-ws',
 			'wss://polkadot-rpc.dwellir.com',
@@ -116,6 +264,19 @@ const chainProperties: TChainProperties = {
 		isEVM: false,
 		name: 'polkadot',
 		symbol: 'DOT'
+	},
+	statemine: {
+		assets: [assetType.Native, assetType.Assets],
+		blockTime: 12000,
+		chainId: 0,
+		decimals: 12,
+		endpoints: [
+			'wss://statemine.public.curie.radiumblock.co/ws',
+			'wss://statemine.api.onfinality.io/public-ws'
+		],
+		isEVM: false,
+		name: 'statemine',
+		symbol: 'KSM'
 	}
 };
 

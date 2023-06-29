@@ -6,8 +6,10 @@ import { BN, formatBalance } from '@polkadot/util';
 import Web3 from 'web3';
 import { chainProperties } from '~src/onchain-data/networkConstants';
 
-const formatTokenAmount = (amount: string | number, network: string) => {
-	const chain = chainProperties[network as keyof typeof chainProperties];
+const formatTokenAmount = (amount: string | number, network: string, chain?: any) => {
+	if (!chain) {
+		chain = chainProperties[network as keyof typeof chainProperties];
+	}
 	if (!chain) return String(amount);
 	const decimals = chain.decimals;
 	if (chain.isEVM) {

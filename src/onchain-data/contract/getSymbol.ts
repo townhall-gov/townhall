@@ -2,8 +2,8 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { evmChains } from '../utils/constants';
-import { getProvidersForEvmChain } from '../utils/evmChain/apis';
+import { evmChains } from '../networkConstants';
+import { createAndGetProviders } from '../utils/evmChain/apis';
 import { erc20Abi } from './abi';
 import Web3 from 'web3';
 
@@ -21,7 +21,7 @@ async function querySymbol(contract: string, provider: any) {
 }
 
 async function getSymbol(chain: keyof typeof evmChains, contract: string) {
-	const providers = getProvidersForEvmChain(chain);
+	const providers = await createAndGetProviders(chain);
 
 	const promises = [];
 	for (const provider of providers) {
