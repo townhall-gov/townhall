@@ -113,7 +113,6 @@ const Home: FC<IHomeClientProps> = (props) => {
 						<SearchCategoryDropdown />
 					</div>
 				</div>
-
 				<section className='grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 justify-between gap-[50px]'>
 					{
 						(category == 'houses') && houseFiltered && houseFiltered.slice(0,visibleHousesCards).map((house) => {

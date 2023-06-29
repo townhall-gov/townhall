@@ -73,6 +73,7 @@ interface IRoom {
 	total_members: number;
 	socials: IProjectSocial[];
 	creator_details: ICreatorDetails;
+	admins: IAdmin[];
 	voting_strategies: IStrategy[];
 	created_at: Date;
 	min_token_to_create_proposal_in_room: number;
