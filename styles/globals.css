@@ -85,7 +85,76 @@ p {
 }
 /* MODAL CSS */
 
-ul.ant-dropdown-menu {
+.ant-select div.ant-select-selector {
+    background: var(--app_background) !important;
+    border: 1px solid var(--blue_primary) !important;
+    overflow-y: overlay;
+    width: 100% !important;
+    border-radius: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    color: white !important;
+    height: 60px !important;
+}
+.ant-select div.ant-select-selector .ant-select-selection-search {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: min-content !important;
+    top: 14px !important;
+    left: 18px !important;
+}
+.ant-select-selection-placeholder, .ant-select-selection-item {
+    padding-left: 7px !important;
+    color: white !important;
+    font-weight: 500 !important;
+    font-size: 16px !important;
+}
+.ant-select-arrow  {
+    padding-right: 8px !important;
+    color: white !important;
+    font-size: 16px !important;
+}
+.ant-select-dropdown {
+    padding: 0px !important;
+}
+.ant-select-dropdown .rc-virtual-list {
+    overflow: hidden !important;
+    border-radius: 8px !important;
+    border: 1px solid var(--blue_primary) !important;
+    padding: 4px !important;
+    background-color: var(--app_background) !important;
+}
+
+.ant-select-item {
+    color: white !important;
+    font-size: 16px !important;
+    font-weight: medium !important;
+    padding: 10px !important;
+}
+.ant-select-item-option:hover{
+    background: var(--blue_primary) !important;
+}
+.rc-virtual-list-holder-inner .ant-select-item-option-selected {
+    background: transparent !important;
+}
+.ant-empty {
+    color: white !important;
+    padding: 16px !important;
+    margin: 0 !important;
+    background: var(--app_background) !important;
+    border: 1px solid var(--blue_primary) !important;
+    overflow-y: overlay;
+    width: 100% !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+}
+.ant-empty-description {
+    color: white !important;
+}
+ul.ant-dropdown-menu, .ant-select-selector {
     background: var(--app_background) !important;
     border: 1px solid var(--grey_secondary);
     max-height: 260px !important;
