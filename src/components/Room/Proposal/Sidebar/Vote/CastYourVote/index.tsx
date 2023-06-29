@@ -11,6 +11,9 @@ import { useAuthActionsCheck } from '~src/redux/profile/selectors';
 import { useProfileSelector, useProposalSelector } from '~src/redux/selectors';
 import { HexWarningIcon } from '~src/ui-components/CustomIcons';
 import VotingTimer from '../../VotingTimer';
+import { IBalanceResponse, IBalanceBody } from 'pages/api/chain/actions/balance';
+import { proposalActions } from '~src/redux/proposal';
+import api from '~src/services/api';
 
 interface ICastYourVoteProps {}
 
