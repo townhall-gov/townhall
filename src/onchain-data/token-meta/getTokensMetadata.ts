@@ -16,6 +16,11 @@ const getTokenId = (tokenId: any) => {
 				ForeignAsset: Number((tokenId.ForeignAssetId || '').replace(/,/g, ''))
 			};
 		}
+		if (tokenId.ForeignAsset) {
+			return {
+				ForeignAsset: Number((tokenId.ForeignAsset || '').replace(/,/g, ''))
+			};
+		}
 		if (tokenId.StableAssetId) {
 			return {
 				StableAsset: Number((tokenId.StableAssetId || '').replace(/,/g, ''))
@@ -55,7 +60,7 @@ export type TTokenMetadata = {
     } | string | null
 };
 
-async function getTokensMetadataUsingMetadataFromOneApi(api: ApiPromise) {
+async function getTokensMetadataUsingAssetsMetadataFromOneApi(api: ApiPromise) {
 	if (!api.query.assets?.metadata) {
 		throw new Error(`${api} does not support assets metadata query`);
 	}
@@ -77,7 +82,7 @@ async function getTokensMetadataUsingMetadataFromOneApi(api: ApiPromise) {
 	return newTokensMetadata;
 }
 
-async function getTokensMetadataUsingAssetMetadatasFromOneApi(api: ApiPromise) {
+async function getTokensMetadataUsingAssetRegistryAssetMetadatasFromOneApi(api: ApiPromise) {
 	if (!api.query.assetRegistry?.assetMetadatas) {
 		throw new Error(`${api} does not support assets metadata query`);
 	}
@@ -99,13 +104,37 @@ async function getTokensMetadataUsingAssetMetadatasFromOneApi(api: ApiPromise) {
 	return newTokensMetadata;
 }
 
+async function getTokensMetadataUsingORMLAssetRegistryMetadataFromOneApi(api: ApiPromise) {
+	if (!api.query.ormlAssetRegistry?.metadata) {
+		throw new Error(`${api} does not support assets metadata query`);
+	}
+	const tokensMetadata = await api.query.ormlAssetRegistry?.metadata.entries();
+	const newTokensMetadata: TTokenMetadata[] = [];
+	tokensMetadata.forEach((tokenMetadata) => {
+		if (tokenMetadata[0] && tokenMetadata[1]) {
+			const tokenId = getTokenId((tokenMetadata[0]?.toHuman() as any)?.[0]);
+			const newTokenMetadata = tokenMetadata[1].toHuman() as any;
+			newTokensMetadata.push({
+				decimals: Number((newTokenMetadata.decimals || '').replace(/,/g, '')),
+				name: newTokenMetadata.name,
+				symbol: newTokenMetadata.symbol,
+				tokenId: tokenId
+			});
+		}
+	});
+
+	return newTokensMetadata;
+}
+
 async function getTokensMetadataFromApis(apis: ApiPromise[], chain: keyof typeof chainProperties) {
 	const promises = [];
 	for (const api of apis) {
 		if (['statemine', 'moonriver', 'moonbeam', 'moonbase', 'astar'].includes(chain)) {
-			promises.push(getTokensMetadataUsingMetadataFromOneApi(api));
+			promises.push(getTokensMetadataUsingAssetsMetadataFromOneApi(api));
 		} else if (['karura', 'acala', 'bifrost'].includes(chain)) {
-			promises.push(getTokensMetadataUsingAssetMetadatasFromOneApi(api));
+			promises.push(getTokensMetadataUsingAssetRegistryAssetMetadatasFromOneApi(api));
+		} else if (['centrifuge'].includes(chain)) {
+			promises.push(getTokensMetadataUsingORMLAssetRegistryMetadataFromOneApi(api));
 		}
 	}
 

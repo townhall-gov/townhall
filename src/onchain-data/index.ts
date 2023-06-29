@@ -8,7 +8,7 @@ import { getEvmHeightFromProviders } from './utils/evmChain';
 import { createAndGetApis } from './utils/chain/apis';
 import { createAndGetProviders } from './utils/evmChain/apis';
 import { queryBalanceFromOneProvider } from './utils/evmChain/query/balance/getBalanceByAddressAndHeight';
-import { queryBalanceFromOneApi, queryBalanceUsingAssetsAccountFromOneApi, queryBalanceUsingTokensAccountsFromOneApi } from './utils/chain/query/balance/finalized';
+import { queryBalanceFromOneApi, queryBalanceUsingAssetsAccountFromOneApi, queryBalanceUsingORMLTokensAccountsFromOneApi, queryBalanceUsingTokensAccountsFromOneApi } from './utils/chain/query/balance/finalized';
 import { IStrategy } from '~src/redux/rooms/@types';
 import { getFinalizedHeightFromApis } from './utils/chain/query/finalized';
 import { getHeightByTime } from './utils/chain/query/queryHeight';
@@ -99,6 +99,8 @@ const getBalanceUsingStrategyWithHeight = async (strategy_with_height: IStrategy
 					promises.push(queryBalanceUsingAssetsAccountFromOneApi(api, address, token_metadata?.tokenId as string, strategy_with_height.height));
 				} else if (['karura', 'acala', 'bifrost'].includes(strategy_with_height.network)) {
 					promises.push(queryBalanceUsingTokensAccountsFromOneApi(api, address, token_metadata?.tokenId, strategy_with_height.height));
+				} else if (['centrifuge'].includes(strategy_with_height.network)) {
+					promises.push(queryBalanceUsingORMLTokensAccountsFromOneApi(api, address, token_metadata?.tokenId, strategy_with_height.height));
 				}
 			}
 		}
