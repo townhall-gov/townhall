@@ -108,9 +108,32 @@ async function queryBalanceUsingTokensAccountsFromOneApi(api: ApiPromise, addres
 	return result.toString();
 }
 
+async function queryBalanceUsingORMLTokensAccountsFromOneApi(api: ApiPromise, address: string, assetId: any, blockHashOrHeight?: string |  number) {
+	const blockApi = await getBlockApi(api, blockHashOrHeight);
+
+	if (!api.query?.ormlTokens?.accounts) {
+		throw new Error(`${api} does not support tokens balance query`);
+	}
+
+	const account = await blockApi.query.ormlTokens.accounts(address, assetId);
+	if (!account.isEmpty) {
+		return '0';
+	}
+	const data = account.toHuman() as any;
+	let result = new BigNumber(0);
+	if (data.free) {
+		result = result.plus(String(data.free || '').replace(/,/g, ''));
+	}
+	if (data.reserved) {
+		result = result.plus(String(data.reserved || '').replace(/,/g, ''));
+	}
+	return result.toString();
+}
+
 export {
 	getFinalizedBalanceFromApis,
 	queryBalanceFromOneApi,
 	queryBalanceUsingAssetsAccountFromOneApi,
-	queryBalanceUsingTokensAccountsFromOneApi
+	queryBalanceUsingTokensAccountsFromOneApi,
+	queryBalanceUsingORMLTokensAccountsFromOneApi
 };
