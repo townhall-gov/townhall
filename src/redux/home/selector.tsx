@@ -42,9 +42,21 @@ const useVisibleHouseCards = () => {
 	const { visibleHouseCards } = useHomeSelector();
 	return visibleHouseCards ;
 };
+
 const useVisibleRoomCards = () => {
 	const { visibleRoomCards } = useHomeSelector();
 	return visibleRoomCards ;
+};
+
+const useVisibleAllCards = () => {
+	const { visibleAllCards } = useHomeSelector();
+	console.log(visibleAllCards);
+	return visibleAllCards ;
+};
+
+const useLoadMoreVisibility = () => {
+	const { isLoadMoreVisible } = useHomeSelector();
+	return isLoadMoreVisible ;
 };
 
 export {
@@ -53,6 +65,8 @@ export {
 	useCategory,
 	useSearchTerm,
 	useVisibleHouseCards,
-	useVisibleRoomCards
+	useVisibleRoomCards,
+	useLoadMoreVisibility,
+	useVisibleAllCards
 
 };

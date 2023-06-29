@@ -16,7 +16,7 @@ import House from '~src/components/Houses/House';
 import Input from '~src/ui-components/Input';
 import { homeActions } from '~src/redux/home';
 import SearchCategoryDropdown from '~src/ui-components/SearchCategoryDropdown';
-import { useCategory, useFilteredHouses, useFilteredRooms, useSearchTerm, useVisibleHouseCards, useVisibleRoomCards } from '~src/redux/home/selector';
+import { useCategory, useFilteredHouses, useFilteredRooms, useLoadMoreVisibility, useSearchTerm, useVisibleAllCards, useVisibleHouseCards, useVisibleRoomCards } from '~src/redux/home/selector';
 import { SearchIcon } from '~src/ui-components/CustomIcons';
 import LoadMore from '~src/ui-components/LoadMore';
 
@@ -62,10 +62,23 @@ const Home: FC<IHomeClientProps> = (props) => {
 	const { houses, rooms } = props;
 	const dispatch = useDispatch();
 	const houseFiltered = useFilteredHouses();
+	const isLoadMoreVisible= useLoadMoreVisibility();
 	const roomFiltered = useFilteredRooms();
 	const visibleHousesCards=useVisibleHouseCards();
+	const visibleAllCards = useVisibleAllCards();
 	const visibleRoomCards=useVisibleRoomCards();
 	const category = useCategory();
+	const handlescrollevent = () => {
+		if( window.innerHeight+document.documentElement.scrollTop+1>= document.documentElement.scrollHeight && category=='houses' && !isLoadMoreVisible ) {
+			dispatch(homeActions.setLoadMoreHouses());
+		}
+		else if( window.innerHeight+document.documentElement.scrollTop+1>= document.documentElement.scrollHeight && category=='rooms' && !isLoadMoreVisible ) {
+			dispatch(homeActions.setLoadMoreRooms());
+		}
+		else if ( window.innerHeight+document.documentElement.scrollTop+1>= document.documentElement.scrollHeight && category=='all' && !isLoadMoreVisible ) {
+			dispatch(homeActions.setLoadMoreAll());
+		}
+	};
 	useEffect(() => {
 		if (rooms) {
 			dispatch(homeActions.setRooms(rooms));
@@ -80,6 +93,11 @@ const Home: FC<IHomeClientProps> = (props) => {
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [houses, rooms]);
+	useEffect(() => {
+		window.addEventListener('scroll',handlescrollevent);
+		return () => window.removeEventListener('scroll',handlescrollevent);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	});
 	return (
 		<>
 			<SEOHead title='Home' desc='Democratizing governance for all blockchains.' />
@@ -98,7 +116,7 @@ const Home: FC<IHomeClientProps> = (props) => {
 
 				<section className='grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 justify-between gap-[50px]'>
 					{
-						(category == 'houses' || category == 'all') && houseFiltered && houseFiltered.slice(0,visibleHousesCards).map((house) => {
+						(category == 'houses') && houseFiltered && houseFiltered.slice(0,visibleHousesCards).map((house) => {
 							return (
 								<>
 									<House
@@ -110,7 +128,31 @@ const Home: FC<IHomeClientProps> = (props) => {
 						})
 					}
 					{
-						(category == 'rooms' || category == 'all') && roomFiltered && roomFiltered.slice(0,visibleRoomCards).map((room) => {
+						(category == 'rooms') && roomFiltered && roomFiltered.slice(0,visibleRoomCards).map((room) => {
+							return (
+								<>
+									<Room
+										key={room.id}
+										room={room}
+									/>
+								</>
+							);
+						})
+					}
+					{
+						(category == 'all') && houseFiltered && houseFiltered.slice(0,visibleAllCards).map((house) => {
+							return (
+								<>
+									<House
+										key={house.id}
+										house={house}
+									/>
+								</>
+							);
+						})
+					}
+					{
+						(category == 'all') && roomFiltered && roomFiltered.slice(0,visibleAllCards).map((room) => {
 							return (
 								<>
 									<Room
@@ -122,23 +164,23 @@ const Home: FC<IHomeClientProps> = (props) => {
 						})
 					}
 				</section>
-				{category === 'all' && (
-					<div className={`flex justify-center items-center mt-[100px] ${(visibleHousesCards+visibleRoomCards) >= (houseFiltered?.length+roomFiltered.length) ? 'hidden' : ''}`} onClick={() => {
-						dispatch(homeActions.setLoadMoreHouses());
-						dispatch(homeActions.setLoadMoreRooms());
+				{category === 'all' && isLoadMoreVisible && (
+					<div className={'flex justify-center items-center mt-[100px]'} onClick={() => {
+						dispatch(homeActions.setLoadMoreAll());
+						dispatch(homeActions.setLoadMoreVisibility(false));
 					}}>
 						<LoadMore />
 					</div>
 				)}
 
-				{category === 'houses' && (
-					<div className={`flex justify-center items-center mt-[100px] ${visibleHousesCards >= houseFiltered?.length ? 'hidden' : ''}`} onClick={() => dispatch(homeActions.setLoadMoreHouses())}>
+				{category === 'houses' && isLoadMoreVisible && (
+					<div className={'flex justify-center items-center mt-[100px] '} onClick={() => {dispatch(homeActions.setLoadMoreHouses()),dispatch(homeActions.setLoadMoreVisibility(false));}}>
 						<LoadMore />
 					</div>
 				)}
 
-				{category === 'rooms' && (
-					<div className={`flex justify-center items-center mt-[100px] ${visibleRoomCards >= roomFiltered.length ? 'hidden' : ''}`} onClick={() => dispatch(homeActions.setLoadMoreRooms())}>
+				{category === 'rooms' && isLoadMoreVisible && (
+					<div className={'flex justify-center items-center mt-[100px]'} onClick={() => {dispatch(homeActions.setLoadMoreRooms()),dispatch(homeActions.setLoadMoreVisibility(false));}}>
 						<LoadMore />
 					</div>
 				)}

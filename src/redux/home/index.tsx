@@ -10,11 +10,13 @@ const initialState: IHomeStore = {
 	category: 'houses',
 	error: null,
 	houses: [],
+	isLoadMoreVisible:true,
 	loading: false,
 	rooms: [],
 	searchQuery: '',
-	visibleHouseCards:3,
-	visibleRoomCards:3
+	visibleAllCards:5,
+	visibleHouseCards:5,
+	visibleRoomCards:5
 };
 
 export const homeStore = createSlice({
@@ -36,11 +38,17 @@ export const homeStore = createSlice({
 		setHouses: (state, action: PayloadAction<IHouse[]>) => {
 			state.houses = action.payload;
 		},
+		setLoadMoreAll: (state) => {
+			state.visibleAllCards = state.visibleAllCards+5;
+		},
 		setLoadMoreHouses: (state) => {
-			state.visibleHouseCards = state.visibleHouseCards+3;
+			state.visibleHouseCards = state.visibleHouseCards+5;
 		},
 		setLoadMoreRooms: (state) => {
-			state.visibleRoomCards = state.visibleRoomCards+3;
+			state.visibleRoomCards = state.visibleRoomCards+5;
+		},
+		setLoadMoreVisibility: (state,action: PayloadAction<boolean>) => {
+			state.isLoadMoreVisible = action.payload ;
 		},
 		setLoading: (state, action: PayloadAction<boolean>) => {
 			state.loading = action.payload;
