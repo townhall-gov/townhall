@@ -10,6 +10,7 @@ import { EContentType, EFooterType, ETitleType } from '~src/redux/modal/@types';
 import { useAuthActionsCheck } from '~src/redux/profile/selectors';
 import { useProposalSelector } from '~src/redux/selectors';
 import { HexWarningIcon } from '~src/ui-components/CustomIcons';
+import VotingTimer from '../../VotingTimer';
 
 interface ICastYourVoteProps {}
 
@@ -26,9 +27,7 @@ const CastYourVote: FC<ICastYourVoteProps> = () => {
 		>
 			{
 				dayjs().isBefore(dayjs(start_date))?
-					<p className='m-0 font-medium text-base leading-[21px] text-center text-white'>
-					Voting hasn{"'"}t started yet.
-					</p>
+					<VotingTimer/>
 					: (
 						<>
 

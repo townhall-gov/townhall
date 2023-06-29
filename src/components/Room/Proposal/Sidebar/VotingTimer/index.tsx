@@ -45,7 +45,7 @@ const VotingTimer = () => {
 	return (
 		<>
 			{ votingTimer.countDownVisbility && (
-				<section className='border border-solid border-blue_primary rounded-2xl drop-shadow-[0px_6px_18px_rgba(0,0,0,0.06)] p-6 text-white'>
+				<section className='drop-shadow-[0px_6px_18px_rgba(0,0,0,0.06)] text-white'>
 					<h2 className='font-bold text-lg leading-[22px] tracking-[0.01em] mb-[21px]'>
 				Voting Starts in
 					</h2>
