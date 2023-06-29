@@ -2,8 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { DownOutlined } from '@ant-design/icons';
-import { Dropdown } from 'antd';
+import { Select } from 'antd';
 import classNames from 'classnames';
 import { ITokensMetadataBody } from 'pages/api/chain/data/getTokensMetadata';
 import React, { FC, useEffect } from 'react';
@@ -53,52 +52,36 @@ const AssetDropdown: FC<IAssetDropdownProps> = (props) => {
 	return (
 		<article>
 			<h5 className='mb-1'>Asset </h5>
-			<Dropdown
+			<Select
+				showSearch
+				value={strategy.token_metadata[strategy.asset_type]?.name}
 				disabled={isDisabled}
-				trigger={['click']}
-				className={classNames('px-[18.5px] py-[21.5px] border border-solid border-blue_primary rounded-2xl voting_system_type', {
+				className={classNames('border-none w-full', {
 					'cursor-not-allowed': isDisabled,
 					'cursor-pointer': !isDisabled
 				})}
-				overlayClassName='ant-dropdown-menu-border-blue_primary'
-				menu={{
-					items: (tokensMetadata[strategy.network as keyof typeof assetChains] || [])?.map((tokenMetadata) => {
-						return {
-							key: tokenMetadata.name,
-							label: (
-								<p
-									className={classNames('text-base leading-none py-2 text-white cursor-pointer')}
-								>
-									{tokenMetadata.name}
-								</p>
-							)
-						};
-					}),
-					onClick: (e) => {
-						const tokenMetadata = (tokensMetadata[strategy.network as keyof typeof assetChains] || [])?.find((tokenMetadata) => tokenMetadata.name === e.key);
-						dispatch(roomActions.setRoomSettingsStrategiesEdit({
-							...strategy,
-							asset_type: assetType.Assets,
-							token_metadata: {
-								[assetType.Assets]: tokenMetadata
-							}
-						}));
-					}
+				virtual={false}
+				onChange={(value) => {
+					const tokenMetadata = (tokensMetadata[strategy.network as keyof typeof assetChains] || [])?.find((tokenMetadata) => JSON.stringify(tokenMetadata.tokenId) === value);
+					dispatch(roomActions.setRoomSettingsStrategiesEdit({
+						...strategy,
+						asset_type: assetType.Assets,
+						token_metadata: {
+							[assetType.Assets]: tokenMetadata
+						}
+					}));
 				}}
-			>
-				{
-					strategy.token_metadata[strategy.asset_type]?.name?
-						<p id='votingTypeDropdown' className="flex justify-between items-center text-white font-medium text-base leading-none">
-							{strategy.token_metadata[strategy.asset_type]?.name}
-							<DownOutlined/>
-						</p>
-						:
-						<p className='m-0 flex justify-between text-grey_light text-base leading-none'>
-							<span>Select Asset</span>
-							<DownOutlined/>
-						</p>
-				}
-			</Dropdown>
+				optionFilterProp="label"
+				optionLabelProp='label'
+				filterOption={(input, option) => (option?.label ?? '').toLowerCase().includes((input ?? '').toLowerCase())}
+				options={(tokensMetadata[strategy.network as keyof typeof assetChains] || [])?.map((tokenMetadata) => {
+					return {
+						label: tokenMetadata.name,
+						value: JSON.stringify(tokenMetadata.tokenId || '')
+					};
+				})}
+				placeholder="Select Asset"
+			/>
 		</article>
 	);
 };

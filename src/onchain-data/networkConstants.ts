@@ -11,12 +11,14 @@ export type TAssetChains = {
 	moonbeam: 'moonbeam';
 	moonriver: 'moonriver';
 	statemine: 'statemine';
+	centrifuge : 'centrifuge';
 };
 
 export const assetChains = {
 	acala: 'acala',
 	astar: 'astar',
 	bifrost: 'bifrost',
+	centrifuge : 'centrifuge',
 	karura: 'karura',
 	moonbase: 'moonbase',
 	moonbeam: 'moonbeam',
@@ -27,10 +29,14 @@ export const assetChains = {
 export type TChains = {
 	kusama: 'kusama';
 	polkadot: 'polkadot';
+	pendulum : 'pendulum';
+	kilt : 'kilt';
 };
 
 export const chains = {
+	kilt : 'kilt',
 	kusama: 'kusama',
+	pendulum : 'pendulum',
 	polkadot: 'polkadot'
 };
 
@@ -132,6 +138,19 @@ const chainProperties: TChainProperties = {
 		name: 'bifrost',
 		symbol: 'BNC'
 	},
+	centrifuge: {
+		assets: [assetType.Native, assetType.Assets],
+		blockTime: 12000,
+		chainId: 0,
+		decimals: 18,
+		endpoints: [
+			'wss://fullnode.centrifuge.io/',
+			'wss://centrifuge-parachain.api.onfinality.io/public-ws'
+		],
+		isEVM: false,
+		name: 'centrifuge',
+		symbol: 'CFG'
+	},
 	karura: {
 		assets: [assetType.Native, assetType.Assets],
 		blockTime: 12000,
@@ -148,6 +167,19 @@ const chainProperties: TChainProperties = {
 		isEVM: false,
 		name: 'karura',
 		symbol: 'KAR'
+	},
+	kilt:{
+		blockTime: 12000,
+		chainId: 0,
+		decimals: 15,
+		endpoints: [
+			'wss://spiritnet.api.onfinality.io/public-ws',
+			'wss://spiritnet.kilt.io/',
+			'wss://kilt-rpc.dwellir.com/'
+		],
+		isEVM: false,
+		name: 'kilt',
+		symbol: 'KILT'
 	},
 	kusama: {
 		blockTime: 6000,
@@ -206,6 +238,17 @@ const chainProperties: TChainProperties = {
 		isEVM: true,
 		name: 'moonriver',
 		symbol: 'MOVR'
+	},
+	pendulum: {
+		blockTime: 12000,
+		chainId: 0,
+		decimals: 12,
+		endpoints: [
+			'wss://rpc-pendulum.prd.pendulumchain.tech/'
+		],
+		isEVM: false,
+		name: 'pendulum',
+		symbol: 'PEN'
 	},
 	polkadot: {
 		blockTime: 6000,
