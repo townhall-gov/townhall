@@ -65,7 +65,21 @@ const handler: TNextApiHandler<IRoomSettingsResponse, IRoomSettingsBody, {}> = a
 	}
 
 	const data = roomRefDoc.data() as IRoom;
-	if (data.creator_details.address !== address) {
+
+	let isUserAdmin = false;
+	if (data?.admins && Array.isArray(data?.admins) && data?.admins.length > 0 && address) {
+		isUserAdmin = data?.admins.some((admin) => {
+			if (admin.addresses && Array.isArray(admin.addresses) && admin.addresses.length > 0) {
+				return admin.addresses.some((address) => address === address);
+			} else {
+				return false;
+			}
+		});
+	}
+	if (!isUserAdmin && data?.creator_details?.address && address) {
+		isUserAdmin = data?.creator_details?.address === address;
+	}
+	if (!isUserAdmin) {
 		return res.status(StatusCodes.FORBIDDEN).json({ error: 'Room Admin can update room settings.' });
 	}
 

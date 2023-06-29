@@ -10,12 +10,21 @@ const RoomSettings = () => {
 	const { room, loading } = useRoomSelector();
 	const [isDisabled, setIsDisabled] = React.useState(true);
 	useEffect(() => {
-		if (room?.creator_details?.address && user?.address) {
-			setIsDisabled(room?.creator_details?.address !== user?.address);
-		} else {
-			setIsDisabled(true);
+		let isUserAdmin = false;
+		if (room?.admins && Array.isArray(room?.admins) && room?.admins.length > 0 && user?.address) {
+			isUserAdmin = room?.admins.some((admin) => {
+				if (admin.addresses && Array.isArray(admin.addresses) && admin.addresses.length > 0) {
+					return admin.addresses.some((address) => address === user.address);
+				} else {
+					return false;
+				}
+			});
 		}
-	}, [room?.creator_details?.address, user?.address]);
+		if (!isUserAdmin && room?.creator_details?.address && user?.address) {
+			isUserAdmin = room?.creator_details?.address === user?.address;
+		}
+		setIsDisabled(!isUserAdmin);
+	}, [room?.creator_details?.address, room?.admins, user?.address]);
 	return (
 		<div className='h-full flex flex-col gap-y-5 w-full'>
 			<Strategies
