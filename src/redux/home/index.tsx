@@ -32,6 +32,15 @@ export const homeStore = createSlice({
 	initialState,
 	name: 'home',
 	reducers: {
+		resetLoadMoreAll: (state) => {
+			state.visibleAllCards = 10;
+		},
+		resetLoadMoreHouses: (state) => {
+			state.visibleHouseCards = 10;
+		},
+		resetLoadMoreRooms: (state) => {
+			state.visibleRoomCards = 10;
+		},
 		setCategory: (state, action: PayloadAction<'houses' | 'rooms' | 'all'>) => {
 			state.category = action.payload;
 		},

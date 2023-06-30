@@ -1,7 +1,7 @@
 // Copyright 2019-2025 @polka-labs/townhall authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
-import React from 'react';
+import React, { useEffect } from 'react';
 import { DownOutlined } from '@ant-design/icons';
 import { Dropdown } from 'antd';
 import classNames from 'classnames';
@@ -33,6 +33,18 @@ const SearchCategoryDropdown: React.FC<ISearchCategoryDropdownProps> = () => {
 		}
 	];
 	const dispatch = useDispatch();
+	useEffect(() => {
+		if(category=='all') {
+			dispatch(homeActions.resetLoadMoreAll());
+		}
+		else if (category=='houses') {
+			dispatch(homeActions.resetLoadMoreHouses());
+		}
+		else if (category=='rooms') {
+			dispatch(homeActions.resetLoadMoreRooms());
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	},[category]);
 	return (
 		<Dropdown
 			trigger={['click']}

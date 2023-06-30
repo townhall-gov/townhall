@@ -6,6 +6,8 @@ import 'dayjs-init';
 import { GetServerSideProps } from 'next';
 import React, { FC, useCallback, useEffect } from 'react';
 import SEOHead from '~src/global/SEOHead';
+import { LoadingOutlined } from '@ant-design/icons';
+import { Spin } from 'antd';
 import { IHouse, IRoom } from '~src/types/schema';
 import { getHouses } from './api/houses';
 import { getRooms } from './api/rooms';
@@ -89,7 +91,7 @@ const Home: FC<IHomeClientProps> = (props) => {
 		if (isLoadMoreVisible) return;
 		const scrollPosition = window.innerHeight + document.documentElement.scrollTop;
 		const scrollHeight = document.documentElement.scrollHeight;
-		const isAtBottom = ((scrollPosition + 1) >= (scrollHeight - 1));
+		const isAtBottom = ((scrollPosition + 1) >= (scrollHeight ));
 
 		setIsSpinning(false);
 		if (isAtBottom) {
@@ -216,7 +218,7 @@ const Home: FC<IHomeClientProps> = (props) => {
 									dispatch(homeActions.setLoadMoreVisibility(false));
 								}}
 							/>
-							: isSpinning? 'Spin': null
+							: isSpinning? <Spin indicator={<LoadingOutlined />}/>: null
 					}
 				</article>
 			</section>
