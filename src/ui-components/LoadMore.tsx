@@ -4,10 +4,14 @@
 
 import React, { FC } from 'react';
 import { LoadMoreIcon } from './CustomIcons';
-const LoadMore: FC = () => {
-	return (
 
-		<div id='addressDropdown' className="flex items-center justify-center cursor-pointer w-[164px] h-[56px] px-[12px] py-[16px] border-2 border-solid border-blue_primary rounded-[16px]">
+interface ILoadMoreProps {
+	onClick: () => void;
+}
+
+const LoadMore: FC<ILoadMoreProps> = (props) => {
+	return (
+		<button onClick={props.onClick} id='addressDropdown' className="bg-transparent outline-none flex items-center justify-center cursor-pointer w-[164px] h-[56px] px-[12px] py-[16px] border-2 border-solid border-blue_primary rounded-[16px]">
 			<div className='flex items-center justify-start text-white'>
 				<span className='mr-3' >
 					<LoadMoreIcon className='text-transparent stroke-app_background text-2xl border border-black'/>
@@ -16,7 +20,7 @@ const LoadMore: FC = () => {
                         Load more
 				</div>
 			</div>
-		</div>
+		</button>
 	);
 };
 

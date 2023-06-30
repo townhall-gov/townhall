@@ -63,11 +63,13 @@ const Home: FC<IHomeClientProps> = (props) => {
 	const dispatch = useDispatch();
 	const houseFiltered = useFilteredHouses();
 	const roomFiltered = useFilteredRooms();
-	const isLoadMoreVisible= useLoadMoreVisibility();
+	const isLoadMoreVisible = useLoadMoreVisibility();
 	const visibleAllCards = useVisibleAllCards();
-	const visibleHousesCards=useVisibleHouseCards();
-	const visibleRoomCards=useVisibleRoomCards();
+	const visibleHousesCards = useVisibleHouseCards();
+	const visibleRoomCards = useVisibleRoomCards();
 	const category = useCategory();
+	const [isSpinning, setIsSpinning] = React.useState(false);
+
 	useEffect(() => {
 		if (rooms) {
 			dispatch(homeActions.setRooms(rooms));
@@ -82,52 +84,58 @@ const Home: FC<IHomeClientProps> = (props) => {
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [houses, rooms]);
+
 	const handleScroll = useCallback(() => {
+		if (isLoadMoreVisible) return;
 		const scrollPosition = window.innerHeight + document.documentElement.scrollTop;
 		const scrollHeight = document.documentElement.scrollHeight;
-		const isAtBottom = scrollPosition +1 >= scrollHeight - 1;
+		const isAtBottom = ((scrollPosition + 1) >= (scrollHeight - 1));
+
+		setIsSpinning(false);
 		if (isAtBottom) {
-			if(category=='houses' && !isLoadMoreVisible)
-			{
-				console.log('hello1');
-				if(visibleHousesCards>=houseFiltered.length)
-					return;
-				else
+			if(category === 'houses') {
+				if(visibleHousesCards >= houseFiltered.length) return;
+				setIsSpinning(true);
+				setTimeout(() => {
 					dispatch(homeActions.setLoadMoreHouses());
-			}
-			else if(category=='rooms' && !isLoadMoreVisible )
-			{
-				console.log('hello2');
-				if(visibleRoomCards>=roomFiltered.length)
-					return;
-				else
+					setIsSpinning(false);
+				}, 2000);
+			} else if(category === 'rooms') {
+				if(visibleRoomCards >= roomFiltered.length) return;
+				setIsSpinning(true);
+				setTimeout(() => {
 					dispatch(homeActions.setLoadMoreRooms());
-			}
-			else if(category=='all' && !isLoadMoreVisible )
-			{
-				console.log('hello3');
-				if(visibleAllCards>=roomFiltered.length+houseFiltered.length)
-					return;
-				else
+					setIsSpinning(false);
+				}, 2000);
+			} else if(category === 'all') {
+				if(visibleAllCards >= (roomFiltered.length + houseFiltered.length)) return;
+				setIsSpinning(true);
+				setTimeout(() => {
 					dispatch(homeActions.setLoadMoreAll());
+					setIsSpinning(false);
+				}, 2000);
 			}
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	},[category,visibleAllCards,visibleHousesCards,visibleRoomCards]);
+
 	useEffect(() => {
-		window.addEventListener('scroll', handleScroll);
-		return () => {
-			window.removeEventListener('scroll', handleScroll);
-		};
+		if (!isLoadMoreVisible) {
+			window.addEventListener('scroll', handleScroll);
+			return () => {
+				window.removeEventListener('scroll', handleScroll);
+			};
+		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isLoadMoreVisible,handleScroll]);
+	}, [isLoadMoreVisible, handleScroll]);
+
 	return (
 		<>
 			<SEOHead title='Home' desc='Democratizing governance for all blockchains.' />
-			<div
+			<section
 				className='h-full flex flex-col gap-y-[42px]'
 			>
-				<div className='flex gap-x-[18.5px]'>
+				<article className='flex gap-x-[18.5px]'>
 					<div className='w-full max-w-[538px] flex items-center relative'>
 						<SearchIcon className='text-transparent stroke-app_background text-2xl absolute ml-[18px] mr-4' />
 						<Input value={useSearchTerm()} onChange={(value: string) => dispatch(homeActions.setSearchQuery(value))} type='text' placeholder='Search' className='placeholder:text-grey_tertiary font-normal text-xl leading-[24px] pl-12 rounded-[16px] border-2 border-solid  max-h-[62px]'></Input>
@@ -135,8 +143,8 @@ const Home: FC<IHomeClientProps> = (props) => {
 					<div>
 						<SearchCategoryDropdown />
 					</div>
-				</div>
-				<div>
+				</article>
+				<article>
 					<section className='flex items-center flex-wrap gap-[50px]'>
 						{
 							(category == 'houses') && houseFiltered && houseFiltered.slice(0,visibleHousesCards).map((house) => {
@@ -163,7 +171,7 @@ const Home: FC<IHomeClientProps> = (props) => {
 							})
 						}
 						{
-							(category == 'all') && houseFiltered && houseFiltered.slice(0,visibleAllCards).map((house) => {
+							(category == 'all') && houseFiltered && houseFiltered.slice(0, visibleAllCards - 5).map((house) => {
 								return (
 									<>
 										<House
@@ -175,7 +183,7 @@ const Home: FC<IHomeClientProps> = (props) => {
 							})
 						}
 						{
-							(category == 'all') && roomFiltered && roomFiltered.slice(0,visibleAllCards).map((room) => {
+							(category == 'all') && roomFiltered && roomFiltered.slice(0, visibleAllCards - 5).map((room) => {
 								return (
 									<>
 										<Room
@@ -187,25 +195,31 @@ const Home: FC<IHomeClientProps> = (props) => {
 							})
 						}
 					</section>
-				</div>
-				{category === 'houses' && isLoadMoreVisible && (
-					<div className={'flex justify-center items-center mt-[100px] '} onClick={() => {dispatch(homeActions.setLoadMoreHouses()),dispatch(homeActions.setLoadMoreVisibility(false));}}>
-						<LoadMore />
-					</div>
-				)}
+				</article>
 
-				{category === 'rooms' && isLoadMoreVisible && (
-					<div className={'flex justify-center items-center mt-[100px] '} onClick={() => {dispatch(homeActions.setLoadMoreRooms()),dispatch(homeActions.setLoadMoreVisibility(false));}}>
-						<LoadMore />
-					</div>
-				)}
-
-				{category === 'all' && isLoadMoreVisible && (
-					<div className={'flex justify-center items-center mt-[100px]'} onClick={() => {dispatch(homeActions.setLoadMoreAll()),dispatch(homeActions.setLoadMoreVisibility(false));}}>
-						<LoadMore />
-					</div>
-				)}
-			</div>
+				<article className={'flex justify-center items-center mt-[100px]'}>
+					{
+						isLoadMoreVisible?
+							<LoadMore
+								onClick={() => {
+									setIsSpinning(true);
+									setTimeout(() => {
+										if (category === 'all') {
+											dispatch(homeActions.setLoadMoreAll());
+										} else if (category === 'houses') {
+											dispatch(homeActions.setLoadMoreHouses());
+										} else if (category === 'rooms') {
+											dispatch(homeActions.setLoadMoreRooms());
+										}
+										setIsSpinning(false);
+									}, 2000);
+									dispatch(homeActions.setLoadMoreVisibility(false));
+								}}
+							/>
+							: isSpinning? 'Spin': null
+					}
+				</article>
+			</section>
 		</>
 	);
 };
