@@ -138,7 +138,7 @@ const Home: FC<IHomeClientProps> = (props) => {
 				<article className='flex gap-x-[18.5px]'>
 					<div className='w-full max-w-[538px] flex items-center relative'>
 						<SearchIcon className='text-transparent stroke-app_background text-2xl absolute ml-[18px] mr-4' />
-						<Input value={useSearchTerm()} onChange={(value: string) => dispatch(homeActions.setSearchQuery(value))} type='text' placeholder='Search' className='placeholder:text-grey_tertiary font-normal text-xl leading-[24px] pl-12 rounded-[16px] border-2 border-solid  max-h-[62px]'></Input>
+						<Input value={useSearchTerm()} onChange={(value: string) => dispatch(homeActions.setSearchQuery(value))} type='text' placeholder='Search' className='search placeholder:text-grey_tertiary font-normal text-xl leading-[24px] pl-12 rounded-[16px] border-2 border-solid  max-h-[62px]'></Input>
 					</div>
 					<div>
 						<SearchCategoryDropdown />

@@ -6,6 +6,7 @@
     "node": "18"
   },
   "scripts": {
+    "cypress": "cypress open",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -75,6 +76,7 @@
     "@types/react-html-parser": "^2.0.2",
     "@types/styled-components": "^5.1.26",
     "@types/uuid": "^9.0.1",
+    "cypress": "^12.16.0",
     "eslint-plugin-storybook": "^0.6.12",
     "storybook": "^7.0.18"
   }
