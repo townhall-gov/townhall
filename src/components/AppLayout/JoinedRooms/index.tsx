@@ -13,19 +13,12 @@ const JoinedRoom: FC<IJoinedRoomProps> = (props) => {
 	const joinedRooms = useProfileJoinedRooms();
 	const { totalShowing } = props;
 	return (
-		<article>
+		<>
 			{
-				joinedRooms.length > 0?
+				joinedRooms && Array.isArray(joinedRooms) && joinedRooms.length > 0 &&
 					<JoinedRoomList joinedRooms={joinedRooms} totalShowing={totalShowing} />
-					: (
-						<p
-							className='m-0 p-0 font-normal text-xl leading-6 text-grey_primary'
-						>
-                            Joined Rooms will be shown here.
-						</p>
-					)
 			}
-		</article>
+		</>
 	);
 };
 
