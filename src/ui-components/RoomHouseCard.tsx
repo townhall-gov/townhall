@@ -45,7 +45,7 @@ const RoomHouseCard: FC<IRoomHouseCardProps> = (props) => {
 						}
 					}
 				}}
-				className={classNames('highlight flex flex-col items-center justify-center gap-y-2 cursor-pointer w-[188px]', {
+				className={classNames('highlight h-full flex flex-col items-center justify-center gap-y-2 cursor-pointer w-[188px]', {
 					'card-disabled': isDisabled,
 					'card-hover': !isJoined,
 					'card-hover-joined': isJoined,
@@ -55,14 +55,14 @@ const RoomHouseCard: FC<IRoomHouseCardProps> = (props) => {
 				<Link
 					href={link}
 					onClick={onLinkClick}
-					className='border border-solid border-blue_primary rounded-2xl outline-none flex flex-col gap-y-2 items-center bg-transparent p-5 px-7 w-full cursor-pointer min-h-[186px]'
+					className='border border-solid border-blue_primary h-full rounded-2xl outline-none flex flex-col gap-y-2 items-center justify-between bg-transparent p-5 w-full cursor-pointer min-h-[186px]'
 				>
 					{
 						logo?
 							<div
 								className='w-[45px] h-[45px] rounded-full relative'
 							>
-								<Image preview={false} width={45} height={45} className='rounded-full' src={logo} alt='room logo' />
+								<Image preview={false} width={45} height={45} className='rounded-full object-cover' src={logo} alt='room logo' />
 								{
 									roomHouse && roomHouse.logo?
 										<div
@@ -76,17 +76,19 @@ const RoomHouseCard: FC<IRoomHouseCardProps> = (props) => {
 							: <DefaultNameImage className='w-[45px] h-[45px]' name={name} />
 					}
 
-					<h3 className='text-white m-0 p-0 text-2xl leading-[29px] tracking-[0.01em] font-semibold truncate'>{name}</h3>
-					<p className='m-0 text-sm font-normal leading-[17px] text-grey_tertiary'>
-						{totalLabel}
-					</p>
-					<div className='flex items-center justify-center gap-x-2 mt-[3px]'>
-						{
-							!house_id?
-								<HouseIcon className='text-grey_primary text-lg'/>
-								: null
-						}
-						<CropFreeIcon className='text-grey_primary text-lg' />
+					<h3 title={name} className='text-white m-0 p-0 text-2xl leading-[29px] tracking-[0.01em] font-semibold max-w-full break-words text-center'>{name}</h3>
+					<div>
+						<p className='m-0 text-sm font-normal leading-[17px] text-grey_tertiary'>
+							{totalLabel}
+						</p>
+						<div className='flex items-center justify-center gap-x-2 mt-[3px]'>
+							{
+								!house_id?
+									<HouseIcon className='text-grey_primary text-lg'/>
+									: null
+							}
+							<CropFreeIcon className='text-grey_primary text-lg' />
+						</div>
 					</div>
 				</Link>
 				<Spin

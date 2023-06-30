@@ -34,6 +34,7 @@ export const getHouse: TGetHouseFn = async (params) => {
 		const totalRoom = roomAggregateQuerySnapshot.data().count || 0;
 		// Sanitization
 		const house: IHouse = {
+			admins: data.admins || [],
 			blockchain: data.blockchain,
 			description: data.description || '',
 			id: data.id,

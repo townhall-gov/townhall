@@ -42,6 +42,7 @@ export const getRooms: TGetRoomsFn = async (params) => {
 								phone: dataCreatorDetails?.phone || ''
 							};
 							const room: IRoom = {
+								admins: data.admins || [],
 								contract_address: data.contract_address,
 								created_at: convertFirestoreTimestampToDate(data.created_at),
 								creator_details: creator_details,

@@ -119,19 +119,21 @@ const House: FC<IHouseProps> = (props) => {
 	};
 
 	return (
-		<RoomHouseCard
-			isDisabled={isDisabled}
-			isJoined={isJoined}
-			link={`/${id}/proposals`}
-			logo={logo}
-			name={title}
-			onClick={onClick}
-			onLinkClick={() => {
-				dispatch(houseActions.setHouse(house));
-				dispatch(houseActions.setCurrentStage(EHouseStage.PROPOSALS));
-			}}
-			totalLabel={`${total_room} Rooms`}
-		/>
+		<div id={id} data-link={`/${id}/proposals`}  className='basis-[15%]'>
+			<RoomHouseCard
+				isDisabled={isDisabled}
+				isJoined={isJoined}
+				link={`/${id}/proposals`}
+				logo={logo}
+				name={title}
+				onClick={onClick}
+				onLinkClick={() => {
+					dispatch(houseActions.setHouse(house));
+					dispatch(houseActions.setCurrentStage(EHouseStage.PROPOSALS));
+				}}
+				totalLabel={`${total_room} Rooms`}
+			/>
+		</div>
 	);
 };
 

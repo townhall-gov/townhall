@@ -3,12 +3,13 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { Tooltip } from 'antd';
+import BigNumber from 'bignumber.js';
 import React, { FC } from 'react';
 import { useProposalSelector } from '~src/redux/selectors';
 import { IVote } from '~src/types/schema';
 import Address from '~src/ui-components/Address';
-import { getStrategyWeight, getTotalWeight } from '~src/utils/calculation/getStrategyWeight';
-import { chainProperties } from '~src/utils/networkConstants';
+import { calculateStrategy } from '~src/utils/calculation/getStrategyWeight';
+import { firstCharUppercase } from '~src/utils/getFirstCharUppercase';
 
 interface IVoteProps {
     vote: IVote;
@@ -31,62 +32,111 @@ const Vote: FC<IVoteProps> = (props) => {
 			/>
 			<div className='flex items-center justify-center'>
 				<Tooltip
-					color='#66A5FF'
+					color='#04152F'
 					overlayClassName='min-w-max'
 					title={
-						<div>
-							<div
-								className='grid grid-cols-3 gap-x-5 pl-4 text-base font-medium'
+						<article>
+							<h4
+								className='grid grid-cols-7 gap-2 text-base font-medium'
 							>
-								<p>
-                                    Strategy
-								</p>
-								<p>
-                                    Network
-								</p>
-								<p>
-                                    Total
-								</p>
-							</div>
+								<span className='flex justify-center'>Strategy</span>
+								<span className='flex justify-center'>Chain</span>
+								<span className='flex justify-center'>Snapshot</span>
+								<span className='flex justify-center items-center gap-x-1'>
+									<span>Threshold</span>
+									<span className='flex items-center justify-center bg-grey_primary rounded-full text-[10px] text-white font-medium w-4 h-4'>
+										<Tooltip
+											color='#04152F'
+											title={'Account with Balance >= Threshold can vote'}
+										>
+										?
+										</Tooltip>
+									</span>
+								</span>
+								<span className='flex justify-center'>Balance</span>
+								<span className='flex justify-center items-center gap-x-1'>
+									<span>Weight</span>
+									<span className='flex items-center justify-center bg-grey_primary rounded-full text-[10px] text-white font-medium w-4 h-4'>
+										<Tooltip
+											color='#04152F'
+											title={'Voting weight refers to the level of influence Total = Balance * Weight'}
+										>
+										?
+										</Tooltip>
+									</span>
+								</span>
+								<span className='flex justify-center'>Total</span>
+							</h4>
 							<ul
 								className='m-0 pl-4 list-decimal'
 							>
 								{
-									proposal.voting_strategies.map((strategy) => {
-										const { name, network } = strategy;
-										const total = getStrategyWeight(strategy, vote.balances);
+									proposal.voting_strategies_with_height.map((strategy) => {
+										const { name, network, id, asset_type, height, threshold, weight } = strategy;
+										const balance = vote.balances.find((item) => item.id === id);
+										const tokenMetadata = strategy.token_metadata[asset_type];
+										if (!balance || !tokenMetadata) return null;
+										const balanceFormatted = new BigNumber(balance.value);
 										return (
 											<li
-												key={name + network}
+												className='list-decimal'
+												key={balance.id}
 											>
-												<div
-													className='grid grid-cols-3 gap-x-5 text-xs font-normal'
+												<p
+													className='grid grid-cols-7 gap-2 m-0 text-sm'
 												>
-													<p>
+													<span>
 														{name}
-													</p>
-													<p>
-														{network}
-													</p>
-													<p className='flex items-center gap-x-1'>
-														<span>
-															{total.toString()}
-														</span>
-														<span>
-															{chainProperties?.[network]?.tokenSymbol}
-														</span>
-													</p>
-												</div>
+													</span>
+													<span>
+														{firstCharUppercase(network)}
+													</span>
+													<span>
+														#{height}
+													</span>
+													<span>
+														{threshold} {tokenMetadata.symbol}
+													</span>
+													<span>
+														{balanceFormatted.toNumber().toFixed(1)} {tokenMetadata.symbol}
+													</span>
+													<span className='flex justify-center'>
+														{weight}
+													</span>
+													<span>
+														{new BigNumber(weight).multipliedBy(((balanceFormatted.gte(new BigNumber(threshold))? balanceFormatted: '0'))).toFixed(1)} VOTE
+													</span>
+												</p>
 											</li>
 										);
 									})
 								}
 							</ul>
-						</div>
+						</article>
 					}
 				>
 					<p className='text-sm'>
-						{getTotalWeight(proposal.voting_strategies, vote.balances)}
+						{
+							proposal.voting_strategies_with_height.reduce((prev, strategy) => {
+								let current = new BigNumber(0);
+								const balance = vote.balances.find((item) => item.id === strategy.id);
+								if (balance) {
+									current = new BigNumber(balance.value);
+								}
+								if (strategy) {
+									let weight = new BigNumber(strategy.weight);
+									if (weight.eq(0)) {
+										weight = new BigNumber(1);
+									}
+									current = current.multipliedBy(weight);
+								}
+								const result = calculateStrategy({
+									...strategy,
+									value: current.toString()
+								});
+								return prev.plus(result);
+							}, new BigNumber(0)).toFixed(1)
+						} VOTE
 					</p>
 				</Tooltip>
 			</div>

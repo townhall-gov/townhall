@@ -105,7 +105,7 @@ const HouseProposalsPage: FC<IProposalsClientProps> = (props) => {
 	return (
 		<>
 			<SEOHead title={`Proposals of Room ${query['house_id']} in House ${query['house_id']}`} />
-			<BackButton className='mb-3' />
+			<BackButton url={'/houses'} className='mb-3' />
 			<section className='flex gap-x-[18px]'>
 				<HouseSidebar />
 				<div className='flex-1 flex flex-col gap-y-[21px]'>

@@ -6,6 +6,7 @@
     "node": "18"
   },
   "scripts": {
+    "cypress": "cypress open",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -30,6 +31,7 @@
     "@typescript-eslint/parser": "^5.58.0",
     "antd": "^5.4.2",
     "autoprefixer": "10.4.14",
+    "bignumber.js": "^9.1.1",
     "classnames": "^2.3.2",
     "dayjs": "^1.11.7",
     "eslint": "8.38.0",
@@ -74,6 +76,7 @@
     "@types/react-html-parser": "^2.0.2",
     "@types/styled-components": "^5.1.26",
     "@types/uuid": "^9.0.1",
+    "cypress": "^12.16.0",
     "eslint-plugin-storybook": "^0.6.12",
     "storybook": "^7.0.18"
   }

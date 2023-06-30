@@ -5,7 +5,6 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 import { ESocial, ERoomCreationStage, ICreatorDetails, IRoomDetails, IRoomSocial, IRoomsStore, IStrategy } from './@types';
 import { IHouse, IRoom } from '~src/types/schema';
-import { EVotingStrategy } from '~src/types/enums';
 
 const initialState: IRoomsStore = {
 	error: null,
@@ -124,16 +123,9 @@ export const roomsStore = createSlice({
 		},
 		setRoomCreation_House: (state, action: PayloadAction<IHouse | undefined>) => {
 			const house = action.payload || null;
-			const room_strategies = [];
-			if (house) {
-				room_strategies.push({
-					name: EVotingStrategy.BALANCE_OF,
-					network: house?.blockchain || ''
-				});
-			}
 			if (state.roomCreation) {
 				state.roomCreation.select_house = house;
-				state.roomCreation.room_strategies = room_strategies;
+				state.roomCreation.room_strategies = [];
 			} else {
 				state.roomCreation = {
 					creator_details: null,
@@ -141,7 +133,7 @@ export const roomsStore = createSlice({
 					getting_started: null,
 					room_details: null,
 					room_socials: null,
-					room_strategies: room_strategies,
+					room_strategies: [],
 					select_house: house
 				};
 			}

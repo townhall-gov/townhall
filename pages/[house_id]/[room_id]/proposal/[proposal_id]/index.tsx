@@ -54,7 +54,7 @@ const Proposal: FC<IProposalClientProps> = (props) => {
 		<>
 			<SEOHead title={`This is a Proposal in Room ${query['room_id']} of House ${query['house_id']}.`} />
 			<div className='flex flex-col gap-y-[20.27px] items-start'>
-				<BackButton />
+				<BackButton url={`/${query['house_id']}/${query['room_id']}/proposals`} />
 				<ProposalWrapper />
 			</div>
 		</>

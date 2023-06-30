@@ -249,15 +249,13 @@ export const getProposal: TGetProposalFn = async (params) => {
 				proposer_address: data.proposer_address,
 				reactions: reactions,
 				room_id: data.room_id,
-				snapshot_heights: data.snapshot_heights,
 				start_date: convertFirestoreTimestampToDate(data.start_date),
 				status: status,
 				tags: data.tags || [],
-				timestamp: data.timestamp || 0,
 				title: data.title || '',
 				updated_at: convertFirestoreTimestampToDate(data.updated_at),
 				votes_result: data.votes_result,
-				voting_strategies: roomData.voting_strategies || [],
+				voting_strategies_with_height: data.voting_strategies_with_height,
 				voting_system: data.voting_system,
 				voting_system_options: data.voting_system_options
 			};

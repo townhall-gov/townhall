@@ -3,8 +3,6 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import Web3 from 'web3';
-import { evmChains } from '../../../constants';
-import { getProvidersForEvmChain } from '../../apis';
 
 async function queryBalanceFromOneProvider(provider: any, address: string, blockTag?: number | string) {
 	const promises = [];
@@ -17,19 +15,6 @@ async function queryBalanceFromOneProvider(provider: any, address: string, block
 	return Promise.any(promises);
 }
 
-async function getBalanceByAddressAndHeight(chain: keyof typeof evmChains, address: string, height: number | string) {
-	const providers = getProvidersForEvmChain(chain);
-
-	const promises = [];
-	for (const provider of providers) {
-		if (provider) {
-			promises.push(queryBalanceFromOneProvider(provider, address, height));
-		}
-	}
-
-	return Promise.any(promises);
-}
-
 export {
-	getBalanceByAddressAndHeight
+	queryBalanceFromOneProvider
 };

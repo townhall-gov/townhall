@@ -121,20 +121,22 @@ const Room: FC<IRoomProps> = (props) => {
 	};
 
 	return (
-		<RoomHouseCard
-			isDisabled={isDisabled}
-			isJoined={isJoined}
-			link={`/${house_id}/${id}/proposals`}
-			logo={logo}
-			name={title}
-			onClick={onClick}
-			onLinkClick={() => {
-				dispatch(roomActions.setRoom(room));
-				dispatch(roomActions.setCurrentStage(ERoomStage.PROPOSALS));
-			}}
-			house_id={house_id}
-			totalLabel={`${total_members} Members`}
-		/>
+		<div id={house_id} data-link={`/${house_id}/${id}/proposals`} className='basis-[15%]'>
+			<RoomHouseCard
+				isDisabled={isDisabled}
+				isJoined={isJoined}
+				link={`/${house_id}/${id}/proposals`}
+				logo={logo}
+				name={title}
+				onClick={onClick}
+				onLinkClick={() => {
+					dispatch(roomActions.setRoom(room));
+					dispatch(roomActions.setCurrentStage(ERoomStage.PROPOSALS));
+				}}
+				house_id={house_id}
+				totalLabel={`${total_members} Members`}
+			/>
+		</div>
 	);
 };
 

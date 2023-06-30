@@ -73,14 +73,14 @@ const TextEditor: FC<ITextEditorProps> = (props) => {
 							localStorage.setItem(localStorageKey, v);
 						}
 					}}
-					apiKey={process.env.NEXT_PUBLIC_TINY_MCE_API_KEY}
+					// apiKey={process.env.NEXT_PUBLIC_TINY_MCE_API_KEY}
 					init={{
 						block_unsupported_drop: false,
 						branding: false,
 						content_css: 'dark',
 						content_style: 'body { font-family: Montserrat, sans-serif; font-size: 14px; letter-spacing: 1px; line-height: 1.5; }',
 						height: height || 300,
-						images_file_types: 'jpg,png,jpeg',
+						images_file_types: 'jpg,png,jpeg,svg,gif',
 						images_upload_handler: (blobInfo, progress) => {
 							return new Promise<string>((resolve, reject) => {
 								const xhr = new XMLHttpRequest();
@@ -115,11 +115,11 @@ const TextEditor: FC<ITextEditorProps> = (props) => {
 									reject('Image upload failed due to a XHR Transport error. Code: ' + xhr.status);
 								};
 								const formData = new FormData();
-								formData.append('image', blobInfo.blob(), `${imageNamePrefix}_${blobInfo.filename()}_${new Date().valueOf()}.jpg`);
+								formData.append('image', blobInfo.blob(), `${imageNamePrefix}_${blobInfo.filename()}`);
 								xhr.send(formData);
 							});
 						},
-						menubar: 'file edit view insert format tools table tc help',
+						menubar: false,
 						paste_data_images: true,
 						plugins: [
 							'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
@@ -127,10 +127,10 @@ const TextEditor: FC<ITextEditorProps> = (props) => {
 							'insertdatetime', 'media', 'table'
 						],
 						skin: 'oxide-dark',
-						toolbar: 'undo redo | ' +
-							'bold italic backcolor | alignleft aligncenter ' +
-							'alignright alignjustify | bullist numlist outdent indent | ' +
-							'removeformat | table help ',
+						toolbar: 'undo redo preview | ' +
+							'bold italic backcolor | ' +
+							'bullist numlist table | ' +
+							'removeformat link image code',
 						xss_sanitization: true
 					}}
 				/>

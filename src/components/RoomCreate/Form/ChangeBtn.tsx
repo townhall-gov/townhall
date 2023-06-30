@@ -119,6 +119,12 @@ const StageChangeBtn = () => {
 					dispatch(roomsActions.setLoading(true));
 					const { data, error } = await api.post<ICreateRoomResponse, ICreateRoomBody>('auth/actions/createRoom', {
 						room: {
+							admins: [
+								{
+									addresses: [user?.address || ''],
+									name: creator_details?.name || user?.username || ''
+								}
+							],
 							contract_address: room_details?.contract_address || '',
 							creator_details: creator_details!,
 							decimals: dappInfo.decimals,

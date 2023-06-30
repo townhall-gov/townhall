@@ -30,7 +30,7 @@ const SentimentModalContent = () => {
 			<article className='mt-7 flex flex-col items-center justify-center'>
 				<Slider
 					className='w-full max-w-[276px]'
-					trackStyle={{ backgroundColor:'#5E6F80' }}
+					trackStyle={{ display:'none' }}
 					onChange={(value: number) => {
 						if (editableComment?.id) {
 							dispatch(proposalActions.setEditableComment({

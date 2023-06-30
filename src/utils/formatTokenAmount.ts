@@ -3,12 +3,15 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { BN, formatBalance } from '@polkadot/util';
-import { chainProperties } from './networkConstants';
 import Web3 from 'web3';
+import { chainProperties } from '~src/onchain-data/networkConstants';
 
-const formatTokenAmount = (amount: string | number, network: string) => {
-	const chain = chainProperties[network];
-	const decimals = chain.tokenDecimals;
+const formatTokenAmount = (amount: string | number, network: string, chain?: any) => {
+	if (!chain) {
+		chain = chainProperties[network as keyof typeof chainProperties];
+	}
+	if (!chain) return String(amount);
+	const decimals = chain.decimals;
 	if (chain.isEVM) {
 		const units = Web3.utils.unitMap as any;
 		const unit = Object.keys(units).find(key => (units as any)[key] === Web3.utils.toBN(10).pow(Web3.utils.toBN(decimals)).toString());

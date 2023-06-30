@@ -54,7 +54,7 @@ const Discussion: FC<IDiscussionClientProps> = (props) => {
 		<>
 			<SEOHead title={`This is a Discussion in Room ${query['room_id']} of House ${query['house_id']}.`} />
 			<div className='flex flex-col gap-y-[20.27px] items-start'>
-				<BackButton />
+				<BackButton url={`/${query['house_id']}/${query['room_id']}/discussions`} />
 				<DiscussionWrapper />
 			</div>
 		</>

@@ -68,7 +68,7 @@ const CreateDiscussionPage: FC<ICreateDiscussionPageClientProps> = (props) => {
 	return (
 		<>
 			<SEOHead title={`Create a Discussion in Room ${query['room_id']} of House ${query['house_id']}`} />
-			<BackButton className='mb-3' />
+			<BackButton url={`/${query['house_id']}/${query['room_id']}/discussions`} className='mb-3' />
 			<section className='flex gap-x-7'>
 				<RoomSidebar />
 				<CreateDiscussion />

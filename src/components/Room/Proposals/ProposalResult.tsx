@@ -2,11 +2,11 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { Card, Divider, Dropdown, Progress } from 'antd';
+import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import React, { FC, useEffect, useState } from 'react';
 import { IVotesResult } from '~src/types/schema';
 import { SortByDownIcon } from '~src/ui-components/CustomIcons';
-import { getOptionPercentage, getTotalWeight } from '~src/utils/calculation/getStrategyWeight';
 
 interface IProposalResultProps {
     btnRef: React.MutableRefObject<HTMLButtonElement>;
@@ -16,27 +16,15 @@ interface IProposalResultProps {
 const ProposalResult: FC<IProposalResultProps> = (props) => {
 	const { btnRef, votes_result } = props;
 	const [open, setOpen] = useState(false);
-	const [total, setTotal] = useState(0);
+	const [voted, setVoted] = useState(new BigNumber(0));
 	useEffect(() => {
-		let total = 0;
-		Object.entries(votes_result).forEach(([, value]) => {
-			const optionTotal = Number(getTotalWeight(
-				value.map(({ name, network }) => {
-					return {
-						name: name,
-						network: network
-					};
-				}),
-				value.map(({ network, amount }) => {
-					return {
-						balance: amount,
-						network: network
-					};
-				})
-			));
-			total += optionTotal;
+		let voted = new BigNumber(0);
+		Object.entries(votes_result).forEach(([, balances]) => {
+			balances.forEach(({ value }) => {
+				voted = voted.plus(value);
+			});
 		});
-		setTotal(total);
+		setVoted(voted);
 	}, [votes_result]);
 	return (
 		<button
@@ -64,7 +52,7 @@ const ProposalResult: FC<IProposalResultProps> = (props) => {
                                             Voted
 										</span>
 										<span>
-											{total}
+											{voted.toFixed(2)} VOTE
 										</span>
 									</p>
 								</div>
@@ -73,11 +61,15 @@ const ProposalResult: FC<IProposalResultProps> = (props) => {
 									className='flex flex-col gap-y-8 list-none'
 								>
 									{
-										Object.entries(votes_result).map(([key], index) => {
-											const optionPercentage = getOptionPercentage(votes_result, key);
+										Object.entries(votes_result).map(([key, value], index) => {
+											let total = new BigNumber(0);
+											value.forEach(({ value }) => {
+												total = total.plus(value);
+											});
+											const optionPercentage = total.div(voted).multipliedBy(100).toNumber();
 											return (
 												<li
-													key={key}
+													key={index}
 												>
 													<div
 														className='text-white text-sm font-light leading-[17px] tracking-[0.01em] mb-[5px]'
