@@ -7,24 +7,26 @@ import { Image } from 'antd';
 import { IJoinedRoom } from '~src/types/schema';
 import ModalTrigger from './ModalTrigger';
 import DefaultNameImage from '~src/ui-components/DefaultNameImage';
+import Link from 'next/link';
 
 interface IJoinedRoomListProps {
     joinedRooms: IJoinedRoom[];
+	totalShowing:number;
 }
 const JoinedRoomList: FC<IJoinedRoomListProps> = (props) => {
-	const { joinedRooms } = props;
-	const totalShowing = 6;
+	const { joinedRooms,totalShowing } = props;
 	return (
-		<div className='m-0 p-0 leading-none flex items-center gap-x-2'>
+		<div className='m-0 p-0 mb-3 leading-none flex items-center gap-x-4 flex-col'>
 			{
 				joinedRooms.slice(0, totalShowing).map((joinedRoom, index) => {
 					if (!joinedRoom || !joinedRoom.id) return null;
 					return (
-						<article title={joinedRoom.id} key={index} className='flex items-center justify-center text-[45px]'>
-
+						<article title={joinedRoom.id} key={index} className='flex items-center m-2 justify-center text-[45px]'>
 							{
 								joinedRoom.logo?
-									<Image preview={false} width={45} height={45} className='rounded-full' src={joinedRoom.logo} alt='room logo' />
+									<Link href={`/${joinedRoom.house_id}/${joinedRoom.id}/proposals`} key={index} className='flex items-center justify-center rounded-2xl'>
+										<Image preview={false} width={45} height={45} className='rounded-full' src={joinedRoom.logo} alt='room logo' />
+									</Link>
 									: <DefaultNameImage
 										name={joinedRoom.id}
 										className='w-[45px] h-[45px]'

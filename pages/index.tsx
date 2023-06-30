@@ -125,7 +125,7 @@ const Home: FC<IHomeClientProps> = (props) => {
 					</section>
 				</div>
 				{category === 'all' && (
-					<div className={`flex justify-center items-center mt-[100px] ${(visibleHousesCards+visibleRoomCards) >= (houseFiltered?.length+roomFiltered.length) ? 'hidden' : ''}`} onClick={() => {
+					<div className={`flex justify-center items-center mt-[58px] ${(visibleHousesCards+visibleRoomCards) >= (houseFiltered?.length+roomFiltered.length) ? 'hidden' : ''}`} onClick={() => {
 						dispatch(homeActions.setLoadMoreHouses());
 						dispatch(homeActions.setLoadMoreRooms());
 					}}>
@@ -134,13 +134,13 @@ const Home: FC<IHomeClientProps> = (props) => {
 				)}
 
 				{category === 'houses' && (
-					<div className={`flex justify-center items-center mt-[100px] ${visibleHousesCards >= houseFiltered?.length ? 'hidden' : ''}`} onClick={() => dispatch(homeActions.setLoadMoreHouses())}>
+					<div className={`flex justify-center items-center mt-[58px] ${visibleHousesCards >= houseFiltered?.length ? 'hidden' : ''}`} onClick={() => dispatch(homeActions.setLoadMoreHouses())}>
 						<LoadMore />
 					</div>
 				)}
 
 				{category === 'rooms' && (
-					<div className={`flex justify-center items-center mt-[100px] ${visibleRoomCards >= roomFiltered.length ? 'hidden' : ''}`} onClick={() => dispatch(homeActions.setLoadMoreRooms())}>
+					<div className={`flex justify-center items-center mt-[58px] ${visibleRoomCards >= roomFiltered.length ? 'hidden' : ''}`} onClick={() => dispatch(homeActions.setLoadMoreRooms())}>
 						<LoadMore />
 					</div>
 				)}
