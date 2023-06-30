@@ -16,7 +16,7 @@ interface IJoinedRoomListProps {
 const JoinedRoomList: FC<IJoinedRoomListProps> = (props) => {
 	const { joinedRooms,totalShowing } = props;
 	return (
-		<div className='m-0 p-0 mb-3 leading-none flex items-center gap-x-4 flex-col'>
+		<div className='m-0 p-0 leading-none flex items-center gap-x-4 flex-col'>
 			{
 				joinedRooms.slice(0, totalShowing).map((joinedRoom, index) => {
 					if (!joinedRoom || !joinedRoom.id) return null;
@@ -25,7 +25,7 @@ const JoinedRoomList: FC<IJoinedRoomListProps> = (props) => {
 							{
 								joinedRoom.logo?
 									<Link href={`/${joinedRoom.house_id}/${joinedRoom.id}/proposals`} key={index} className='flex items-center justify-center rounded-2xl'>
-										<Image preview={false} width={45} height={45} className='rounded-full' src={joinedRoom.logo} alt='room logo' />
+										<Image preview={false} width={45} height={45} className='rounded-full object-cover' src={joinedRoom.logo} alt='room logo' />
 									</Link>
 									: <DefaultNameImage
 										name={joinedRoom.id}

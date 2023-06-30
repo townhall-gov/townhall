@@ -9,46 +9,28 @@ import { HomeIcon, HolidayVillageIcon } from '~src/ui-components/CustomIcons';
 
 const Sidebar = () => {
 	const [totalShowing, setTotalShowing] = useState(2);
-	const componentRef = useRef<HTMLDivElement>(null);
+	const sidebarRef = useRef<HTMLDivElement>(null);
+	const linksContainerRef = useRef<HTMLDivElement>(null);
 	useEffect(() => {
-		const updatePercentage = () => {
-			if (componentRef.current) {
-				const { height } = componentRef.current.getBoundingClientRect();
-				const windowHeight = window.innerHeight;
-				const calculatedPercentage = (height / windowHeight) * 100;
-				let newValue:number = 0;
-				if (calculatedPercentage > 60 && calculatedPercentage<65) {
-					newValue = 1;
-				}
-				else if (calculatedPercentage > 65 && calculatedPercentage<68) {
-					newValue = 2;
-				}
-				else if (calculatedPercentage > 68 && calculatedPercentage<71) {
-					newValue = 3;
-				}
-				else if (calculatedPercentage > 71 && calculatedPercentage<80)
-				{
-					newValue = 4;
-				}
-				else
-				{
-					newValue = 5;
-				}
-				console.log(newValue);
-				setTotalShowing(newValue);
+		const updateTotalRoomsVisible = () => {
+			if (sidebarRef.current && linksContainerRef.current) {
+				const { height } = sidebarRef.current.getBoundingClientRect();
+				const { height: linksContainerHeight } = linksContainerRef.current.getBoundingClientRect();
+				const gapBetweenLinksAndRooms = 50;
+				const singleRoomHeight = 61;
+				const heightRemaining = height - linksContainerHeight - gapBetweenLinksAndRooms;
+				setTotalShowing(Math.floor(heightRemaining / singleRoomHeight));
 			}
 		};
-		window.addEventListener('resize', updatePercentage);
-		updatePercentage();
-		//console.log(percentage);
+		window.addEventListener('resize', updateTotalRoomsVisible);
+		updateTotalRoomsVisible();
 		return () => {
-			window.removeEventListener('resize', updatePercentage);
+			window.removeEventListener('resize', updateTotalRoomsVisible);
 		};
-
 	});
 	return (
-		<aside ref={componentRef} className='min-h-full min-w-[93px] flex flex-col justify-between w-[93px] rounded-xl bg-blue_primary shadow-[-3px_4px_7px_#0E2D59] max-h-[calc(100vh-242px)] sticky top-[108px]'>
-			<article className='flex flex-col'>
+		<aside ref={sidebarRef} className='min-h-full min-w-[93px] flex flex-col justify-between w-[93px] rounded-xl bg-blue_primary shadow-[-3px_4px_7px_#0E2D59] max-h-[calc(100vh-242px)] sticky top-[108px]'>
+			<article ref={linksContainerRef} className='flex flex-col'>
 				<Link href='/' className='border-none outline-none bg-transparent flex flex-col gap-y-1 items-center justify-center cursor-pointer py-4 px-5 hover:bg-white rounded-t-xl'>
 					<HomeIcon className='text-transparent stroke-app_background text-2xl' />
 					<span className='text-app_background font-semibold text-xs leading-none'>Home</span>
