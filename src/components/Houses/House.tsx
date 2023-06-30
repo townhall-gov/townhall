@@ -119,7 +119,7 @@ const House: FC<IHouseProps> = (props) => {
 	};
 
 	return (
-		<div className='basis-[15%]'>
+		<div id={id} data-link={`/${id}/proposals`}  className='basis-[15%]'>
 			<RoomHouseCard
 				isDisabled={isDisabled}
 				isJoined={isJoined}
