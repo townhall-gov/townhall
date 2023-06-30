@@ -121,7 +121,7 @@ const Room: FC<IRoomProps> = (props) => {
 	};
 
 	return (
-		<div className='basis-[15%]'>
+		<div id={house_id} data-link={`/${house_id}/${id}/proposals`} className='basis-[15%]'>
 			<RoomHouseCard
 				isDisabled={isDisabled}
 				isJoined={isJoined}

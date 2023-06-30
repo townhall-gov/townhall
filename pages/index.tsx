@@ -89,7 +89,7 @@ const Home: FC<IHomeClientProps> = (props) => {
 				<div className='flex gap-x-[18.5px]'>
 					<div className='w-full max-w-[538px] flex items-center relative'>
 						<SearchIcon className='text-transparent stroke-app_background text-2xl absolute ml-[18px] mr-4' />
-						<Input value={useSearchTerm()} onChange={(value: string) => dispatch(homeActions.setSearchQuery(value))} type='text' placeholder='Search' className='placeholder:text-grey_tertiary font-normal text-xl leading-[24px] pl-12 rounded-[16px] border-2 border-solid  max-h-[62px]'></Input>
+						<Input value={useSearchTerm()} onChange={(value: string) => dispatch(homeActions.setSearchQuery(value))} type='text' placeholder='Search' className='search placeholder:text-grey_tertiary font-normal text-xl leading-[24px] pl-12 rounded-[16px] border-2 border-solid  max-h-[62px]'></Input>
 					</div>
 					<div>
 						<SearchCategoryDropdown />
@@ -125,7 +125,7 @@ const Home: FC<IHomeClientProps> = (props) => {
 					</section>
 				</div>
 				{category === 'all' && (
-					<div className={`flex justify-center items-center mt-[100px] ${(visibleHousesCards+visibleRoomCards) >= (houseFiltered?.length+roomFiltered.length) ? 'hidden' : ''}`} onClick={() => {
+					<div className={`flex justify-center items-center mt-[58px] ${(visibleHousesCards+visibleRoomCards) >= (houseFiltered?.length+roomFiltered.length) ? 'hidden' : ''}`} onClick={() => {
 						dispatch(homeActions.setLoadMoreHouses());
 						dispatch(homeActions.setLoadMoreRooms());
 					}}>
@@ -134,13 +134,13 @@ const Home: FC<IHomeClientProps> = (props) => {
 				)}
 
 				{category === 'houses' && (
-					<div className={`flex justify-center items-center mt-[100px] ${visibleHousesCards >= houseFiltered?.length ? 'hidden' : ''}`} onClick={() => dispatch(homeActions.setLoadMoreHouses())}>
+					<div className={`flex justify-center items-center mt-[58px] ${visibleHousesCards >= houseFiltered?.length ? 'hidden' : ''}`} onClick={() => dispatch(homeActions.setLoadMoreHouses())}>
 						<LoadMore />
 					</div>
 				)}
 
 				{category === 'rooms' && (
-					<div className={`flex justify-center items-center mt-[100px] ${visibleRoomCards >= roomFiltered.length ? 'hidden' : ''}`} onClick={() => dispatch(homeActions.setLoadMoreRooms())}>
+					<div className={`flex justify-center items-center mt-[58px] ${visibleRoomCards >= roomFiltered.length ? 'hidden' : ''}`} onClick={() => dispatch(homeActions.setLoadMoreRooms())}>
 						<LoadMore />
 					</div>
 				)}
