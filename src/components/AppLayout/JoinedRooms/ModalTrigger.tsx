@@ -24,9 +24,9 @@ const ModalTrigger: FC<IModalTriggerProps> = (props) => {
 	return (
 		<button
 			onClick={handleModalTrigger}
-			className='border-none outline-none w-9 h-9 rounded-full bg-white flex items-center justify-center font-normal text-base leading-[19.5px] tracking-[0.01em] text-[#0E2D59] cursor-pointer'
+			className='border-none outline-none w-[45px] h-[45px] my-2 mb-[17px] rounded-3xl bg-white flex items-center justify-center font-normal text-base leading-[19.5px] tracking-[0.01em] text-[#0E2D59] cursor-pointer'
 		>
-            + {total}
+            +{total}
 		</button>
 	);
 };
