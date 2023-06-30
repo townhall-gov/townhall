@@ -5,6 +5,7 @@
 import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TApiResponse, TNextApiHandler } from '~src/api/types';
+import messages from '~src/auth/utils/messages';
 import { proposalCollection } from '~src/services/firebase/utils';
 import apiErrorWithStatusCode from '~src/utils/apiErrorWithStatusCode';
 import getErrorMessage from '~src/utils/getErrorMessage';
@@ -19,10 +20,10 @@ export const getDiscussionsCount: TGetDiscussionsCountFn = async (params) => {
 	try {
 		const { house_id, room_id } = params;
 		if (!house_id) {
-			throw apiErrorWithStatusCode('Invalid houseId.', StatusCodes.BAD_REQUEST);
+			throw apiErrorWithStatusCode(messages.INVALID_HOUSE_ID, StatusCodes.BAD_REQUEST);
 		}
 		if (!room_id) {
-			throw apiErrorWithStatusCode('Invalid roomId.', StatusCodes.BAD_REQUEST);
+			throw apiErrorWithStatusCode(messages.INVALID_ROOM_ID, StatusCodes.BAD_REQUEST);
 		}
 		let count = 0;
 		const proposalsQuery = proposalCollection(house_id, room_id);
@@ -46,7 +47,7 @@ export interface IDiscussionsCountQuery {
 }
 const handler: TNextApiHandler<number, IDiscussionsCountBody, IDiscussionsCountQuery> = async (req, res) => {
 	if (req.method !== 'GET') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, GET required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_GET_REQUEST });
 	}
 	const { house_id, room_id } = req.query;
 	const {

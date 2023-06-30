@@ -30,21 +30,21 @@ export interface ICommentResponse {
 
 const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_POST_REQUEST });
 	}
 
 	const { post_id, post_type, room_id, house_id, comment, action_type } = req.body;
 
 	if (!house_id || typeof house_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid houseId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_HOUSE_ID });
 	}
 
 	if (!room_id || typeof room_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid roomId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ROOM_ID });
 	}
 
 	if ((!post_id && post_id != 0) || typeof post_id !== 'number') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid postId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_POST_ID });
 	}
 
 	if (!action_type || ![EAction.ADD, EAction.DELETE, EAction.EDIT].includes(action_type)) {
@@ -52,7 +52,7 @@ const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req,
 	}
 
 	if (!post_type || ![EPostType.DISCUSSION, EPostType.PROPOSAL].includes(post_type)) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid post type.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_POST_TYPE });
 	}
 
 	if (!comment?.content) {
@@ -70,7 +70,7 @@ const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req,
 	let user_address: string | null = null;
 	try {
 		const token = getTokenFromReq(req);
-		if(!token) return res.status(StatusCodes.UNAUTHORIZED).json({ error: 'Invalid token' });
+		if(!token) return res.status(StatusCodes.UNAUTHORIZED).json({ error: messages.INVALID_TOKEN });
 
 		const user = await authServiceInstance.GetUser(token);
 		if(!user) return res.status(StatusCodes.FORBIDDEN).json({ error: messages.UNAUTHORISED });
@@ -80,7 +80,7 @@ const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req,
 	}
 
 	if (!user_address) {
-		return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error: 'Invalid address.' });
+		return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error:  messages.INVALID_ADDRESS });
 	}
 
 	const postsColRef = post_type === EPostType.PROPOSAL?proposalCollection(house_id, room_id): discussionCollection(house_id, room_id);

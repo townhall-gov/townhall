@@ -25,7 +25,7 @@ export interface ICreateDiscussionResponse {
 
 const handler: TNextApiHandler<ICreateDiscussionResponse, ICreateDiscussionBody, {}> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_POST_REQUEST });
 	}
 	const { discussion, proposer_address } = req.body;
 	if (!discussion || typeof discussion !== 'object') {
@@ -33,24 +33,24 @@ const handler: TNextApiHandler<ICreateDiscussionResponse, ICreateDiscussionBody,
 	}
 
 	if (!proposer_address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid address.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ADDRESS });
 	}
 
 	const { house_id, room_id } = discussion;
 
 	if (!house_id || typeof house_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid houseId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_HOUSE_ID });
 	}
 
 	if (!room_id || typeof room_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid roomId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ROOM_ID });
 	}
 
 	let logged_in_address: string | null = null;
 	try {
 		const token = getTokenFromReq(req);
 		if(!token) {
-			return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid token' });
+			return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TOKEN });
 		}
 
 		const user = await authServiceInstance.GetUser(token);
@@ -63,18 +63,18 @@ const handler: TNextApiHandler<ICreateDiscussionResponse, ICreateDiscussionBody,
 	}
 
 	if (proposer_address !== logged_in_address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'LoggedIn address is not matching with Proposer address' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.LOGGED_IN_ADDRESS_DID_NOT_MATCH });
 	}
 
 	const houseDocSnapshot = await houseCollection.doc(house_id).get();
 	if (!houseDocSnapshot.exists) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: `House "${house_id}" does not exist.` });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.HOUSE_DOES_NOT_EXIST(house_id) });
 	}
 
 	const roomDocSnapshot = await roomCollection(house_id).doc(room_id).get();
 	const roomData = roomDocSnapshot.data() as IRoom;
 	if (!roomDocSnapshot.exists || !roomData) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: `Room "${room_id}" does not exist in a House "${house_id}".` });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.ROOM_DOES_NOT_EXIST_IN_HOUSE(room_id,house_id) });
 	}
 
 	let newID = 0;

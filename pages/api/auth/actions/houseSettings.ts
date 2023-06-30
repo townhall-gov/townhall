@@ -24,18 +24,18 @@ export interface IHouseSettingsResponse {
 
 const handler: TNextApiHandler<IHouseSettingsResponse, IHouseSettingsBody, {}> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_POST_REQUEST });
 	}
 	const { houseId, houseSettings } = req.body;
 
 	if (!houseId || typeof houseId !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid houseId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_HOUSE_ID });
 	}
 
 	let address: string | null = null;
 	try {
 		const token = getTokenFromReq(req);
-		if(!token) return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid token' });
+		if(!token) return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TOKEN });
 
 		const user = await authServiceInstance.GetUser(token);
 		if(!user) return res.status(StatusCodes.FORBIDDEN).json({ error: messages.UNAUTHORISED });
@@ -45,14 +45,14 @@ const handler: TNextApiHandler<IHouseSettingsResponse, IHouseSettingsBody, {}> =
 	}
 
 	if (!address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid address.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ADDRESS });
 	}
 
 	const houseRef = houseCollection.doc(houseId);
 	const houseRefDoc = await houseRef.get();
 
 	if (!houseRefDoc || !houseRefDoc.exists || !houseRefDoc.data()) {
-		return res.status(StatusCodes.NOT_FOUND).json({ error: `House "${houseId}" is not found.` });
+		return res.status(StatusCodes.NOT_FOUND).json({ error: messages.HOUSE_DOES_NOT_EXIST(houseId) });
 	}
 
 	const data = houseRefDoc.data() as IHouse;
@@ -68,7 +68,7 @@ const handler: TNextApiHandler<IHouseSettingsResponse, IHouseSettingsBody, {}> =
 	}
 
 	if (!isUserAdmin) {
-		return res.status(StatusCodes.FORBIDDEN).json({ error: 'Only house admin can update house settings.' });
+		return res.status(StatusCodes.FORBIDDEN).json({ error: messages.ONLY_HOUSE_ADMIN_CAN_EDIT_HOUSE_SETTINGS });
 	}
 
 	if (houseSettings) {

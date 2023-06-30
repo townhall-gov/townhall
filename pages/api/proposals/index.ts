@@ -7,6 +7,7 @@ import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
+import messages from '~src/auth/utils/messages';
 import { IListingProposal } from '~src/redux/room/@types';
 import { proposalCollection } from '~src/services/firebase/utils';
 import { EProposalStatus, EReaction } from '~src/types/enums';
@@ -29,10 +30,10 @@ export const getProposals: TGetProposalsFn = async (params) => {
 	try {
 		const { house_id, room_id, filter_by, page, limit } = params;
 		if (!house_id) {
-			throw apiErrorWithStatusCode('Invalid houseId.', StatusCodes.BAD_REQUEST);
+			throw apiErrorWithStatusCode(messages.INVALID_HOUSE_ID, StatusCodes.BAD_REQUEST);
 		}
 		if (!room_id) {
-			throw apiErrorWithStatusCode('Invalid roomId.', StatusCodes.BAD_REQUEST);
+			throw apiErrorWithStatusCode(messages.INVALID_ROOM_ID, StatusCodes.BAD_REQUEST);
 		}
 		if (page) {
 			const numPage = Number(page);
@@ -156,7 +157,7 @@ export interface IProposalsQuery {
 }
 const handler: TNextApiHandler<IListingProposal[], IProposalsBody, IProposalsQuery> = async (req, res) => {
 	if (req.method !== 'GET') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, GET required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_GET_REQUEST });
 	}
 	const { house_id, room_id, filter_by, page, limit } = req.query;
 	const {

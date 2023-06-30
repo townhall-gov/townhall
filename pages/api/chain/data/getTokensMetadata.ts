@@ -5,6 +5,7 @@
 import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TNextApiHandler } from '~src/api/types';
+import messages from '~src/auth/utils/messages';
 import { chainProperties } from '~src/onchain-data/networkConstants';
 import { TTokenMetadata, getTokensMetadata } from '~src/onchain-data/token-meta/getTokensMetadata';
 
@@ -15,7 +16,7 @@ export interface ITokensMetadataQuery {}
 
 const handler: TNextApiHandler<TTokenMetadata[], ITokensMetadataBody, ITokensMetadataQuery> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_POST_REQUEST });
 	}
 	const { network } = req.body;
 

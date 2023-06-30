@@ -32,7 +32,7 @@ export interface ICreateProposalResponse {
 
 const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_POST_REQUEST });
 	}
 	const { proposal, proposer_address, signature } = req.body;
 	if (!proposal || typeof proposal !== 'object') {
@@ -40,28 +40,28 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 	}
 
 	if (!signature) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid signature.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_SIGNATURE });
 	}
 
 	if (!proposer_address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid address.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ADDRESS });
 	}
 
 	const { house_id, room_id } = proposal;
 
 	if (!house_id || typeof house_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid houseId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_HOUSE_ID });
 	}
 
 	if (!room_id || typeof room_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid roomId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ROOM_ID });
 	}
 
 	let logged_in_address: string | null = null;
 	try {
 		const token = getTokenFromReq(req);
 		if(!token) {
-			return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid token' });
+			return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TOKEN });
 		}
 
 		const user = await authServiceInstance.GetUser(token);
@@ -74,12 +74,12 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 	}
 
 	if (proposer_address !== logged_in_address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'LoggedIn address is not matching with Proposer address' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.LOGGED_IN_ADDRESS_DID_NOT_MATCH });
 	}
 
 	const houseDocSnapshot = await houseCollection.doc(house_id).get();
 	if (!houseDocSnapshot.exists) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: `House with id ${house_id} does not exist.` });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.HOUSE_DOES_NOT_EXIST(house_id) });
 	}
 
 	const roomDocSnapshot = await roomCollection(house_id).doc(room_id).get();

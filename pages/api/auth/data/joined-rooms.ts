@@ -24,7 +24,7 @@ export const getJoinedRooms: TGetJoinedRoomsFn = async (params) => {
 	try {
 		const { address } = params;
 		if (!address) {
-			throw apiErrorWithStatusCode('Invalid address.', StatusCodes.BAD_REQUEST);
+			throw apiErrorWithStatusCode(messages.INVALID_ADDRESS, StatusCodes.BAD_REQUEST);
 		}
 		const joinedHouses: IJoinedHouse[] = [];
 		const joinedHousesSnapshot = await joinedHouseCollection(address).get();
@@ -105,13 +105,13 @@ export interface IJoinedRoomsBody {}
 export interface IJoinedRoomsQuery {}
 const handler: TNextApiHandler<IJoinedHouse[], IJoinedRoomsBody, IJoinedRoomsQuery> = async (req, res) => {
 	if (req.method !== 'GET') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, GET required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_GET_REQUEST });
 	}
 
 	let address: string | null = null;
 	try {
 		const token = getTokenFromReq(req);
-		if(!token) return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid token' });
+		if(!token) return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TOKEN });
 
 		const user = await authServiceInstance.GetUser(token);
 		if(!user) return res.status(StatusCodes.FORBIDDEN).json({ error: messages.UNAUTHORISED });
@@ -121,7 +121,7 @@ const handler: TNextApiHandler<IJoinedHouse[], IJoinedRoomsBody, IJoinedRoomsQue
 	}
 
 	if (!address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid address.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ADDRESS });
 	}
 	const {
 		data: joinedHouses,

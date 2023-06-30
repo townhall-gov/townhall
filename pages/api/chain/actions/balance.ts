@@ -5,6 +5,7 @@
 import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TNextApiHandler } from '~src/api/types';
+import messages from '~src/auth/utils/messages';
 import { getBalanceUsingStrategyWithHeight } from '~src/onchain-data';
 import { IStrategyWithHeight } from '~src/types/schema';
 
@@ -22,7 +23,7 @@ export interface IBalanceResponse {
 
 const handler: TNextApiHandler<IBalanceResponse, IBalanceBody, IBalanceQuery> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_POST_REQUEST });
 	}
 	const { voting_strategies_with_height, address } = req.body;
 

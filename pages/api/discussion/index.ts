@@ -14,6 +14,7 @@ import convertFirestoreTimestampToDate from '~src/utils/convertFirestoreTimestam
 import getErrorMessage from '~src/utils/getErrorMessage';
 import { getErrorStatus } from '~src/utils/getErrorMessage';
 import { getComments } from '../proposal';
+import messages from '~src/auth/utils/messages';
 
 interface IGetDiscussionFnParams {
     house_id: string;
@@ -26,10 +27,10 @@ export const getDiscussion: TGetDiscussionFn = async (params) => {
 	try {
 		const { house_id, room_id, discussion_id } = params;
 		if (!house_id) {
-			throw apiErrorWithStatusCode('Invalid houseId.', StatusCodes.BAD_REQUEST);
+			throw apiErrorWithStatusCode(messages.INVALID_HOUSE_ID, StatusCodes.BAD_REQUEST);
 		}
 		if (!room_id) {
-			throw apiErrorWithStatusCode('Invalid roomId.', StatusCodes.BAD_REQUEST);
+			throw apiErrorWithStatusCode(messages.INVALID_ROOM_ID, StatusCodes.BAD_REQUEST);
 		}
 		if (!(discussion_id == 0) && !discussion_id) {
 			throw apiErrorWithStatusCode('Invalid discussionId.', StatusCodes.BAD_REQUEST);
@@ -130,7 +131,7 @@ export interface IDiscussionQuery {
 
 const handler: TNextApiHandler<IDiscussion, IDiscussionBody, IDiscussionQuery> = async (req, res) => {
 	if (req.method !== 'GET') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, GET required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_GET_REQUEST });
 	}
 	const { house_id, room_id, discussion_id } = req.query;
 	const {

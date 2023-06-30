@@ -6,6 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
+import messages from '~src/auth/utils/messages';
 import { MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM } from '~src/global/min_token';
 import { ICreatorDetails } from '~src/redux/rooms/@types';
 import { roomCollection } from '~src/services/firebase/utils';
@@ -23,7 +24,7 @@ export const getRooms: TGetRoomsFn = async (params) => {
 	try {
 		const { house_id } = params;
 		if (!house_id) {
-			throw apiErrorWithStatusCode('Invalid houseId.', StatusCodes.BAD_REQUEST);
+			throw apiErrorWithStatusCode(messages.INVALID_HOUSE_ID, StatusCodes.BAD_REQUEST);
 		}
 		const rooms: IRoom[] = [];
 		const roomsSnapshot = await roomCollection(house_id).get();
@@ -82,7 +83,7 @@ export interface IRoomsQuery {
 }
 const handler: TNextApiHandler<IRoom[], IRoomsBody, IRoomsQuery> = async (req, res) => {
 	if (req.method !== 'GET') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, GET required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_GET_REQUEST });
 	}
 	const { house_id } = req.query;
 	const {

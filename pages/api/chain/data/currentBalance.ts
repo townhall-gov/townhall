@@ -5,6 +5,7 @@
 import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TNextApiHandler } from '~src/api/types';
+import messages from '~src/auth/utils/messages';
 import { getCurrentBalanceByAddress } from '~src/onchain-data/contract/getCurrentBalanceByAddress';
 import { getDecimals } from '~src/onchain-data/contract/getDecimals';
 import { getSymbol } from '~src/onchain-data/contract/getSymbol';
@@ -26,7 +27,7 @@ export interface ICurrentBalanceResponse {
 
 const handler: TNextApiHandler<ICurrentBalanceResponse, ICurrentBalanceBody, ICurrentBalanceQuery> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_POST_REQUEST });
 	}
 	const { contract, address, network } = req.body;
 

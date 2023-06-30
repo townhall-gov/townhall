@@ -5,6 +5,7 @@
 import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TNextApiHandler } from '~src/api/types';
+import messages from '~src/auth/utils/messages';
 import { getDecimals } from '~src/onchain-data/contract/getDecimals';
 import { getName } from '~src/onchain-data/contract/getName';
 import { getSymbol } from '~src/onchain-data/contract/getSymbol';
@@ -24,7 +25,7 @@ export interface IContractInfoInfoResponse {
 
 const handler: TNextApiHandler<IContractInfoInfoResponse, IContractInfoInfoBody, IContractInfoInfoQuery> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_POST_REQUEST });
 	}
 	const { contract_address, network } = req.body;
 	create();

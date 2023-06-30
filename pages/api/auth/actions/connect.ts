@@ -9,6 +9,7 @@ import { EWallet } from '~src/types/enums';
 import { IToken } from '~src/auth/types';
 import authServiceInstance from '~src/auth';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
+import messages from '~src/auth/utils/messages';
 
 export interface IConnectBody {
     address: string;
@@ -18,18 +19,18 @@ export interface IConnectBody {
 
 const handler: TNextApiHandler<IToken, IConnectBody, {}> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_POST_REQUEST });
 	}
 	const { address, wallet, signature } = req.body;
 
 	if (!address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid address.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ADDRESS });
 	}
 	if (!signature) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid signature.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_SIGNATURE });
 	}
 	if (!wallet || !Object.values(EWallet).includes(wallet)) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid wallet.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_WALLET });
 	}
 
 	try {
