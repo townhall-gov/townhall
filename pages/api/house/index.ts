@@ -6,6 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
+import messages from '~src/auth/utils/messages';
 import { MIN_TOKEN_TO_CREATE_ROOM } from '~src/global/min_token';
 import { houseCollection, roomCollection } from '~src/services/firebase/utils';
 import { IHouse } from '~src/types/schema';
@@ -22,12 +23,12 @@ export const getHouse: TGetHouseFn = async (params) => {
 	try {
 		const { house_id } = params;
 		if (!house_id) {
-			throw apiErrorWithStatusCode('Invalid houseId.', StatusCodes.BAD_REQUEST);
+			throw apiErrorWithStatusCode(messages.INVALID_ID('house'), StatusCodes.BAD_REQUEST);
 		}
 		const houseDocSnapshot = await houseCollection.doc(house_id).get();
 		const data = houseDocSnapshot?.data() as IHouse;
 		if (!houseDocSnapshot || !houseDocSnapshot.exists || !data) {
-			throw apiErrorWithStatusCode(`House "${house_id}" not found.`, StatusCodes.NOT_FOUND);
+			throw apiErrorWithStatusCode( messages.TYPE_NOT_FOUND('House',house_id) , StatusCodes.NOT_FOUND);
 		}
 
 		const roomAggregateQuerySnapshot = await roomCollection(data.id).count().get();
@@ -63,7 +64,7 @@ export interface IHouseQuery {
 }
 const handler: TNextApiHandler<IHouse, IHouseBody, IHouseQuery> = async (req, res) => {
 	if (req.method !== 'GET') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, GET required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_REQ_METHOD('GET') });
 	}
 	const { house_id } = req.query;
 	const {

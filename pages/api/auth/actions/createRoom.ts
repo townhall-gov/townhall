@@ -28,22 +28,22 @@ export interface ICreateRoomResponse {
 
 const handler: TNextApiHandler<ICreateRoomResponse, ICreateRoomBody, {}> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_REQ_METHOD('POST') });
 	}
 	const { room } = req.body;
 
 	if (!room) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid room details.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('room details') });
 	}
 
 	if (!room.house_id || typeof room.house_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid houseId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('house') });
 	}
 
 	let address: string | null = null;
 	try {
 		const token = getTokenFromReq(req);
-		if(!token) return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid token' });
+		if(!token) return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('token') });
 
 		const user = await authServiceInstance.GetUser(token);
 		if(!user) return res.status(StatusCodes.FORBIDDEN).json({ error: messages.UNAUTHORISED });
@@ -53,7 +53,7 @@ const handler: TNextApiHandler<ICreateRoomResponse, ICreateRoomBody, {}> = async
 	}
 
 	if (!address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid address.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('address') });
 	}
 
 	const { house_id, id } = room;
@@ -63,7 +63,7 @@ const handler: TNextApiHandler<ICreateRoomResponse, ICreateRoomBody, {}> = async
 	if (roomRefDoc && roomRefDoc.exists) {
 		const data = roomRefDoc.data() as IRoom;
 		if (data && data.house_id === house_id) {
-			return res.status(StatusCodes.NOT_FOUND).json({ error: `Room ${id} is already exists in a house ${house_id}.` });
+			return res.status(StatusCodes.NOT_FOUND).json({ error: messages.TYPE1_NOT_FOUND_IN_TYPE2('Room',id,'House',house_id) });
 		}
 	}
 

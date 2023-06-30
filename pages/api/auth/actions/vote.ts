@@ -29,42 +29,42 @@ export interface IVoteResponse {
 
 const handler: TNextApiHandler<IVoteResponse, IVoteBody, {}> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_REQ_METHOD('POST') });
 	}
 
 	const { vote, signature, voter_address } = req.body;
 
 	if (!vote || typeof vote !== 'object') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Unable to vote, insufficient information.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.UNABLE_TO_TYPE1_DUE_TYPE2('Vote','insufficient information.') });
 	}
 
 	if (!signature) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid signature.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('signature') });
 	}
 
 	if (!voter_address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid voter address.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('voter addrress') });
 	}
 
 	const { house_id, room_id, proposal_id } = vote;
 
 	if (!house_id || typeof house_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid houseId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('house') });
 	}
 
 	if (!room_id || typeof room_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid roomId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('room') });
 	}
 
 	const numProposalId = Number(proposal_id);
 	if (isNaN(numProposalId)) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid proposalId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('proposal') });
 	}
 
 	let logged_in_address: string | null = null;
 	try {
 		const token = getTokenFromReq(req);
-		if(!token) return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid token' });
+		if(!token) return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('token') });
 
 		const user = await authServiceInstance.GetUser(token);
 		if(!user) return res.status(StatusCodes.FORBIDDEN).json({ error: messages.UNAUTHORISED });
@@ -74,34 +74,34 @@ const handler: TNextApiHandler<IVoteResponse, IVoteBody, {}> = async (req, res) 
 	}
 
 	if (voter_address !== logged_in_address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'LoggedIn address is not matching with Voter address' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.LOGGED_IN_ADRESS_DOES_NOT_MATCH('Voters') });
 	}
 
 	const houseDocSnapshot = await houseCollection.doc(house_id).get();
 	if (!houseDocSnapshot.exists) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: `House with id ${house_id} does not exist.` });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.TYPE_NOT_FOUND('House',house_id) });
 	}
 
 	const roomDocSnapshot = await roomCollection(house_id).doc(room_id).get();
 	if (!roomDocSnapshot.exists) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: `Room with id ${room_id} does not exist in a House with id ${house_id}.` });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.TYPE1_NOT_FOUND_IN_TYPE2('Room',room_id,'house',house_id) });
 	}
 
 	const proposalDocRef = proposalCollection(house_id, room_id).doc(String(proposal_id));
 	const proposalDocSnapshot = await proposalDocRef.get();
 	const proposalData = proposalDocSnapshot.data() as IProposal;
 	if (!proposalDocSnapshot.exists) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: `Proposal with id ${proposal_id} does not exist in a Room with id ${room_id} and House with id ${house_id}.` });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.TYPE_NOT_FOUND_IN_ROOM_AND_HOUSE('Proposal',proposal_id,room_id,house_id) });
 	}
 
 	const isAllZero = vote.balances.every((balance) => new BigNumber(balance.value).eq(0));
 	if (isAllZero) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Can not vote, All Strategies are not satisfy.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.UNABLE_TO_TYPE1_DUE_TYPE2('vote',', All Strategies are not satisfy.') });
 	}
 	const voteColRef = voteCollection(house_id, room_id, String(proposal_id));
 	const voteQuerySnapshot = await voteColRef.where('voter_address', '==', voter_address).limit(0).get();
 	if (!voteQuerySnapshot.empty) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: `Voter ${voter_address} already voted for this proposal.` });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.ALREADY_VOTED(voter_address) });
 	}
 	const voteDocRef = voteColRef.doc();
 	const now = new Date();

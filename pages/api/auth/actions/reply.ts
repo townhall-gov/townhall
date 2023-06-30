@@ -31,51 +31,51 @@ export interface IReplyResponse {
 
 const handler: TNextApiHandler<IReplyResponse, IReplyBody, {}> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_REQ_METHOD('POST') });
 	}
 
 	const { post_id, post_type, room_id, house_id, reply, comment_id, action_type } = req.body;
 
 	if (!house_id || typeof house_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid houseId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('house') });
 	}
 
 	if (!room_id || typeof room_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid roomId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('room') });
 	}
 
 	if ((!post_id && post_id != 0) || typeof post_id !== 'number') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid postId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('post') });
 	}
 
 	if (![EPostType.DISCUSSION, EPostType.PROPOSAL].includes(post_type)) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid post type.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('post type') });
 	}
 
 	if (!comment_id || typeof comment_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid commentId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('comment') });
 	}
 
 	if (!action_type || ![EAction.ADD, EAction.DELETE, EAction.EDIT].includes(action_type)) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid api action type.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error:  messages.INVALID_TYPE('api action type') });
 	}
 
 	if (!reply?.content) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Reply content must be greater than 5 characters.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.TYPE_MUST_BE_GREATER_THAN('Reply') });
 	}
 
 	if ([EAction.EDIT, EAction.DELETE].includes(action_type) && !reply?.id) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Reply id is invalid.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('reply') });
 	}
 
 	if (reply.sentiment && ![ESentiment.COMPLETELY_AGAINST, ESentiment.COMPLETELY_FOR, ESentiment.NEUTRAL, ESentiment.SLIGHTLY_AGAINST, ESentiment.SLIGHTLY_FOR].includes(reply?.sentiment)) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Reply sentiment is invalid.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('reply sentiment') });
 	}
 
 	let user_address: string | null = null;
 	try {
 		const token = getTokenFromReq(req);
-		if(!token) return res.status(StatusCodes.UNAUTHORIZED).json({ error: 'Invalid token' });
+		if(!token) return res.status(StatusCodes.UNAUTHORIZED).json({ error: messages.INVALID_TYPE('token') });
 
 		const user = await authServiceInstance.GetUser(token);
 		if(!user) return res.status(StatusCodes.FORBIDDEN).json({ error: messages.UNAUTHORISED });
@@ -85,7 +85,7 @@ const handler: TNextApiHandler<IReplyResponse, IReplyBody, {}> = async (req, res
 	}
 
 	if (!user_address) {
-		return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error: 'Invalid address.' });
+		return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error: messages.INVALID_TYPE('address') });
 	}
 
 	const postsColRef = post_type === EPostType.PROPOSAL? proposalCollection(house_id, room_id): discussionCollection(house_id, room_id);
@@ -93,13 +93,13 @@ const handler: TNextApiHandler<IReplyResponse, IReplyBody, {}> = async (req, res
 	const postDoc = await postDocRef.get();
 
 	if (!postDoc || !postDoc.exists) {
-		return res.status(StatusCodes.NOT_FOUND).json({ error: `Post "${post_id}" is not found in a Room "${room_id}" and a House "${house_id}".` });
+		return res.status(StatusCodes.NOT_FOUND).json({ error: messages.TYPE_NOT_FOUND_IN_ROOM_AND_HOUSE('Post',post_id,room_id,house_id) });
 	}
 
 	const commentDocRef = postDocRef.collection('comments').doc(comment_id);
 	const commentDocSnapshot = await commentDocRef.get();
 	if (!commentDocSnapshot || !commentDocSnapshot.exists || !commentDocSnapshot.data()) {
-		return res.status(StatusCodes.NOT_FOUND).json({ error: `Comment "${comment_id}" is not found in a Post "${post_id}".` });
+		return res.status(StatusCodes.NOT_FOUND).json({ error: messages.TYPE1_NOT_FOUND_IN_TYPE2('comment',comment_id,'post',post_id) });
 	}
 
 	const newReply: IReply = {
@@ -135,7 +135,7 @@ const handler: TNextApiHandler<IReplyResponse, IReplyBody, {}> = async (req, res
 				is_deleted: true
 			});
 		} else {
-			return res.status(StatusCodes.NOT_FOUND).json({ error: `Reply "${reply.id}" is not found for Post "${post_id}".` });
+			return res.status(StatusCodes.NOT_FOUND).json({ error: messages.TYPE1_NOT_FOUND_IN_TYPE2('Reply',reply.id,'Post',post_id) });
 		}
 	} else if (action_type === EAction.EDIT) {
 		const replyDocRef = commentDocRef.collection('replies').doc(String(reply.id));
@@ -144,7 +144,7 @@ const handler: TNextApiHandler<IReplyResponse, IReplyBody, {}> = async (req, res
 			const data = replyDoc.data() as IReply;
 			// IF content is same return error
 			if (data.content === reply.content) {
-				return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Unable to edit reply as content is same.' });
+				return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.UNABLE_TO_EDIT_CONTENT_SAME('reply') });
 			}
 			// Edit history
 			const historyReply: IHistoryReply = {
@@ -171,10 +171,10 @@ const handler: TNextApiHandler<IReplyResponse, IReplyBody, {}> = async (req, res
 				updated_at: now
 			});
 		} else {
-			return res.status(StatusCodes.NOT_FOUND).json({ error: `Reply "${reply.id}" is not found for Post "${post_id}".` });
+			return res.status(StatusCodes.NOT_FOUND).json({ error: messages.TYPE1_NOT_FOUND_IN_TYPE2('Reply',reply.id,'Post',post_id) });
 		}
 	} else {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid api action type.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error:  messages.INVALID_TYPE('api action type') });
 	}
 
 	res.status(StatusCodes.OK).json({

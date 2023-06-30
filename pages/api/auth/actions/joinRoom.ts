@@ -24,22 +24,22 @@ export interface IJoinRoomResponse {
 
 const handler: TNextApiHandler<IJoinRoomResponse, IJoinRoomBody, {}> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_REQ_METHOD('POST') });
 	}
 	const { houseId, roomId } = req.body;
 
 	if (!houseId || typeof houseId !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid houseId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('house') });
 	}
 
 	if (!roomId || typeof roomId !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid roomId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('room') });
 	}
 
 	let address: string | null = null;
 	try {
 		const token = getTokenFromReq(req);
-		if(!token) return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid token' });
+		if(!token) return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('token') });
 
 		const user = await authServiceInstance.GetUser(token);
 		if(!user) return res.status(StatusCodes.FORBIDDEN).json({ error: messages.UNAUTHORISED });
@@ -49,14 +49,14 @@ const handler: TNextApiHandler<IJoinRoomResponse, IJoinRoomBody, {}> = async (re
 	}
 
 	if (!address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid address.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('address') });
 	}
 
 	const roomRef = roomCollection(houseId).doc(roomId);
 	const roomRefDoc = await roomRef.get();
 
 	if (!roomRefDoc || !roomRefDoc.exists || !roomRefDoc.data()) {
-		return res.status(StatusCodes.NOT_FOUND).json({ error: `Room with id ${roomId} is not found in a house with id ${houseId}.` });
+		return res.status(StatusCodes.NOT_FOUND).json({ error: messages.TYPE1_NOT_FOUND_IN_TYPE2('Room',roomId,'House',houseId) });
 	}
 
 	const joinedRoom: IJoinedRoomForUser = {
@@ -73,7 +73,7 @@ const handler: TNextApiHandler<IJoinRoomResponse, IJoinRoomBody, {}> = async (re
 		const data = joinedRoomDoc.data() as IJoinedRoom;
 		if (data) {
 			if (data.is_joined) {
-				return res.status(StatusCodes.NOT_FOUND).json({ error: `Room with id ${roomId} is already joined.` });
+				return res.status(StatusCodes.NOT_FOUND).json({ error: messages.TYPE_ALREADY_JOINED('Room',roomId) });
 			} else {
 				if (data.joined_at) {
 					joinedRoom.joined_at = data.joined_at;

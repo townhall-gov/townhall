@@ -28,31 +28,31 @@ export interface IReactionResponse {
 
 const handler: TNextApiHandler<IReactionResponse, IReactionBody, {}> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_REQ_METHOD('POST') });
 	}
 
 	const { type, post_id, room_id, house_id, post_type } = req.body;
 
 	if (!house_id || typeof house_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid houseId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('house') });
 	}
 
 	if (!room_id || typeof room_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid roomId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('room') });
 	}
 
 	if ((!post_id && post_id != 0) || typeof post_id !== 'number') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid postId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('post') });
 	}
 
 	if (![EPostType.DISCUSSION, EPostType.PROPOSAL].includes(post_type)) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid post type.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('post type') });
 	}
 
 	let user_address: string | null = null;
 	try {
 		const token = getTokenFromReq(req);
-		if(!token) return res.status(StatusCodes.UNAUTHORIZED).json({ error: 'Invalid token' });
+		if(!token) return res.status(StatusCodes.UNAUTHORIZED).json({ error: messages.INVALID_TYPE('token') });
 
 		const user = await authServiceInstance.GetUser(token);
 		if(!user) return res.status(StatusCodes.FORBIDDEN).json({ error: messages.UNAUTHORISED });
@@ -62,7 +62,7 @@ const handler: TNextApiHandler<IReactionResponse, IReactionBody, {}> = async (re
 	}
 
 	if (!user_address) {
-		return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error: 'Invalid address.' });
+		return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error: messages.INVALID_TYPE('address') });
 	}
 
 	const postsColRef = post_type === EPostType.PROPOSAL? proposalCollection(house_id, room_id): discussionCollection(house_id, room_id);
@@ -70,13 +70,13 @@ const handler: TNextApiHandler<IReactionResponse, IReactionBody, {}> = async (re
 	const postDoc = await postDocRef.get();
 
 	if (!postDoc || !postDoc.exists) {
-		return res.status(StatusCodes.NOT_FOUND).json({ error: `Post "${post_id}" is not found in a Room "${room_id}" and a House "${house_id}".` });
+		return res.status(StatusCodes.NOT_FOUND).json({ error: messages.TYPE_NOT_FOUND_IN_ROOM_AND_HOUSE('Post',post_id,room_id,house_id) });
 	}
 
 	const reactionsColRef = postDocRef.collection('reactions');
 	const reactionQuerySnapshot = await reactionsColRef.where('user_address', '==', user_address).get();
 	if (reactionQuerySnapshot && !reactionQuerySnapshot.empty && reactionQuerySnapshot.size > 1) {
-		return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error: `More than one reaction with user address "${user_address}" exists.` });
+		return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error: messages.MORE_THAN_ONE_REACTION(user_address) });
 	}
 
 	let reactionDocRef = reactionsColRef.doc();

@@ -5,6 +5,7 @@
 import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TNextApiHandler } from '~src/api/types';
+import messages from '~src/auth/utils/messages';
 import { getBalanceUsingStrategyWithHeight } from '~src/onchain-data';
 import { IStrategyWithHeight } from '~src/types/schema';
 
@@ -22,7 +23,7 @@ export interface IBalanceResponse {
 
 const handler: TNextApiHandler<IBalanceResponse, IBalanceBody, IBalanceQuery> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_REQ_METHOD('POST') });
 	}
 	const { voting_strategies_with_height, address } = req.body;
 
@@ -31,7 +32,7 @@ const handler: TNextApiHandler<IBalanceResponse, IBalanceBody, IBalanceQuery> = 
 	}
 
 	if (!voting_strategies_with_height || !Array.isArray(voting_strategies_with_height) || voting_strategies_with_height.length === 0) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Network, Address, Height is not available, unable to find Balance.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.TYPE1_NOT_AVAILABLE('Network,Address,Height','Balance') });
 	}
 
 	const balancePromises = voting_strategies_with_height.map(async (v) => {

@@ -14,6 +14,7 @@ import convertFirestoreTimestampToDate from '~src/utils/convertFirestoreTimestam
 import getErrorMessage from '~src/utils/getErrorMessage';
 import { getErrorStatus } from '~src/utils/getErrorMessage';
 import { getComments } from '../proposal';
+import messages from '~src/auth/utils/messages';
 
 interface IGetDiscussionFnParams {
     house_id: string;
@@ -26,20 +27,20 @@ export const getDiscussion: TGetDiscussionFn = async (params) => {
 	try {
 		const { house_id, room_id, discussion_id } = params;
 		if (!house_id) {
-			throw apiErrorWithStatusCode('Invalid houseId.', StatusCodes.BAD_REQUEST);
+			throw apiErrorWithStatusCode(messages.INVALID_ID('house'), StatusCodes.BAD_REQUEST);
 		}
 		if (!room_id) {
-			throw apiErrorWithStatusCode('Invalid roomId.', StatusCodes.BAD_REQUEST);
+			throw apiErrorWithStatusCode(messages.INVALID_ID('room'), StatusCodes.BAD_REQUEST);
 		}
 		if (!(discussion_id == 0) && !discussion_id) {
-			throw apiErrorWithStatusCode('Invalid discussionId.', StatusCodes.BAD_REQUEST);
+			throw apiErrorWithStatusCode(messages.INVALID_ID('discussion'), StatusCodes.BAD_REQUEST);
 		}
 		const roomDocRef = roomCollection(house_id).doc(room_id);
 		const roomDocSnapshot = await roomDocRef.get();
 		const roomData = roomDocSnapshot?.data() as IRoom;
 
 		if (!roomDocSnapshot || !roomDocSnapshot.exists || !roomData) {
-			throw apiErrorWithStatusCode(`Room "${room_id}" is not found in a house "${house_id}".`, StatusCodes.NOT_FOUND);
+			throw apiErrorWithStatusCode(messages.TYPE1_NOT_FOUND_IN_TYPE2('Room',room_id,'house',house_id), StatusCodes.NOT_FOUND);
 		}
 
 		// Get discussion
@@ -48,7 +49,7 @@ export const getDiscussion: TGetDiscussionFn = async (params) => {
 		const data = discussionDocSnapshot?.data() as IDiscussion;
 		// Check if discussion exists
 		if (!discussionDocSnapshot || !discussionDocSnapshot.exists || !data) {
-			throw apiErrorWithStatusCode(`Discussion "${discussion_id}" is not found in a room "${room_id}" and a house "${house_id}".`, StatusCodes.NOT_FOUND);
+			throw apiErrorWithStatusCode(messages.TYPE_NOT_FOUND_IN_ROOM_AND_HOUSE('Discussion',discussion_id,room_id,house_id), StatusCodes.NOT_FOUND);
 		}
 
 		// Sanitization
@@ -130,7 +131,7 @@ export interface IDiscussionQuery {
 
 const handler: TNextApiHandler<IDiscussion, IDiscussionBody, IDiscussionQuery> = async (req, res) => {
 	if (req.method !== 'GET') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, GET required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_REQ_METHOD('GET') });
 	}
 	const { house_id, room_id, discussion_id } = req.query;
 	const {
