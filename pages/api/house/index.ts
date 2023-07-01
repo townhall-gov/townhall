@@ -8,7 +8,7 @@ import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
 import messages from '~src/auth/utils/messages';
 import { MIN_TOKEN_TO_CREATE_ROOM } from '~src/global/min_token';
-import { houseCollection, roomCollection } from '~src/services/firebase/utils';
+import { houseCollection } from '~src/services/firebase/utils';
 import { IHouse } from '~src/types/schema';
 import apiErrorWithStatusCode from '~src/utils/apiErrorWithStatusCode';
 import getErrorMessage from '~src/utils/getErrorMessage';
@@ -31,8 +31,6 @@ export const getHouse: TGetHouseFn = async (params) => {
 			throw apiErrorWithStatusCode( messages.TYPE_NOT_FOUND('House',house_id) , StatusCodes.NOT_FOUND);
 		}
 
-		const roomAggregateQuerySnapshot = await roomCollection(data.id).count().get();
-		const totalRoom = roomAggregateQuerySnapshot.data().count || 0;
 		// Sanitization
 		const house: IHouse = {
 			admins: data.admins || [],
@@ -44,7 +42,7 @@ export const getHouse: TGetHouseFn = async (params) => {
 			min_token_to_create_room: data.min_token_to_create_room || MIN_TOKEN_TO_CREATE_ROOM,
 			networks: data.networks || [],
 			title: data.title || '',
-			total_room: Number(totalRoom || 0)
+			total_room: data.total_room || 0
 		};
 		return {
 			data: JSON.parse(JSON.stringify(house)),
