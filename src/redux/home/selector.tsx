@@ -47,12 +47,25 @@ const useVisibleRoomCards = () => {
 	return visibleRoomCards ;
 };
 
+const useVisibleAllCards = () => {
+	const { visibleAllCards } = useHomeSelector();
+	console.log('visibleAllCards');
+	return visibleAllCards ;
+};
+
+const useLoadMoreVisibility = () => {
+	const { isLoadMoreVisible } = useHomeSelector();
+	return isLoadMoreVisible ;
+};
+
 export {
 	useFilteredHouses,
 	useFilteredRooms,
 	useCategory,
 	useSearchTerm,
 	useVisibleHouseCards,
-	useVisibleRoomCards
+	useVisibleRoomCards,
+	useLoadMoreVisibility,
+	useVisibleAllCards
 
 };
