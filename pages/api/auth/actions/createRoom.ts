@@ -78,17 +78,10 @@ const handler: TNextApiHandler<ICreateRoomResponse, ICreateRoomBody, {}> = async
 	await roomRef.set(createdRoom, { merge: true });
 
 	const houseRef = houseCollection.doc(house_id);
-	houseRef.get().then((doc) => {
-		if (doc.exists) {
-			const data = doc.data();
-			if (data) {
-				let total_room = 1;
-				const prev_total_room = Number(data.total_room);
-				if (!isNaN(prev_total_room)) {
-					total_room += prev_total_room;
-				}
-				houseRef.set({ total_room }, { merge: true });
-			}
+	roomCollection(house_id).count().get().then((doc) => {
+		const data = doc.data();
+		if (data) {
+			houseRef.set({ total_room: data.count }, { merge: true });
 		}
 	});
 
