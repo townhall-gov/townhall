@@ -7,7 +7,7 @@ import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
 import { discussionCollection, proposalCollection, roomCollection } from '~src/services/firebase/utils';
-import { EPostType } from '~src/types/enums';
+import { EPostType, EReaction } from '~src/types/enums';
 import { IDiscussion, IReaction, IRoom } from '~src/types/schema';
 import apiErrorWithStatusCode from '~src/utils/apiErrorWithStatusCode';
 import convertFirestoreTimestampToDate from '~src/utils/convertFirestoreTimestampToDate';
@@ -56,11 +56,16 @@ export const getDiscussion: TGetDiscussionFn = async (params) => {
 		if ((data.id || data.id == 0) && data.house_id && data.room_id && data.proposer_address) {
 			// Get discussion reactions
 			const reactions: IReaction[] = [];
+			const reactions_count = {
+				[EReaction.DISLIKE]: 0,
+				[EReaction.LIKE]: 0
+			};
 			const reactionsQuerySnapshot = await discussionDocRef.collection('reactions').get();
 			reactionsQuerySnapshot.docs.forEach((doc) => {
 				if (doc && doc.exists) {
 					const data  = doc.data() as IReaction;
 					if (data && data.user_address && data.id && data.type) {
+						reactions_count[data.type] = reactions_count[data.type] + 1;
 						reactions.push(data);
 					}
 				}
@@ -92,6 +97,7 @@ export const getDiscussion: TGetDiscussionFn = async (params) => {
 			// Construct discussion
 			const discussion: IDiscussion = {
 				comments: comments,
+				comments_count: comments.length,
 				created_at: convertFirestoreTimestampToDate(data.created_at),
 				description: data.description || '',
 				house_id: data.house_id,
@@ -100,6 +106,7 @@ export const getDiscussion: TGetDiscussionFn = async (params) => {
 				post_link_data: data.post_link_data || null,
 				proposer_address: data.proposer_address,
 				reactions: reactions,
+				reactions_count: reactions_count,
 				room_id: data.room_id,
 				tags: data.tags || [],
 				title: data.title || '',

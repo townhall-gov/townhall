@@ -9,10 +9,11 @@ import authServiceInstance from '~src/auth';
 import getTokenFromReq from '~src/auth/utils/getTokenFromReq';
 import messages from '~src/auth/utils/messages';
 import { houseCollection, discussionCollection, roomCollection } from '~src/services/firebase/utils';
+import { EReaction } from '~src/types/enums';
 import { IDiscussion, IRoom } from '~src/types/schema';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
 
-export type TDiscussionPayload = Omit<IDiscussion, 'proposer_address' | 'created_at' | 'updated_at' | 'id' | 'reactions' | 'comments'>;
+export type TDiscussionPayload = Omit<IDiscussion, 'proposer_address' | 'created_at' | 'updated_at' | 'id' | 'reactions' | 'comments' | 'comments_count' | 'reactions_count'>;
 
 export interface ICreateDiscussionBody {
     discussion: TDiscussionPayload;
@@ -63,7 +64,7 @@ const handler: TNextApiHandler<ICreateDiscussionResponse, ICreateDiscussionBody,
 	}
 
 	if (proposer_address !== logged_in_address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.LOGGED_IN_ADRESS_DOES_NOT_MATCH('Proposer') });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.LOGGED_IN_ADDRESS_DOES_NOT_MATCH('Proposer') });
 	}
 
 	const houseDocSnapshot = await houseCollection.doc(house_id).get();
@@ -97,9 +98,14 @@ const handler: TNextApiHandler<ICreateDiscussionResponse, ICreateDiscussionBody,
 	const now = new Date();
 	const newDiscussion: Omit<IDiscussion, 'comments' | 'reactions'> = {
 		...discussion,
+		comments_count: 0,
 		created_at: now,
 		id: newID,
 		proposer_address: proposer_address,
+		reactions_count: {
+			[EReaction.DISLIKE]: 0,
+			[EReaction.LIKE]: 0
+		},
 		updated_at: now
 	};
 

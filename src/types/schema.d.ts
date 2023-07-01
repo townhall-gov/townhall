@@ -67,16 +67,12 @@ interface IRoom {
 	title: string;
 	description: string;
 	logo: string;
-	contract_address: string;
-	decimals: string | number;
-	symbol: string;
 	total_members: number;
 	socials: IProjectSocial[];
 	creator_details: ICreatorDetails;
 	admins: IAdmin[];
 	voting_strategies: IStrategy[];
 	created_at: Date;
-	min_token_to_create_proposal_in_room: number;
 }
 
 interface IProposal {
@@ -97,6 +93,11 @@ interface IProposal {
 	is_vote_results_hide_before_voting_ends: boolean;
 	reactions: IReaction[];
 	comments: IComment[];
+	comments_count: number;
+	reactions_count: {
+		[EReaction.DISLIKE]: number;
+		[EReaction.LIKE]: number;
+	};
 	votes_result: IVotesResult;
 	voting_strategies_with_height: IStrategyWithHeight[];
 	status: EProposalStatus;
@@ -118,6 +119,11 @@ interface IDiscussion {
 	proposer_address: string;
 	created_at: Date;
 	updated_at: Date;
+	comments_count: number;
+	reactions_count: {
+		[EReaction.DISLIKE]: number;
+		[EReaction.LIKE]: number;
+	};
 	reactions: IReaction[];
 	comments: IComment[];
 	post_link: IPostLink | null;

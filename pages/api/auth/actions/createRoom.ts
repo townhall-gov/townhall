@@ -8,7 +8,6 @@ import { TNextApiHandler } from '~src/api/types';
 import authServiceInstance from '~src/auth';
 import getTokenFromReq from '~src/auth/utils/getTokenFromReq';
 import messages from '~src/auth/utils/messages';
-import { MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM } from '~src/global/min_token';
 import { ICreatorDetails } from '~src/redux/rooms/@types';
 import { houseCollection, joinedHouseCollection, joinedRoomCollection, roomCollection } from '~src/services/firebase/utils';
 import { IJoinedRoomForUser, IRoom } from '~src/types/schema';
@@ -74,23 +73,15 @@ const handler: TNextApiHandler<ICreateRoomResponse, ICreateRoomBody, {}> = async
 			...room.creator_details,
 			address
 		},
-		min_token_to_create_proposal_in_room: MIN_TOKEN_TO_CREATE_PROPOSAL_IN_ROOM,
 		total_members: 1
 	};
 	await roomRef.set(createdRoom, { merge: true });
 
 	const houseRef = houseCollection.doc(house_id);
-	houseRef.get().then((doc) => {
-		if (doc.exists) {
-			const data = doc.data();
-			if (data) {
-				let total_room = 1;
-				const prev_total_room = Number(data.total_room);
-				if (!isNaN(prev_total_room)) {
-					total_room += prev_total_room;
-				}
-				houseRef.set({ total_room }, { merge: true });
-			}
+	roomCollection(house_id).count().get().then((doc) => {
+		const data = doc.data();
+		if (data) {
+			houseRef.set({ total_room: data.count }, { merge: true });
 		}
 	});
 

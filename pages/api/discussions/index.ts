@@ -55,33 +55,18 @@ export const getDiscussions: TGetDiscussionsFn = async (params) => {
 		}
 		const discussionsSnapshot = await discussionsQuery.get();
 		if (discussionsSnapshot.size > 0) {
-			const discussionsPromise = discussionsSnapshot.docs.map(async (doc) => {
+			discussionsSnapshot.docs.map((doc) => {
 				if (doc && doc.exists) {
 					const data = doc.data() as IDiscussion;
 					if (data) {
 						// Sanitization
 						if ((data.id || data.id == 0) && data.house_id && data.room_id && data.proposer_address) {
-							let comments_count = 0;
-							const commentsAggregateQuery = await doc.ref.collection('comments').count().get();
-							if (commentsAggregateQuery && commentsAggregateQuery.data()) {
-								const commentsAggregateSpecData = commentsAggregateQuery.data();
-								comments_count = commentsAggregateSpecData.count;
-							}
+							const comments_count = data.comments_count || 0;
 							const reactions_count = {
-								[EReaction.DISLIKE]: 0,
-								[EReaction.LIKE]: 0
+								[EReaction.DISLIKE]: data?.reactions_count?.[EReaction.DISLIKE] || 0,
+								[EReaction.LIKE]: data?.reactions_count?.[EReaction.LIKE] || 0
 							};
-							const likeReactionsAggregateQuery = await doc.ref.collection('reactions').where('type', '==', EReaction.LIKE).count().get();
-							if (likeReactionsAggregateQuery && likeReactionsAggregateQuery.data()) {
-								const likeAggregateSpecData = likeReactionsAggregateQuery.data();
-								reactions_count[EReaction.LIKE] = likeAggregateSpecData.count;
-							}
-							const dislikeReactionsAggregateQuery = await doc.ref.collection('reactions').where('type', '==', EReaction.DISLIKE).count().get();
-							if (dislikeReactionsAggregateQuery && dislikeReactionsAggregateQuery.data()) {
-								const dislikeAggregateSpecData = dislikeReactionsAggregateQuery.data();
-								reactions_count[EReaction.DISLIKE] = dislikeAggregateSpecData.count;
-							}
-							const proposal: IListingDiscussion = {
+							const discussion: IListingDiscussion = {
 								comments_count,
 								created_at: convertFirestoreTimestampToDate(data.created_at),
 								house_id: data.house_id,
@@ -92,16 +77,9 @@ export const getDiscussions: TGetDiscussionsFn = async (params) => {
 								tags: data.tags || [],
 								title: data.title || ''
 							};
-							return proposal;
+							discussions.push(discussion);
 						}
 					}
-				}
-			});
-
-			const discussionsPromiseSettledResult = await Promise.allSettled(discussionsPromise);
-			discussionsPromiseSettledResult.forEach((result) => {
-				if (result && result.status === 'fulfilled' && result.value) {
-					discussions.push(result.value);
 				}
 			});
 		}
