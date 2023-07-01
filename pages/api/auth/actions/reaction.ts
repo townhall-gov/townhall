@@ -86,6 +86,17 @@ const handler: TNextApiHandler<IReactionResponse, IReactionBody, {}> = async (re
 			const data = doc.data() as IReaction;
 			if (data.type === type) {
 				await doc.ref.delete();
+				reactionsColRef.get().then((querySnapshot) => {
+					const reactions_count = {
+						[EReaction.DISLIKE]: 0,
+						[EReaction.LIKE]: 0
+					};
+					querySnapshot.docs.forEach((doc) => {
+						const data = doc.data() as IReaction;
+						reactions_count[data.type]++;
+					});
+					postDocRef.set({ reactions_count: reactions_count }, { merge: true });
+				});
 				return res.status(StatusCodes.OK).json({
 					isDeleted: true,
 					reaction: data
@@ -100,7 +111,7 @@ const handler: TNextApiHandler<IReactionResponse, IReactionBody, {}> = async (re
 		type: type,
 		user_address: user_address
 	};
-	reactionDocRef.set(reaction, { merge: true });
+	await reactionDocRef.set(reaction, { merge: true });
 	reactionsColRef.get().then((querySnapshot) => {
 		const reactions_count = {
 			[EReaction.DISLIKE]: 0,
