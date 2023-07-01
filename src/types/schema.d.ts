@@ -93,6 +93,11 @@ interface IProposal {
 	is_vote_results_hide_before_voting_ends: boolean;
 	reactions: IReaction[];
 	comments: IComment[];
+	comments_count: number;
+	reactions_count: {
+		[EReaction.DISLIKE]: number;
+		[EReaction.LIKE]: number;
+	};
 	votes_result: IVotesResult;
 	voting_strategies_with_height: IStrategyWithHeight[];
 	status: EProposalStatus;
@@ -114,6 +119,11 @@ interface IDiscussion {
 	proposer_address: string;
 	created_at: Date;
 	updated_at: Date;
+	comments_count: number;
+	reactions_count: {
+		[EReaction.DISLIKE]: number;
+		[EReaction.LIKE]: number;
+	};
 	reactions: IReaction[];
 	comments: IComment[];
 	post_link: IPostLink | null;

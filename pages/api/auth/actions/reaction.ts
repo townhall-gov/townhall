@@ -101,6 +101,17 @@ const handler: TNextApiHandler<IReactionResponse, IReactionBody, {}> = async (re
 		user_address: user_address
 	};
 	reactionDocRef.set(reaction, { merge: true });
+	reactionsColRef.get().then((querySnapshot) => {
+		const reactions = {
+			[EReaction.DISLIKE]: 0,
+			[EReaction.LIKE]: 0
+		};
+		querySnapshot.docs.forEach((doc) => {
+			const data = doc.data() as IReaction;
+			reactions[data.type]++;
+		});
+		postDocRef.set({ reactions: reactions }, { merge: true });
+	});
 	res.status(StatusCodes.OK).json({
 		isDeleted: false,
 		reaction: reaction
