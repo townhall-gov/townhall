@@ -9,7 +9,7 @@ import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
 import messages from '~src/auth/utils/messages';
 import { discussionCollection, proposalCollection, roomCollection } from '~src/services/firebase/utils';
-import { EPostType, EProposalStatus, ESentiment } from '~src/types/enums';
+import { EPostType, EProposalStatus, EReaction, ESentiment } from '~src/types/enums';
 import { IComment, IProposal, IReaction, IReply, IRoom } from '~src/types/schema';
 import apiErrorWithStatusCode from '~src/utils/apiErrorWithStatusCode';
 import convertFirestoreTimestampToDate from '~src/utils/convertFirestoreTimestampToDate';
@@ -182,11 +182,16 @@ export const getProposal: TGetProposalFn = async (params) => {
 		if ((data.id || data.id == 0) && data.house_id && data.room_id && data.proposer_address) {
 			// Get proposal reactions
 			const reactions: IReaction[] = [];
+			const reactions_count = {
+				[EReaction.DISLIKE]: 0,
+				[EReaction.LIKE]: 0
+			};
 			const reactionsQuerySnapshot = await proposalDocRef.collection('reactions').get();
 			reactionsQuerySnapshot.docs.forEach((doc) => {
 				if (doc && doc.exists) {
 					const data  = doc.data() as IReaction;
 					if (data && data.user_address && data.id && data.type) {
+						reactions_count[data.type] = reactions_count[data.type] + 1;
 						reactions.push(data);
 					}
 				}
@@ -238,6 +243,7 @@ export const getProposal: TGetProposalFn = async (params) => {
 			// Construct proposal
 			const proposal: IProposal = {
 				comments: comments,
+				comments_count: comments.length,
 				created_at: convertFirestoreTimestampToDate(data.created_at),
 				description: data.description || '',
 				discussion: data.discussion || '',
@@ -249,6 +255,7 @@ export const getProposal: TGetProposalFn = async (params) => {
 				post_link_data: data.post_link_data || null,
 				proposer_address: data.proposer_address,
 				reactions: reactions,
+				reactions_count: reactions_count,
 				room_id: data.room_id,
 				start_date: convertFirestoreTimestampToDate(data.start_date),
 				status: status,

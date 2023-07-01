@@ -10,12 +10,12 @@ import getTokenFromReq from '~src/auth/utils/getTokenFromReq';
 import messages from '~src/auth/utils/messages';
 import { getHeightUsingStrategy } from '~src/onchain-data';
 import { discussionCollection, houseCollection, proposalCollection, roomCollection } from '~src/services/firebase/utils';
-import { EPostType, EProposalStatus } from '~src/types/enums';
+import { EPostType, EProposalStatus, EReaction } from '~src/types/enums';
 import { IDiscussion, IProposal, IRoom, IStrategyWithHeight, IVotesResult } from '~src/types/schema';
 import getErrorMessage, { getErrorStatus } from '~src/utils/getErrorMessage';
 import { TUpdatedPost } from './postLink';
 
-export type TProposalPayload = Omit<IProposal, 'proposer_address' | 'created_at' | 'updated_at' | 'id' | 'timestamp' | 'reactions' | 'comments' | 'snapshot_heights' | 'start_date' | 'end_date' | 'votes_result' | 'voting_strategies_with_height' | 'status'> & {
+export type TProposalPayload = Omit<IProposal, 'proposer_address' | 'created_at' | 'updated_at' | 'id' | 'timestamp' | 'reactions' | 'comments' | 'snapshot_heights' | 'start_date' | 'end_date' | 'votes_result' | 'voting_strategies_with_height' | 'status' | 'comments_count' | 'reactions_count'> & {
 	start_date: string;
 	end_date: string;
 };
@@ -74,7 +74,7 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 	}
 
 	if (proposer_address !== logged_in_address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.LOGGED_IN_ADRESS_DOES_NOT_MATCH('Proposer') });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.LOGGED_IN_ADDRESS_DOES_NOT_MATCH('Proposer') });
 	}
 
 	const houseDocSnapshot = await houseCollection.doc(house_id).get();
@@ -156,10 +156,15 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 	const now = new Date();
 	const newProposal: Omit<IProposal, 'comments' | 'reactions'> = {
 		...proposal,
+		comments_count: 0,
 		created_at: now,
 		end_date: new Date(proposal.end_date),
 		id: newID,
 		proposer_address: proposer_address,
+		reactions_count: {
+			[EReaction.DISLIKE]: 0,
+			[EReaction.LIKE]: 0
+		},
 		start_date: new Date(proposal.start_date),
 		status: EProposalStatus.PENDING,
 		updated_at: now,

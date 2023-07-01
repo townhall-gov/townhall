@@ -125,7 +125,7 @@ const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req,
 				is_deleted: true
 			});
 		} else {
-			return res.status(StatusCodes.NOT_FOUND).json({ error: messages.TYPE1_NOT_FOUND_IN_TYPE2('Commment',comment.id,'Post',post_id) });
+			return res.status(StatusCodes.NOT_FOUND).json({ error: messages.TYPE1_NOT_FOUND_IN_TYPE2('Comment',comment.id,'Post',post_id) });
 		}
 	} else if (action_type === EAction.EDIT) {
 		const commentDocRef = commentsColRef.doc(String(comment.id));
@@ -161,11 +161,18 @@ const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req,
 				updated_at: now
 			});
 		} else {
-			return res.status(StatusCodes.NOT_FOUND).json({ error: messages.TYPE1_NOT_FOUND_IN_TYPE2('Commment',comment.id,'Post',post_id) });
+			return res.status(StatusCodes.NOT_FOUND).json({ error: messages.TYPE1_NOT_FOUND_IN_TYPE2('Comment',comment.id,'Post',post_id) });
 		}
 	} else {
 		return res.status(StatusCodes.BAD_REQUEST).json({ error:  messages.INVALID_TYPE('api action type') });
 	}
+
+	commentsColRef.where('is_deleted', '==', false).count().get().then((doc) => {
+		const data = doc.data();
+		if (data) {
+			postDocRef.set({ comments_count: data.count }, { merge: true });
+		}
+	});
 
 	res.status(StatusCodes.OK).json({
 		comment: newComment

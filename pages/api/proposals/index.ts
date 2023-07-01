@@ -58,34 +58,20 @@ export const getProposals: TGetProposalsFn = async (params) => {
 			const numLimit = (isNaN(Number(limit))? LISTING_LIMIT: Number(limit));
 			proposalsQuery = proposalsQuery.limit(numLimit).offset((numPage - 1) * numLimit);
 		}
+
 		const proposalsSnapshot = await proposalsQuery.get();
 		if (proposalsSnapshot.size > 0) {
-			const proposalsPromise = proposalsSnapshot.docs.map(async (doc) => {
+			proposalsSnapshot.docs.map((doc) => {
 				if (doc && doc.exists) {
 					const data = doc.data() as IProposal;
 					if (data) {
 						// Sanitization
 						if ((data.id || data.id == 0) && data.house_id && data.room_id && data.proposer_address) {
-							let comments_count = 0;
-							const commentsAggregateQuery = await doc.ref.collection('comments').count().get();
-							if (commentsAggregateQuery && commentsAggregateQuery.data()) {
-								const commentsAggregateSpecData = commentsAggregateQuery.data();
-								comments_count = commentsAggregateSpecData.count;
-							}
+							const comments_count = data.comments_count || 0;
 							const reactions_count = {
-								[EReaction.DISLIKE]: 0,
-								[EReaction.LIKE]: 0
+								[EReaction.DISLIKE]: data?.reactions_count?.[EReaction.DISLIKE] || 0,
+								[EReaction.LIKE]: data?.reactions_count?.[EReaction.LIKE] || 0
 							};
-							const likeReactionsAggregateQuery = await doc.ref.collection('reactions').where('type', '==', EReaction.LIKE).count().get();
-							if (likeReactionsAggregateQuery && likeReactionsAggregateQuery.data()) {
-								const likeAggregateSpecData = likeReactionsAggregateQuery.data();
-								reactions_count[EReaction.LIKE] = likeAggregateSpecData.count;
-							}
-							const dislikeReactionsAggregateQuery = await doc.ref.collection('reactions').where('type', '==', EReaction.DISLIKE).count().get();
-							if (dislikeReactionsAggregateQuery && dislikeReactionsAggregateQuery.data()) {
-								const dislikeAggregateSpecData = dislikeReactionsAggregateQuery.data();
-								reactions_count[EReaction.DISLIKE] = dislikeAggregateSpecData.count;
-							}
 							const isClosed = dayjs().isAfter(convertFirestoreTimestampToDate(data.end_date));
 							const isActive = dayjs().isBetween(convertFirestoreTimestampToDate(data.start_date), convertFirestoreTimestampToDate(data.end_date));
 							const isPending = dayjs().isBefore(convertFirestoreTimestampToDate(data.start_date));
@@ -122,16 +108,9 @@ export const getProposals: TGetProposalsFn = async (params) => {
 								votes_result: data.votes_result || {},
 								voting_strategies_with_height: data.voting_strategies_with_height
 							};
-							return proposal;
+							proposals.push(proposal);
 						}
 					}
-				}
-			});
-
-			const proposalsPromiseSettledResult = await Promise.allSettled(proposalsPromise);
-			proposalsPromiseSettledResult.forEach((result) => {
-				if (result && result.status === 'fulfilled' && result.value) {
-					proposals.push(result.value);
 				}
 			});
 		}

@@ -43,7 +43,7 @@ const handler: TNextApiHandler<IVoteResponse, IVoteBody, {}> = async (req, res) 
 	}
 
 	if (!voter_address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('voter addrress') });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('voter address') });
 	}
 
 	const { house_id, room_id, proposal_id } = vote;
@@ -74,7 +74,7 @@ const handler: TNextApiHandler<IVoteResponse, IVoteBody, {}> = async (req, res) 
 	}
 
 	if (voter_address !== logged_in_address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.LOGGED_IN_ADRESS_DOES_NOT_MATCH('Voters') });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.LOGGED_IN_ADDRESS_DOES_NOT_MATCH('Voters') });
 	}
 
 	const houseDocSnapshot = await houseCollection.doc(house_id).get();

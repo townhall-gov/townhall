@@ -6,7 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TApiResponse, TNextApiHandler } from '~src/api/types';
 import messages from '~src/auth/utils/messages';
-import { proposalCollection } from '~src/services/firebase/utils';
+import { discussionCollection } from '~src/services/firebase/utils';
 import apiErrorWithStatusCode from '~src/utils/apiErrorWithStatusCode';
 import getErrorMessage from '~src/utils/getErrorMessage';
 
@@ -26,9 +26,9 @@ export const getDiscussionsCount: TGetDiscussionsCountFn = async (params) => {
 			throw apiErrorWithStatusCode(messages.INVALID_ID('room'), StatusCodes.BAD_REQUEST);
 		}
 		let count = 0;
-		const proposalsQuery = proposalCollection(house_id, room_id);
-		const proposalsCountSnapshot = await proposalsQuery.count().get();
-		count = proposalsCountSnapshot.data().count || 0;
+		const discussionsQuery = discussionCollection(house_id, room_id);
+		const discussionsCountSnapshot = await discussionsQuery.count().get();
+		count = discussionsCountSnapshot.data().count || 0;
 		return {
 			data: JSON.parse(JSON.stringify(count)),
 			status: StatusCodes.OK

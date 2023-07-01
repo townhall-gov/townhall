@@ -64,7 +64,6 @@ export type IDiscussionCreation = {
 }
 
 export type IRoomSettings = {
-    min_token_to_create_proposal_in_room: number;
     room_strategies: IStrategy[];
 };
 
