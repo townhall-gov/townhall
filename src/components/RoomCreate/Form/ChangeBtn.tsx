@@ -23,6 +23,7 @@ import { profileActions } from '~src/redux/profile';
 import { ICurrentBalanceResponse, ICurrentBalanceBody } from 'pages/api/chain/data/currentBalance';
 import { formatToken } from '~src/utils/formatTokenAmount';
 import { MIN_TOKEN_TO_CREATE_ROOM } from '~src/global/min_token';
+import { chainProperties } from '~src/onchain-data/networkConstants';
 
 const StageChangeBtn = () => {
 	const router = useRouter();
@@ -33,10 +34,6 @@ const StageChangeBtn = () => {
 	const dispatch = useDispatch();
 	const { connectWallet, isLoggedIn } = useAuthActionsCheck();
 	const [canCreateRoom, setCanCreateRoom] = useState(false);
-	const [dappInfo, setDappInfo] = useState({
-		decimals: '',
-		symbol: ''
-	});
 
 	useEffect(() => {
 		(async () => {
@@ -45,7 +42,6 @@ const StageChangeBtn = () => {
 				try {
 					const { data, error } = await api.post<ICurrentBalanceResponse, ICurrentBalanceBody>('chain/data/currentBalance', {
 						address: user?.address,
-						contract: roomCreation.room_details?.contract_address,
 						network: roomCreation.select_house.blockchain
 					});
 					if (error) {
@@ -54,18 +50,16 @@ const StageChangeBtn = () => {
 							status: ENotificationStatus.ERROR,
 							title: 'Error!'
 						}));
-					} else if (!data || !data.balance || !data.decimals || !data.symbol) {
+					} else if (!data || !data.balance) {
 						dispatch(notificationActions.send({
 							message: 'This token is not supported.',
 							status: ENotificationStatus.ERROR,
 							title: 'Error!'
 						}));
 					} else {
-						const token = formatToken(data?.balance || 0, true, Number(data?.decimals || 0));
-						setDappInfo({
-							decimals: data?.decimals || '',
-							symbol: data?.symbol || ''
-						});
+						const chain = chainProperties[roomCreation.select_house.blockchain];
+						const decimals = chain.decimals;
+						const token = formatToken(data?.balance || 0, true, Number(decimals || 0));
 						if (token && Number(token) >= Number(roomCreation.select_house.min_token_to_create_room || MIN_TOKEN_TO_CREATE_ROOM)) {
 							setCanCreateRoom(true);
 						}
@@ -125,15 +119,12 @@ const StageChangeBtn = () => {
 									name: creator_details?.name || user?.username || ''
 								}
 							],
-							contract_address: room_details?.contract_address || '',
 							creator_details: creator_details!,
-							decimals: dappInfo.decimals,
 							description: room_details?.description || '',
 							house_id: select_house?.id || '',
 							id: room_details?.name || '',
 							logo: room_details?.logo || '',
 							socials: room_socials || [],
-							symbol: dappInfo.symbol,
 							title: room_details?.title || '',
 							voting_strategies: room_strategies || []
 						}

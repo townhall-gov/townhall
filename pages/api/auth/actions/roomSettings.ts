@@ -84,10 +84,9 @@ const handler: TNextApiHandler<IRoomSettingsResponse, IRoomSettingsBody, {}> = a
 	}
 
 	if (roomSettings) {
-		const { min_token_to_create_proposal_in_room, room_strategies } = roomSettings;
+		const { room_strategies } = roomSettings;
 		const room: IRoom = {
 			...data,
-			min_token_to_create_proposal_in_room: (min_token_to_create_proposal_in_room || min_token_to_create_proposal_in_room === 0)? min_token_to_create_proposal_in_room: data.min_token_to_create_proposal_in_room,
 			voting_strategies: room_strategies
 		};
 		await roomRef.set(room, { merge: true });
