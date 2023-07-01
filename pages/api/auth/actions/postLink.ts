@@ -36,29 +36,29 @@ export interface IPostLinkResponse {
 
 const handler: TNextApiHandler<IPostLinkResponse, IPostLinkBody, {}> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_REQ_METHOD('POST') });
 	}
 
 	const { post_id, post_type, room_id, house_id, post_link, action_type, post_link_data } = req.body;
 
 	if (!house_id || typeof house_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid houseId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('house') });
 	}
 
 	if (!room_id || typeof room_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid roomId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('room') });
 	}
 
 	if ((!post_id && post_id != 0) || typeof post_id !== 'number') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid postId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('post') });
 	}
 
 	if (!action_type || ![EAction.ADD, EAction.DELETE, EAction.EDIT].includes(action_type)) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid api action type.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('api action type') });
 	}
 
 	if (!post_type || ![EPostType.DISCUSSION, EPostType.PROPOSAL].includes(post_type)) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid post type.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('post type') });
 	}
 
 	if (!post_link || typeof post_link !== 'object' || ![EPostType.DISCUSSION, EPostType.PROPOSAL].includes(post_link.post_type)) {
@@ -66,17 +66,17 @@ const handler: TNextApiHandler<IPostLinkResponse, IPostLinkBody, {}> = async (re
 	}
 
 	if ([EAction.EDIT, EAction.DELETE].includes(action_type) && (post_link?.post_id != 0)) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Post link post id is invalid.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('Post link post id') });
 	}
 
 	if (post_type === post_link.post_type) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Unable to link the post, you are linking similar type of post.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.UNABLE_TO_TYPE1_DUE_TYPE2('link the post',',you are linking similar type of post') });
 	}
 
 	let user_address: string | null = null;
 	try {
 		const token = getTokenFromReq(req);
-		if(!token) return res.status(StatusCodes.UNAUTHORIZED).json({ error: 'Invalid token' });
+		if(!token) return res.status(StatusCodes.UNAUTHORIZED).json({ error: messages.INVALID_TYPE('token') });
 
 		const user = await authServiceInstance.GetUser(token);
 		if(!user) return res.status(StatusCodes.FORBIDDEN).json({ error: messages.UNAUTHORISED });
@@ -86,7 +86,7 @@ const handler: TNextApiHandler<IPostLinkResponse, IPostLinkBody, {}> = async (re
 	}
 
 	if (!user_address) {
-		return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error: 'Invalid address.' });
+		return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error: messages.INVALID_TYPE('address') });
 	}
 
 	const postsColRef = post_type === EPostType.PROPOSAL? proposalCollection(house_id, room_id): discussionCollection(house_id, room_id);
@@ -95,7 +95,7 @@ const handler: TNextApiHandler<IPostLinkResponse, IPostLinkBody, {}> = async (re
 	const data = postDoc.data() as (IDiscussion | IProposal);
 
 	if (!postDoc || !postDoc.exists) {
-		return res.status(StatusCodes.NOT_FOUND).json({ error: `Post "${post_id}" is not found in a Room "${room_id}" and a House "${house_id}".` });
+		return res.status(StatusCodes.NOT_FOUND).json({ error: messages.TYPE_NOT_FOUND_IN_ROOM_AND_HOUSE('Post',post_id,room_id,house_id) });
 	}
 
 	const linkPostsColRef = post_link.post_type === EPostType.PROPOSAL? proposalCollection(post_link.house_id, post_link.room_id): discussionCollection(post_link.house_id, post_link.room_id);
@@ -104,11 +104,11 @@ const handler: TNextApiHandler<IPostLinkResponse, IPostLinkBody, {}> = async (re
 	const linkPostData = linkPostDoc.data() as (IDiscussion | IProposal);
 
 	if (!linkPostDoc || !linkPostDoc.exists) {
-		return res.status(StatusCodes.NOT_FOUND).json({ error: `Link Post "${post_link.post_id}" is not found in a Room "${post_link.room_id}" and a House "${post_link.house_id}".` });
+		return res.status(StatusCodes.NOT_FOUND).json({ error: messages.TYPE_NOT_FOUND_IN_ROOM_AND_HOUSE('Link post',post_link.post_id,post_link.room_id,post_link.house_id) });
 	}
 
 	if (user_address !== data.proposer_address || user_address !== linkPostData.proposer_address) {
-		return res.status(StatusCodes.FORBIDDEN).json({ error: 'You are not allowed to link the post.' });
+		return res.status(StatusCodes.FORBIDDEN).json({ error: messages.UNAUTHORISED_VOTE });
 	}
 
 	const now = new Date();
@@ -136,13 +136,13 @@ const handler: TNextApiHandler<IPostLinkResponse, IPostLinkBody, {}> = async (re
 
 	if (action_type === EAction.ADD) {
 		if (data.post_link) {
-			return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error: `Post "${post_id}" is already linked with "${data?.post_link?.post_id}".` });
+			return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error: messages.ALREADY_POST_LINK_WITH(post_id,data?.post_link?.post_id) });
 		}
 		await postDocRef.set(updatedPost, { merge: true });
 		await linkPostDocRef.set(updatedLinkedPost, { merge: true });
 	} else if (action_type === EAction.DELETE) {
 		if (!data.post_link) {
-			return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error: `Unable to unlink, as post "${post_id}" is not linked with any post.` });
+			return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error: messages.UNABLE_TO_UNLINK_ANYPOST(post_id)  });
 		}
 
 		if (data?.post_link?.post_id === post_link.post_id && data?.post_link?.post_type === post_link.post_type && data?.post_link?.house_id === post_link.house_id && data?.post_link?.room_id === post_link.room_id) {
@@ -154,21 +154,21 @@ const handler: TNextApiHandler<IPostLinkResponse, IPostLinkBody, {}> = async (re
 			updatedLinkedPost.post_link_data = null;
 			await linkPostDocRef.update(updatedLinkedPost);
 		} else {
-			return res.status(StatusCodes.NOT_FOUND).json({ error: `Unable to unlink, as post "${post_link.post_id}" is not linked with post "${post_id}".` });
+			return res.status(StatusCodes.NOT_FOUND).json({ error: messages.UNABLE_TO_UNLINK(post_link.post_id,post_id) });
 		}
 	} else if (action_type === EAction.EDIT) {
 		if (!data.post_link) {
-			return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error: `Unable to edit post_link, as post "${post_id}" is not linked with any post.` });
+			return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error: messages.UNABLE_TO_EDIT_POSTLINK(post_id) });
 		}
 
 		if (data?.post_link?.post_id === post_link.post_id && data?.post_link?.post_type === post_link.post_type && data?.post_link?.house_id === post_link.house_id && data?.post_link?.room_id === post_link.room_id) {
-			return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Unable to edit post_link as you are linking same post again.' });
+			return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.UNABLE_TO_TYPE1_DUE_TYPE2('edit post_link',', as you are linking same post again.') });
 		} else {
 			await postDocRef.update(updatedPost);
 			await linkPostDocRef.update(updatedLinkedPost);
 		}
 	} else {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid api action type.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('api action type') });
 	}
 
 	res.status(StatusCodes.OK).json({

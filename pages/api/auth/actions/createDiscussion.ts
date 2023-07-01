@@ -25,32 +25,32 @@ export interface ICreateDiscussionResponse {
 
 const handler: TNextApiHandler<ICreateDiscussionResponse, ICreateDiscussionBody, {}> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_REQ_METHOD('POST') });
 	}
 	const { discussion, proposer_address } = req.body;
 	if (!discussion || typeof discussion !== 'object') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Unable to create a discussion, insufficient information for creating a discussion.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.UNABLE_TO_CREATE_TYPE('Discussion') });
 	}
 
 	if (!proposer_address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid address.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('address') });
 	}
 
 	const { house_id, room_id } = discussion;
 
 	if (!house_id || typeof house_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid houseId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('house') });
 	}
 
 	if (!room_id || typeof room_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid roomId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('room') });
 	}
 
 	let logged_in_address: string | null = null;
 	try {
 		const token = getTokenFromReq(req);
 		if(!token) {
-			return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid token' });
+			return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('token') });
 		}
 
 		const user = await authServiceInstance.GetUser(token);
@@ -63,18 +63,18 @@ const handler: TNextApiHandler<ICreateDiscussionResponse, ICreateDiscussionBody,
 	}
 
 	if (proposer_address !== logged_in_address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'LoggedIn address is not matching with Proposer address' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.LOGGED_IN_ADRESS_DOES_NOT_MATCH('Proposer') });
 	}
 
 	const houseDocSnapshot = await houseCollection.doc(house_id).get();
 	if (!houseDocSnapshot.exists) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: `House "${house_id}" does not exist.` });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.TYPE_NOT_FOUND('House',house_id) });
 	}
 
 	const roomDocSnapshot = await roomCollection(house_id).doc(room_id).get();
 	const roomData = roomDocSnapshot.data() as IRoom;
 	if (!roomDocSnapshot.exists || !roomData) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: `Room "${room_id}" does not exist in a House "${house_id}".` });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.TYPE1_NOT_FOUND_IN_TYPE2('Room',room_id,'House',house_id) });
 	}
 
 	let newID = 0;
@@ -91,7 +91,7 @@ const handler: TNextApiHandler<ICreateDiscussionResponse, ICreateDiscussionBody,
 	const discussionDocRef = discussionsColRef.doc(String(newID));
 	const discussionDocSnapshot = await discussionDocRef.get();
 	if (discussionDocSnapshot && discussionDocSnapshot.exists && discussionDocSnapshot.data()) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: `Discussion "${newID}" already exists in a Room "${room_id}" and a House "${house_id}".` });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.TYPE_ALREADY_IN_ROOM_AND_HOUSE('Discussion',newID,room_id,house_id) });
 	}
 
 	const now = new Date();

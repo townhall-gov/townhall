@@ -32,36 +32,36 @@ export interface ICreateProposalResponse {
 
 const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_REQ_METHOD('POST') });
 	}
 	const { proposal, proposer_address, signature } = req.body;
 	if (!proposal || typeof proposal !== 'object') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Unable to create a proposal, insufficient information for creating a proposal.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.UNABLE_TO_CREATE_TYPE('Proposal') });
 	}
 
 	if (!signature) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid signature.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('signature') });
 	}
 
 	if (!proposer_address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid address.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('address') });
 	}
 
 	const { house_id, room_id } = proposal;
 
 	if (!house_id || typeof house_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid houseId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('house') });
 	}
 
 	if (!room_id || typeof room_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid roomId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('room') });
 	}
 
 	let logged_in_address: string | null = null;
 	try {
 		const token = getTokenFromReq(req);
 		if(!token) {
-			return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid token' });
+			return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('token') });
 		}
 
 		const user = await authServiceInstance.GetUser(token);
@@ -74,22 +74,22 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 	}
 
 	if (proposer_address !== logged_in_address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'LoggedIn address is not matching with Proposer address' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.LOGGED_IN_ADRESS_DOES_NOT_MATCH('Proposer') });
 	}
 
 	const houseDocSnapshot = await houseCollection.doc(house_id).get();
 	if (!houseDocSnapshot.exists) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: `House with id ${house_id} does not exist.` });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.TYPE_NOT_FOUND('House',house_id) });
 	}
 
 	const roomDocSnapshot = await roomCollection(house_id).doc(room_id).get();
 	const roomData = roomDocSnapshot.data() as IRoom;
 	if (!roomDocSnapshot.exists || !roomData) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: `Room with id ${room_id} does not exist in a House with id ${house_id}.` });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.TYPE_NOT_FOUND_IN_ROOM_AND_HOUSE('Room',room_id,'house',house_id) });
 	}
 
 	if (roomData.voting_strategies.length === 0) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: `Room with id ${room_id} does not have any voting strategies.` });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.NO_VOTING_ROOM_STRATEGY(room_id) });
 	}
 
 	let newID = 0;
@@ -106,7 +106,7 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 	const proposalDocRef = proposalsColRef.doc(String(newID));
 	const proposalDocSnapshot = await proposalDocRef.get();
 	if (proposalDocSnapshot && proposalDocSnapshot.exists && proposalDocSnapshot.data()) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: `Proposal with id ${newID} already exists in a Room with id ${room_id} and a House with id ${house_id}.` });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.TYPE_ALREADY_IN_ROOM_AND_HOUSE('Proposal',newID,room_id,house_id) });
 	}
 
 	// TODO: Multiple strategies can have same network, so we need to filter the unique network.
@@ -150,7 +150,7 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 	});
 
 	if (voting_strategies_with_height.length === 0) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: `Unable to get snapshot heights for a Room with id ${room_id} and a House with id ${house_id}.` });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.UNABLE_TO_GET_SNAPSHOT_HEIGHT(room_id,house_id) });
 	}
 
 	const now = new Date();
@@ -199,11 +199,11 @@ const handler: TNextApiHandler<ICreateProposalResponse, ICreateProposalBody, {}>
 		const linkPostDoc = await linkPostDocRef.get();
 		const linkPostData = linkPostDoc.data() as IDiscussion;
 		if (!linkPostDoc.exists || !linkPostData) {
-			return res.status(StatusCodes.BAD_REQUEST).json({ error: `Post with id ${post_link.post_id} does not exist in a Room with id ${post_link.room_id} and a House with id ${post_link.house_id}.` });
+			return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.TYPE_NOT_FOUND_IN_ROOM_AND_HOUSE('Post',post_link.post_id,post_link.room_id,post_link.house_id) });
 		}
 
 		if (linkPostData.post_link || linkPostData.post_link_data) {
-			return res.status(StatusCodes.BAD_REQUEST).json({ error: `Post with id ${post_link.post_id} already has a post link.` });
+			return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.ALREADY_POST_LINK(post_link.post_id) });
 		}
 
 		linkPostDocRef.set(updatedLinkedPost, { merge: true }).then(() => {});

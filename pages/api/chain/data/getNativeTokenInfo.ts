@@ -5,6 +5,7 @@
 import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TNextApiHandler } from '~src/api/types';
+import messages from '~src/auth/utils/messages';
 import { chainProperties } from '~src/onchain-data/networkConstants';
 import { getNativeTokenInfo } from '~src/onchain-data/token-meta/getNativeTokenInfo';
 import { create } from '~src/onchain-data/utils/apis';
@@ -21,13 +22,13 @@ export interface ITokenInfoResponse {
 
 const handler: TNextApiHandler<ITokenInfoResponse, ITokenInfoBody, ITokenInfoQuery> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_REQ_METHOD('POST') });
 	}
 	const { network } = req.body;
 	create();
 
 	if (!network || !(chainProperties as any)[network]) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Network is not available, unable to find Balance.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.TYPE1_NOT_AVAILABLE('Network','Balance') });
 	}
 
 	try {

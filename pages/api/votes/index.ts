@@ -6,6 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
+import messages from '~src/auth/utils/messages';
 import { voteCollection } from '~src/services/firebase/utils';
 import { IVote } from '~src/types/schema';
 import apiErrorWithStatusCode from '~src/utils/apiErrorWithStatusCode';
@@ -23,13 +24,13 @@ export const getVotes: TGetVotesFn = async (params) => {
 	try {
 		const { house_id, proposal_id, room_id } = params;
 		if (!house_id) {
-			throw apiErrorWithStatusCode('Invalid houseId.', StatusCodes.BAD_REQUEST);
+			throw apiErrorWithStatusCode(messages.INVALID_ID('house'), StatusCodes.BAD_REQUEST);
 		}
 		if (!room_id) {
-			throw apiErrorWithStatusCode('Invalid houseId.', StatusCodes.BAD_REQUEST);
+			throw apiErrorWithStatusCode(messages.INVALID_ID('house'), StatusCodes.BAD_REQUEST);
 		}
 		if (!(proposal_id == 0) && !proposal_id) {
-			throw apiErrorWithStatusCode('Invalid proposalId.', StatusCodes.BAD_REQUEST);
+			throw apiErrorWithStatusCode(messages.INVALID_ID('proposal'), StatusCodes.BAD_REQUEST);
 		}
 
 		const votes: IVote[] = [];
@@ -68,7 +69,7 @@ export interface IVotesInfoQuery {
 
 const handler: TNextApiHandler<IVote[], IVotesInfoBody, IVotesInfoQuery> = async (req, res) => {
 	if (req.method !== 'GET') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, GET required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_REQ_METHOD('GET') });
 	}
 	const { house_id, proposal_id, room_id } = req.query;
 	const {

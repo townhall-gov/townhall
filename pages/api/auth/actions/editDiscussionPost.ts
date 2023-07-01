@@ -31,27 +31,27 @@ export type TEditedDiscussion = {
 
 const handler: TNextApiHandler<TEditedDiscussion, IEditDiscussionBody, {}> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_REQ_METHOD('POST') });
 	}
 	const { description, title, tags, house_id, room_id, discussion_id } = req.body;
 
 	if (!description || !title || !tags) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Missing body params.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.MISSING_PARAM });
 	}
 
 	if (!house_id || typeof house_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid houseId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('house') });
 	}
 
 	if (!room_id || typeof room_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid roomId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('room') });
 	}
 
 	let logged_in_address: string | null = null;
 	try {
 		const token = getTokenFromReq(req);
 		if(!token) {
-			return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid token' });
+			return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('token') });
 		}
 
 		const user = await authServiceInstance.GetUser(token);
@@ -65,13 +65,13 @@ const handler: TNextApiHandler<TEditedDiscussion, IEditDiscussionBody, {}> = asy
 
 	const houseDocSnapshot = await houseCollection.doc(house_id).get();
 	if (!houseDocSnapshot.exists) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: `House "${house_id}" does not exist.` });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.TYPE_NOT_FOUND('House',house_id) });
 	}
 
 	const roomDocSnapshot = await roomCollection(house_id).doc(room_id).get();
 	const roomData = roomDocSnapshot.data();
 	if (!roomDocSnapshot.exists || !roomData) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: `Room "${room_id}" does not exist in a House "${house_id}".` });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.TYPE1_NOT_FOUND_IN_TYPE2('Room',room_id,'house',house_id) });
 	}
 
 	const discussionsColRef = discussionCollection(house_id, room_id);
@@ -79,12 +79,12 @@ const handler: TNextApiHandler<TEditedDiscussion, IEditDiscussionBody, {}> = asy
 
 	const discussionDocSnapshot = await discussionDocRef.get();
 	if (!discussionDocSnapshot || !discussionDocSnapshot.exists || !discussionDocSnapshot.data()) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: `Discussion "${discussion_id}" does not exist in a Room "${room_id}".` });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.TYPE_NOT_FOUND_IN_ROOM_AND_HOUSE('Discussion',discussion_id,room_id,house_id) });
 	}
 
 	const data = discussionDocSnapshot.data() as IDiscussion;
 	if (data.proposer_address !== logged_in_address) {
-		return res.status(StatusCodes.FORBIDDEN).json({ error: 'Only the proposer of the discussion can edit it.' });
+		return res.status(StatusCodes.FORBIDDEN).json({ error: messages.ONLY_ACTION_OF_TYPE('proposer','discussion','edit') });
 	}
 
 	const now = new Date();
