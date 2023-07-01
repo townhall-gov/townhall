@@ -101,21 +101,21 @@ const Home: FC<IHomeClientProps> = (props) => {
 				setTimeout(() => {
 					dispatch(homeActions.setLoadMoreHouses());
 					setIsSpinning(false);
-				}, 2000);
+				}, 1000);
 			} else if(category === 'rooms') {
 				if(visibleRoomCards >= roomFiltered.length) return;
 				setIsSpinning(true);
 				setTimeout(() => {
 					dispatch(homeActions.setLoadMoreRooms());
 					setIsSpinning(false);
-				}, 2000);
+				}, 1000);
 			} else if(category === 'all') {
 				if(visibleAllCards >= (roomFiltered.length + houseFiltered.length)) return;
 				setIsSpinning(true);
 				setTimeout(() => {
 					dispatch(homeActions.setLoadMoreAll());
 					setIsSpinning(false);
-				}, 2000);
+				}, 1000);
 			}
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -199,28 +199,35 @@ const Home: FC<IHomeClientProps> = (props) => {
 					</section>
 				</article>
 
-				<article className={'flex justify-center items-center mt-[100px]'}>
-					{
-						isLoadMoreVisible?
-							<LoadMore
-								onClick={() => {
-									setIsSpinning(true);
-									setTimeout(() => {
-										if (category === 'all') {
-											dispatch(homeActions.setLoadMoreAll());
-										} else if (category === 'houses') {
-											dispatch(homeActions.setLoadMoreHouses());
-										} else if (category === 'rooms') {
-											dispatch(homeActions.setLoadMoreRooms());
-										}
-										setIsSpinning(false);
-									}, 2000);
-									dispatch(homeActions.setLoadMoreVisibility(false));
-								}}
-							/>
-							: isSpinning? <Spin indicator={<LoadingOutlined />}/>: null
-					}
-				</article>
+				{
+					((category === 'houses' && houseFiltered && houseFiltered.length > 10) ||
+					(category === 'rooms' && roomFiltered && roomFiltered.length > 10) ||
+					(category === 'all' && houseFiltered && roomFiltered && ((houseFiltered.length + roomFiltered.length) > 10)))?
+						<article className={'flex justify-center items-center mt-[100px]'}>
+							{
+								isLoadMoreVisible?
+									<LoadMore
+										onClick={() => {
+											setIsSpinning(true);
+											setTimeout(() => {
+												if (category === 'all') {
+													dispatch(homeActions.setLoadMoreAll());
+												} else if (category === 'houses') {
+													dispatch(homeActions.setLoadMoreHouses());
+												} else if (category === 'rooms') {
+													dispatch(homeActions.setLoadMoreRooms());
+												}
+												setIsSpinning(false);
+											}, 1000);
+											dispatch(homeActions.setLoadMoreVisibility(false));
+										}}
+									/>
+									: isSpinning? <Spin indicator={<LoadingOutlined />}/>: null
+							}
+						</article>
+						: null
+				}
+
 			</section>
 		</>
 	);
