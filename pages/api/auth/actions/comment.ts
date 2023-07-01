@@ -30,47 +30,47 @@ export interface ICommentResponse {
 
 const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_REQ_METHOD('POST') });
 	}
 
 	const { post_id, post_type, room_id, house_id, comment, action_type } = req.body;
 
 	if (!house_id || typeof house_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid houseId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('house') });
 	}
 
 	if (!room_id || typeof room_id !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid roomId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('room') });
 	}
 
 	if ((!post_id && post_id != 0) || typeof post_id !== 'number') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid postId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('post') });
 	}
 
 	if (!action_type || ![EAction.ADD, EAction.DELETE, EAction.EDIT].includes(action_type)) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid api action type.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('api action type') });
 	}
 
 	if (!post_type || ![EPostType.DISCUSSION, EPostType.PROPOSAL].includes(post_type)) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid post type.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('post type') });
 	}
 
 	if (!comment?.content) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Comment content must be greater than 5 characters.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.TYPE_MUST_BE_GREATER_THAN('Comment') });
 	}
 
 	if ([EAction.EDIT, EAction.DELETE].includes(action_type) && !comment?.id) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Comment id is invalid.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('comment') });
 	}
 
 	if (comment.sentiment && ![ESentiment.COMPLETELY_AGAINST, ESentiment.COMPLETELY_FOR, ESentiment.NEUTRAL, ESentiment.SLIGHTLY_AGAINST, ESentiment.SLIGHTLY_FOR].includes(comment?.sentiment)) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Comment sentiment is invalid.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('Comment sentiment') });
 	}
 
 	let user_address: string | null = null;
 	try {
 		const token = getTokenFromReq(req);
-		if(!token) return res.status(StatusCodes.UNAUTHORIZED).json({ error: 'Invalid token' });
+		if(!token) return res.status(StatusCodes.UNAUTHORIZED).json({ error: messages.INVALID_TYPE('token') });
 
 		const user = await authServiceInstance.GetUser(token);
 		if(!user) return res.status(StatusCodes.FORBIDDEN).json({ error: messages.UNAUTHORISED });
@@ -80,7 +80,7 @@ const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req,
 	}
 
 	if (!user_address) {
-		return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error: 'Invalid address.' });
+		return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error: messages.INVALID_TYPE('address') });
 	}
 
 	const postsColRef = post_type === EPostType.PROPOSAL?proposalCollection(house_id, room_id): discussionCollection(house_id, room_id);
@@ -88,7 +88,7 @@ const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req,
 	const postDoc = await postDocRef.get();
 
 	if (!postDoc || !postDoc.exists) {
-		return res.status(StatusCodes.NOT_FOUND).json({ error: `Post "${post_id}" is not found in a Room "${room_id}" and a House "${house_id}".` });
+		return res.status(StatusCodes.NOT_FOUND).json({ error: messages.TYPE_NOT_FOUND_IN_ROOM_AND_HOUSE('Post',post_id,room_id,house_id) });
 	}
 
 	const commentsColRef = postDocRef.collection('comments');
@@ -125,7 +125,7 @@ const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req,
 				is_deleted: true
 			});
 		} else {
-			return res.status(StatusCodes.NOT_FOUND).json({ error: `Comment "${comment.id}" is not found for post "${post_id}".` });
+			return res.status(StatusCodes.NOT_FOUND).json({ error: messages.TYPE1_NOT_FOUND_IN_TYPE2('Commment',comment.id,'Post',post_id) });
 		}
 	} else if (action_type === EAction.EDIT) {
 		const commentDocRef = commentsColRef.doc(String(comment.id));
@@ -134,7 +134,7 @@ const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req,
 			const data = commentDoc.data() as IComment;
 			// IF content is same return error
 			if (data.content === comment.content) {
-				return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Unable to edit comment as content is same.' });
+				return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.UNABLE_TO_EDIT_CONTENT_SAME('Comment') });
 			}
 			// Edit history
 			const historyComment: IHistoryComment = {
@@ -161,10 +161,10 @@ const handler: TNextApiHandler<ICommentResponse, ICommentBody, {}> = async (req,
 				updated_at: now
 			});
 		} else {
-			return res.status(StatusCodes.NOT_FOUND).json({ error: `Comment "${comment.id}" is not found for post "${post_id}".` });
+			return res.status(StatusCodes.NOT_FOUND).json({ error: messages.TYPE1_NOT_FOUND_IN_TYPE2('Commment',comment.id,'Post',post_id) });
 		}
 	} else {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid api action type.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error:  messages.INVALID_TYPE('api action type') });
 	}
 
 	res.status(StatusCodes.OK).json({

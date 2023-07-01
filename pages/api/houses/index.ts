@@ -6,6 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
+import messages from '~src/auth/utils/messages';
 import { MIN_TOKEN_TO_CREATE_ROOM } from '~src/global/min_token';
 import { houseCollection, roomCollection } from '~src/services/firebase/utils';
 import { IHouse } from '~src/types/schema';
@@ -68,7 +69,7 @@ export interface IHousesBody {}
 export interface IHousesQuery {}
 const handler: TNextApiHandler<IHouse[], IHousesBody, IHousesQuery> = async (req, res) => {
 	if (req.method !== 'GET') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, GET required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_REQ_METHOD('GET') });
 	}
 
 	const {

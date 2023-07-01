@@ -5,6 +5,7 @@
 import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TNextApiHandler } from '~src/api/types';
+import messages from '~src/auth/utils/messages';
 import { getCurrentBalanceByAddress } from '~src/onchain-data/contract/getCurrentBalanceByAddress';
 import { getDecimals } from '~src/onchain-data/contract/getDecimals';
 import { getSymbol } from '~src/onchain-data/contract/getSymbol';
@@ -26,16 +27,16 @@ export interface ICurrentBalanceResponse {
 
 const handler: TNextApiHandler<ICurrentBalanceResponse, ICurrentBalanceBody, ICurrentBalanceQuery> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_REQ_METHOD('POST') });
 	}
 	const { contract, address, network } = req.body;
 
 	if (!address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'User address is not available, unable to find Balance.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.TYPE1_NOT_AVAILABLE('User address','Balance') });
 	}
 
 	if (!network || !(chainProperties as any)[network]) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Network is not available, unable to find Balance.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.TYPE1_NOT_AVAILABLE('Network','Balance') });
 	}
 
 	let balance = '';

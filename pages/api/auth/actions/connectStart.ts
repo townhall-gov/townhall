@@ -6,6 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TNextApiHandler } from '~src/api/types';
 import authServiceInstance from '~src/auth';
+import messages from '~src/auth/utils/messages';
 import { EWallet } from '~src/types/enums';
 
 export interface IConnectWalletStartBody {
@@ -19,12 +20,12 @@ export interface IConnectWalletStartResponse {
 
 const handler: TNextApiHandler<IConnectWalletStartResponse, IConnectWalletStartBody, {}> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_REQ_METHOD('POST') });
 	}
 	const { address, wallet } = req.body;
 
 	if (!address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid address.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('address') });
 	}
 
 	const signMessage = await authServiceInstance.ConnectWalletStart(address, wallet);

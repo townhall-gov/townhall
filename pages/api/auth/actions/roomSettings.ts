@@ -25,26 +25,26 @@ export interface IRoomSettingsResponse {
 
 const handler: TNextApiHandler<IRoomSettingsResponse, IRoomSettingsBody, {}> = async (req, res) => {
 	if (req.method !== 'POST') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, POST required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_REQ_METHOD('POST') });
 	}
 	const { houseId, roomId, roomSettings } = req.body;
 
 	if (!houseId || typeof houseId !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid houseId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('house') });
 	}
 
 	if (!roomId || typeof roomId !== 'string') {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid roomId.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_ID('room') });
 	}
 
 	if (roomSettings?.room_strategies && Array.isArray(roomSettings?.room_strategies) && roomSettings?.room_strategies.length > 8) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Strategies must be less than 8 in a Room.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.STRATEGIES_LENGTH });
 	}
 
 	let address: string | null = null;
 	try {
 		const token = getTokenFromReq(req);
-		if(!token) return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid token' });
+		if(!token) return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('token') });
 
 		const user = await authServiceInstance.GetUser(token);
 		if(!user) return res.status(StatusCodes.FORBIDDEN).json({ error: messages.UNAUTHORISED });
@@ -54,14 +54,14 @@ const handler: TNextApiHandler<IRoomSettingsResponse, IRoomSettingsBody, {}> = a
 	}
 
 	if (!address) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid address.' });
+		return res.status(StatusCodes.BAD_REQUEST).json({ error: messages.INVALID_TYPE('address') });
 	}
 
 	const roomRef = roomCollection(houseId).doc(roomId);
 	const roomRefDoc = await roomRef.get();
 
 	if (!roomRefDoc || !roomRefDoc.exists || !roomRefDoc.data()) {
-		return res.status(StatusCodes.NOT_FOUND).json({ error: `Room "${roomId}" is not found in house "${houseId}".` });
+		return res.status(StatusCodes.NOT_FOUND).json({ error: messages.TYPE1_NOT_FOUND_IN_TYPE2('Room',roomId,'House',houseId) });
 	}
 
 	const data = roomRefDoc.data() as IRoom;
@@ -80,7 +80,7 @@ const handler: TNextApiHandler<IRoomSettingsResponse, IRoomSettingsBody, {}> = a
 		isUserAdmin = data?.creator_details?.address === address;
 	}
 	if (!isUserAdmin) {
-		return res.status(StatusCodes.FORBIDDEN).json({ error: 'Room Admin can update room settings.' });
+		return res.status(StatusCodes.FORBIDDEN).json({ error: messages.ONLY_ACTION_OF_TYPE('Admin','room','update the setting for') });
 	}
 
 	if (roomSettings) {

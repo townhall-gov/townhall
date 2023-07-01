@@ -6,6 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 import withErrorHandling from '~src/api/middlewares/withErrorHandling';
 import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
+import messages from '~src/auth/utils/messages';
 import { IListingDiscussion } from '~src/redux/room/@types';
 import { discussionCollection } from '~src/services/firebase/utils';
 import { EReaction } from '~src/types/enums';
@@ -27,21 +28,21 @@ export const getDiscussions: TGetDiscussionsFn = async (params) => {
 	try {
 		const { house_id, room_id, page, limit } = params;
 		if (!house_id) {
-			throw apiErrorWithStatusCode('Invalid houseId.', StatusCodes.BAD_REQUEST);
+			throw apiErrorWithStatusCode(messages.INVALID_ID('house'), StatusCodes.BAD_REQUEST);
 		}
 		if (!room_id) {
-			throw apiErrorWithStatusCode('Invalid roomId.', StatusCodes.BAD_REQUEST);
+			throw apiErrorWithStatusCode(messages.INVALID_ID('room'), StatusCodes.BAD_REQUEST);
 		}
 		if (page) {
 			const numPage = Number(page);
 			if (isNaN(numPage) || numPage < 0) {
-				throw apiErrorWithStatusCode('Invalid page.', StatusCodes.BAD_REQUEST);
+				throw apiErrorWithStatusCode(messages.INVALID_TYPE('Invalid page.'), StatusCodes.BAD_REQUEST);
 			}
 		}
 		if (limit) {
 			const numLimit = Number(limit);
 			if (isNaN(numLimit) || numLimit < 0) {
-				throw apiErrorWithStatusCode('Invalid limit.', StatusCodes.BAD_REQUEST);
+				throw apiErrorWithStatusCode(messages.INVALID_TYPE('Invalid limit.'), StatusCodes.BAD_REQUEST);
 			}
 		}
 		const discussions: IListingDiscussion[] = [];
@@ -125,7 +126,7 @@ export interface IDiscussionsQuery {
 }
 const handler: TNextApiHandler<IListingDiscussion[], IDiscussionsBody, IDiscussionsQuery> = async (req, res) => {
 	if (req.method !== 'GET') {
-		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: 'Invalid request method, GET required.' });
+		return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({ error: messages.INVALID_REQ_METHOD('GET') });
 	}
 	const { house_id, room_id, page, limit } = req.query;
 	const {
