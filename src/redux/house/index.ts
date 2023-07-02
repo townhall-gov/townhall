@@ -7,7 +7,6 @@ import { HYDRATE } from 'next-redux-wrapper';
 import { MIN_TOKEN_TO_CREATE_ROOM } from '~src/global/min_token';
 import { IHouse, IRoom } from '~src/types/schema';
 import { IHouseStore, EHouseStage, IHouseSettings, IListingProposal } from './@types';
-import { IHouseRoom } from 'pages/api/house/rooms';
 
 const initialState: IHouseStore = {
 	currentStage: EHouseStage.PROPOSALS,
@@ -61,7 +60,7 @@ export const houseStore = createSlice({
 			const room = action.payload;
 			state.houseDefaultRoom = room;
 		},
-		setHouseRooms: (state, action: PayloadAction<IHouseRoom[] | null>) => {
+		setHouseRooms: (state, action: PayloadAction<IRoom[] | null>) => {
 			const houseRoom = action.payload;
 			state.houseRooms = houseRoom;
 		},

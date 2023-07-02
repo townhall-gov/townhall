@@ -4,7 +4,7 @@
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { getHouse } from 'pages/api/house';
-import { IHouseRoom, getHouseRooms } from 'pages/api/house/rooms';
+import { getHouseRooms } from 'pages/api/house/rooms';
 import { getProposals } from 'pages/api/proposals';
 import { getProposalsCount } from 'pages/api/proposals/count';
 import React, { FC, useEffect } from 'react';
@@ -17,14 +17,14 @@ import SEOHead from '~src/global/SEOHead';
 import { houseActions } from '~src/redux/house';
 import { EHouseStage, IListingProposal } from '~src/redux/house/@types';
 import { useHouseCurrentStage } from '~src/redux/house/selectors';
-import { IHouse } from '~src/types/schema';
+import { IHouse, IRoom } from '~src/types/schema';
 import BackButton from '~src/ui-components/BackButton';
 import { LISTING_LIMIT } from '~src/utils/proposalListingLimit';
 
 interface IProposalsServerProps {
 	proposals: IListingProposal[] | null;
 	proposalsCount: number | null;
-	houseRooms: IHouseRoom[] | null;
+	houseRooms: IRoom[] | null;
     house: IHouse | null;
 	error: string | null;
 }
