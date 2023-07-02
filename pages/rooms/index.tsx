@@ -43,7 +43,7 @@ const House: FC<IHouseClientProps> = (props) => {
 	}, [error, rooms]);
 	return (
 		<>
-			<SEOHead title='Rooms in a House.' />
+			<SEOHead title='All Rooms.' />
 			<div className='h-full'>
 				<Rooms />
 			</div>

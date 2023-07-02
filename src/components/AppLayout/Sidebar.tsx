@@ -48,6 +48,12 @@ const Sidebar = () => {
 						Houses
 					</span>
 				</Link>
+				<Link href='/rooms' className='border-none outline-none bg-transparent flex flex-col gap-y-1 items-center justify-center cursor-pointer py-4 px-5 hover:bg-white'>
+					<HolidayVillageIcon className='text-app_background stroke-transparent text-2xl' />
+					<span className='text-app_background font-semibold text-xs leading-none flex flex-col items-center justify-center'>
+						Rooms
+					</span>
+				</Link>
 			</article>
 			<article>
 				<JoinedRoom totalShowing={totalShowing}/>

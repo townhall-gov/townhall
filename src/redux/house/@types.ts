@@ -2,7 +2,6 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { IHouseRoom } from 'pages/api/house/rooms';
 import { EReaction } from '~src/types/enums';
 import { IHouse, IProposal, IRoom } from '~src/types/schema';
 
@@ -10,7 +9,7 @@ export interface IHouseStore {
     loading: boolean;
     error: string;
     house: IHouse | null;
-    houseRooms: IHouseRoom[] | null;
+    houseRooms: IRoom[] | null;
     houseDefaultRoom: IRoom | null;
     houseSettings: IHouseSettings;
     currentStage: EHouseStage;

@@ -3,14 +3,14 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { Image } from 'antd';
 import Link from 'next/link';
-import { IHouseRoom } from 'pages/api/house/rooms';
 import React, { FC } from 'react';
 import { useDispatch } from 'react-redux';
 import { modalActions } from '~src/redux/modal';
 import { EContentType, EFooterType, ETitleType } from '~src/redux/modal/@types';
+import { IRoom } from '~src/types/schema';
 
 interface IHouseRoomsProps {
-    houseRooms: IHouseRoom[] | null;
+    houseRooms: IRoom[] | null;
     house_id: string;
 }
 

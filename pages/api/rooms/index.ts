@@ -8,54 +8,63 @@ import { TApiResponse } from '~src/api/types';
 import { TNextApiHandler } from '~src/api/types';
 import messages from '~src/auth/utils/messages';
 import { ICreatorDetails } from '~src/redux/rooms/@types';
-import { roomCollection } from '~src/services/firebase/utils';
+import { houseCollection } from '~src/services/firebase/utils';
 import { IRoom } from '~src/types/schema';
-import apiErrorWithStatusCode from '~src/utils/apiErrorWithStatusCode';
 import convertFirestoreTimestampToDate from '~src/utils/convertFirestoreTimestampToDate';
 import getErrorMessage from '~src/utils/getErrorMessage';
 
-interface IGetRoomsFnParams {
-    house_id: string;
-}
+interface IGetRoomsFnParams {}
 
 export type TGetRoomsFn = (params: IGetRoomsFnParams) => Promise<TApiResponse<IRoom[]>>;
-export const getRooms: TGetRoomsFn = async (params) => {
+export const getRooms: TGetRoomsFn = async () => {
 	try {
-		const { house_id } = params;
-		if (!house_id) {
-			throw apiErrorWithStatusCode(messages.INVALID_ID('house'), StatusCodes.BAD_REQUEST);
-		}
 		const rooms: IRoom[] = [];
-		const roomsSnapshot = await roomCollection(house_id).get();
-		if (roomsSnapshot.size > 0) {
-			roomsSnapshot.docs.forEach((doc) => {
-				if (doc && doc.exists) {
-					const data = doc.data() as IRoom;
-					if (data) {
-						// Sanitization
-						if (data.id && data.house_id) {
-							const dataCreatorDetails = data.creator_details;
-							const creator_details: ICreatorDetails = {
-								address: dataCreatorDetails?.address || '',
-								email: dataCreatorDetails?.email || '',
-								name: dataCreatorDetails?.name || '',
-								phone: dataCreatorDetails?.phone || ''
-							};
-							const room: IRoom = {
-								admins: data.admins || [],
-								created_at: convertFirestoreTimestampToDate(data.created_at),
-								creator_details: creator_details,
-								description: data.description || '',
-								house_id: data.house_id,
-								id: data.id,
-								logo: data.logo,
-								socials: data.socials || [],
-								title: data.title || '',
-								total_members: Number(data.total_members || 0),
-								voting_strategies: data.voting_strategies || []
-							};
-							rooms.push(room);
+		const housesSnapshot = await houseCollection.get();
+		if (housesSnapshot.size > 0) {
+			const roomsPromise = housesSnapshot.docs.map(async (houseDoc) => {
+				if (houseDoc && houseDoc.exists) {
+					const roomsSnapshot = await houseDoc.ref.collection('rooms').get();
+					const rooms: IRoom[] = [];
+					roomsSnapshot.docs.forEach((doc) => {
+						if (doc && doc.exists) {
+							const data = doc.data() as IRoom;
+							if (data) {
+								// Sanitization
+								if (data.id && data.house_id) {
+									const dataCreatorDetails = data.creator_details;
+									const creator_details: ICreatorDetails = {
+										address: dataCreatorDetails?.address || '',
+										email: dataCreatorDetails?.email || '',
+										name: dataCreatorDetails?.name || '',
+										phone: dataCreatorDetails?.phone || ''
+									};
+									const room: IRoom = {
+										admins: data.admins || [],
+										created_at: convertFirestoreTimestampToDate(data.created_at),
+										creator_details: creator_details,
+										description: data.description || '',
+										house_id: data.house_id,
+										id: data.id,
+										logo: data.logo,
+										socials: data.socials || [],
+										title: data.title || '',
+										total_members: Number(data.total_members || 0),
+										voting_strategies: data.voting_strategies || []
+									};
+									rooms.push(room);
+								}
+							}
 						}
+					});
+					return rooms;
+				}
+			});
+			const roomsPromiseSettledResults = await Promise.allSettled(roomsPromise);
+			roomsPromiseSettledResults.forEach((roomsPromiseSettledResult) => {
+				if (roomsPromiseSettledResult && roomsPromiseSettledResult.status === 'fulfilled') {
+					const roomsResults = roomsPromiseSettledResult.value;
+					if (roomsResults && Array.isArray(roomsResults) && roomsResults.length > 0) {
+						rooms.push(...roomsResults);
 					}
 				}
 			});
