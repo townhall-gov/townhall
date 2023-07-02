@@ -10,7 +10,6 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
 import { IHouse, IRoom } from '~src/types/schema';
 import { getHouses } from './api/houses';
-import { getRooms } from './api/rooms';
 import { useDispatch } from 'react-redux';
 import { housesActions } from '~src/redux/houses';
 import Room from '~src/components/Houses/Rooms/Room';
@@ -21,6 +20,7 @@ import SearchCategoryDropdown from '~src/ui-components/SearchCategoryDropdown';
 import { useCategory, useFilteredHouses, useFilteredRooms, useLoadMoreVisibility, useSearchTerm, useVisibleAllCards, useVisibleHouseCards, useVisibleRoomCards } from '~src/redux/home/selector';
 import { SearchIcon } from '~src/ui-components/CustomIcons';
 import LoadMore from '~src/ui-components/LoadMore';
+import { getHouseRooms } from './api/house/rooms';
 
 interface IHomeServerProps {
 	houses: IHouse[] | null;
@@ -34,7 +34,7 @@ export const getServerSideProps: GetServerSideProps<IHomeServerProps> = async ()
 	if (houses && Array.isArray(houses) && houses.length > 0) {
 		const roomPromises = houses.map(async (house) => {
 			if (house.id) {
-				const { data } = await getRooms({
+				const { data } = await getHouseRooms({
 					house_id: house.id
 				});
 				if (data && Array.isArray(data) && data.length > 0) {
