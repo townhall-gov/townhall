@@ -147,7 +147,7 @@ const Home: FC<IHomeClientProps> = (props) => {
 					</div>
 				</article>
 				<article>
-					<section className='flex items-center flex-wrap gap-[50px]'>
+					<section className='cards-container flex items-center flex-wrap gap-[50px]'>
 						{
 							(category == 'houses') && houseFiltered && houseFiltered.slice(0,visibleHousesCards).map((house) => {
 								return (
