@@ -3,14 +3,28 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { Tooltip } from 'antd';
 import dayjs from 'dayjs';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useProposalSelector } from '~src/redux/selectors';
+import { IStrategyWithHeight } from '~src/types/schema';
 
 const Timestamp = () => {
 	const { proposal } = useProposalSelector();
+	const [uniqueNetworkandSnapshot,setuniqueNetworkandSnapshot]=useState<(IStrategyWithHeight | undefined)[]>([]);
+	useEffect(() => {
+		let uniqueArray = Array.from(
+			new Set(voting_strategies_with_height.map(obj => `${obj.network}-${obj.height}`))
+		).map(key => {
+			const [network, height] = key.split('-');
+			return voting_strategies_with_height.find(voting_strategy => voting_strategy.network === network && voting_strategy.height.toString() === height);
+		});
+		if(uniqueArray) {
+			uniqueArray=uniqueArray.slice(1);
+			setuniqueNetworkandSnapshot(uniqueArray);
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	},[]);
 	if (!proposal) return null;
 	const { voting_strategies_with_height, created_at, start_date, end_date } = proposal;
-	console.log('voting_strategies_with_height',voting_strategies_with_height);
 	return (
 		<section
 			className='border border-solid border-blue_primary rounded-2xl drop-shadow-[0px_6px_18px_rgba(0,0,0,0.06)] p-6 text-white'
@@ -33,21 +47,37 @@ const Timestamp = () => {
 											color='#66A5FF'
 											title={
 												<div>
-													<h4>Block numbers</h4>
 													<ul
-														className='m-0 pl-4 list-decimal'
+														className='grid grid-cols-2 list-decimal p-2 space-x-2'
 													>
-														{
-															voting_strategies_with_height?.map((voting_strategy) => {
-																return (
-																	<li
-																		key={voting_strategy.height}
-																	>
-																		{voting_strategy.height}
-																	</li>
-																);
-															})
-														}
+														<ul className='grid-col-1'>
+															<span className='grid-col-1'>Network</span>
+															{
+																uniqueNetworkandSnapshot?.map((voting_strategy) => {
+																	return (
+																		<ul
+																			key={voting_strategy?.network}
+																		>
+																			{voting_strategy?.network}
+																		</ul>
+																	);
+																})
+															}
+														</ul>
+														<ul className='grid-col-1'>
+															<span className='grid-col-1'>Snapshot</span>
+															{
+																uniqueNetworkandSnapshot?.map((voting_strategy) => {
+																	return (
+																		<ul
+																			key={voting_strategy?.height}
+																		>
+																			#{voting_strategy?.height}
+																		</ul>
+																	);
+																})
+															}
+														</ul>
 													</ul>
 												</div>
 
@@ -56,7 +86,7 @@ const Timestamp = () => {
 											<span
 												className='text-xs text-black rounded-2xl bg-[#66A5FF] px-[8px] py-[2px] cursor-pointer'
 											>
-                                            +{voting_strategies_with_height.length - 1}
+                                            +{uniqueNetworkandSnapshot?.length }
 											</span>
 										</Tooltip>
 								}
