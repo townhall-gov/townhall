@@ -63,6 +63,9 @@ import ForSVG from '~assets/sentiment/for.svg';
 
 // Comment Related Icons Import Start
 import ReplySVG from '~assets/icons/reply.svg';
+import InfoDiamondSVG from '~assets/icons/information-diamond.svg';
+import DeleteDarkSVG from '~assets/icons/delete-dark.svg';
+import AddSVG from '~assets/icons/add.svg';
 import DeleteSVG from '~assets/icons/delete.svg';
 import EditSVG from '~assets/icons/edit.svg';
 import SearchSVG from '~assets/icons/searchicon.svg';
@@ -197,6 +200,18 @@ export const ZoomInAreaIcon = (props: Partial<CustomIconComponentProps>) => (
 
 export const RocketLaunchIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={RocketLaunchSVG} {...props} />
+);
+
+export const InfoDiamondIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={InfoDiamondSVG} {...props} />
+);
+
+export const DeleteDarkIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={DeleteDarkSVG} {...props} />
+);
+
+export const AddIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={AddSVG} {...props} />
 );
 
 export const DiamondIcon = (props: Partial<CustomIconComponentProps>) => (
