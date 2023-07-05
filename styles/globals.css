@@ -249,6 +249,34 @@ div.ant-card-body {
     display: none !important;
 }
 
+/* Table CSS */
+.ant-table,
+.ant-table-tbody > tr > td {
+  border: none !important;
+  /* or */
+  border: 0 !important;
+  /* or */
+  /* Apply other desired styles to remove the horizontal lines */
+}
+.ant-table-content
+{
+    background-color: #04152F !important;
+    color: white !important;
+    border-bottom: 0 !important;
+}
+.ant-table-cell
+{
+    background-color: #04152F !important;
+    color: white !important;
+}
+.ant-table-cell:not(:last-child)
+{
+    border-right: 1px solid white !important;
+}
+.ant-table-thead >tr>th::before
+{
+    background-color: #04152F !important;
+}
 /* Date Picker css */
 .ant-picker-panel-container {
     background-color: var(--app_background) !important;

@@ -2,8 +2,8 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { LoadingOutlined } from '@ant-design/icons';
-import { Spin, Tooltip } from 'antd';
-import React from 'react';
+import { Spin,Table } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { useProfileSelector, useProposalSelector } from '~src/redux/selectors';
 import Address from '~src/ui-components/Address';
 import { formatToken } from '~src/utils/formatTokenAmount';
@@ -12,7 +12,7 @@ import { evmChains } from '~src/onchain-data/networkConstants';
 import BigNumber from 'bignumber.js';
 import { firstCharUppercase } from '~src/utils/getFirstCharUppercase';
 import { IStrategyWithHeightAndBalance } from 'pages/api/chain/actions/balance';
-
+import type { ColumnsType } from 'antd/es/table';
 export const NoOptionsSelectedError = 'Please select at least one option';
 
 export const checkIsAllZero = (balances: IStrategyWithHeightAndBalance[]) => {
@@ -28,8 +28,75 @@ export const checkIsAllZero = (balances: IStrategyWithHeightAndBalance[]) => {
 const CastYourVoteModalContent = () => {
 	const { voteCreation, proposal, loading, error } = useProposalSelector();
 	const { user } = useProfileSelector();
+	const [columnData,setColumnData]=useState<ColumnsType<any>>([]);
 	const isAllZero = checkIsAllZero(voteCreation.balances);
-
+	useEffect(() => {
+		if (voteCreation.balances !== null) {
+			const getFormattedBalance = (balance:any):BigNumber | null => {
+				const token_info = balance.token_metadata[balance.asset_type];
+				if (!token_info) {
+					return null;
+				}
+				const balanceFormatted = new BigNumber(formatToken(balance.value || 0, !!evmChains[balance.network as keyof typeof evmChains], token_info.decimals));
+				return balanceFormatted;
+			};
+			const columns: ColumnsType<any> = [
+				{
+					dataIndex: 'name',
+					key: 'name',
+					render: (text) => <span>{text}</span>,
+					title: 'Strategy'
+				},
+				{
+					dataIndex: 'network',
+					key: 'network',
+					render: (text) => <span>{firstCharUppercase(text)}</span>,
+					title: 'Chain'
+				},
+				{
+					dataIndex: 'height',
+					key: 'height',
+					render: (text) => <span># {text}</span>,
+					title: 'Snapshot'
+				},
+				{
+					dataIndex: 'threshold',
+					key: 'threshold',
+					render: (text,record) => <span>{text} {record.token_metadata[record.asset_type].symbol}</span>,
+					title: 'Threshold'
+				},
+				{
+					dataIndex: 'id',
+					key: 'id',
+					render: (text,record) => <span>{getFormattedBalance(record)?.toNumber().toFixed(1)} {record.token_metadata[record.asset_type].symbol}</span>,
+					title: 'Balance'
+				},
+				{
+					dataIndex: 'weight',
+					key: 'weight',
+					render: (text) => <span>{text}</span>,
+					title: 'Weight'
+				},
+				{
+					dataIndex: 'total',
+					key: 'total',
+					render: (type,record) =>
+					{
+						const formattedBalance = getFormattedBalance(record);
+						const balance = formattedBalance !== null ? formattedBalance : new BigNumber(0);
+						const weight = new BigNumber(record.weight);
+						const threshold = new BigNumber(record.threshold);
+						const multipliedValue = weight.multipliedBy(balance.gte(threshold) ? balance : new BigNumber(0));
+						const result = multipliedValue.toFixed(1);
+						return <span>{result} VOTE</span>;
+					},
+					title: 'Total'
+				}
+			];
+			setColumnData(columns);
+		}
+	}, [voteCreation.balances]);
+	console.log(voteCreation.balances);
 	return (
 		<section
 			className='flex flex-col py-2'
@@ -67,105 +134,28 @@ const CastYourVoteModalContent = () => {
 					spinning={loading}
 					indicator={<LoadingOutlined />}
 				>
+					{voteCreation.balances && <Table dataSource={voteCreation.balances} columns={columnData} pagination={false}/>}
 					<article
 						className='flex flex-col gap-y-2'
-					>
-						<h4
-							className='text-grey_primary text-base font-medium m-0 grid grid-cols-7 gap-2 pl-5'
-						>
-							<span>Strategy</span>
-							<span>Chain</span>
-							<span>Snapshot</span>
-							<span className='flex items-center gap-x-1'>
-								<span>Threshold</span>
-								<span className='flex items-center justify-center bg-grey_primary rounded-full text-[10px] text-white font-medium w-4 h-4'>
-									<Tooltip
-										color='#04152F'
-										title={'Account with Balance >= Threshold can vote'}
-									>
-										?
-									</Tooltip>
-								</span>
-							</span>
-							<span>Balance</span>
-							<span className='flex items-center gap-x-1'>
-								<span>Weight</span>
-								<span className='flex items-center justify-center bg-grey_primary rounded-full text-[10px] text-white font-medium w-4 h-4'>
-									<Tooltip
-										color='#04152F'
-										title={'Voting weight refers to the level of influence Total = Balance * Weight'}
-									>
-										?
-									</Tooltip>
-								</span>
-							</span>
-							<span>Total</span>
-						</h4>
-						<ul
-							className='m-0 list-decimal pl-5'
-						>
-							{
-
-								voteCreation.balances.map((balance) => {
-									const token_info = balance.token_metadata[balance.asset_type];
-									if (!token_info) {
-										return null;
-									}
-									const balanceFormatted = new BigNumber(formatToken(balance.value || 0, !!evmChains[balance.network as keyof typeof evmChains], token_info.decimals));
-									return (
-										<li
-											className='list-decimal'
-											key={balance.id}
-										>
-											<p
-												className='grid grid-cols-7 gap-2 m-0 text-sm'
-											>
-												<span>
-													{balance.name}
-												</span>
-												<span>
-													{firstCharUppercase(balance.network)}
-												</span>
-												<span>
-													#{balance.height}
-												</span>
-												<span>
-													{balance.threshold} {token_info.symbol}
-												</span>
-												<span>
-													{balanceFormatted.toNumber().toFixed(1)} {token_info.symbol}
-												</span>
-												<span>
-													{balance.weight}
-												</span>
-												<span>
-													{new BigNumber(balance.weight).multipliedBy(((balanceFormatted.gte(new BigNumber(balance.threshold))? balanceFormatted: '0'))).toFixed(1)} VOTE
-												</span>
-											</p>
-										</li>
-									);
-								})
-							}
-						</ul>
-						{
-							isAllZero && user?.address && (
-								<div
-									className='flex flex-col gap-y-2 mt-5'
+					></article>
+					{
+						isAllZero && user?.address && (
+							<div
+								className='flex flex-col gap-y-2 mt-5'
+							>
+								<p
+									className='text-sm text-red-500'
 								>
-									<p
-										className='text-sm text-red-500'
-									>
 										Insufficient tokens, you can not vote from this account, please logged in with another account.
-									</p>
-									<Address
-										ethIdenticonSize={20}
-										identiconSize={20}
-										address={user?.address}
-									/>
-								</div>
-							)
-						}
-					</article>
+								</p>
+								<Address
+									ethIdenticonSize={20}
+									identiconSize={20}
+									address={user?.address}
+								/>
+							</div>
+						)
+					}
 				</Spin>
 			</div>
 		</section>
