@@ -4,6 +4,9 @@
 import { Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import { useProposalSelector } from '~src/redux/selectors';
+import { EBlockchain } from '~src/types/enums';
+import BlockchainIcon from '~src/ui-components/BlockchainIcon';
+import { firstCharUppercase } from '~src/utils/getFirstCharUppercase';
 
 const Timestamp = () => {
 	const { proposal } = useProposalSelector();
@@ -38,18 +41,19 @@ const Timestamp = () => {
 										color='#66A5FF'
 										title={
 											<div>
-												<article className='grid grid-cols-2'>
+												<article className='grid grid-cols-2 m-2'>
 													<h4>Network</h4>
 													<h4>Snapshot</h4>
 												</article>
 												{new_voting_strategies_with_height.length>1 && new_voting_strategies_with_height?.slice(1).map((strategy,index) => {
 													return (
-														<div key={index}>
-															<article className='grid grid-cols-2'>
-																<span className='grid-cols-1'>{strategy.network}</span>
-																<span className='grid-cols-1'># {strategy.height}</span>
-															</article>
-														</div>
+														<article className='grid grid-cols-2 p-1' key={index}>
+															<p className='grid-cols-1 mx-2'>
+																<BlockchainIcon className={'text-md'} type={ strategy.network as EBlockchain }/>
+																<span className='mx-1'>{firstCharUppercase(strategy.network)}</span>
+															</p>
+															<span className='grid-cols-1 mx-2'># {strategy.height}</span>
+														</article>
 													);
 												})}
 											</div>
