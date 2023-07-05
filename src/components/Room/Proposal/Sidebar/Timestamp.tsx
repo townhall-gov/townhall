@@ -3,28 +3,22 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { Tooltip } from 'antd';
 import dayjs from 'dayjs';
-import React, { useEffect, useState } from 'react';
+import { chainProperties } from '~src/onchain-data/networkConstants';
 import { useProposalSelector } from '~src/redux/selectors';
-import { IStrategyWithHeight } from '~src/types/schema';
+import { IProposal } from '~src/types/schema';
 
 const Timestamp = () => {
 	const { proposal } = useProposalSelector();
-	const [uniqueNetworkandSnapshot,setuniqueNetworkandSnapshot]=useState<(IStrategyWithHeight | undefined)[]>([]);
-	useEffect(() => {
-		let uniqueArray = Array.from(
-			new Set(voting_strategies_with_height.map(obj => `${obj.network}-${obj.height}`))
-		).map(key => {
-			const [network, height] = key.split('-');
-			return voting_strategies_with_height.find(voting_strategy => voting_strategy.network === network && voting_strategy.height.toString() === height);
-		});
-		if(uniqueArray) {
-			uniqueArray=uniqueArray.slice(1);
-			setuniqueNetworkandSnapshot(uniqueArray);
-		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	},[]);
 	if (!proposal) return null;
-	const { voting_strategies_with_height, created_at, start_date, end_date } = proposal;
+	const { voting_strategies_with_height, created_at, start_date, end_date }:IProposal = proposal;
+	const uniqueNetworks:{[key:string]:boolean}={ };
+	const new_voting_strategies_with_height = voting_strategies_with_height.filter((strategy: { network: keyof typeof chainProperties ; }) => {
+		if (uniqueNetworks[strategy.network]) {
+			return false;
+		}
+		uniqueNetworks[strategy.network] = true;
+		return true;
+	});
 	return (
 		<section
 			className='border border-solid border-blue_primary rounded-2xl drop-shadow-[0px_6px_18px_rgba(0,0,0,0.06)] p-6 text-white'
@@ -42,53 +36,35 @@ const Timestamp = () => {
 							<span className='col-span-1 flex justify-end items-center gap-1 text-end text-xs'>
 								<span>#{voting_strategies_with_height?.[0]?.height}</span>
 								{
-									voting_strategies_with_height?.length>1 &&
-										<Tooltip
-											color='#66A5FF'
-											title={
-												<div>
-													<ul
-														className='grid grid-cols-2 list-decimal p-2 space-x-2'
-													>
-														<ul className='grid-col-1'>
-															<span className='grid-col-1'>Network</span>
-															{
-																uniqueNetworkandSnapshot?.map((voting_strategy) => {
-																	return (
-																		<ul
-																			key={voting_strategy?.network}
-																		>
-																			{voting_strategy?.network}
-																		</ul>
-																	);
-																})
-															}
-														</ul>
-														<ul className='grid-col-1'>
-															<span className='grid-col-1'>Snapshot</span>
-															{
-																uniqueNetworkandSnapshot?.map((voting_strategy) => {
-																	return (
-																		<ul
-																			key={voting_strategy?.height}
-																		>
-																			#{voting_strategy?.height}
-																		</ul>
-																	);
-																})
-															}
-														</ul>
-													</ul>
-												</div>
+									<Tooltip
+										color='#66A5FF'
+										title={
+											<article>
+												<span className='grid grid-cols-2'>
+													<h4>Network</h4>
+													<h4>Snapshot</h4>
+												</span>
+												{new_voting_strategies_with_height.length>1 && new_voting_strategies_with_height?.slice(1).map((strategy: { network: keyof typeof chainProperties ; height:number},index:number) => {
+													return (
+														<div key={index}>
+															<p className='grid grid-cols-2'>
+																<span className='grid-cols-1'>{strategy.network}</span>
+																<span className='grid-cols-1'># {strategy.height}</span>
+															</p>
+														</div>
+													);
+												})}
+											</article>
 
-											}
+										}
+									>
+										<span
+											className='text-xs text-black rounded-2xl bg-[#66A5FF] px-[8px] py-[2px] cursor-pointer'
 										>
-											<span
-												className='text-xs text-black rounded-2xl bg-[#66A5FF] px-[8px] py-[2px] cursor-pointer'
-											>
-                                            +{uniqueNetworkandSnapshot?.length }
-											</span>
-										</Tooltip>
+                                            +{new_voting_strategies_with_height?.length-1 }
+										</span>
+									</Tooltip>
+
 								}
 							</span>
 						</p>
