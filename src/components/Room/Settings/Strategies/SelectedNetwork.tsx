@@ -5,6 +5,8 @@
 import React, { FC } from 'react';
 import { getNetworkTitle } from '~src/components/RoomCreate/Form/Stages/RoomStrategies';
 import { IStrategy } from '~src/redux/rooms/@types';
+import { EBlockchain } from '~src/types/enums';
+import BlockchainIcon from '~src/ui-components/BlockchainIcon';
 
 interface IProposalCreationThresholdProps {
 	strategy: IStrategy;
@@ -14,10 +16,11 @@ const SelectedNetwork: FC<IProposalCreationThresholdProps> = (props) => {
 	const { strategy } = props;
 	return (
 		<div className='grid grid-cols-2 mb-[16px]'>
-			<p>Network</p>
-			<span className='flex items-center'>
-				{getNetworkTitle(strategy?.network)}
-			</span>
+			<span>Network</span>
+			<p className='flex items-center'>
+				<span>{getNetworkTitle(strategy?.network)}</span>
+				<BlockchainIcon className={'text-md ml-2'} type={ strategy.network as EBlockchain }/>
+			</p>
 		</div>
 	);
 };

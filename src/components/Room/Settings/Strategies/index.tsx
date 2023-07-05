@@ -17,8 +17,6 @@ import SelectedSymbol from './SelectedSymbol';
 import SelectedDecimal from './SelectedDecimal';
 import SelectedAsset from './SelectedAsset';
 import SelectedAssetType from './SelectedAssetType';
-import SelectedDelegationSpace from './SelectedDelegationSpace';
-import SelectedDelegationNetwork from './SelectedDelegationNetwork';
 import SelectedVotingThreshold from './SelectedVotingThreshold';
 import SelectedVotingWeight from './SelectedVotingWeight';
 import { getVotingStrategyTitle } from '~src/components/RoomCreate/Form/Stages/RoomStrategies';
@@ -33,7 +31,7 @@ const Strategies: FC<IStrategiesProps> = (props) => {
 	const dispatch = useDispatch();
 	const roomSettings = useRoomSettings();
 	const { room_strategies } = roomSettings;
-
+	console.log(room_strategies);
 	return (
 		<article>
 			<div className='px-[18.5px] py-[21.5px] flex justify-center text-sm text-white items-center border border-solid border-[#66A5FF] rounded-2xl'>
@@ -72,7 +70,7 @@ const Strategies: FC<IStrategiesProps> = (props) => {
 												}
 											</div>
 											<div className='border rounded-xl border-solid border-[#66A5FF]'>
-												<div  className="grid grid-cols-1 gap-y-[14px]  ml-[24px] mt-[23px] text-white font-normal text-[14px] leading-none">
+												<article  className="grid grid-cols-1 gap-y-[14px]  ml-[24px] mt-[23px] text-white font-normal text-[14px] leading-none">
 													<h6 className='text-[20px] font-bold leading-[20px] text-white'>{getVotingStrategyTitle(strategy?.name)}</h6>
 													<SelectedNetwork
 														strategy={strategy}
@@ -89,19 +87,13 @@ const Strategies: FC<IStrategiesProps> = (props) => {
 													<SelectedAssetType
 														strategy={strategy}
 													/>
-													<SelectedDelegationSpace
-														strategy={strategy}
-													/>
-													<SelectedDelegationNetwork
-														strategy={strategy}
-													/>
 													<SelectedVotingThreshold
 														strategy={strategy}
 													/>
 													<SelectedVotingWeight
 														strategy={strategy}
 													/>
-												</div>
+												</article>
 											</div>
 
 										</li>

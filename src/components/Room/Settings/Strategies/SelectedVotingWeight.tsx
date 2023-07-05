@@ -24,7 +24,7 @@ const SelectedVotingWeight: FC<IVotingThresholdProps> = (props) => {
 					overlayClassName='min-w-max'
 					title={
 						<div>
-							{'Only account with balance >= threshold can vote'}
+							{'Voting weight refers to the level of influence Votes = Token * Voting Weight'}
 						</div>
 					}
 				>
