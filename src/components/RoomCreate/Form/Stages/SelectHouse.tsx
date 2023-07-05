@@ -5,8 +5,12 @@ import React from 'react';
 import HouseDropdown from '~src/ui-components/HouseDropdown';
 import Error from '../Error';
 import { removeError } from '~src/redux/rooms/validation';
+import { useRoomsSelector } from '~src/redux/selectors';
+import { InfoDiamondIcon } from '~src/ui-components/CustomIcons';
 
 const SelectHouse = () => {
+	const { roomCreation } = useRoomsSelector();
+	const { select_house } = roomCreation;
 	return (
 		<article>
 			<p className='m-0 text-white font-semibold text-lg leading-[23px]'>
@@ -15,6 +19,12 @@ const SelectHouse = () => {
 			<div className='my-[28px]'>
 				<HouseDropdown onClick={() => removeError('select_house')} />
 				<Error id='select_house' />
+				{
+					select_house && !select_house?.is_erc20 && <div className='px-[18.5px] py-[21.5px] flex justify-center text-sm text-white mt-[24px] items-center border border-solid border-red_primary rounded-2xl'>
+						<InfoDiamondIcon className='text-[30px] mr-2 text-transparent stroke-white'/>
+						<span className='text-[18px]'>Lorem Ipsum</span>
+					</div>
+				}
 			</div>
 			<div className='flex flex-col gap-y-2'>
 				<h5 className='m-0 p-0 font-semibold text-lg leading-[23px] text-white'>

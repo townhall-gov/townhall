@@ -70,6 +70,7 @@ import FlagSVG from '~assets/icons/flag.svg';
 import LinkSVG from '~assets/icons/link.svg';
 import ShareSVG from '~assets/icons/share.svg';
 import GeometricSVG from '~assets/icons/gerometric-shape.svg';
+import InfoDiamondSVG from '~assets/icons/information-diamond.svg';
 import LoadMoreSVG from '~assets/icons/loadmore.svg';
 import HouseIconSVG from '~assets/icons/houseicon.svg';
 import CancelIconSVG from '~assets/icons/cancel-square.svg';
@@ -205,6 +206,10 @@ export const DiamondIcon = (props: Partial<CustomIconComponentProps>) => (
 
 export const GeometricIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={GeometricSVG} {...props} />
+);
+
+export const InfoDiamondIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={InfoDiamondSVG} {...props} />
 );
 
 export const PlusSignSquareIcon = (props: Partial<CustomIconComponentProps>) => (
