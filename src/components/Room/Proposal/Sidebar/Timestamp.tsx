@@ -3,16 +3,14 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { Tooltip } from 'antd';
 import dayjs from 'dayjs';
-import { chainProperties } from '~src/onchain-data/networkConstants';
 import { useProposalSelector } from '~src/redux/selectors';
-import { IProposal } from '~src/types/schema';
 
 const Timestamp = () => {
 	const { proposal } = useProposalSelector();
 	if (!proposal) return null;
-	const { voting_strategies_with_height, created_at, start_date, end_date }:IProposal = proposal;
+	const { voting_strategies_with_height, created_at, start_date, end_date } = proposal;
 	const uniqueNetworks:{[key:string]:boolean}={ };
-	const new_voting_strategies_with_height = voting_strategies_with_height.filter((strategy: { network: keyof typeof chainProperties ; }) => {
+	const new_voting_strategies_with_height = voting_strategies_with_height.filter((strategy) => {
 		if (uniqueNetworks[strategy.network]) {
 			return false;
 		}
@@ -39,22 +37,22 @@ const Timestamp = () => {
 									<Tooltip
 										color='#66A5FF'
 										title={
-											<article>
-												<span className='grid grid-cols-2'>
+											<div>
+												<article className='grid grid-cols-2'>
 													<h4>Network</h4>
 													<h4>Snapshot</h4>
-												</span>
-												{new_voting_strategies_with_height.length>1 && new_voting_strategies_with_height?.slice(1).map((strategy: { network: keyof typeof chainProperties ; height:number},index:number) => {
+												</article>
+												{new_voting_strategies_with_height.length>1 && new_voting_strategies_with_height?.slice(1).map((strategy,index) => {
 													return (
 														<div key={index}>
-															<p className='grid grid-cols-2'>
+															<article className='grid grid-cols-2'>
 																<span className='grid-cols-1'>{strategy.network}</span>
 																<span className='grid-cols-1'># {strategy.height}</span>
-															</p>
+															</article>
 														</div>
 													);
 												})}
-											</article>
+											</div>
 
 										}
 									>
