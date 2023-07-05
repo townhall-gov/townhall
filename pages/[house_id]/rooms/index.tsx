@@ -11,6 +11,9 @@ import { houseActions } from '~src/redux/house';
 import { useRouter } from 'next/router';
 import { getHouse } from 'pages/api/house';
 import Rooms from '~src/components/House/Rooms';
+import BackButton from '~src/ui-components/BackButton';
+import HouseSidebar from '~src/components/House/Sidebar';
+import HouseAbout from '~src/components/House/HouseWrapper/HouseAbout';
 
 interface IHouseRoomsServerProps {
 	rooms: IRoom[] | null;
@@ -54,12 +57,26 @@ const HouseRooms: FC<IHouseRoomsClientProps> = (props) => {
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [error, rooms, house]);
+
+	if (!house) {
+		return null;
+	}
+
 	return (
 		<>
 			<SEOHead title={`House ${query['house_id']} Rooms.`} />
-			<div className='h-full'>
-				<Rooms />
-			</div>
+			<BackButton url={`/${query['house_id']}/proposals`} className='mb-3' />
+			<section className='flex gap-x-[18px]'>
+				<HouseSidebar />
+				<div className='flex-1 flex flex-col gap-y-[21px]'>
+					<section className='flex'>
+						<HouseAbout
+							description={house.description}
+						/>
+					</section>
+					<Rooms />
+				</div>
+			</section>
 		</>
 	);
 };
