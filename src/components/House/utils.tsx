@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { EHouseStage } from '~src/redux/house/@types';
-import { DiamondIcon, DiscussionIcon, PlusSignSquareIcon, SettingsIcon } from '~src/ui-components/CustomIcons';
+import { DiamondIcon, DiscussionIcon, HouseIcon, PlusSignSquareIcon, SettingsIcon } from '~src/ui-components/CustomIcons';
 
 export const timeline = [
 	{
@@ -15,6 +15,11 @@ export const timeline = [
 		icon: <DiscussionIcon className='text-transparent stroke-white' />,
 		stage: EHouseStage.DISCUSSIONS,
 		title: 'Discussions'
+	},
+	{
+		icon: <HouseIcon className='text-white' />,
+		stage: EHouseStage.ROOMS,
+		title: 'Rooms'
 	},
 	{
 		icon: <PlusSignSquareIcon className='text-transparent stroke-white' />,
@@ -34,6 +39,8 @@ export const getTimelineUrl = (stage: EHouseStage) => {
 		return '/proposals';
 	case EHouseStage.DISCUSSIONS:
 		return '/discussions';
+	case EHouseStage.ROOMS:
+		return '/rooms';
 	case EHouseStage.NEW_PROPOSAL:
 		return '/proposal/create';
 	case EHouseStage.SETTINGS:

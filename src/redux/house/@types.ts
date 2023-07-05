@@ -31,6 +31,7 @@ export type IHouseSettings = {
 export enum EHouseStage {
     PROPOSALS = 'proposals',
     DISCUSSIONS = 'discussions',
+    ROOMS = 'rooms',
     NEW_PROPOSAL = 'new_proposal',
     SETTINGS = 'settings',
 }
