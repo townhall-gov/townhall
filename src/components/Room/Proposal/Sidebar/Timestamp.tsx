@@ -41,8 +41,8 @@ const Timestamp = () => {
 										color='#66A5FF'
 										title={
 											<div>
-												<article className='grid grid-cols-2 m-2'>
-													<h4>Network</h4>
+												<article className='flex justify-around'>
+													<h4 >Network</h4>
 													<h4>Snapshot</h4>
 												</article>
 												{new_voting_strategies_with_height.length>1 && new_voting_strategies_with_height?.slice(1).map((strategy,index) => {
