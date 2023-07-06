@@ -36,38 +36,35 @@ const Timestamp = () => {
 							</span>
 							<span className='col-span-1 flex justify-end items-center gap-1 text-end text-xs'>
 								<span>#{voting_strategies_with_height?.[0]?.height}</span>
-								{
-									<Tooltip
-										color='#66A5FF'
-										title={
-											<div>
-												<article className='flex justify-around'>
-													<h4 >Network</h4>
-													<h4>Snapshot</h4>
-												</article>
-												{new_voting_strategies_with_height.length>1 && new_voting_strategies_with_height?.slice(1).map((strategy,index) => {
-													return (
-														<article className='grid grid-cols-2 p-1' key={index}>
-															<p className='grid-cols-1 mx-2'>
-																<BlockchainIcon className={'text-md'} type={ strategy.network as EBlockchain }/>
-																<span className='mx-1'>{firstCharUppercase(strategy.network)}</span>
-															</p>
-															<span className='grid-cols-1 mx-2'># {strategy.height}</span>
-														</article>
-													);
-												})}
-											</div>
+								<Tooltip
+									color='#66A5FF'
+									title={
+										<div>
+											<article className='flex justify-around'>
+												<h4 >Network</h4>
+												<h4>Snapshot</h4>
+											</article>
+											{new_voting_strategies_with_height.length>1 && new_voting_strategies_with_height?.slice(1).map((strategy,index) => {
+												return (
+													<article className='grid grid-cols-2 p-1' key={index}>
+														<p className='grid-cols-1 mx-2'>
+															<BlockchainIcon className={'text-md'} type={ strategy.network as EBlockchain }/>
+															<span className='mx-1'>{firstCharUppercase(strategy.network)}</span>
+														</p>
+														<span className='grid-cols-1 mx-2'># {strategy.height}</span>
+													</article>
+												);
+											})}
+										</div>
 
-										}
+									}
+								>
+									<span
+										className='text-xs text-black rounded-2xl bg-[#66A5FF] px-[8px] py-[2px] cursor-pointer'
 									>
-										<span
-											className='text-xs text-black rounded-2xl bg-[#66A5FF] px-[8px] py-[2px] cursor-pointer'
-										>
                                             +{new_voting_strategies_with_height?.length-1 }
-										</span>
-									</Tooltip>
-
-								}
+									</span>
+								</Tooltip>
 							</span>
 						</p>
 						: null
