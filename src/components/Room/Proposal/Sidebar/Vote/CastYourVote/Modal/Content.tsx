@@ -15,6 +15,10 @@ import { IStrategyWithHeightAndBalance } from 'pages/api/chain/actions/balance';
 import type { ColumnsType } from 'antd/es/table';
 import BlockchainIcon from '~src/ui-components/BlockchainIcon';
 import { EBlockchain } from '~src/types/enums';
+import { CircleArrowDownIcon, CircleArrowIcon, VotingPowerIcon } from '~src/ui-components/CustomIcons';
+import { calculateStrategy } from '~src/utils/calculation/getStrategyWeight';
+import { useDispatch } from 'react-redux';
+import { proposalActions } from '~src/redux/proposal';
 export const NoOptionsSelectedError = 'Please select at least one option';
 
 export const checkIsAllZero = (balances: IStrategyWithHeightAndBalance[]) => {
@@ -28,7 +32,8 @@ export const checkIsAllZero = (balances: IStrategyWithHeightAndBalance[]) => {
 };
 
 const CastYourVoteModalContent = () => {
-	const { voteCreation, proposal, loading, error } = useProposalSelector();
+	const { voteCreation, proposal, loading, error , isCastVoteTableVisible } = useProposalSelector();
+	const dispatch = useDispatch();
 	const { user } = useProfileSelector();
 	const [columnData,setColumnData]=useState<ColumnsType<any>>([]);
 	const isAllZero = checkIsAllZero(voteCreation.balances);
@@ -54,7 +59,7 @@ const CastYourVoteModalContent = () => {
 					dataIndex: 'name',
 					key: 'name',
 					render: (text,record) => <span className={getRowClassName(record)}>{text}</span>,
-					title: 'Strategy'
+					title: <span className='text-base font-normal leading-tighter tracking-wide text-left'>{'Strategy'}</span>
 				},
 				{
 					dataIndex: 'network',
@@ -62,20 +67,20 @@ const CastYourVoteModalContent = () => {
 					render: (text,record) => <span className={getRowClassName(record)}>
 						<BlockchainIcon className={'text-md mr-1'} type={ text as EBlockchain }/>
 						{firstCharUppercase(text)}</span>,
-					title: 'Chain'
+					title: <span className='text-base font-normal leading-tighter tracking-wide text-left'>{'Chain'}</span>
 				},
 				{
 					dataIndex: 'height',
 					key: 'height',
 					render: (text,record) => <span className={getRowClassName(record)}># {text}</span>,
-					title: 'Snapshot'
+					title: <span className='text-base font-normal leading-tighter tracking-wide text-left'>{'Snapshot'}</span>
 				},
 				{
 					dataIndex: 'threshold',
 					key: 'threshold',
 					render: (text,record) => <span className={getRowClassName(record)}>{text} {record?.token_metadata[record.asset_type]?.symbol}</span>,
 					title: <span className='flex justify-center items-center gap-x-1'>
-						<span>Threshold</span>
+						<span className='text-base font-normal leading-tighter tracking-wide text-left'>{'Threshold'}</span>
 						<span className='flex cursor-pointer items-center justify-center bg-grey_primary rounded-full text-[10px] text-white font-medium w-4 h-4'>
 							<Tooltip
 								color='#04152F'
@@ -90,14 +95,14 @@ const CastYourVoteModalContent = () => {
 					dataIndex: 'id',
 					key: 'id',
 					render: (text,record) => <span className={getRowClassName(record)}>{getFormattedBalance(record)?.toNumber().toFixed(1)} {record?.token_metadata[record.asset_type]?.symbol}</span>,
-					title: 'Balance'
+					title: <span className='text-base font-normal leading-tighter tracking-wide text-left'>{'Balance'}</span>
 				},
 				{
 					dataIndex: 'weight',
 					key: 'weight',
 					render: (text,record) => <span className={getRowClassName(record)}>{text}</span>,
 					title: <span className='flex items-center gap-x-1'>
-						<span>Weight</span>
+						<span className='text-base font-normal leading-tighter tracking-wide text-left'>{'Weight'}</span>
 						<span className='flex cursor-pointer items-center justify-center bg-grey_primary rounded-full text-[10px] text-white font-medium w-4 h-4'>
 							<Tooltip
 								color='#04152F'
@@ -121,7 +126,7 @@ const CastYourVoteModalContent = () => {
 						const result = multipliedValue.toFixed(1);
 						return <span className={getRowClassName(record)}>{result} VOTE</span>;
 					},
-					title: 'Total'
+					title:<span className='text-base font-normal leading-tighter tracking-wide text-left'>{'Total'}</span>
 				}
 			];
 			setColumnData(columns);
@@ -130,7 +135,7 @@ const CastYourVoteModalContent = () => {
 	}, [voteCreation.balances]);
 	return (
 		<section
-			className='flex flex-col py-2'
+			className='flex flex-col py-2 w-[787px]'
 		>
 			<h4
 				className='text-grey_primary font-normal text-sm leading-[21px] m-0'
@@ -165,8 +170,39 @@ const CastYourVoteModalContent = () => {
 					spinning={loading}
 					indicator={<LoadingOutlined />}
 				>
-					{voteCreation.balances && <Table dataSource={voteCreation.balances} columns={columnData} pagination={false}/>}
-					<Divider className='bg-blue_primary' />
+					<article className='mx-1 flex items-center'>
+						<VotingPowerIcon className='text-grey_primary text-xl'/>
+						<span className='text-base space-x-2 font-normal leading-normal tracking-wide text-left mx-2 '>{`Your total Voting Power:  ${
+							voteCreation.balances.reduce((prev, strategy) => {
+								let current = new BigNumber(0);
+								const balance = getFormattedBalance(strategy);
+								if (balance) {
+									current = new BigNumber(balance);
+								}
+								if (strategy) {
+									let weight = new BigNumber(strategy.weight);
+									if (weight.eq(0)) {
+										weight = new BigNumber(1);
+									}
+									current = current.multipliedBy(weight);
+								}
+								const result = calculateStrategy({
+									...strategy,
+									value: current.toString()
+								});
+								return prev.plus(result);
+							}, new BigNumber(0)).toFixed(1)
+						}`}
+
+						</span>
+						<span onClick={() => dispatch(proposalActions.setIsCastVoteTableVisible(!isCastVoteTableVisible))}>
+							{
+								isCastVoteTableVisible? <CircleArrowIcon className='text-2xl flex items-center text-transparent cursor-pointer' /> : <CircleArrowDownIcon className='text-2xl flex items-center text-transparent cursor-pointer'/>
+							}
+						</span>
+					</article>
+					{isCastVoteTableVisible && voteCreation.balances && <Table dataSource={voteCreation.balances} columns={columnData} pagination={false}/>}
+					{isCastVoteTableVisible && <Divider className='bg-blue_primary' />}
 					<article
 						className='flex flex-col gap-y-2'
 					></article>

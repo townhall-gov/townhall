@@ -20,6 +20,7 @@ const initialState: IProposalStore = {
 	error: null,
 	isAllCommentsVisible: false,
 	isAllRepliesVisible: false,
+	isCastVoteTableVisible:false,
 	isRepliesVisible:{
 		replies_comment_id:'',
 		replies_isVisible:false
@@ -195,6 +196,9 @@ export const proposalStore = createSlice({
 		},
 		setIsAllRepliesVisible: (state, action: PayloadAction<boolean>) => {
 			state.isAllRepliesVisible = action.payload;
+		},
+		setIsCastVoteTableVisible: (state, action: PayloadAction<boolean>) => {
+			state.isCastVoteTableVisible = action.payload;
 		},
 		setIsRepliesVisible: (state, action: PayloadAction<{
 			replies_comment_id: string;

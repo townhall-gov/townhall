@@ -27,6 +27,7 @@ export interface IProposalStore {
     replyEditHistory: IHistoryReply[];
     replyComment: IComment | null;
     isRepliesVisible:IRepliesVisible;
+    isCastVoteTableVisible:boolean;
 }
 
 export enum EPostLinkCreationAction {
