@@ -18,8 +18,8 @@ const SelectedNetwork: FC<IProposalCreationThresholdProps> = (props) => {
 		<div className='grid grid-cols-2 mb-[16px]'>
 			<span>Network</span>
 			<p className='flex items-center'>
+				<BlockchainIcon className={'text-md mr-1'} type={ strategy.network as EBlockchain }/>
 				<span>{getNetworkTitle(strategy?.network)}</span>
-				<BlockchainIcon className={'text-md ml-2'} type={ strategy.network as EBlockchain }/>
 			</p>
 		</div>
 	);

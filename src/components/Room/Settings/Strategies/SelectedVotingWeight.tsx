@@ -5,7 +5,6 @@
 import { Tooltip } from 'antd';
 import React, { FC } from 'react';
 import { IStrategy } from '~src/redux/rooms/@types';
-import { ToolTipIcon } from '~src/ui-components/CustomIcons';
 
 interface IVotingThresholdProps {
 	isDisabled?: boolean;
@@ -19,19 +18,14 @@ const SelectedVotingWeight: FC<IVotingThresholdProps> = (props) => {
 		<article className='grid grid-cols-2 mb-[16px]'>
 			<div className='flex items-center'>
 				<p>Voting Weight</p>
-				<Tooltip
-					color='#66A5FF'
-					overlayClassName='min-w-max'
-					title={
-						<div>
-							{'Voting weight refers to the level of influence Votes = Token * Voting Weight'}
-						</div>
-					}
-				>
-					<p className='text-md'>
-						<ToolTipIcon/>
-					</p>
-				</Tooltip>
+				<span className='flex items-center mx-1 justify-center bg-grey_primary rounded-full text-[10px] text-white font-medium w-4 h-4'>
+					<Tooltip
+						color='#04152F'
+						title={'Voting weight refers to the level of influence Votes = Token * Voting Weight'}
+					>
+										?
+					</Tooltip>
+				</span>
 			</div>
 			<span>{strategy.weight}</span>
 		</article>

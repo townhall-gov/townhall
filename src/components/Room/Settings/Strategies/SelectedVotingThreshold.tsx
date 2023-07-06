@@ -5,7 +5,6 @@
 import { Tooltip } from 'antd';
 import React, { FC } from 'react';
 import { IStrategy } from '~src/redux/rooms/@types';
-import { ToolTipIcon } from '~src/ui-components/CustomIcons';
 
 interface IVotingThresholdProps {
 	isDisabled?: boolean;
@@ -16,22 +15,17 @@ interface IVotingThresholdProps {
 const SelectedVotingThreshold: FC<IVotingThresholdProps> = (props) => {
 	const { strategy } = props;
 	return (
-		<article className='grid grid-cols-2 mb-[16px]'>
-			<div className='flex items-center'>
+		<article className='grid grid-cols-2 mb-[16px] -mt-1'>
+			<div className='flex items-center '>
 				<p>Voting Threshold</p>
-				<Tooltip
-					color='#66A5FF'
-					overlayClassName='min-w-max'
-					title={
-						<div>
-							{'Only account with balance >= threshold can vote'}
-						</div>
-					}
-				>
-					<p className='text-md'>
-						<ToolTipIcon/>
-					</p>
-				</Tooltip>
+				<span className='flex items-center mx-1 justify-center bg-grey_primary rounded-full text-[10px] text-white font-medium w-4 h-4'>
+					<Tooltip
+						color='#04152F'
+						title={'Only account with balance >= threshold can vote'}
+					>
+										?
+					</Tooltip>
+				</span>
 			</div>
 			<span>{strategy.threshold}</span>
 		</article>

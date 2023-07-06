@@ -15,7 +15,6 @@ import { AddIcon, DeleteDarkIcon, InfoDiamondIcon } from '~src/ui-components/Cus
 import SelectedNetwork from './SelectedNetwork';
 import SelectedSymbol from './SelectedSymbol';
 import SelectedDecimal from './SelectedDecimal';
-import SelectedAsset from './SelectedAsset';
 import SelectedAssetType from './SelectedAssetType';
 import SelectedVotingThreshold from './SelectedVotingThreshold';
 import SelectedVotingWeight from './SelectedVotingWeight';
@@ -79,9 +78,6 @@ const Strategies: FC<IStrategiesProps> = (props) => {
 														strategy={strategy}
 													/>
 													<SelectedDecimal
-														strategy={strategy}
-													/>
-													<SelectedAsset
 														strategy={strategy}
 													/>
 													<SelectedAssetType

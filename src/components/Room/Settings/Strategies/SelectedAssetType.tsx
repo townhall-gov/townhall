@@ -12,7 +12,7 @@ interface IProposalCreationThresholdProps {
 const SelectedAssetType: FC<IProposalCreationThresholdProps> = (props) => {
 	const { strategy } = props;
 	return (
-		<div className='grid grid-cols-2 mb-[16px]'>
+		<div className='grid grid-cols-2 mb-4'>
 			<p>Asset Type</p>
 			<span className='flex items-center'>
 				{strategy.asset_type}
