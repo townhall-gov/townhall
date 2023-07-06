@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { LoadingOutlined } from '@ant-design/icons';
-import { Spin,Table } from 'antd';
+import { Divider, Spin,Table, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useProfileSelector, useProposalSelector } from '~src/redux/selectors';
 import Address from '~src/ui-components/Address';
@@ -13,6 +13,8 @@ import BigNumber from 'bignumber.js';
 import { firstCharUppercase } from '~src/utils/getFirstCharUppercase';
 import { IStrategyWithHeightAndBalance } from 'pages/api/chain/actions/balance';
 import type { ColumnsType } from 'antd/es/table';
+import BlockchainIcon from '~src/ui-components/BlockchainIcon';
+import { EBlockchain } from '~src/types/enums';
 export const NoOptionsSelectedError = 'Please select at least one option';
 
 export const checkIsAllZero = (balances: IStrategyWithHeightAndBalance[]) => {
@@ -30,52 +32,81 @@ const CastYourVoteModalContent = () => {
 	const { user } = useProfileSelector();
 	const [columnData,setColumnData]=useState<ColumnsType<any>>([]);
 	const isAllZero = checkIsAllZero(voteCreation.balances);
+	const getFormattedBalance = (balance:any):BigNumber | null => {
+		const token_info = balance.token_metadata[balance.asset_type];
+		if (!token_info) {
+			return null;
+		}
+		const balanceFormatted = new BigNumber(formatToken(balance.value || 0, !!evmChains[balance.network as keyof typeof evmChains], token_info.decimals));
+		return balanceFormatted;
+	};
+	const getRowClassName = (record:IStrategyWithHeightAndBalance) => {
+		const formattedBalance = getFormattedBalance(record)?.toNumber().toFixed(1);
+		if (formattedBalance!=null && record.threshold <= formattedBalance) {
+			return 'text-[#66A5FF]';
+		}
+		return '';
+	};
 	useEffect(() => {
 		if (voteCreation.balances !== null) {
-			const getFormattedBalance = (balance:any):BigNumber | null => {
-				const token_info = balance.token_metadata[balance.asset_type];
-				if (!token_info) {
-					return null;
-				}
-				const balanceFormatted = new BigNumber(formatToken(balance.value || 0, !!evmChains[balance.network as keyof typeof evmChains], token_info.decimals));
-				return balanceFormatted;
-			};
-			const columns: ColumnsType<any> = [
+			const columns: ColumnsType<IStrategyWithHeightAndBalance> = [
 				{
 					dataIndex: 'name',
 					key: 'name',
-					render: (text) => <span>{text}</span>,
+					render: (text,record) => <span className={getRowClassName(record)}>{text}</span>,
 					title: 'Strategy'
 				},
 				{
 					dataIndex: 'network',
 					key: 'network',
-					render: (text) => <span>{firstCharUppercase(text)}</span>,
+					render: (text,record) => <span className={getRowClassName(record)}>
+						<BlockchainIcon className={'text-md mr-1'} type={ text as EBlockchain }/>
+						{firstCharUppercase(text)}</span>,
 					title: 'Chain'
 				},
 				{
 					dataIndex: 'height',
 					key: 'height',
-					render: (text) => <span># {text}</span>,
+					render: (text,record) => <span className={getRowClassName(record)}># {text}</span>,
 					title: 'Snapshot'
 				},
 				{
 					dataIndex: 'threshold',
 					key: 'threshold',
-					render: (text,record) => <span>{text} {record.token_metadata[record.asset_type].symbol}</span>,
-					title: 'Threshold'
+					render: (text,record) => <span className={getRowClassName(record)}>{text} {record?.token_metadata[record.asset_type]?.symbol}</span>,
+					title: <span className='flex justify-center items-center gap-x-1'>
+						<span>Threshold</span>
+						<span className='flex cursor-pointer items-center justify-center bg-grey_primary rounded-full text-[10px] text-white font-medium w-4 h-4'>
+							<Tooltip
+								color='#04152F'
+								title={'Account with Balance >= Threshold can vote'}
+							>
+						?
+							</Tooltip>
+						</span>
+					</span>
 				},
 				{
 					dataIndex: 'id',
 					key: 'id',
-					render: (text,record) => <span>{getFormattedBalance(record)?.toNumber().toFixed(1)} {record.token_metadata[record.asset_type].symbol}</span>,
+					render: (text,record) => <span className={getRowClassName(record)}>{getFormattedBalance(record)?.toNumber().toFixed(1)} {record?.token_metadata[record.asset_type]?.symbol}</span>,
 					title: 'Balance'
 				},
 				{
 					dataIndex: 'weight',
 					key: 'weight',
-					render: (text) => <span>{text}</span>,
-					title: 'Weight'
+					render: (text,record) => <span className={getRowClassName(record)}>{text}</span>,
+					title: <span className='flex items-center gap-x-1'>
+						<span>Weight</span>
+						<span className='flex cursor-pointer items-center justify-center bg-grey_primary rounded-full text-[10px] text-white font-medium w-4 h-4'>
+							<Tooltip
+								color='#04152F'
+								title={'Voting weight refers to the level of influence Total = Balance * Weight'}
+							>
+							?
+							</Tooltip>
+						</span>
+					</span>
 				},
 				{
 					dataIndex: 'total',
@@ -88,15 +119,15 @@ const CastYourVoteModalContent = () => {
 						const threshold = new BigNumber(record.threshold);
 						const multipliedValue = weight.multipliedBy(balance.gte(threshold) ? balance : new BigNumber(0));
 						const result = multipliedValue.toFixed(1);
-						return <span>{result} VOTE</span>;
+						return <span className={getRowClassName(record)}>{result} VOTE</span>;
 					},
 					title: 'Total'
 				}
 			];
 			setColumnData(columns);
 		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [voteCreation.balances]);
-	console.log(voteCreation.balances);
 	return (
 		<section
 			className='flex flex-col py-2'
@@ -135,6 +166,7 @@ const CastYourVoteModalContent = () => {
 					indicator={<LoadingOutlined />}
 				>
 					{voteCreation.balances && <Table dataSource={voteCreation.balances} columns={columnData} pagination={false}/>}
+					<Divider className='bg-blue_primary' />
 					<article
 						className='flex flex-col gap-y-2'
 					></article>
