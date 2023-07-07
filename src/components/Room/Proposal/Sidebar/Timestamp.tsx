@@ -1,7 +1,7 @@
 // Copyright 2019-2025 @polka-labs/townhall authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
-import { Tooltip } from 'antd';
+import { Popover } from 'antd';
 import dayjs from 'dayjs';
 import { useProposalSelector } from '~src/redux/selectors';
 import { EBlockchain } from '~src/types/enums';
@@ -20,6 +20,29 @@ const Timestamp = () => {
 		uniqueNetworks[strategy.network] = true;
 		return true;
 	});
+	const content = (
+		<div className='text-[#0E2D59] text-xs'>
+			<article className='grid grid-cols-2 font-bold mb-1.5'>
+				<span>Network</span>
+				<span>Snapshot</span>
+			</article>
+			<article className='grid grid-cols-2'>
+				{new_voting_strategies_with_height.map((strategy,index) => {
+					return (
+						<div className='col-span-2 ' key={index}>
+							<article className='grid grid-cols-2' key={index}>
+								<p className='col-span-1 my-1.5 mr-3'>
+									<BlockchainIcon className={'text-md mr-1'} type={ strategy.network as EBlockchain }/>
+									<span>{firstCharUppercase(strategy.network)}</span>
+								</p>
+								<span className='col-span-1 my-1.5'># {strategy.height}</span>
+							</article>
+						</div>
+					);
+				})}
+			</article>
+		</div>
+	);
 	return (
 		<section
 			className='border border-solid border-blue_primary rounded-2xl drop-shadow-[0px_6px_18px_rgba(0,0,0,0.06)] p-6 text-white'
@@ -34,37 +57,15 @@ const Timestamp = () => {
 							<span className='col-span-2 text-sm text-grey_primary'>
                                 Block number
 							</span>
-							<span className='col-span-1 flex justify-end items-center gap-1 text-end text-xs'>
+							<span className='col-span-1 flex justify-end items-center gap-1 text-xs'>
 								<span>#{voting_strategies_with_height?.[0]?.height}</span>
-								<Tooltip
-									color='#66A5FF'
-									title={
-										<div>
-											<article className='flex justify-around'>
-												<h4 >Network</h4>
-												<h4>Snapshot</h4>
-											</article>
-											{new_voting_strategies_with_height.length>1 && new_voting_strategies_with_height?.slice(1).map((strategy,index) => {
-												return (
-													<article className='grid grid-cols-2 p-1' key={index}>
-														<p className='grid-cols-1 mx-2'>
-															<BlockchainIcon className={'text-md'} type={ strategy.network as EBlockchain }/>
-															<span className='mx-1'>{firstCharUppercase(strategy.network)}</span>
-														</p>
-														<span className='grid-cols-1 mx-2'># {strategy.height}</span>
-													</article>
-												);
-											})}
-										</div>
-
-									}
-								>
+								<Popover content={content} trigger="click">
 									<span
 										className='text-xs text-black rounded-2xl bg-[#66A5FF] px-[8px] py-[2px] cursor-pointer'
 									>
-                                            +{new_voting_strategies_with_height?.length-1 }
+                                            +{new_voting_strategies_with_height?.length }
 									</span>
-								</Tooltip>
+								</Popover>
 							</span>
 						</p>
 						: null
