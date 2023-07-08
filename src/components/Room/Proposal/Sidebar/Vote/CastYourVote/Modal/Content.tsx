@@ -79,7 +79,7 @@ const CastYourVoteModalContent = () => {
 					dataIndex: 'threshold',
 					key: 'threshold',
 					render: (text,record) => <span className={getRowClassName(record)}>{text} {record?.token_metadata[record.asset_type]?.symbol}</span>,
-					title: <span className='flex justify-center items-center gap-x-1'>
+					title: <span className='flex justify-start items-center gap-x-1'>
 						<span className='text-base font-normal leading-tighter tracking-wide text-left'>{'Threshold'}</span>
 						<span className='flex cursor-pointer items-center justify-center bg-grey_primary rounded-full text-[10px] text-white font-medium w-4 h-4'>
 							<Tooltip
@@ -102,7 +102,7 @@ const CastYourVoteModalContent = () => {
 					key: 'weight',
 					render: (text,record) => <span className={getRowClassName(record)}>{text}</span>,
 					title: <span className='flex items-center gap-x-1'>
-						<span className='text-base font-normal leading-tighter tracking-wide text-left'>{'Weight'}</span>
+						<span className='text-base justify-start font-normal leading-tighter tracking-wide text-left'>{'Weight'}</span>
 						<span className='flex cursor-pointer items-center justify-center bg-grey_primary rounded-full text-[10px] text-white font-medium w-4 h-4'>
 							<Tooltip
 								color='#04152F'
