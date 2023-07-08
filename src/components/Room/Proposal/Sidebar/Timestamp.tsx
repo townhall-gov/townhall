@@ -21,27 +21,23 @@ const Timestamp = () => {
 		return true;
 	});
 	const content = (
-		<div className='text-[#0E2D59] text-xs'>
-			<article className='grid grid-cols-2 font-bold mb-1.5'>
+		<article className='text-[#0E2D59] text-xs w-[168px]'>
+			<div className='grid grid-cols-2 font-bold mb-[6px] text-left gap-x-3'>
 				<span>Network</span>
 				<span>Snapshot</span>
-			</article>
-			<article className='grid grid-cols-2'>
-				{new_voting_strategies_with_height.map((strategy,index) => {
-					return (
-						<div className='col-span-2 ' key={index}>
-							<article className='grid grid-cols-2' key={index}>
-								<p className='col-span-1 my-1.5 mr-3'>
-									<BlockchainIcon className={'text-md mr-1'} type={ strategy.network as EBlockchain }/>
-									<span>{firstCharUppercase(strategy.network)}</span>
-								</p>
-								<span className='col-span-1 my-1.5'># {strategy.height}</span>
-							</article>
-						</div>
-					);
-				})}
-			</article>
-		</div>
+			</div>
+			{new_voting_strategies_with_height.map((strategy,index) => {
+				return (
+					<article className='grid grid-cols-2 mt-[6px] gap-x-4' key={index}>
+						<span className='text-left flex items-cente gap-x-1'>
+							<BlockchainIcon className={'text-base'} type={ strategy.network as EBlockchain }/>
+							<span>{firstCharUppercase(strategy.network)}</span>
+						</span>
+						<span className='col-span-1 text-left'># {strategy.height}</span>
+					</article>
+				);
+			})}
+		</article>
 	);
 	return (
 		<section

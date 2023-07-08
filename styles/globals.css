@@ -182,11 +182,11 @@ div.ant-card-body {
 /* ant popover*/
 .ant-popover-content > .ant-popover-inner
 {
-    background-color: #66A5FF;
+    background-color: var(--blue_primary);
 }
 .ant-popover .ant-popover-arrow::after
 {
-    background-color: #66A5FF;
+    background-color: var(--blue_primary);
 }
 
 /* Room Hover states Start */
