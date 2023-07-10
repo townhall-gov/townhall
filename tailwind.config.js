@@ -23,6 +23,7 @@ module.exports = {
 				grey_primary: 'var(--grey_primary)',
 				grey_secondary: 'var(--grey_secondary)',
 				grey_tertiary: 'var(--grey_tertiary)',
+				light_grey_primary:'var(--light_grey_primary)',
 				purple_primary: 'var(--purple_primary)',
 				red_primary: 'var(--red_primary)',
 				yellow_primary: 'var(--yellow_primary)'

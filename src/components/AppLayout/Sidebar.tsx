@@ -5,7 +5,7 @@ import Link from 'next/link';
 import React,{ useEffect,useRef, useState } from 'react';
 // import { HomeIcon, HolidayVillageIcon, ZoomInAreaIcon } from '~src/ui-components/CustomIcons';
 import JoinedRoom from './JoinedRooms';
-import { HomeIcon, HolidayVillageIcon } from '~src/ui-components/CustomIcons';
+import { HomeIcon, HousesIcon, RoomsIcon } from '~src/ui-components/CustomIcons';
 
 const Sidebar = () => {
 	const [totalShowing, setTotalShowing] = useState(2);
@@ -42,15 +42,18 @@ const Sidebar = () => {
 						<span>Room</span>
 					</span>
 				</Link> */}
-				<Link href='/houses' className='border-none outline-none bg-transparent flex flex-col gap-y-1 items-center justify-center cursor-pointer py-4 px-5 hover:bg-white'>
-					<HolidayVillageIcon className='text-app_background stroke-transparent text-2xl' />
-					<span className='text-app_background font-semibold text-xs leading-none flex flex-col items-center justify-center'>
+				<Link href='/houses' className='border-none text-light_grey_primary outline-none bg-transparent flex flex-col gap-y-1 items-center justify-center cursor-pointer py-4 px-5 hover:bg-white'>
+					<HousesIcon className='text-transparent stroke-transparent text-3xl' />
+					<span className=' font-semibold text-xs leading-none flex flex-col items-center justify-center'>
 						Houses
 					</span>
 				</Link>
-				<Link href='/rooms' className='border-none outline-none bg-transparent flex flex-col gap-y-1 items-center justify-center cursor-pointer py-4 px-5 hover:bg-white'>
-					<HolidayVillageIcon className='text-app_background stroke-transparent text-2xl' />
-					<span className='text-app_background font-semibold text-xs leading-none flex flex-col items-center justify-center'>
+				<Link href='/rooms' className='border-none text-light_grey_primary outline-none bg-transparent flex flex-col gap-y-1 items-center justify-center cursor-pointer py-4 px-5 hover:bg-white'>
+					<RoomsIcon className='stroke-transparent text-3xl' />
+					<span className='font-semibold text-xs leading-none flex flex-col items-center justify-center'>
+						All
+					</span>
+					<span className='font-semibold text-xs leading-none flex flex-col items-center justify-center'>
 						Rooms
 					</span>
 				</Link>

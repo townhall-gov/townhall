@@ -7,7 +7,7 @@ import { Image, Spin } from 'antd';
 import classNames from 'classnames';
 import Link from 'next/link';
 import React, { FC, ReactNode, useRef } from 'react';
-import { CropFreeIcon, HouseIcon } from './CustomIcons';
+import { HousesIcon, RoomsIcon } from './CustomIcons';
 import DefaultNameImage from './DefaultNameImage';
 import { useHousesSelector } from '~src/redux/selectors';
 
@@ -84,10 +84,10 @@ const RoomHouseCard: FC<IRoomHouseCardProps> = (props) => {
 						<div className='flex items-center justify-center gap-x-2 mt-[3px]'>
 							{
 								!house_id?
-									<HouseIcon className='text-grey_primary text-lg'/>
+									<HousesIcon className='text-transparent border text-lg stroke-light_grey_primary'/>
 									: null
 							}
-							<CropFreeIcon className='text-grey_primary text-lg' />
+							<RoomsIcon className='text-light_grey_primary text-lg' />
 						</div>
 					</div>
 				</Link>
