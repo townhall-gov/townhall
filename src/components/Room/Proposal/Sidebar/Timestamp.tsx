@@ -13,7 +13,7 @@ const Timestamp = () => {
 	if (!proposal) return null;
 	const { voting_strategies_with_height, created_at, start_date, end_date } = proposal;
 	const uniqueNetworks:{[key:string]:boolean}={ };
-	const new_voting_strategies_with_height = voting_strategies_with_height.filter((strategy) => {
+	const new_voting_strategies_with_height = voting_strategies_with_height?.filter((strategy) => {
 		if (uniqueNetworks[strategy.network]) {
 			return false;
 		}
@@ -55,13 +55,13 @@ const Timestamp = () => {
 							</span>
 							<span className='col-span-1 flex justify-end items-center gap-1 text-xs'>
 								<span>#{voting_strategies_with_height?.[0]?.height}</span>
-								<Popover content={content} trigger="click">
+								{new_voting_strategies_with_height?.length>1 && <Popover content={content} trigger="click">
 									<span
 										className='text-xs text-black rounded-2xl bg-[#66A5FF] px-[8px] py-[2px] cursor-pointer'
 									>
                                             +{new_voting_strategies_with_height?.length }
 									</span>
-								</Popover>
+								</Popover>}
 							</span>
 						</p>
 						: null
