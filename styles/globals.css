@@ -258,6 +258,60 @@ div.ant-card-body {
     display: none !important;
 }
 
+/* Table CSS */
+.ant-table-wrapper{
+    margin-top: 24px;
+}
+.ant-table,
+.ant-table-tbody > tr > td {
+  border: none !important;
+}
+.ant-table-wrapper .ant-table-thead>tr>th
+{
+    text-align: start;
+    border-bottom: 1px solid #90A0B7;
+    padding: 3px 15px;
+}
+.ant-table-wrapper thead>tr>*:first-child
+{
+    padding-left: 2px;
+}
+.ant-table-wrapper .ant-table-tbody>tr>td
+{
+    padding: 3px 15px;
+}
+.ant-table-tbody > tr > td 
+{
+    border: none !important;
+  
+}
+.ant-table-wrapper .ant-table-tbody>tr:first-of-type>td
+{
+    padding-top: 12px !important;
+}
+.ant-table-wrapper .ant-table-tbody>tr>td:first-child 
+{
+    padding: 2px;
+}
+.ant-table-content
+{
+    background-color: #04152F !important;
+    color: white !important;
+}
+.ant-table-cell
+{
+    background-color: #04152F !important;
+    color: white !important;
+}
+.ant-table-cell:not(:last-child)
+{
+    border-right: 1px solid #90A0B7 !important;
+}
+.ant-table-thead >tr>th::before
+{
+    background-color: #04152F !important;
+}
+
 /* Date Picker css */
 .ant-picker-panel-container {
     background-color: var(--app_background) !important;

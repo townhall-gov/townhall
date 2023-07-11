@@ -30,6 +30,9 @@ import SortByDownSVG from '~assets/icons/sort-by-down.svg';
 import SettingsSVG from '~assets/icons/settings.svg';
 import TownhallLogoWithNameSVG from '~assets/logo/townhall-with-name.svg';
 import RequestHouseSVG from '~assets/logo/request-house.svg';
+import VotingPowerSVG from '~assets/icons/voting-power.svg';
+import CircleArrowSVG from '~assets/icons/circle-arrow.svg';
+import CircleArrowDownSVG from '~assets/icons/circle-arrow-down.svg';
 import MetamaskSVG from '~assets/wallet/metamask-icon.svg';
 import PolkadotJsSVG from '~assets/wallet/polkadotjs-icon.svg';
 
@@ -185,6 +188,18 @@ export const EarthIcon = (props: Partial<CustomIconComponentProps>) => (
 
 export const CropFreeIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={CropFreeSVG} {...props} />
+);
+
+export const VotingPowerIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={VotingPowerSVG} {...props} />
+);
+
+export const CircleArrowIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={CircleArrowSVG} {...props} />
+);
+
+export const CircleArrowDownIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={CircleArrowDownSVG} {...props} />
 );
 
 export const HolidayVillageIcon = (props: Partial<CustomIconComponentProps>) => (
