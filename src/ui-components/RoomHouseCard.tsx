@@ -21,10 +21,11 @@ interface IRoomHouseCardProps {
     onLinkClick?: () => void;
     name: string;
 	house_id?: string;
+	room_id?:string;
 }
 
 const RoomHouseCard: FC<IRoomHouseCardProps> = (props) => {
-	const { isDisabled, isJoined, logo, totalLabel, onClick, name, link, onLinkClick, house_id } = props;
+	const { isDisabled, isJoined, logo, totalLabel, onClick, name, link, onLinkClick, house_id , room_id } = props;
 	const joinBtnRef = useRef<HTMLButtonElement>(null!);
 	const { houses } = useHousesSelector();
 	const roomHouse = houses.find((house) => house.id === house_id);
@@ -83,11 +84,18 @@ const RoomHouseCard: FC<IRoomHouseCardProps> = (props) => {
 						</p>
 						<div className='flex items-center justify-center gap-x-2 mt-[3px]'>
 							{
+								!house_id? <div className='flex'>
+									<HousesIcon className='text-transparent border stroke-2 mr-2 text-2xl stroke-light_grey_primary'/>
+									<RoomsIcon className='text-light_grey_primary text-2xl' /> 
+								</div>:<>{room_id==house_id? <><HousesIcon className='text-transparent border stroke-2 text-2xl stroke-light_grey_primary'/>
+									<RoomsIcon className='text-light_grey_primary text-2xl' /></>:<RoomsIcon className='text-light_grey_primary text-2xl' /> }</>
+							}
+							{/* {
 								!house_id?
-									<HousesIcon className='text-transparent border text-lg stroke-light_grey_primary'/>
+									<HousesIcon className='text-transparent border stroke-2 text-2xl stroke-light_grey_primary'/>
 									: null
 							}
-							<RoomsIcon className='text-light_grey_primary text-lg' />
+							<RoomsIcon className='text-light_grey_primary text-2xl' /> */}
 						</div>
 					</div>
 				</Link>

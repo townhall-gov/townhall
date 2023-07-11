@@ -5,11 +5,13 @@ import Link from 'next/link';
 import React,{ useEffect,useRef, useState } from 'react';
 // import { HomeIcon, HolidayVillageIcon, ZoomInAreaIcon } from '~src/ui-components/CustomIcons';
 import JoinedRoom from './JoinedRooms';
+import { useRouter } from 'next/router';
 import { HomeIcon, HousesIcon, RoomsIcon } from '~src/ui-components/CustomIcons';
 
 const Sidebar = () => {
 	const [totalShowing, setTotalShowing] = useState(2);
 	const sidebarRef = useRef<HTMLDivElement>(null);
+	const router = useRouter();
 	const linksContainerRef = useRef<HTMLDivElement>(null);
 	useEffect(() => {
 		const updateTotalRoomsVisible = () => {
@@ -31,9 +33,9 @@ const Sidebar = () => {
 	return (
 		<aside ref={sidebarRef} className='min-h-full min-w-[93px] flex flex-col justify-between w-[93px] rounded-xl bg-blue_primary shadow-[-3px_4px_7px_#0E2D59] max-h-[calc(100vh-242px)] sticky top-[108px]'>
 			<article ref={linksContainerRef} className='flex flex-col'>
-				<Link href='/' className='border-none outline-none bg-transparent flex flex-col gap-y-1 items-center justify-center cursor-pointer py-4 px-5 hover:bg-white rounded-t-xl'>
+				<Link href='/' className={`border-none ${router.pathname === '/'?'text-app_background stroke-2':'text-light_grey_primary'} bg-transparent flex flex-col gap-y-1 items-center justify-center cursor-pointer py-4 px-5 hover:bg-white rounded-t-xl`}>
 					<HomeIcon className='text-transparent stroke-app_background text-2xl' />
-					<span className='text-app_background font-semibold text-xs leading-none'>Home</span>
+					<span className='font-semibold text-xs leading-none'>Home</span>
 				</Link>
 				{/* <Link href='/room/create' className='border-none outline-none bg-transparent flex flex-col gap-y-1 items-center justify-center cursor-pointer py-4 px-5 hover:bg-white'>
 					<ZoomInAreaIcon className='text-transparent stroke-app_background text-2xl' />
@@ -42,13 +44,13 @@ const Sidebar = () => {
 						<span>Room</span>
 					</span>
 				</Link> */}
-				<Link href='/houses' className='border-none text-light_grey_primary outline-none bg-transparent flex flex-col gap-y-1 items-center justify-center cursor-pointer py-4 px-5 hover:bg-white'>
-					<HousesIcon className='text-transparent stroke-transparent text-3xl' />
-					<span className=' font-semibold text-xs leading-none flex flex-col items-center justify-center'>
+				<Link href='/houses' className={`border-none ${router.pathname === '/houses'?'text-app_background stroke-2':'text-light_grey_primary'} outline-none bg-transparent flex flex-col gap-y-1 items-center justify-center cursor-pointer py-4 px-5 hover:bg-white`}>
+					<HousesIcon className='text-transparent stroke-app_background text-3xl' />
+					<span className='font-semibold text-xs leading-none flex flex-col items-center justify-center'>
 						Houses
 					</span>
 				</Link>
-				<Link href='/rooms' className='border-none text-light_grey_primary outline-none bg-transparent flex flex-col gap-y-1 items-center justify-center cursor-pointer py-4 px-5 hover:bg-white'>
+				<Link href='/rooms' className={`border-none ${router.pathname === '/rooms'?'text-app_background':'text-light_grey_primary'} outline-none bg-transparent flex flex-col gap-y-1 items-center justify-center cursor-pointer py-4 px-5 hover:bg-white`}>
 					<RoomsIcon className='stroke-transparent text-3xl' />
 					<span className='font-semibold text-xs leading-none flex flex-col items-center justify-center'>
 						All
