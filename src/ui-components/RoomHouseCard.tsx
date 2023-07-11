@@ -85,10 +85,10 @@ const RoomHouseCard: FC<IRoomHouseCardProps> = (props) => {
 						<div className='flex items-center justify-center gap-x-2 mt-[3px]'>
 							{
 								!house_id? <div className='flex'>
-									<HousesIcon className='text-transparent border stroke-2 mr-2 text-2xl stroke-light_grey_primary'/>
-									<RoomsIcon className='text-light_grey_primary text-2xl' /> 
-								</div>:<>{room_id==house_id? <><HousesIcon className='text-transparent border stroke-2 text-2xl stroke-light_grey_primary'/>
-									<RoomsIcon className='text-light_grey_primary text-2xl' /></>:<RoomsIcon className='text-light_grey_primary text-2xl' /> }</>
+									<HousesIcon className='text-transparent border stroke-2 mr-2 text-xl stroke-[#94A2AF]'/>
+									<RoomsIcon className='text-[#94A2AF]  text-2xl' />
+								</div>:<>{room_id==house_id? <><HousesIcon className='text-transparent border stroke-2 text-xl stroke-[#94A2AF]'/>
+									<RoomsIcon className='text-[#94A2AF] text-2xl' /></>:<RoomsIcon className='text-[#94A2AF] text-2xl' /> }</>
 							}
 							{/* {
 								!house_id?
