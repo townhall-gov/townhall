@@ -7,7 +7,7 @@ import { Image, Spin } from 'antd';
 import classNames from 'classnames';
 import Link from 'next/link';
 import React, { FC, ReactNode, useRef } from 'react';
-import { CropFreeIcon, HouseIcon } from './CustomIcons';
+import { HousesIcon, RoomsIcon } from './CustomIcons';
 import DefaultNameImage from './DefaultNameImage';
 import { useHousesSelector } from '~src/redux/selectors';
 
@@ -21,10 +21,11 @@ interface IRoomHouseCardProps {
     onLinkClick?: () => void;
     name: string;
 	house_id?: string;
+	room_id?:string;
 }
 
 const RoomHouseCard: FC<IRoomHouseCardProps> = (props) => {
-	const { isDisabled, isJoined, logo, totalLabel, onClick, name, link, onLinkClick, house_id } = props;
+	const { isDisabled, isJoined, logo, totalLabel, onClick, name, link, onLinkClick, house_id , room_id } = props;
 	const joinBtnRef = useRef<HTMLButtonElement>(null!);
 	const { houses } = useHousesSelector();
 	const roomHouse = houses.find((house) => house.id === house_id);
@@ -83,11 +84,18 @@ const RoomHouseCard: FC<IRoomHouseCardProps> = (props) => {
 						</p>
 						<div className='flex items-center justify-center gap-x-2 mt-[3px]'>
 							{
+								!house_id? <div className='flex'>
+									<HousesIcon className='text-transparent border stroke-2 mr-2 text-xl stroke-[#94A2AF]'/>
+									<RoomsIcon className='text-[#94A2AF]  text-2xl' />
+								</div>:<>{room_id==house_id? <><HousesIcon className='text-transparent border stroke-2 text-xl stroke-[#94A2AF]'/>
+									<RoomsIcon className='text-[#94A2AF] text-2xl' /></>:<RoomsIcon className='text-[#94A2AF] text-2xl' /> }</>
+							}
+							{/* {
 								!house_id?
-									<HouseIcon className='text-grey_primary text-lg'/>
+									<HousesIcon className='text-transparent border stroke-2 text-2xl stroke-light_grey_primary'/>
 									: null
 							}
-							<CropFreeIcon className='text-grey_primary text-lg' />
+							<RoomsIcon className='text-light_grey_primary text-2xl' /> */}
 						</div>
 					</div>
 				</Link>

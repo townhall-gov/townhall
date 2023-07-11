@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { SettingOutlined } from '@ant-design/icons';
-import { ContactPageIcon, EarthIcon, RocketLaunchIcon, HolidayVillageIcon, DevicesIcon } from '~src/ui-components/CustomIcons';
+import { ContactPageIcon, EarthIcon, RocketLaunchIcon, DevicesIcon, HousesIcon } from '~src/ui-components/CustomIcons';
 import { ERoomCreationStage } from '~src/redux/rooms/@types';
 
 export const timeline = [
@@ -13,7 +13,7 @@ export const timeline = [
 		title: 'Getting Started'
 	},
 	{
-		icon: <HolidayVillageIcon />,
+		icon: <HousesIcon />,
 		stage: ERoomCreationStage.SELECT_HOUSE,
 		title: 'Select House'
 	},

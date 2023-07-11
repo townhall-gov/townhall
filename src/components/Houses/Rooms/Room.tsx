@@ -134,6 +134,7 @@ const Room: FC<IRoomProps> = (props) => {
 					dispatch(roomActions.setCurrentStage(ERoomStage.PROPOSALS));
 				}}
 				house_id={house_id}
+				room_id={id}
 				totalLabel={`${total_members} Members`}
 			/>
 		</div>
