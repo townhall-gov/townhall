@@ -179,6 +179,15 @@ div.ant-card-bordered {
 div.ant-card-body {
     padding: 0 !important;
 }
+/* ant popover*/
+.ant-popover-content > .ant-popover-inner
+{
+    background-color: var(--blue_primary);
+}
+.ant-popover .ant-popover-arrow::after
+{
+    background-color: var(--blue_primary);
+}
 
 /* Room Hover states Start */
 .card-hover:hover:not(.card-disabled) a {
