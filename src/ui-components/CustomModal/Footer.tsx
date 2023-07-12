@@ -12,7 +12,11 @@ import DiscussionEditHistoryModalFooter from '~src/components/Room/Discussion/Co
 import { EFooterType } from '~src/redux/modal/@types';
 import PostLinkModalFooter from '~src/components/Room/Proposal/Sidebar/PostLink/Modal/Footer';
 import DiscussionEditModalFooter from '~src/components/Room/Discussion/ContentWrapper/Content/Heading/Edit/Modal/Footer';
-
+import ModalStrategyDeleteFooter from '~src/components/Room/Settings/Strategies/ModalStrategyDelete/Footer';
+import ModalStrategyEditFooter from '~src/components/Room/Settings/Strategies/ModalStrategyEdit/Footer';
+import ModalThresholdAddFooter from '~src/components/Room/Settings/Strategies/ModalThresholdAdd/Footer';
+import ModalStrategyThresholdEditFooter from '~src/components/Room/Settings/Strategies/ModalStrategyEdit/Footer';
+import ModalStrategyThresholdDeleteFooter from '~src/components/Room/Settings/Strategies/ModalThresholdDelete/Footer';
 interface IModalFooterProps {
     type?: EFooterType;
 }
@@ -45,6 +49,16 @@ const ModalFooter: FC<IModalFooterProps> = (props) => {
 		return <PostLinkModalFooter />;
 	case EFooterType.DISCUSSION_EDIT_MODAL:
 		return <DiscussionEditModalFooter />;
+	case EFooterType.ROOM_STRATEGY_DELETE_MODAL:
+		return <ModalStrategyDeleteFooter />;
+	case EFooterType.ROOM_STRATEGY_EDIT_MODAL:
+		return <ModalStrategyEditFooter />;
+	case EFooterType.ROOM_STRATEGY_THRESHOLD_ADD_MODAL:
+		return <ModalThresholdAddFooter />;
+	case EFooterType.ROOM_STRATEGY_THRESHOLD_EDIT_MODAL:
+		return <ModalStrategyThresholdEditFooter />;
+	case EFooterType.ROOM_STRATEGY_THRESHOLD_DELETE_MODAL:
+		return <ModalStrategyThresholdDeleteFooter />;
 	default:
 		return <></>;
 	}

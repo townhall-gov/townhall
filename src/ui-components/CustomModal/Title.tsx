@@ -15,7 +15,12 @@ import { ETitleType } from '~src/redux/modal/@types';
 import { useWalletSelector } from '~src/redux/selectors';
 import PostLinkModalTitle from '~src/components/Room/Proposal/Sidebar/PostLink/Modal/Title';
 import DiscussionEditModalTitle from '~src/components/Room/Discussion/ContentWrapper/Content/Heading/Edit/Modal/Title';
-
+import ModalStrategyDeleteTitle from '~src/components/Room/Settings/Strategies/ModalStrategyDelete/Title';
+import ModalStrategyEditTitle from '~src/components/Room/Settings/Strategies/ModalStrategyEdit/Title';
+import ModalStrategyAddTitle from '~src/components/Room/Settings/Strategies/ModalStrategyAdd/Title';
+import ModalThresholdAddTitle from '~src/components/Room/Settings/Strategies/ModalThresholdAdd/Title';
+import ModalStrategyThresholdEditTitle from '~src/components/Room/Settings/Strategies/ModalThresholdEdit/Title';
+import ModalStrategyThresholdDeleteTitle from '~src/components/Room/Settings/Strategies/ModalThresholdDelete/Title';
 interface IModalTitleProps {
     type?: ETitleType;
 }
@@ -42,6 +47,18 @@ const ModalTitle: FC<IModalTitleProps> = (props) => {
 		return <PostLinkModalTitle />;
 	case ETitleType.DISCUSSION_EDIT_MODAL:
 		return <DiscussionEditModalTitle />;
+	case ETitleType.ROOM_STRATEGY_DELETE_MODAL:
+		return <ModalStrategyDeleteTitle />;
+	case ETitleType.ROOM_STRATEGY_EDIT_MODAL:
+		return <ModalStrategyEditTitle />;
+	case ETitleType.ROOM_STRATEGY_ADD_MODAL:
+		return <ModalStrategyAddTitle />;
+	case ETitleType.ROOM_STRATEGY_THRESHOLD_ADD_MODAL:
+		return <ModalThresholdAddTitle />;
+	case ETitleType.ROOM_STRATEGY_THRESHOLD_EDIT_MODAL:
+		return <ModalStrategyThresholdEditTitle />;
+	case ETitleType.ROOM_STRATEGY_THRESHOLD_DELETE_MODAL:
+		return <ModalStrategyThresholdDeleteTitle />;
 	default:
 		return <></>;
 	}

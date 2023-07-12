@@ -16,6 +16,12 @@ import CastYourVoteModalContent from '~src/components/Room/Proposal/Sidebar/Vote
 import { EContentType } from '~src/redux/modal/@types';
 import PostLinkModalContent from '~src/components/Room/Proposal/Sidebar/PostLink/Modal/Content';
 import DiscussionEditModalContent from '~src/components/Room/Discussion/ContentWrapper/Content/Heading/Edit/Modal/Content';
+import ModalStrategyDeleteContent from '~src/components/Room/Settings/Strategies/ModalStrategyDelete/Content';
+import ModalStrategyEditContent from '~src/components/Room/Settings/Strategies/ModalStrategyEdit/Content';
+import ModalStrategyAddContent from '~src/components/Room/Settings/Strategies/ModalStrategyAdd/Content';
+import ModalStrategyThresholdAddContent from '~src/components/Room/Settings/Strategies/ModalThresholdAdd/Content';
+import ModalStrategyThresholdEditContent from '~src/components/Room/Settings/Strategies/ModalThresholdEdit/Content';
+import ModalStrategyThresholdDeleteContent from '~src/components/Room/Settings/Strategies/ModalThresholdDelete/Content';
 
 interface IModalContentProps {
     type?: EContentType;
@@ -47,6 +53,18 @@ const ModalContent: FC<IModalContentProps> = (props) => {
 		return <PostLinkModalContent />;
 	case EContentType.DISCUSSION_EDIT_MODAL:
 		return <DiscussionEditModalContent />;
+	case EContentType.ROOM_STRATEGY_DELETE_MODAL:
+		return <ModalStrategyDeleteContent />;
+	case EContentType.ROOM_STRATEGY_EDIT_MODAL:
+		return <ModalStrategyEditContent />;
+	case EContentType.ROOM_STRATEGY_ADD_MODAL:
+		return <ModalStrategyAddContent />;
+	case EContentType.ROOM_STRATEGY_THRESHOLD_ADD_MODAL:
+		return <ModalStrategyThresholdAddContent />;
+	case EContentType.ROOM_STRATEGY_THRESHOLD_EDIT_MODAL:
+		return <ModalStrategyThresholdEditContent />;
+	case EContentType.ROOM_STRATEGY_THRESHOLD_DELETE_MODAL:
+		return <ModalStrategyThresholdDeleteContent />;
 	default:
 		return <></>;
 	}

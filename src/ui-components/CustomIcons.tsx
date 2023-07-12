@@ -19,6 +19,9 @@ import DevicesSVG from '~assets/icons/devices.svg';
 import EarthSVG from '~assets/icons/earth.svg';
 import CropFreeSVG from '~assets/icons/crop-free.svg';
 import HolidayVillageSVG from '~assets/icons/holiday-village.svg';
+import DeletionDarkSVG from '~assets/icons/delete-icon-dark.svg';
+import EditDarkSVG from '~assets/icons/edit-icon-dark.svg';
+import ExpandSVG from '~assets/icons/expand.svg';
 import ZoomInAreaSVG from '~assets/icons/zoom-in-area.svg';
 import RocketLaunchSVG from '~assets/icons/rocket-launch.svg';
 import DiamondSVG from '~assets/icons/diamond.svg';
@@ -188,6 +191,18 @@ export const EarthIcon = (props: Partial<CustomIconComponentProps>) => (
 
 export const CropFreeIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={CropFreeSVG} {...props} />
+);
+
+export const DeletionDarkIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={DeletionDarkSVG} {...props} />
+);
+
+export const EditDarkIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={EditDarkSVG} {...props} />
+);
+
+export const ExpandIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={ExpandSVG} {...props} />
 );
 
 export const HolidayVillageIcon = (props: Partial<CustomIconComponentProps>) => (
