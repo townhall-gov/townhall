@@ -19,6 +19,9 @@ import DevicesSVG from '~assets/icons/devices.svg';
 import EarthSVG from '~assets/icons/earth.svg';
 import CropFreeSVG from '~assets/icons/crop-free.svg';
 import HolidayVillageSVG from '~assets/icons/holiday-village.svg';
+import DeletionDarkSVG from '~assets/icons/delete-icon-dark.svg';
+import EditDarkSVG from '~assets/icons/edit-icon-dark.svg';
+import ExpandSVG from '~assets/icons/expand.svg';
 import ZoomInAreaSVG from '~assets/icons/zoom-in-area.svg';
 import RocketLaunchSVG from '~assets/icons/rocket-launch.svg';
 import DiamondSVG from '~assets/icons/diamond.svg';
@@ -63,6 +66,9 @@ import ForSVG from '~assets/sentiment/for.svg';
 
 // Comment Related Icons Import Start
 import ReplySVG from '~assets/icons/reply.svg';
+import InfoDiamondSVG from '~assets/icons/information-diamond.svg';
+import DeleteDarkSVG from '~assets/icons/delete-dark.svg';
+import AddSVG from '~assets/icons/add.svg';
 import DeleteSVG from '~assets/icons/delete.svg';
 import EditSVG from '~assets/icons/edit.svg';
 import SearchSVG from '~assets/icons/searchicon.svg';
@@ -187,6 +193,18 @@ export const CropFreeIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={CropFreeSVG} {...props} />
 );
 
+export const DeletionDarkIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={DeletionDarkSVG} {...props} />
+);
+
+export const EditDarkIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={EditDarkSVG} {...props} />
+);
+
+export const ExpandIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={ExpandSVG} {...props} />
+);
+
 export const HolidayVillageIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={HolidayVillageSVG} {...props} />
 );
@@ -197,6 +215,18 @@ export const ZoomInAreaIcon = (props: Partial<CustomIconComponentProps>) => (
 
 export const RocketLaunchIcon = (props: Partial<CustomIconComponentProps>) => (
 	<Icon component={RocketLaunchSVG} {...props} />
+);
+
+export const InfoDiamondIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={InfoDiamondSVG} {...props} />
+);
+
+export const DeleteDarkIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={DeleteDarkSVG} {...props} />
+);
+
+export const AddIcon = (props: Partial<CustomIconComponentProps>) => (
+	<Icon component={AddSVG} {...props} />
 );
 
 export const DiamondIcon = (props: Partial<CustomIconComponentProps>) => (

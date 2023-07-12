@@ -21,6 +21,12 @@ export enum ETitleType {
     HOUSE_ROOMS = 'house-rooms',
     POST_LINK_MODAL = 'post-link-modal',
     DISCUSSION_EDIT_MODAL = 'discussion-edit-modal',
+    ROOM_STRATEGY_EDIT_MODAL = 'room-strategy-edit-modal',
+    ROOM_STRATEGY_DELETE_MODAL = 'room-strategy-delete-modal',
+    ROOM_STRATEGY_ADD_MODAL = 'room-strategy-add-modal',
+    ROOM_STRATEGY_THRESHOLD_ADD_MODAL = 'room-strategy-add-modal',
+    ROOM_STRATEGY_THRESHOLD_EDIT_MODAL = 'room-strategy-threshold-edit-modal',
+    ROOM_STRATEGY_THRESHOLD_DELETE_MODAL = 'room-strategy-threshold-delete-modal'
 }
 
 export enum EFooterType {
@@ -33,6 +39,12 @@ export enum EFooterType {
     CAST_YOUR_VOTE = 'cast-your-vote',
     POST_LINK_MODAL = 'post-link-modal',
     DISCUSSION_EDIT_MODAL = 'discussion-edit-modal',
+    ROOM_STRATEGY_EDIT_MODAL = 'room-strategy-edit-modal',
+    ROOM_STRATEGY_DELETE_MODAL = 'room-strategy-delete-modal',
+    ROOM_STRATEGY_ADD_MODAL = 'room-strategy-add-modal',
+    ROOM_STRATEGY_THRESHOLD_ADD_MODAL = 'room-strategy-add-modal',
+    ROOM_STRATEGY_THRESHOLD_EDIT_MODAL = 'room-strategy-threshold-edit-modal',
+    ROOM_STRATEGY_THRESHOLD_DELETE_MODAL = 'room-strategy-threshold-delete-modal'
 }
 export enum EContentType {
     NONE = 'none',
@@ -48,4 +60,10 @@ export enum EContentType {
     HOUSE_ROOMS = 'house-rooms',
     POST_LINK_MODAL = 'post-link-modal',
     DISCUSSION_EDIT_MODAL = 'discussion-edit-modal',
+    ROOM_STRATEGY_EDIT_MODAL = 'room-strategy-edit-modal',
+    ROOM_STRATEGY_DELETE_MODAL = 'room-strategy-delete-modal',
+    ROOM_STRATEGY_ADD_MODAL = 'room-strategy-add-modal',
+    ROOM_STRATEGY_THRESHOLD_ADD_MODAL = 'room-strategy-add-modal',
+    ROOM_STRATEGY_THRESHOLD_EDIT_MODAL = 'room-strategy-threshold-edit-modal',
+    ROOM_STRATEGY_THRESHOLD_DELETE_MODAL = 'room-strategy-threshold-delete-modal'
 }

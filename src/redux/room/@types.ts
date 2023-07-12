@@ -20,6 +20,10 @@ export interface IRoomStore {
     proposals: IListingProposal[];
     discussions: IListingDiscussion[];
     tokensMetadata: TTokensMetadata;
+    strategyIdTobeDeleted:string;
+    strategyThresholdIdTobeDeleted:string;
+    selectedStrategyTobeEdited:IStrategy|null;
+    selectedStrategyThresholdTobeEdited:IStrategy|null;
 }
 
 export type TTokensMetadata = {
@@ -65,6 +69,7 @@ export type IDiscussionCreation = {
 
 export type IRoomSettings = {
     room_strategies: IStrategy[];
+    room_strategies_threshold:IStrategy[];
 };
 
 export interface IVotingSystemOption {

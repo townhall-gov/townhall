@@ -44,8 +44,13 @@ const initialState: IRoomStore = {
 	proposals: [],
 	room: null,
 	roomSettings: {
-		room_strategies: []
+		room_strategies: [],
+		room_strategies_threshold:[]
 	},
+	selectedStrategyThresholdTobeEdited:null,
+	selectedStrategyTobeEdited:null,
+	strategyIdTobeDeleted:'',
+	strategyThresholdIdTobeDeleted:'',
 	tokensMetadata: {}
 };
 
@@ -217,17 +222,18 @@ export const roomStore = createSlice({
 			const room = action.payload;
 			state.room = room;
 			state.roomSettings = {
-				room_strategies: room?.voting_strategies || []
+				room_strategies: room?.voting_strategies || [],
+				room_strategies_threshold:[]
 			};
 		},
 		setRoomSettingsStrategiesAdd: (state, action: PayloadAction<IStrategy>) => {
 			const strategy = action.payload;
 			state.roomSettings.room_strategies = [...state.roomSettings.room_strategies, strategy];
 		},
-		setRoomSettingsStrategiesDelete: (state, action: PayloadAction<IStrategy>) => {
-			const strategy = action.payload;
+		setRoomSettingsStrategiesDelete: (state, action: PayloadAction<string>) => {
+			const id = action.payload;
 			const index = state.roomSettings.room_strategies.findIndex((item) => {
-				return item.id === strategy.id;
+				return item.id === id;
 			});
 			if (index >= 0) {
 				state.roomSettings.room_strategies.splice(index, 1);
@@ -235,12 +241,54 @@ export const roomStore = createSlice({
 		},
 		setRoomSettingsStrategiesEdit: (state, action: PayloadAction<IStrategy>) => {
 			const strategy = action.payload;
+			state.selectedStrategyTobeEdited=strategy;
+		},
+		setRoomSettingsStrategiesThresholdAdd: (state, action: PayloadAction<IStrategy>) => {
+			const strategyThreshold = action.payload;
+			state.roomSettings.room_strategies_threshold = [...state.roomSettings.room_strategies_threshold, strategyThreshold];
+		},
+		setRoomSettingsStrategyEditedObject: (state, action: PayloadAction<IStrategy>) => {
+			const strategy = action.payload;
 			state.roomSettings.room_strategies = state.roomSettings.room_strategies.map((item) => {
 				if (item.id === strategy.id) {
 					return strategy;
 				}
 				return item;
 			});
+		},
+		setRoomSettingsStrategyIdDeleted: (state, action: PayloadAction<string>) => {
+			const id = action.payload;
+			state.strategyIdTobeDeleted = id;
+		},
+		setRoomSettingsStrategyObjectForEdit: (state, action: PayloadAction<IStrategy>) => {
+			const strategy = action.payload;
+			state.selectedStrategyTobeEdited = strategy;
+		},
+		setRoomSettingsStrategyThresholdEditedObject: (state, action: PayloadAction<IStrategy>) => {
+			const strategy = action.payload;
+			state.roomSettings.room_strategies_threshold = state.roomSettings.room_strategies_threshold.map((item) => {
+				if (item.id === strategy.id) {
+					return strategy;
+				}
+				return item;
+			});
+		},
+		setRoomSettingsStrategyThresholdIdDeleted: (state, action: PayloadAction<string>) => {
+			const id = action.payload;
+			state.strategyThresholdIdTobeDeleted = id;
+		},
+		setRoomSettingsStrategyThresholdObjectForEdit: (state, action: PayloadAction<IStrategy>) => {
+			const strategyThreshold = action.payload;
+			state.selectedStrategyThresholdTobeEdited = strategyThreshold;
+		},
+		setRoomSettingsStrategyThresoldDelete: (state, action: PayloadAction<string>) => {
+			const id = action.payload;
+			const index = state.roomSettings.room_strategies_threshold.findIndex((item) => {
+				return item.id === id;
+			});
+			if (index >= 0) {
+				state.roomSettings.room_strategies_threshold.splice(index, 1);
+			}
 		},
 		setRoomSettings_Field: (state, action: PayloadAction<IRoomSettingsFieldPayload>) => {
 			const obj = action.payload;
